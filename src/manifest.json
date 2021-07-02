@@ -1,0 +1,43 @@
+{
+	"manifest_version": 2,
+	"name": "Tab Array",
+	"version": "1.0",
+	"browser_specific_settings": {
+  	"gecko": {
+			"id": "tab-array@menhera.org"
+		}
+	},
+	"author": "Menhera.org",
+	"homepage_url": "https://github.com/menhera-org/TabArray",
+	"description": "The ultimate tab manager and groups for Firefox",
+	"permissions": [
+		"tabs",
+		"tabHide",
+		"<all_urls>",
+		"cookies",
+		"contextualIdentities"
+	],
+	"background": {
+		"page": "background.html"
+	},
+	"browser_action": {
+		"browser_style": true,
+		"default_icon": {
+			"16": "img/tab-black-18dp.svg"
+		},
+		"default_title": "Tabs",
+		"default_popup": "popup/popup.html",
+		"default_area": "tabstrip",
+		"theme_icons": [
+			{
+				"size": 16,
+				"light": "img/tab-white-18dp.svg",
+				"dark": "img/tab-black-18dp.svg"
+			}
+		]
+	},
+	"icons": {
+		"48": "icon.svg",
+		"96": "icon.svg"
+	}
+}
