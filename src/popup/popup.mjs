@@ -235,6 +235,9 @@ globalThis.showNewContainerPane = async () => {
 
 document.querySelector('#button-new-container').addEventListener('click', ev => showNewContainerPane());
 
-document.querySelector('#button-hide-inactive').addEventListener('click', ev => containers.hideAll(browser.windows.WINDOW_ID_CURRENT));
+document.querySelector('#button-hide-inactive').addEventListener('click', async (ev) => {
+	await containers.hideAll(browser.windows.WINDOW_ID_CURRENT);
+	await render();
+});
 
 render().catch(e => console.error(e));
