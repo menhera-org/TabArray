@@ -7,6 +7,15 @@
 		<script type='module' src='popup.mjs'></script>
 	</head>
 	<body>
-		<ul id='menuList'></ul>
+		<div id='searchbox-container'>
+			<input type='search' name='search' id='searchbox-input' autocomplete='off'/>
+		</div>
+		<div id='main'>
+			<button id='button-hide-inactive'>Collapse containers</button>
+			<ul id='menuList'></ul>
+		</div>
+		<div id='bottombox'>
+			<button id='button-new-container'>Create a new container…</button>
+		</div>
 	</body>
 </html>
