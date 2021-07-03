@@ -91,9 +91,9 @@ const renderContainer = async (userContextId) => {
 	containerElement.append(visibilityToggleButton);
 	visibilityToggleButton.title = 'Toggle visibility of the container';
 	visibilityToggleButton.addEventListener('click', async (ev) => {
-		if (containerElement.classList.has('container-hidden')) {
+		if (containerElement.classList.contains('container-hidden')) {
 			await containers.show(userContextId, windowId);
-		} else if (containerElement.classList.has('container-visible')) {
+		} else if (containerElement.classList.contains('container-visible')) {
 			await containers.hide(userContextId, windowId);
 		}
 		await sleep(.5);
