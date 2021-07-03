@@ -96,7 +96,6 @@ const renderContainer = async (userContextId) => {
 		} else if (containerElement.classList.contains('container-visible')) {
 			await containers.hide(userContextId, windowId);
 		}
-		await sleep(.5);
 		await render();
 	});
 	const newTabHandler = async (ev) => {
