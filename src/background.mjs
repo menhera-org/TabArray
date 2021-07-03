@@ -6,7 +6,7 @@ const PSL_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
 
 fetch(PSL_URL).then(async res => {
 	const data = await res.text();
-	const lines = data.split('\n').map(line => line.trim()).filter(line => !line && !line.match(/^\/\//)).map(line => line.split(/\s/)[0]);
+	const lines = data.split('\n').map(line => line.trim()).filter(line => line != '' && !line.match(/^\/\//)).map(line => line.split(/\s/)[0]);
   console.log('PSL:', lines);
 });
 
