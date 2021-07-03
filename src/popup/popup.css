@@ -204,7 +204,7 @@ button {
 
 .container {
 	display: block grid;
-	grid-template-columns: 2em 2em 1fr 2em 1em;
+	grid-template-columns: 2em 2em 1fr 2em 2em 1em;
 }
 
 .container > .container-visibility-toggle {
@@ -246,12 +246,12 @@ button {
 	white-space: nowrap;
 }
 
-.container > .new-tab-button {
-	background-image: url(/img/add_black_24dp.svg);
-	opacity: .5;
+.container > .edit-container-button {
+	background-image: url(/img/edit_black_24dp.svg);
+	opacity: .25;
 }
 
-.container > .new-tab-button:focus, .container > .new-tab-button:hover {
+.container > .edit-container-button:focus, .container > .edit-container-button:hover {
 	opacity: 1;
 }
 

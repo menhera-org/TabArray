@@ -119,6 +119,10 @@ const renderContainer = async (userContextId) => {
 	containerLabel.classList.add('container-label');
 	containerLabel.textContent = container.name;
 	containerLabel.addEventListener('click', newTabHandler);
+	const editContainerButton = document.createElement('button');
+	editContainerButton.classList.add('edit-container-button');
+	editContainerButton.title = 'Edit this container';
+	containerElement.append(editContainerButton);
 	const deleteContainerButton = document.createElement('button');
 	deleteContainerButton.classList.add('delete-container-button');
 	containerElement.append(deleteContainerButton);
@@ -196,16 +200,33 @@ globalThis.confirmAsync = (msg) => {
 	const okButton = document.querySelector('#confirm-ok-button');
 	location.hash = '#confirm';
 	return new Promise((res) => {
-		cancelButton.addEventListener('click', function cancel(ev) {
-			ev.target.removeEventListener('click', cancel);
-			location.hash = '';
+		const cancelHandler = (ev) => {
+			cleanUp();
 			res(false);
-		});
-		okButton.addEventListener('click', function ok(ev) {
-			ev.target.removeEventListener('click', ok);
-			location.hash = '';
+		};
+		const okHandler = (ev) => {
+			cleanUp();
 			res(true);
-		});
+		};
+		const keyHandler = (ev) => {
+			if (ev.key == 'Enter') {
+				ev.preventDefault();
+				okHandler();
+			}
+			if (ev.key == 'Escape') {
+				ev.preventDefault();
+				cancelHandler();
+			}
+		};
+		const cleanUp = () => {
+			location.hash = '';
+			cancelButton.removeEventListener('click', cancelHandler);
+			okButton.removeEventListener('click', okHandler);
+			document.removeEventListener('keydown', keyHandler);
+		};
+		cancelButton.addEventListener('click', cancelHandler);
+		okButton.addEventListener('click', okHandler);
+		document.addEventListener('keydown', keyHandler, true);
 	});
 };
 
@@ -217,16 +238,33 @@ globalThis.showNewContainerPane = async () => {
 	const colorElement = document.querySelector('#new-container-color');
 	location.hash = '#new-container';
 	if (!await new Promise((res) => {
-		cancelButton.addEventListener('click', function cancel(ev) {
-			ev.target.removeEventListener('click', cancel);
-			location.hash = '';
+		const cancelHandler = (ev) => {
+			cleanUp();
 			res(false);
-		});
-		okButton.addEventListener('click', function ok(ev) {
-			ev.target.removeEventListener('click', ok);
-			location.hash = '';
+		};
+		const okHandler = (ev) => {
+			cleanUp();
 			res(true);
-		});
+		};
+		const keyHandler = (ev) => {
+			if (ev.key == 'Enter') {
+				ev.preventDefault();
+				okHandler();
+			}
+			if (ev.key == 'Escape') {
+				ev.preventDefault();
+				cancelHandler();
+			}
+		};
+		const cleanUp = () => {
+			location.hash = '';
+			cancelButton.removeEventListener('click', cancelHandler);
+			okButton.removeEventListener('click', okHandler);
+			document.removeEventListener('keydown', keyHandler);
+		};
+		cancelButton.addEventListener('click', cancelHandler);
+		okButton.addEventListener('click', okHandler);
+		document.addEventListener('keydown', keyHandler, true);
 	})) {
 		return;
 	}

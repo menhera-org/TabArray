@@ -23,7 +23,7 @@
 	"browser_action": {
 		"browser_style": true,
 		"default_icon": {
-			"16": "img/tab-black-18dp.svg"
+			"16": "img/more_vert_black_24dp.svg"
 		},
 		"default_title": "Tabs",
 		"default_popup": "popup/popup.html",
@@ -31,8 +31,8 @@
 		"theme_icons": [
 			{
 				"size": 16,
-				"light": "img/tab-white-18dp.svg",
-				"dark": "img/tab-black-18dp.svg"
+				"light": "img/more_vert_white_24dp.svg",
+				"dark": "img/more_vert_black_24dp.svg"
 			}
 		]
 	},
