@@ -1,6 +1,7 @@
 // vim: ts=4 noet ai
 
 import * as containers from '../modules/containers.mjs';
+import {sleep} from '../modules/utils.mjs';
 
 const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
@@ -10,6 +11,25 @@ const renderTab = async (tab) => {
 	const tabElement = document.createElement('li');
 	tabElement.title = tab.url;
 	tabElement.classList.add('tab');
+	const tabPinButton = document.createElement('button');
+	tabPinButton.classList.add('tab-pin-button');
+	tabElement.append(tabPinButton);
+	tabPinButton.addEventListener('click', async (ev) => {
+		ev.stopImmediatePropagation();
+		if (tab.pinned) {
+			await browser.tabs.update(tab.id, {
+				pinned: false,
+			});
+			await sleep(.5);
+			await render();
+		} else {
+			await browser.tabs.update(tab.id, {
+				pinned: true,
+			});
+			await sleep(.5);
+			await render();
+		}
+	});
 	const tabIconElement = document.createElement('img');
 	tabIconElement.src = tab.favIconUrl;
 	tabIconElement.classList.add('tab-icon');
@@ -22,6 +42,16 @@ const renderTab = async (tab) => {
 	tabLabelElement.classList.add('tab-label');
 	tabElement.append(tabLabelElement);
 	tabLabelElement.textContent = tab.title;
+	const tabCloseButton = document.createElement('button');
+	tabCloseButton.classList.add('tab-close-button');
+	tabCloseButton.title = 'Close this tab';
+	tabElement.append(tabCloseButton);
+	tabCloseButton.addEventListener('click', async (ev) => {
+		ev.stopImmediatePropagation();
+		await browser.tabs.remove(tab.id);
+		await sleep(.5);
+		await render();
+	});
 	if (tab.pinned) {
 		tabElement.classList.add('tab-pinned');
 	} else if (tab.hidden) {
@@ -65,6 +95,20 @@ const renderContainer = async (containerId) => {
 	containerElement.append(containerLabel);
 	containerLabel.classList.add('container-label');
 	containerLabel.textContent = container.name;
+	const newTabButton = document.createElement('button');
+	newTabButton.classList.add('new-tab-button');
+	containerElement.append(newTabButton);
+	newTabButton.title = 'Open a new tab with this container';
+	newTabButton.addEventListener('click', async (ev) => {
+		ev.stopImmediatePropagation();
+		await browser.tabs.create({
+			active: true,
+			windowId: browser.windows.WINDOW_ID_CURRENT,
+			cookieStoreId: containerId,
+		});
+		await sleep(.5);
+		await render();
+	});
 	const tabListElement = document.createElement('ul');
 	tabListElement.classList.add('container-tabs');
 	containerElement.append(tabListElement);
@@ -96,10 +140,10 @@ const renderContainer = async (containerId) => {
 	return containerElement;
 };
 
-(async () => {
-	//
-
+const render = async () => {
 	const menuListElement = document.querySelector('#menuList');
+	menuListElement.textContent = '';
+
 	const currentWindow = await browser.windows.getCurrent();
 	const windowId = currentWindow.id;
 
@@ -117,5 +161,6 @@ const renderContainer = async (containerId) => {
 		menuListElement.append(containerElement);
 	}
 
-})();
+};
 
+render().catch(e => console.error(e));

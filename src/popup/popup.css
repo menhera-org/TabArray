@@ -81,13 +81,23 @@ button {
 	border-block-start: solid .125rem #888;
 }
 
-#button-new-container {
+#button-new-container, #button-hide-inactive {
 	display: block grid;
 	grid-template-columns: max-content 1fr;
 }
 
 #button-new-container::before {
 	background-image: url(/img/add_black_24dp.svg);
+	content: '';
+	background-repeat: no-repeat;
+	background-size: 1.5em;
+	background-position: center center;
+	block-size: 1em;
+	inline-size: 2em;
+}
+
+#button-hide-inactive::before {
+	background-image: url(/img/unfold_less_black_24dp.svg);
 	content: '';
 	background-repeat: no-repeat;
 	background-size: 1.5em;
@@ -117,7 +127,7 @@ button {
 
 #menuList .tab {
 	display: block grid;
-	grid-template-columns: 2em 2em 1fr;
+	grid-template-columns: 2em 2em 1fr 2em;
 	margin-inline-start: calc(2em - 0.25em);
 	border-inline-start: solid .25rem transparent;
 }
@@ -140,15 +150,34 @@ button {
 	visibility: hidden;
 }
 
-.tab::before {
-	content: '';
+.tab > button, .container > button {
 	background-size: 1.5em;
 	background-repeat: no-repeat;
 	background-position: center center;
+	opacity: 0;
+	padding: 0;
+	background-color: transparent;
 }
 
-.tab-pinned::before {
+.tab > .tab-pin-button {
 	background-image: url(/img/push_pin_black_24dp.svg);
+}
+
+.tab > .tab-pin-button:hover, .tab > .tab-pin-button:focus {
+	opacity: .5 !important;
+}
+
+.tab.tab-pinned > .tab-pin-button {
+	opacity: 1;
+}
+
+.tab > .tab-close-button {
+	background-image: url(/img/close_black_24dp.svg);
+	opacity: .25;
+}
+
+.tab > .tab-close-button:focus, .tab > .tab-close-button:hover {
+	opacity: .5;
 }
 
 #menuList > li.checked {
@@ -157,7 +186,7 @@ button {
 
 .container {
 	display: block grid;
-	grid-template-columns: 2em 2em 1fr;
+	grid-template-columns: 2em 2em 1fr 2em;
 }
 
 .container::before {
@@ -194,6 +223,15 @@ button {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.container > .new-tab-button {
+	background-image: url(/img/add_black_24dp.svg);
+	opacity: .5;
+}
+
+.container > .new-tab-button:focus, .container > .new-tab-button:hover {
+	opacity: 1;
 }
 
 .container > .container-tabs {

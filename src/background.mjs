@@ -80,5 +80,14 @@ browser.tabs.onRemoved.addListener(() => {
   sortTabs();
 });
 
+browser.tabs.onUpdated.addListener(() => {
+  sortTabs();
+}, {
+  properties: [
+    'hidden',
+    'pinned',
+  ],
+});
+
 sortTabs();
 
