@@ -83,9 +83,23 @@ browser.tabs.onUpdated.addListener(() => {
   sortTabs();
 }, {
   properties: [
-    'hidden',
     'pinned',
   ],
+});
+
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  //console.log('tab %d hidden on window %d', tabId, tab.windowId);
+}, {
+  properties: [
+    'hidden',
+  ],
+});
+
+browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
+  console.log('active tab changed on window %d', windowId);
+  const tab = await browser.tabs.get(tabId);
+  const userContextId = containers.toUserContextId(tab.cookieStoreId);
+  await containers.show(userContextId, windowId);
 });
 
 browser.contextualIdentities.onRemoved.addListener(({contextualIdentity}) => {

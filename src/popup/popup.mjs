@@ -142,12 +142,12 @@ const renderContainer = async (userContextId) => {
 		if (tab.pinned) continue;
 		if (tab.cookieStoreId != cookieStoreId) continue;
 		
-		const tabElement = await renderTab(tab);
-		tabListElement.append(tabElement);
 		if (tab.hidden) {
 			containerState = STATE_HIDDEN_TABS;
 		} else {
 			containerState = STATE_VISIBLE_TABS;
+			const tabElement = await renderTab(tab);
+			tabListElement.append(tabElement);
 		}
 	}
 	switch (containerState) {
