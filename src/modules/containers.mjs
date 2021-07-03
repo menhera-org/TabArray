@@ -168,7 +168,7 @@ export const hide = async (aUserContextId, aWindowId) => {
   let active = false;
   const tabsToHide = [];
   for (const tab of tabs) {
-    if (tab.cookieStoreId != cookieStoreId) {
+    if (tab.cookieStoreId != cookieStoreId || tab.pinned) {
       if (!tab.hidden) {
         userContexts.set(toUserContextId(tab.cookieStoreId), tab.id);
       }
