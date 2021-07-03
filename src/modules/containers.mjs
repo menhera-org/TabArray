@@ -218,3 +218,25 @@ export const show = async (aUserContextId, aWindowId) => {
   const tabIds = [... tabs].map((tab) => 0 | tab.id);
   await browser.tabs.show(tabIds);
 };
+
+export const getInactiveIds = async (aWindowId) => {
+  const tabs = await browser.tabs.query({
+    windowId: aWindowId,
+    pinned: false,
+  });
+  const userContextIds = new Set([... tabs].map((tab) => toUserContextId(tab.cookieStoreId)));
+  for (const tab of tabs) {
+    const userContextId = toUserContextId(tab.cookieStoreId);
+    if (tab.active) {
+      userContextIds.delete(userContextId);
+    }
+  }
+  return [... userContextIds].sort((a, b) => a - b);
+};
+
+export const hideAll = async (aWindowId) => {
+  const userContextIds = await getInactiveIds(aWindowId);
+  for (const userContextId of userContextIds) {
+    await hide(userContextId, aWindowId);
+  }
+};
