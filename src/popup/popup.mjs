@@ -80,30 +80,26 @@ const renderContainer = async (userContextId) => {
 	const cookieStoreId = containers.toCookieStoreId(userContextId);
 	const container = await containers.get(userContextId);
 	const tabs = await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT});
+	const windowId = (await browser.windows.getCurrent()).id;
 	const containerElement = document.createElement('li');
 	containerElement.classList.add('container');
 	if (!userContextId) {
 		containerElement.classList.add('container-default');
 	}
-	const containerIcon = document.createElement('img');
-	containerIcon.src = container.iconUrl || 'about:blank';
-	containerIcon.style.fill = container.colorCode; // FIXME
-	containerIcon.classList.add('container-icon');
-	containerIcon.addEventListener('error', ev => {
-		ev.target.classList.add('img-error');
-		ev.target.src = '/img/transparent.png';
+	const visibilityToggleButton = document.createElement('button');
+	visibilityToggleButton.classList.add('container-visibility-toggle');
+	containerElement.append(visibilityToggleButton);
+	visibilityToggleButton.title = 'Toggle visibility of the container';
+	visibilityToggleButton.addEventListener('click', async (ev) => {
+		if (containerElement.classList.has('container-hidden')) {
+			await containers.show(userContextId, windowId);
+		} else if (containerElement.classList.has('container-visible')) {
+			await containers.hide(userContextId, windowId);
+		}
+		await sleep(.5);
+		await render();
 	});
-	containerElement.append(containerIcon);
-	const containerLabel = document.createElement('div');
-	containerElement.append(containerLabel);
-	containerLabel.classList.add('container-label');
-	containerLabel.textContent = container.name;
-	const newTabButton = document.createElement('button');
-	newTabButton.classList.add('new-tab-button');
-	containerElement.append(newTabButton);
-	newTabButton.title = 'Open a new tab with this container';
-	newTabButton.addEventListener('click', async (ev) => {
-		ev.stopImmediatePropagation();
+	const newTabHandler = async (ev) => {
 		await browser.tabs.create({
 			active: true,
 			windowId: browser.windows.WINDOW_ID_CURRENT,
@@ -111,7 +107,19 @@ const renderContainer = async (userContextId) => {
 		});
 		await sleep(.5);
 		await render();
-	});
+	};
+	const containerIcon = document.createElement('div');
+	const iconUrl = container.iconUrl || '/img/category_black_24dp.svg';
+	containerIcon.style.mask = `url(${iconUrl}) center center/contain no-repeat`;
+	containerIcon.style.backgroundColor = container.colorCode || '#000';
+	containerIcon.classList.add('container-icon');
+	containerElement.append(containerIcon);
+	containerIcon.addEventListener('click', newTabHandler);
+	const containerLabel = document.createElement('div');
+	containerElement.append(containerLabel);
+	containerLabel.classList.add('container-label');
+	containerLabel.textContent = container.name;
+	containerLabel.addEventListener('click', newTabHandler);
 	const deleteContainerButton = document.createElement('button');
 	deleteContainerButton.classList.add('delete-container-button');
 	containerElement.append(deleteContainerButton);
@@ -120,7 +128,6 @@ const renderContainer = async (userContextId) => {
 		deleteContainerButton.disabled = true;
 	} else {
 		deleteContainerButton.addEventListener('click', async (ev) => {
-			ev.stopImmediatePropagation();
 			if (!await confirmAsync('Do you want to permanently delete this container: ' + container.name + '?')) return;
 			await containers.remove(userContextId);
 			await sleep(.5);
@@ -219,6 +226,12 @@ globalThis.showNewContainerPane = async () => {
 		return;
 	}
 	//
+	const name = nameElement.value;
+	const icon = iconElement.value;
+	const color = colorElement.value;
+	await containers.create(name, color, icon);
+	await sleep(.5);
+	await render();
 };
 
 document.querySelector('#button-new-container').addEventListener('click', ev => showNewContainerPane());

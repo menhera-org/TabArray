@@ -204,38 +204,41 @@ button {
 
 .container {
 	display: block grid;
-	grid-template-columns: 2em 2em 1fr 2em 2em 1em;
+	grid-template-columns: 2em 2em 1fr 2em 1em;
 }
 
-.container::before {
-	content: '';
+.container > .container-visibility-toggle {
 	background-size: 1.5em;
 	background-repeat: no-repeat;
 	background-position: center center;
+	inline-size: 100%;
+	block-size: 100%;
+	opacity: .5;
+	visibility: hidden;
 }
 
-.container-visible::before {
+.container > .container-visibility-toggle:hover, .container > .container-visibility-toggle:focus {
+	opacity: 1;
+}
+
+.container-visible > .container-visibility-toggle {
 	background-image: url(/img/expand_less_black_24dp.svg);
+	visibility: visible;
 }
 
-.container-hidden::before {
+.container-hidden > .container-visibility-toggle {
 	background-image: url(/img/expand_more_black_24dp.svg);
+	visibility: visible;
 }
 
 .container-icon {
 	inline-size: 75%;
+	block-size: 75%;
 	align-self: center;
 	justify-self: center;
 }
 
-.container-icon.img-error {
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-	background-image: url(/img/category_black_24dp.svg);
-}
-
 .container-label {
-	font-weight: bold;
 	padding-inline: .5em;
 	padding-block: .5em;
 	overflow: hidden;

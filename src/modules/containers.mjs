@@ -1,5 +1,33 @@
 // vim: ts=2 et ai
 
+const COLORS = [
+  "blue",
+  "turquoise",
+  "green",
+  "yellow",
+  "orange",
+  "red",
+  "pink",
+  "purple",
+  "toolbar",
+];
+
+const ICONS = [
+  "fingerprint",
+  "briefcase",
+  "dollar",
+  "cart",
+  "circle",
+  "gift",
+  "vacation",
+  "food",
+  "fruit",
+  "pet",
+  "tree",
+  "chill",
+  "fence",
+];
+
 export const toCookieStoreId = (aUserContextId) => {
   const userContextId = Math.max(0, 0 | aUserContextId);
   if (userContextId) {
@@ -98,4 +126,95 @@ export const remove = async (aUserContextId) => {
   }
 };
 
+export const create = async (aName, aColor, aIcon) => {
+  let name = String(aName).trim();
+  let color = String(aColor).toLowerCase();
+  if (!COLORS.includes(color)) {
+    color = COLORS[0];
+  }
+  let icon = String(aIcon).toLowerCase();
+  if (!ICONS.includes(icon)) {
+    icon = ICONS[0];
+  }
 
+  const isUnnamed = '' === name;
+  if (isUnnamed) {
+    name = 'Unnamed container';
+  }
+  const contextualIdentity = await browser.contextualIdentities.create({
+    name,
+    color,
+    icon,
+  });
+  const userContextId = toUserContextId(contextualIdentity.cookieStoreId);
+  console.log('userContext %d created', userContextId);
+  if (isUnnamed) {
+    await browser.contextualIdentities.update(contextualIdentity.cookieStoreId, {
+      name: 'Container ' + userContextId,
+    });
+  }
+};
+
+export const hide = async (aUserContextId, aWindowId) => {
+  if (!aWindowId) {
+    throw new TypeError('Unimplemented');
+  }
+  const cookieStoreId = toCookieStoreId(aUserContextId);
+  const userContextId = toUserContextId(cookieStoreId);
+  const tabs = await browser.tabs.query({
+    windowId: aWindowId,
+  });
+  const userContexts = new Map;
+  let active = false;
+  const tabsToHide = [];
+  for (const tab of tabs) {
+    if (tab.cookieStoreId != cookieStoreId) {
+      if (!tab.hidden) {
+        userContexts.set(toUserContextId(tab.cookieStoreId), tab.id);
+      }
+      continue;
+    }
+    if (tab.active) {
+      active = true;
+    }
+    if (!tab.hidden) {
+      tabsToHide.push(tab.id);
+    }
+  }
+  if (1 > tabsToHide.length) {
+    console.log('No tabs to hide on window %d for userContext %d', aWindowId, userContextId);
+    return;
+  }
+  if (active) {
+    let success = false;
+    for (const [otherUserContextId, tabId] of userContexts) {
+      await browser.tabs.update(tabId, {
+        active: true,
+      });
+      success = true;
+      break;
+    }
+    if (!success) {
+      throw new TypeError('Unimplemented');
+    }
+  }
+  await browser.tabs.hide(tabsToHide);
+};
+
+export const show = async (aUserContextId, aWindowId) => {
+  if (!aWindowId) {
+    throw new TypeError('Unimplemented');
+  }
+  const cookieStoreId = toCookieStoreId(aUserContextId);
+  const userContextId = toUserContextId(cookieStoreId);
+  const tabs = await browser.tabs.query({
+    windowId: aWindowId,
+    cookieStoreId,
+  });
+  if (1 > tabs.length) {
+    console.log('No tabs to show on window %d for userContext %d', aWindowId, userContextId);
+    return;
+  }
+  const tabIds = [... tabs].map((tab) => 0 | tab.id);
+  await browser.tabs.show(tabIds);
+};
