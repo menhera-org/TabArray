@@ -122,10 +122,16 @@ const renderContainer = async (userContextId) => {
 	const deleteContainerButton = document.createElement('button');
 	deleteContainerButton.classList.add('delete-container-button');
 	containerElement.append(deleteContainerButton);
-	deleteContainerButton.title = 'Permanently delete this container';
 	if (!userContextId) {
-		deleteContainerButton.disabled = true;
+		deleteContainerButton.title = 'Close all tabs in this container';
+		deleteContainerButton.addEventListener('click', async (ev) => {
+			if (!await confirmAsync('Do you want to close all tabs in this container: ' + container.name + '?')) return;
+			await containers.remove(userContextId);
+			await sleep(.5);
+			await render();
+		});
 	} else {
+		deleteContainerButton.title = 'Permanently delete this container';
 		deleteContainerButton.addEventListener('click', async (ev) => {
 			if (!await confirmAsync('Do you want to permanently delete this container: ' + container.name + '?')) return;
 			await containers.remove(userContextId);

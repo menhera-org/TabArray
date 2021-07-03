@@ -95,7 +95,7 @@ export const getIndex = async (aId) => {
   return userContextIds.indexOf(aId);
 };
 
-export const getTabIds = async (aUserContextId) => {
+export const getTabIds = async (aUserContextId, aExcludePinned) => {
   const cookieStoreId = toCookieStoreId(aUserContextId);
   const tabs = await browser.tabs.query({
     cookieStoreId,
@@ -103,11 +103,11 @@ export const getTabIds = async (aUserContextId) => {
   if (!tabs) {
     throw new TypeError('Failed to query tabs');
   }
-  return [... tabs].map((tab) => 0 | tab.id);
+  return [... tabs].filter((tab) => !aExcludePinned || !tab.pinned).map((tab) => 0 | tab.id);
 };
 
 export const closeAllTabs = async (aUserContextId) => {
-  const tabIds = await getTabIds(aUserContextId);
+  const tabIds = aUserContextId ? await getTabIds(aUserContextId) : await getTabIds(aUserContextId, true);
   console.log('Closing %d tab(s)', tabIds.length);
   if (tabIds.length) {
     await browser.tabs.remove(tabIds);
