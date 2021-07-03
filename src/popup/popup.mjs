@@ -13,6 +13,7 @@ const renderTab = async (tab) => {
 	tabElement.classList.add('tab');
 	const tabPinButton = document.createElement('button');
 	tabPinButton.classList.add('tab-pin-button');
+	tabPinButton.title = 'Pin or unpin this tab';
 	tabElement.append(tabPinButton);
 	tabPinButton.addEventListener('click', async (ev) => {
 		ev.stopImmediatePropagation();
@@ -67,21 +68,23 @@ const renderTab = async (tab) => {
 		window.close();
 	});
 
-	const container = await containers.get(tab.cookieStoreId);
+	const userContextId = containers.toUserContextId(tab.cookieStoreId);
+	const container = await containers.get(userContextId);
 	if (container) {
 		tabElement.style.borderColor = container.colorCode;
 	}
 	return tabElement;
 };
 
-const renderContainer = async (containerId) => {
-	const containerIds = await containers.getIds();
-	const container = containerId ? (await containers.get(containerId)) : {
-		name: 'No container',
-	};
+const renderContainer = async (userContextId) => {
+	const cookieStoreId = containers.toCookieStoreId(userContextId);
+	const container = await containers.get(userContextId);
 	const tabs = await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT});
 	const containerElement = document.createElement('li');
 	containerElement.classList.add('container');
+	if (!userContextId) {
+		containerElement.classList.add('container-default');
+	}
 	const containerIcon = document.createElement('img');
 	containerIcon.src = container.iconUrl || 'about:blank';
 	containerIcon.style.fill = container.colorCode; // FIXME
@@ -104,22 +107,33 @@ const renderContainer = async (containerId) => {
 		await browser.tabs.create({
 			active: true,
 			windowId: browser.windows.WINDOW_ID_CURRENT,
-			cookieStoreId: containerId,
+			cookieStoreId,
 		});
 		await sleep(.5);
 		await render();
 	});
+	const deleteContainerButton = document.createElement('button');
+	deleteContainerButton.classList.add('delete-container-button');
+	containerElement.append(deleteContainerButton);
+	deleteContainerButton.title = 'Permanently delete this container';
+	if (!userContextId) {
+		deleteContainerButton.disabled = true;
+	} else {
+		deleteContainerButton.addEventListener('click', async (ev) => {
+			ev.stopImmediatePropagation();
+			if (!await confirmAsync('Do you want to permanently delete this container: ' + container.name + '?')) return;
+			await containers.remove(userContextId);
+			await sleep(.5);
+			await render();
+		});
+	}
 	const tabListElement = document.createElement('ul');
 	tabListElement.classList.add('container-tabs');
 	containerElement.append(tabListElement);
 	let containerState = STATE_NO_TABS;
 	for (const tab of tabs) {
 		if (tab.pinned) continue;
-		if (containerId) {
-			if (tab.cookieStoreId != containerId) continue;
-		} else {
-			if (containerIds.includes(tab.cookieStoreId)) continue;
-		}
+		if (tab.cookieStoreId != cookieStoreId) continue;
 		
 		const tabElement = await renderTab(tab);
 		tabListElement.append(tabElement);
@@ -140,7 +154,7 @@ const renderContainer = async (containerId) => {
 	return containerElement;
 };
 
-const render = async () => {
+globalThis.render = async () => {
 	const menuListElement = document.querySelector('#menuList');
 	menuListElement.textContent = '';
 
@@ -155,12 +169,58 @@ const render = async () => {
 		menuListElement.append(tabElement);
 	}
 	
-	const containerIds = await containers.getIds();
-	for (const containerId of [null, ... containerIds]) {
-		const containerElement = await renderContainer(containerId);
+	const userContextIds = await containers.getIds();
+	for (const userContextId of [0, ... userContextIds]) {
+		const containerElement = await renderContainer(userContextId);
 		menuListElement.append(containerElement);
 	}
 
 };
+
+globalThis.confirmAsync = (msg) => {
+	const confirmMessageElement = document.querySelector('#confirm-message');
+	confirmMessageElement.textContent = msg ? String(msg) : '';
+	const cancelButton = document.querySelector('#confirm-cancel-button');
+	const okButton = document.querySelector('#confirm-ok-button');
+	location.hash = '#confirm';
+	return new Promise((res) => {
+		cancelButton.addEventListener('click', function cancel(ev) {
+			ev.target.removeEventListener('click', cancel);
+			location.hash = '';
+			res(false);
+		});
+		okButton.addEventListener('click', function ok(ev) {
+			ev.target.removeEventListener('click', ok);
+			location.hash = '';
+			res(true);
+		});
+	});
+};
+
+globalThis.showNewContainerPane = async () => {
+	const cancelButton = document.querySelector('#new-container-cancel-button');
+	const okButton = document.querySelector('#new-container-ok-button');
+	const nameElement = document.querySelector('#new-container-name');
+	const iconElement = document.querySelector('#new-container-icon');
+	const colorElement = document.querySelector('#new-container-color');
+	location.hash = '#new-container';
+	if (!await new Promise((res) => {
+		cancelButton.addEventListener('click', function cancel(ev) {
+			ev.target.removeEventListener('click', cancel);
+			location.hash = '';
+			res(false);
+		});
+		okButton.addEventListener('click', function ok(ev) {
+			ev.target.removeEventListener('click', ok);
+			location.hash = '';
+			res(true);
+		});
+	})) {
+		return;
+	}
+	//
+};
+
+document.querySelector('#button-new-container').addEventListener('click', ev => showNewContainerPane());
 
 render().catch(e => console.error(e));

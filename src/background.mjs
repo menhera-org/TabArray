@@ -27,14 +27,13 @@ globalThis.getWindowIds = async () => {
 
 globalThis.sortTabsByWindow = async (windowId) => {
   try {
-    const userContextIds = await containers.getIds();
     const tabs = await browser.tabs.query({windowId: windowId});
     const pinnedTabs = tabs.filter(tab => tab.pinned);
     const sortedTabs = tabs.filter(tab => !tab.pinned);
     sortedTabs.sort((tab1, tab2) => {
-      const tab1Index = userContextIds.indexOf(tab1.cookieStoreId);
-      const tab2Index = userContextIds.indexOf(tab2.cookieStoreId);
-      return tab1Index - tab2Index;
+      const userContextId1 = containers.toUserContextId(tab1.cookieStoreId);
+      const userContextId2 = containers.toUserContextId(tab2.cookieStoreId);
+      return userContextId1 - userContextId2;
     });
     const pinnedCount = pinnedTabs.length;
     for (let i = 0; i < sortedTabs.length; i++) {
@@ -87,6 +86,16 @@ browser.tabs.onUpdated.addListener(() => {
     'hidden',
     'pinned',
   ],
+});
+
+browser.contextualIdentities.onRemoved.addListener(({contextualIdentity}) => {
+  const userContextId = containers.toUserContextId(contextualIdentity.cookieStoreId);
+  console.log('userContext %d removed', userContextId);
+  containers.closeAllTabs(userContextId).then(() => {
+    console.log('Closed all tabs for userContext %d', userContextId);
+  }).catch(err => {
+    console.error('cleanup failed for userContext %d', userContextId);
+  });
 });
 
 sortTabs();

@@ -37,14 +37,31 @@ button {
 	text-align: start;
 }
 
-@media (prefers-color-scheme: dark) {
-	body {
-		color: #eee;
-		background-color: #121212;
-	}
-	a, button {
-		color: #809fff;
-	}
+.input-box {
+	display: block grid;
+	grid-template-columns: max-content 1fr;
+	border-block: solid .125rem #888;
+	margin-block: .5rem;
+	padding-inline: .5rem;
+}
+
+.input-box > label {
+	display: block;
+	inline-size: max-content;
+	box-sizing: border-box;
+	margin: 0;
+	padding: .5rem;
+	opacity: .5;
+}
+
+.input-box > .input-box-input {
+	background-color: transparent;
+	color: inherit;
+	border: none;
+	border-radius: 0;
+	margin: 0;
+	padding: .5rem;
+	outline: none;
 }
 
 #searchbox-container {
@@ -129,6 +146,7 @@ button {
 	display: block grid;
 	grid-template-columns: 2em 2em 1fr 2em;
 	margin-inline-start: calc(2em - 0.25em);
+	padding-inline-end: 1em;
 	border-inline-start: solid .25rem transparent;
 }
 
@@ -186,7 +204,7 @@ button {
 
 .container {
 	display: block grid;
-	grid-template-columns: 2em 2em 1fr 2em;
+	grid-template-columns: 2em 2em 1fr 2em 2em 1em;
 }
 
 .container::before {
@@ -234,29 +252,66 @@ button {
 	opacity: 1;
 }
 
+.container > .delete-container-button {
+	background-image: url(/img/delete_black_24dp.svg);
+	opacity: .25;
+}
+
+.container > .delete-container-button:disabled {
+	visibility: hidden;
+}
+
+.container > .delete-container-button:focus, .container > .delete-container-button:hover {
+	opacity: 1;
+}
+
 .container > .container-tabs {
 	grid-column: 1 / -1;
 }
 
-@media (prefers-color-scheme: dark) {
-	#menuList > li.checked {
-		background-image: url('/img/done-white-18dp.svg');
-	}
-
-	.tab:hover, button:hover {
-		background-color: rgba(255, 255, 255, .1);
-	}
-
-	#searchbox-container::before {
-		background-image: url(/img/search_white_24dp.svg);
-	}
-
-	#button-new-container::before {
-		background-image: url(/img/add_white_24dp.svg);
-	}
-
-	.container-icon.img-error {
-		background-image: url(/img/category_white_24dp.svg);
-	}
+body > .modal {
+	display: none;
+	background-color: #eee;
 }
 
+body > .modal:target {
+	display: block grid;
+	position: fixed;
+	top: 0;
+	left: 0;
+	inline-size: 100%;
+	block-size: 100%;
+	align-content: center;
+}
+
+.modal-content {
+	background-color: #fff;
+}
+
+.modal-title {
+	margin-block: 1rem;
+	margin-inline: 1rem;
+	padding: 0;
+}
+
+.modal-actions {
+	margin-block: 1em;
+	display: block grid;
+	grid-auto-columns: max-content;
+	grid-auto-flow: column;
+	justify-content: space-around;
+}
+
+.modal-actions > button {
+	inline-size: max-content;
+	border-radius: .25em;
+}
+
+.modal-actions > button.button-default {
+	background-color: #0033cc;
+	color: #fff;
+}
+
+#confirm-message {
+	margin: 1em;
+}
