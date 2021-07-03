@@ -99,7 +99,9 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   //console.log('active tab changed on window %d', windowId);
   const tab = await browser.tabs.get(tabId);
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
-  await containers.show(userContextId, windowId);
+  if (!tab.pinned) {
+    await containers.show(userContextId, windowId);
+  }
 });
 
 browser.contextualIdentities.onRemoved.addListener(({contextualIdentity}) => {
