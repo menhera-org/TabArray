@@ -72,7 +72,7 @@ browser.tabs.onCreated.addListener(() => {
 });
 
 browser.tabs.onMoved.addListener(() => {
-  sortTabs();
+  sortTabs(); // is this necessary?
 });
 
 browser.tabs.onRemoved.addListener(() => {
@@ -96,7 +96,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
-  console.log('active tab changed on window %d', windowId);
+  //console.log('active tab changed on window %d', windowId);
   const tab = await browser.tabs.get(tabId);
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
   await containers.show(userContextId, windowId);
