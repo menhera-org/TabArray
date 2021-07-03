@@ -104,8 +104,7 @@ const renderContainer = async (userContextId) => {
 			windowId: browser.windows.WINDOW_ID_CURRENT,
 			cookieStoreId,
 		});
-		await sleep(.5);
-		await render();
+		window.close();
 	};
 	const containerIcon = document.createElement('div');
 	const iconUrl = container.iconUrl || '/img/category_black_24dp.svg';
