@@ -48,7 +48,7 @@ browser.windows.onCreated.addListener((window) => {
 
 // global browser action badge theme
 browser.browserAction.setBadgeBackgroundColor({
-  color: 'rgba(127, 127, 127, .75)',
+  color: 'rgba(0, 0, 0, .75)',
 });
 browser.browserAction.setBadgeTextColor({
   color: 'rgba(255, 255, 255, .75)',
