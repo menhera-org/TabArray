@@ -67,7 +67,7 @@ globalThis.sortTabs = async () => {
   tabSorting = true;
   try {
     for (const windowId of await getWindowIds()) {
-      sortTabsByWindow(windowId);
+      await sortTabsByWindow(windowId);
     }
   } catch (e) {
     console.error(e);
@@ -76,23 +76,23 @@ globalThis.sortTabs = async () => {
   }
 };
 
-browser.tabs.onAttached.addListener(() => {
-  sortTabs();
+browser.tabs.onAttached.addListener(async () => {
+  await sortTabs();
   tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onCreated.addListener(() => {
-  sortTabs();
+browser.tabs.onCreated.addListener(async () => {
+  await sortTabs();
   tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onMoved.addListener(() => {
-  sortTabs();
+browser.tabs.onMoved.addListener(async () => {
+  await sortTabs();
   tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onUpdated.addListener(() => {
-  sortTabs();
+browser.tabs.onUpdated.addListener(async () => {
+  await sortTabs();
   tabChangeChannel.postMessage(true);
 }, {
   properties: [
@@ -129,3 +129,15 @@ browser.contextualIdentities.onRemoved.addListener(({contextualIdentity}) => {
 
 sortTabs();
 
+browser.menus.create({
+  id: 'tab-hide-container',
+  title: 'Hide this container',
+  contexts: ['tab'],
+});
+
+browser.menus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId == 'tab-hide-container') {
+    const userContextId = containers.toUserContextId(tab.cookieStoreId);
+    containers.hide(userContextId, tab.windowId).catch(e => console.error(e));
+  }
+});

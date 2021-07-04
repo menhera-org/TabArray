@@ -15,7 +15,8 @@
 		"tabHide",
 		"<all_urls>",
 		"cookies",
-		"contextualIdentities"
+		"contextualIdentities",
+		"menus"
 	],
 	"incognito": "not_allowed",
 	"background": {
