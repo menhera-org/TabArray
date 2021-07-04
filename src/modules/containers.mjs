@@ -69,7 +69,7 @@ export const getActiveIds = async () => {
 export const get = async (aUserContextId) => {
   const cookieStoreId = toCookieStoreId(aUserContextId);
   const userContextId = toUserContextId(cookieStoreId);
-  if (!aUserContextId) {
+  if (!userContextId) {
     return {
       cookieStoreId,
       name: 'No container',
@@ -153,6 +153,30 @@ export const create = async (aName, aColor, aIcon) => {
       name: 'Container ' + userContextId,
     });
   }
+};
+
+export const updateProperties = async (aUserContextId, aName, aColor, aIcon) => {
+  let name = String(aName).trim();
+  let color = String(aColor).toLowerCase();
+  if (!COLORS.includes(color)) {
+    color = COLORS[0];
+  }
+  let icon = String(aIcon).toLowerCase();
+  if (!ICONS.includes(icon)) {
+    icon = ICONS[0];
+  }
+
+  const cookieStoreId = toCookieStoreId(aUserContextId);
+  const userContextId = toUserContextId(cookieStoreId);
+  const isUnnamed = '' === name;
+  if (isUnnamed) {
+    name = 'Container ' + userContextId;
+  }
+  await browser.contextualIdentities.update(cookieStoreId, {
+    name,
+    color,
+    icon,
+  });
 };
 
 export const hide = async (aUserContextId, aWindowId) => {

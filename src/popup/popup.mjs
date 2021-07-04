@@ -119,10 +119,14 @@ const renderContainer = async (userContextId) => {
 	editContainerButton.classList.add('edit-container-button');
 	editContainerButton.title = 'Edit this container';
 	containerElement.append(editContainerButton);
+	editContainerButton.addEventListener('click', (ev) => {
+		showEditContainerPane(userContextId);
+	});
 	const deleteContainerButton = document.createElement('button');
 	deleteContainerButton.classList.add('delete-container-button');
 	containerElement.append(deleteContainerButton);
 	if (!userContextId) {
+		editContainerButton.disabled = true;
 		deleteContainerButton.title = 'Close all tabs in this container';
 		deleteContainerButton.addEventListener('click', async (ev) => {
 			if (!await confirmAsync('Do you want to close all tabs in this container: ' + container.name + '?')) return;
@@ -174,6 +178,11 @@ globalThis.render = async () => {
 	const currentWindow = await browser.windows.getCurrent();
 	const windowId = currentWindow.id;
 
+	const currentWindowLabel = document.createElement('li');
+	menuListElement.append(currentWindowLabel);
+	currentWindowLabel.classList.add('window-label');
+	currentWindowLabel.textContent = 'This window (#' + windowId + ')';
+
 	const tabs = await browser.tabs.query({windowId: windowId});
 
 	const openUserContextIdSet = new Set;
@@ -193,6 +202,12 @@ globalThis.render = async () => {
 		const containerElement = await renderContainer(userContextId);
 		menuListElement.append(containerElement);
 	}
+
+	const moreContainersLabel = document.createElement('li');
+	menuListElement.append(moreContainersLabel);
+	moreContainersLabel.classList.add('window-label');
+	moreContainersLabel.textContent = 'More containers for this window';
+
 	for (const userContextId of availableUserContextIds) {
 		const containerElement = await renderContainer(userContextId);
 		menuListElement.append(containerElement);
@@ -242,6 +257,9 @@ globalThis.showNewContainerPane = async () => {
 	const nameElement = document.querySelector('#new-container-name');
 	const iconElement = document.querySelector('#new-container-icon');
 	const colorElement = document.querySelector('#new-container-color');
+	let name = nameElement.value;
+	let icon = iconElement.value;
+	let color = colorElement.value;
 	location.hash = '#new-container';
 	if (!await new Promise((res) => {
 		const cancelHandler = (ev) => {
@@ -267,6 +285,10 @@ globalThis.showNewContainerPane = async () => {
 			cancelButton.removeEventListener('click', cancelHandler);
 			okButton.removeEventListener('click', okHandler);
 			document.removeEventListener('keydown', keyHandler);
+			name = nameElement.value;
+			icon = iconElement.value;
+			color = colorElement.value;
+			nameElement.value = '';
 		};
 		cancelButton.addEventListener('click', cancelHandler);
 		okButton.addEventListener('click', okHandler);
@@ -274,12 +296,60 @@ globalThis.showNewContainerPane = async () => {
 	})) {
 		return;
 	}
-	//
-	const name = nameElement.value;
-	const icon = iconElement.value;
-	const color = colorElement.value;
 	await containers.create(name, color, icon);
-	await sleep(.5);
+	await render();
+};
+
+globalThis.showEditContainerPane = async (userContextId) => {
+	const cancelButton = document.querySelector('#new-container-cancel-button');
+	const okButton = document.querySelector('#new-container-ok-button');
+	const nameElement = document.querySelector('#new-container-name');
+	const iconElement = document.querySelector('#new-container-icon');
+	const colorElement = document.querySelector('#new-container-color');
+	const contextualIdentity = await containers.get(userContextId);
+	nameElement.value = contextualIdentity.name;
+	iconElement.value = contextualIdentity.icon;
+	colorElement.value = contextualIdentity.color;
+	let name = nameElement.value;
+	let icon = iconElement.value;
+	let color = colorElement.value;
+	location.hash = '#new-container';
+	if (!await new Promise((res) => {
+		const cancelHandler = (ev) => {
+			cleanUp();
+			res(false);
+		};
+		const okHandler = (ev) => {
+			cleanUp();
+			res(true);
+		};
+		const keyHandler = (ev) => {
+			if (ev.key == 'Enter') {
+				ev.preventDefault();
+				okHandler();
+			}
+			if (ev.key == 'Escape') {
+				ev.preventDefault();
+				cancelHandler();
+			}
+		};
+		const cleanUp = () => {
+			location.hash = '';
+			cancelButton.removeEventListener('click', cancelHandler);
+			okButton.removeEventListener('click', okHandler);
+			document.removeEventListener('keydown', keyHandler);
+			name = nameElement.value;
+			icon = iconElement.value;
+			color = colorElement.value;
+			nameElement.value = '';
+		};
+		cancelButton.addEventListener('click', cancelHandler);
+		okButton.addEventListener('click', okHandler);
+		document.addEventListener('keydown', keyHandler, true);
+	})) {
+		return;
+	}
+	await containers.updateProperties(userContextId, name, color, icon);
 	await render();
 };
 

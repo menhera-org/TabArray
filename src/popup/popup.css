@@ -97,10 +97,6 @@ button {
 	inline-size: 2em;
 }
 
-#menuList:not(:first-child) {
-	border-block-start: solid .125rem #888;
-}
-
 #menuList, #menuList ul {
 	list-style: none;
 	margin: 0;
@@ -176,6 +172,16 @@ button {
 	background-image: url('/img/done-black-18dp.svg');
 }
 
+#menuList .window-label {
+	padding-inline: 2em;
+	padding-block: .5em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-weight: bold;
+	border-block-start: solid .125rem #888;
+}
+
 .container {
 	display: block grid;
 	grid-template-columns: 2em 2em 1fr 2em 2em 1em;
@@ -228,6 +234,10 @@ button {
 .container > .edit-container-button {
 	background-image: url(/img/edit_black_24dp.svg);
 	opacity: .25;
+}
+
+.container > .edit-container-button:disabled {
+	visibility: hidden;
 }
 
 .container > .edit-container-button:focus, .container > .edit-container-button:hover {

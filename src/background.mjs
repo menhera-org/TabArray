@@ -26,6 +26,34 @@ const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
 let tabSorting = false;
 
+const addBrowserActionBadge = (aWindowId) => {
+  const windowId = 0 | aWindowId;
+  browser.browserAction.setBadgeText({
+    windowId,
+    text: '#' + windowId,
+  });
+};
+
+browser.windows.getAll({
+  windowTypes: ['normal'],
+}).then((windows) => {
+  for (const window of windows) {
+    addBrowserActionBadge(window.id);
+  }
+});
+
+browser.windows.onCreated.addListener((window) => {
+  addBrowserActionBadge(window.id);
+});
+
+// global browser action badge theme
+browser.browserAction.setBadgeBackgroundColor({
+  color: 'rgba(127, 127, 127, .75)',
+});
+browser.browserAction.setBadgeTextColor({
+  color: 'rgba(255, 255, 255, .75)',
+});
+
 globalThis.getWindowIds = async () => {
   try {
     const windows = await browser.windows.getAll({
