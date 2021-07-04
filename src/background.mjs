@@ -2,6 +2,8 @@
 
 import * as containers from './modules/containers.mjs';
 
+import {WebExtensionsBroadcastChannel} from './modules/broadcasting.mjs';
+
 const PSL_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
 
 let PSL_DATA;
@@ -20,6 +22,7 @@ setInterval(() => {
   fetchPsl().catch(e => console.error(e));
 }, 86400000); // one day
 
+const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
 let tabSorting = false;
 
@@ -75,22 +78,22 @@ globalThis.sortTabs = async () => {
 
 browser.tabs.onAttached.addListener(() => {
   sortTabs();
+  tabChangeChannel.postMessage(true);
 });
 
 browser.tabs.onCreated.addListener(() => {
   sortTabs();
+  tabChangeChannel.postMessage(true);
 });
 
 browser.tabs.onMoved.addListener(() => {
-  sortTabs(); // is this necessary?
-});
-
-browser.tabs.onRemoved.addListener(() => {
   sortTabs();
+  tabChangeChannel.postMessage(true);
 });
 
 browser.tabs.onUpdated.addListener(() => {
   sortTabs();
+  tabChangeChannel.postMessage(true);
 }, {
   properties: [
     'pinned',

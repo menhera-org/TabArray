@@ -107,13 +107,9 @@ button {
 	padding: 0;
 }
 
-#menuList > li {
+#menuList li {
 	padding: 0;
 	margin: 0;
-	background-repeat: no-repeat;
-	background-size: 1.5em;
-	background-position: .5em center;
-	background-image: none;
 }
 
 .tab:hover, button:hover {
@@ -222,6 +218,11 @@ button {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.container-label[data-tab-count]::after {
+	content: ' (' attr(data-tab-count) ')';
+	opacity: .5;
 }
 
 .container > .edit-container-button {

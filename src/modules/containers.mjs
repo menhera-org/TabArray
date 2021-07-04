@@ -195,7 +195,8 @@ export const hide = async (aUserContextId, aWindowId) => {
       break;
     }
     if (!success) {
-      throw new TypeError('Unimplemented');
+      console.warn('Unable to hide this container %d because it is active and there is no other tab', userContextId);
+      return;
     }
   }
   await browser.tabs.hide(tabsToHide);

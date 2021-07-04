@@ -1,6 +1,6 @@
 {
 	"manifest_version": 2,
-	"name": "Tab Array",
+	"name": "Container Tab Groups",
 	"version": "1.0",
 	"browser_specific_settings": {
   	"gecko": {
@@ -9,7 +9,7 @@
 	},
 	"author": "Menhera.org",
 	"homepage_url": "https://github.com/menhera-org/TabArray",
-	"description": "The ultimate tab manager and groups for Firefox",
+	"description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
 	"permissions": [
 		"tabs",
 		"tabHide",

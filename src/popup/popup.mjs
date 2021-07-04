@@ -1,7 +1,9 @@
 // vim: ts=4 noet ai
 
 import * as containers from '../modules/containers.mjs';
+import { toUserContextId } from '../modules/containers.mjs';
 import {sleep} from '../modules/utils.mjs';
+import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
 
 const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
@@ -21,14 +23,10 @@ const renderTab = async (tab) => {
 			await browser.tabs.update(tab.id, {
 				pinned: false,
 			});
-			await sleep(.5);
-			await render();
 		} else {
 			await browser.tabs.update(tab.id, {
 				pinned: true,
 			});
-			await sleep(.5);
-			await render();
 		}
 	});
 	const tabIconElement = document.createElement('img');
@@ -50,7 +48,6 @@ const renderTab = async (tab) => {
 	tabCloseButton.addEventListener('click', async (ev) => {
 		ev.stopImmediatePropagation();
 		await browser.tabs.remove(tab.id);
-		await sleep(.5);
 		await render();
 	});
 	if (tab.pinned) {
@@ -130,7 +127,6 @@ const renderContainer = async (userContextId) => {
 		deleteContainerButton.addEventListener('click', async (ev) => {
 			if (!await confirmAsync('Do you want to close all tabs in this container: ' + container.name + '?')) return;
 			await containers.remove(userContextId);
-			await sleep(.5);
 			await render();
 		});
 	} else {
@@ -138,7 +134,6 @@ const renderContainer = async (userContextId) => {
 		deleteContainerButton.addEventListener('click', async (ev) => {
 			if (!await confirmAsync('Do you want to permanently delete this container: ' + container.name + '?')) return;
 			await containers.remove(userContextId);
-			await sleep(.5);
 			await render();
 		});
 	}
@@ -146,10 +141,11 @@ const renderContainer = async (userContextId) => {
 	tabListElement.classList.add('container-tabs');
 	containerElement.append(tabListElement);
 	let containerState = STATE_NO_TABS;
+	let tabCount = 0;
 	for (const tab of tabs) {
 		if (tab.pinned) continue;
 		if (tab.cookieStoreId != cookieStoreId) continue;
-		
+		tabCount++;
 		if (tab.hidden) {
 			containerState = STATE_HIDDEN_TABS;
 		} else {
@@ -158,6 +154,8 @@ const renderContainer = async (userContextId) => {
 			tabListElement.append(tabElement);
 		}
 	}
+	containerLabel.dataset.tabCount = tabCount;
+	containerElement.title = 'Container #' + userContextId;
 	switch (containerState) {
 		case STATE_HIDDEN_TABS:
 			containerElement.classList.add('container-hidden');
@@ -178,18 +176,27 @@ globalThis.render = async () => {
 
 	const tabs = await browser.tabs.query({windowId: windowId});
 
+	const openUserContextIdSet = new Set;
 	for (const tab of tabs) {
-		if (!tab.pinned) continue;
+		if (!tab.pinned) {
+			openUserContextIdSet.add(toUserContextId(tab.cookieStoreId));
+			continue;
+		}
 		const tabElement = await renderTab(tab);
 		menuListElement.append(tabElement);
 	}
 	
-	const userContextIds = await containers.getIds();
-	for (const userContextId of [0, ... userContextIds]) {
+	const userContextIds = [0, ... await containers.getIds()];
+	const openUserContextIds = userContextIds.filter(userContextId => openUserContextIdSet.has(userContextId));
+	const availableUserContextIds = userContextIds.filter(userContextId => !openUserContextIdSet.has(userContextId));
+	for (const userContextId of openUserContextIds) {
 		const containerElement = await renderContainer(userContextId);
 		menuListElement.append(containerElement);
 	}
-
+	for (const userContextId of availableUserContextIds) {
+		const containerElement = await renderContainer(userContextId);
+		menuListElement.append(containerElement);
+	}
 };
 
 globalThis.confirmAsync = (msg) => {
@@ -276,7 +283,9 @@ globalThis.showNewContainerPane = async () => {
 	await render();
 };
 
-document.querySelector('#button-new-container').addEventListener('click', ev => showNewContainerPane());
+document.querySelector('#button-new-container').addEventListener('click', ev => {
+	showNewContainerPane().catch(e => console.error(e));
+});
 
 document.querySelector('#button-hide-inactive').addEventListener('click', async (ev) => {
 	await containers.hideAll(browser.windows.WINDOW_ID_CURRENT);
@@ -285,12 +294,16 @@ document.querySelector('#button-hide-inactive').addEventListener('click', async 
 
 render().catch(e => console.error(e));
 
-browser.runtime.getBackgroundPage().then(background => {
-	if (!background || !background.console) return;
-	globalThis.console = background.console;
-	console.log('innerWidth: %d, innerHeight: %d', window.innerWidth, window.innerHeight);
-	console.log('outerWidth: %d, outerHeight: %d', window.outerWidth, window.outerHeight);
-	//console.log('scrollWidth: %d, scrollHeight: %d', screen.scr);
-	console.log('clientWidth: %d, clientHeight: %d', document.documentElement.clientWidth, document.documentElement.clientHeight);
-	console.log('400px', window.matchMedia('(min-height: 500px)'));
+const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
+tabChangeChannel.addEventListener('message', ev => {
+	render().catch(e => console.error(e));
 });
+
+// log to the background page when possible
+browser.runtime.getBackgroundPage().then(background => {
+	if (!background || !background.console) {
+		console.error('Failed to fetch the Window object of the background page');
+		return;
+	}
+	globalThis.console = background.console;
+}).catch(e => console.error(e));
