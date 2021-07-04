@@ -34,26 +34,6 @@ const addBrowserActionBadge = (aWindowId) => {
   });
 };
 
-browser.windows.getAll({
-  windowTypes: ['normal'],
-}).then((windows) => {
-  for (const window of windows) {
-    addBrowserActionBadge(window.id);
-  }
-});
-
-browser.windows.onCreated.addListener((window) => {
-  addBrowserActionBadge(window.id);
-});
-
-// global browser action badge theme
-browser.browserAction.setBadgeBackgroundColor({
-  color: 'rgba(0, 0, 0, .75)',
-});
-browser.browserAction.setBadgeTextColor({
-  color: 'rgba(255, 255, 255, .75)',
-});
-
 globalThis.getWindowIds = async () => {
   try {
     const windows = await browser.windows.getAll({
