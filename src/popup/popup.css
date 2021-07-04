@@ -4,12 +4,12 @@ body {
 	color: #222;
 	background-color: #fff;
 	width: 320px;
-	height: 500px;
+	height: 333px;
 	overflow-block: auto;
 	overflow-inline: hidden;
 	margin: 0;
 	display: grid;
-	grid-template-rows: max-content 1fr max-content;
+	grid-template-rows: 1fr max-content;
 }
 
 a, button {
@@ -64,38 +64,12 @@ button {
 	outline: none;
 }
 
-#searchbox-container {
-	border-block-end: solid .125rem #888;
-	display: block grid;
-	grid-template-columns: max-content 1fr;
-}
-
-#searchbox-container::before {
-	background-image: url(/img/search_black_24dp.svg);
-	content: '';
-	background-repeat: no-repeat;
-	background-size: 1.5em;
-	background-position: center center;
-	block-size: 2em;
-	inline-size: 2em;
-}
-
-#searchbox-input {
-	appearance: none;
-	background-color: transparent;
-	border: none;
-	color: inherit;
-	padding-block: .5em;
-	padding-inline: .25em;
-	outline: none;
-}
-
 #main {
 	overflow: auto;
 }
 
 #bottombox {
-	border-block-start: solid .125rem #888;
+	box-shadow: 0 0 .5rem #888;
 }
 
 #button-new-container, #button-hide-inactive {
@@ -121,6 +95,10 @@ button {
 	background-position: center center;
 	block-size: 1em;
 	inline-size: 2em;
+}
+
+#menuList:not(:first-child) {
+	border-block-start: solid .125rem #888;
 }
 
 #menuList, #menuList ul {

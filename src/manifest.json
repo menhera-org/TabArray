@@ -17,6 +17,7 @@
 		"cookies",
 		"contextualIdentities"
 	],
+	"incognito": "not_allowed",
 	"background": {
 		"page": "background.html"
 	},

@@ -284,3 +284,13 @@ document.querySelector('#button-hide-inactive').addEventListener('click', async 
 });
 
 render().catch(e => console.error(e));
+
+browser.runtime.getBackgroundPage().then(background => {
+	if (!background || !background.console) return;
+	globalThis.console = background.console;
+	console.log('innerWidth: %d, innerHeight: %d', window.innerWidth, window.innerHeight);
+	console.log('outerWidth: %d, outerHeight: %d', window.outerWidth, window.outerHeight);
+	//console.log('scrollWidth: %d, scrollHeight: %d', screen.scr);
+	console.log('clientWidth: %d, clientHeight: %d', document.documentElement.clientWidth, document.documentElement.clientHeight);
+	console.log('400px', window.matchMedia('(min-height: 500px)'));
+});

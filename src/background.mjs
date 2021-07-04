@@ -4,11 +4,21 @@ import * as containers from './modules/containers.mjs';
 
 const PSL_URL = 'https://publicsuffix.org/list/public_suffix_list.dat';
 
-fetch(PSL_URL).then(async res => {
-	const data = await res.text();
-	const lines = data.split('\n').map(line => line.trim()).filter(line => line != '' && !line.match(/^\/\//)).map(line => line.split(/\s/)[0]);
+let PSL_DATA;
+
+const fetchPsl = async () => {
+  const res = await fetch(PSL_URL);
+  const data = await res.text();
+  const lines = data.split('\n').map(line => line.trim()).filter(line => line != '' && !line.match(/^\/\//)).map(line => line.split(/\s/)[0]);
   console.log('PSL:', lines);
-});
+  PSL_DATA = lines;
+};
+
+fetchPsl().catch(e => console.error(e));
+
+setInterval(() => {
+  fetchPsl().catch(e => console.error(e));
+}, 86400000); // one day
 
 
 let tabSorting = false;
