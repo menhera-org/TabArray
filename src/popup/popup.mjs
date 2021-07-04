@@ -10,6 +10,7 @@ const STATE_HIDDEN_TABS = 1;
 const STATE_VISIBLE_TABS = 2;
 
 const renderTab = async (tab) => {
+	const windowId = (await browser.windows.getCurrent()).id;
 	const tabElement = document.createElement('li');
 	tabElement.title = tab.url;
 	tabElement.classList.add('tab');
@@ -62,6 +63,11 @@ const renderTab = async (tab) => {
 		await browser.tabs.update(tab.id, {
 			active: true,
 		});
+		if (windowId != tab.windowId) {
+			await browser.windows.update(tab.windowId, {
+				focused: true,
+			});
+		}
 		window.close();
 	});
 
@@ -211,6 +217,33 @@ globalThis.render = async () => {
 	for (const userContextId of availableUserContextIds) {
 		const containerElement = await renderContainer(userContextId);
 		menuListElement.append(containerElement);
+	}
+
+	const windows = await browser.windows.getAll({
+		windowTypes: ['normal'],
+	});
+	for (const window of windows) {
+		if (window.id == windowId) continue;
+		const windowLabel = document.createElement('li');
+		menuListElement.append(windowLabel);
+		windowLabel.classList.add('window-label');
+		windowLabel.textContent = 'Window #' + window.id;
+		windowLabel.title = 'Switch to window #' + window.id;
+		const targetWindowId = window.id;
+		windowLabel.addEventListener('click', (ev) => {
+			browser.windows.update(targetWindowId, {
+				focused: true,
+			}).catch(e => console.error(e));
+		});
+		const tabs = await browser.tabs.query({
+			windowId: window.id,
+		});
+		windowLabel.dataset.tabCount = tabs.length;
+		for (const tab of tabs) {
+			if (!tab.active) continue;
+			const tabElement = await renderTab(tab);
+			menuListElement.append(tabElement);
+		}
 	}
 };
 

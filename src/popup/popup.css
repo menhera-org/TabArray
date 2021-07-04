@@ -182,6 +182,11 @@ button {
 	border-block-start: solid .125rem #888;
 }
 
+.window-label[data-tab-count]::after {
+	content: ' (' attr(data-tab-count) ')';
+	opacity: .5;
+}
+
 .container {
 	display: block grid;
 	grid-template-columns: 2em 2em 1fr 2em 2em 1em;
