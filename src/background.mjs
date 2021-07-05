@@ -9,14 +9,6 @@ const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
 let tabSorting = false;
 
-const addBrowserActionBadge = (aWindowId) => {
-  const windowId = 0 | aWindowId;
-  browser.browserAction.setBadgeText({
-    windowId,
-    text: '#' + windowId,
-  });
-};
-
 globalThis.getWindowIds = async () => {
   try {
     const windows = await browser.windows.getAll({
