@@ -185,6 +185,11 @@ button {
 	white-space: nowrap;
 	font-weight: bold;
 	border-block-start: solid .125rem #888;
+	position: sticky;
+	inset-block-start: 0;
+	background-color: #fff;
+	z-index: 2;
+	box-shadow: 0 0 .5em #fff;
 }
 
 .window-label[data-tab-count]::after {
