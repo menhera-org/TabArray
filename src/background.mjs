@@ -85,6 +85,7 @@ browser.tabs.onUpdated.addListener(async () => {
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   //console.log('tab %d hidden on window %d', tabId, tab.windowId);
+  tabChangeChannel.postMessage(true);
 }, {
   properties: [
     'hidden',
