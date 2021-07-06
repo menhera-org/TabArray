@@ -138,5 +138,9 @@
     "noContainer": {
         "message": "No Container",
         "description": "Virtual container name for tabs with no container."
+    },
+    "browserActionTitle": {
+        "message": "Tabs and Groups",
+        "description": "Title of browserAction about tabs and container-based groups."
     }
 }
