@@ -3,13 +3,14 @@ body {
 	font-family: system-ui, sans-serif;
 	color: #222;
 	background-color: #fff;
-	width: 320px;
+	width: 400px;
 	height: 333px;
 	overflow-block: auto;
 	overflow-inline: hidden;
 	margin: 0;
 	display: grid;
 	grid-template-rows: 1fr max-content;
+	position: relative;
 }
 
 a, button {
@@ -51,7 +52,7 @@ button {
 	box-sizing: border-box;
 	margin: 0;
 	padding: .5rem;
-	opacity: .5;
+	opacity: .75;
 }
 
 .input-box > .input-box-input {
@@ -193,7 +194,7 @@ button {
 
 .container {
 	display: block grid;
-	grid-template-columns: 2em 2em 1fr 2em 2em 1em;
+	grid-template-columns: 2em 2em 1fr 2em 2em 2em 1em;
 }
 
 .container > .container-visibility-toggle {
@@ -251,6 +252,11 @@ button {
 
 .container > .edit-container-button:focus, .container > .edit-container-button:hover {
 	opacity: 1;
+}
+
+.container > .close-container-button {
+	background-image: url(/img/close_black_24dp.svg);
+	opacity: .25;
 }
 
 .container > .delete-container-button {

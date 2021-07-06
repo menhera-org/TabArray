@@ -4,10 +4,22 @@ import * as containers from '../modules/containers.mjs';
 import { toUserContextId } from '../modules/containers.mjs';
 import {sleep} from '../modules/utils.mjs';
 import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
+import '/components/usercontext-colorpicker.mjs';
+import '/components/usercontext-iconpicker.mjs';
 
 const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
 const STATE_VISIBLE_TABS = 2;
+
+document.title = browser.i18n.getMessage('browserActionPopupTitle');
+document.querySelector('#button-hide-inactive').textContent = browser.i18n.getMessage('buttonHideInactiveContainers');
+document.querySelector('#button-new-container').textContent = browser.i18n.getMessage('buttonNewContainer');
+document.querySelector('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
+document.querySelector('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
+document.querySelector('#new-container-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
+document.querySelector('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
+document.querySelector('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
+document.querySelector('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
 
 const renderTab = async (tab) => {
 	const windowId = (await browser.windows.getCurrent()).id;
@@ -16,7 +28,11 @@ const renderTab = async (tab) => {
 	tabElement.classList.add('tab');
 	const tabPinButton = document.createElement('button');
 	tabPinButton.classList.add('tab-pin-button');
-	tabPinButton.title = 'Pin or unpin this tab';
+	if (tab.pinned) {
+		tabPinButton.title = browser.i18n.getMessage('tooltipTabUnpinButton');
+	} else {
+		tabPinButton.title = browser.i18n.getMessage('tooltipTabPinButton');
+	}
 	tabElement.append(tabPinButton);
 	tabPinButton.addEventListener('click', async (ev) => {
 		ev.stopImmediatePropagation();
@@ -95,7 +111,6 @@ const renderContainer = async (userContextId) => {
 	const visibilityToggleButton = document.createElement('button');
 	visibilityToggleButton.classList.add('container-visibility-toggle');
 	containerElement.append(visibilityToggleButton);
-	visibilityToggleButton.title = 'Toggle visibility of the container';
 	visibilityToggleButton.addEventListener('click', async (ev) => {
 		if (containerElement.classList.contains('container-hidden')) {
 			await containers.show(userContextId, windowId);
@@ -126,26 +141,28 @@ const renderContainer = async (userContextId) => {
 	containerLabel.addEventListener('click', newTabHandler);
 	const editContainerButton = document.createElement('button');
 	editContainerButton.classList.add('edit-container-button');
-	editContainerButton.title = 'Edit this container';
+	editContainerButton.title = browser.i18n.getMessage('tooltipEditContainerButton');
 	containerElement.append(editContainerButton);
 	editContainerButton.addEventListener('click', (ev) => {
 		showEditContainerPane(userContextId);
 	});
-	const deleteContainerButton = document.createElement('button');
-	deleteContainerButton.classList.add('delete-container-button');
-	containerElement.append(deleteContainerButton);
+	const closeContainerButton = document.createElement('button');
+	containerElement.append(closeContainerButton);
+	closeContainerButton.classList.add('close-container-button');
+	closeContainerButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
+	closeContainerButton.addEventListener('click', async (ev) => {
+		await containers.closeAllTabs(userContextId);
+		await render();
+	});
 	if (!userContextId) {
 		editContainerButton.disabled = true;
-		deleteContainerButton.title = 'Close all tabs in this container';
-		deleteContainerButton.addEventListener('click', async (ev) => {
-			if (!await confirmAsync('Do you want to close all tabs in this container: ' + container.name + '?')) return;
-			await containers.remove(userContextId);
-			await render();
-		});
 	} else {
-		deleteContainerButton.title = 'Permanently delete this container';
+		const deleteContainerButton = document.createElement('button');
+		containerElement.append(deleteContainerButton);
+		deleteContainerButton.title = browser.i18n.getMessage('tooltipContainerDelete');
+		deleteContainerButton.classList.add('delete-container-button');
 		deleteContainerButton.addEventListener('click', async (ev) => {
-			if (!await confirmAsync('Do you want to permanently delete this container: ' + container.name + '?')) return;
+			if (!await confirmAsync(browser.i18n.getMessage('confirmContainerDelete', container.name))) return;
 			await containers.remove(userContextId);
 			await render();
 		});
@@ -168,14 +185,17 @@ const renderContainer = async (userContextId) => {
 		}
 	}
 	containerLabel.dataset.tabCount = tabCount;
-	containerElement.title = 'Container #' + userContextId;
+	containerElement.title = browser.i18n.getMessage('defaultContainerName', userContextId);
 	switch (containerState) {
 		case STATE_HIDDEN_TABS:
 			containerElement.classList.add('container-hidden');
+			visibilityToggleButton.title = browser.i18n.getMessage('tooltipUnhideContainerButton');
 			break;
 
 		case STATE_VISIBLE_TABS:
 			containerElement.classList.add('container-visible');
+			visibilityToggleButton.title = browser.i18n.getMessage('tooltipHideContainerButton');
+			break;
 	}
 	return containerElement;
 };
@@ -190,9 +210,11 @@ globalThis.render = async () => {
 	const currentWindowLabel = document.createElement('li');
 	menuListElement.append(currentWindowLabel);
 	currentWindowLabel.classList.add('window-label');
-	currentWindowLabel.textContent = 'This window (#' + windowId + ')';
+	currentWindowLabel.textContent = browser.i18n.getMessage('currentWindow', windowId);
 
 	const tabs = await browser.tabs.query({windowId: windowId});
+	const windowTabCount = tabs.length;
+	currentWindowLabel.dataset.tabCount = windowTabCount;
 
 	const openUserContextIdSet = new Set;
 	for (const tab of tabs) {
@@ -215,7 +237,7 @@ globalThis.render = async () => {
 	const moreContainersLabel = document.createElement('li');
 	menuListElement.append(moreContainersLabel);
 	moreContainersLabel.classList.add('window-label');
-	moreContainersLabel.textContent = 'More containers for this window';
+	moreContainersLabel.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
 
 	for (const userContextId of availableUserContextIds) {
 		const containerElement = await renderContainer(userContextId);
@@ -230,8 +252,8 @@ globalThis.render = async () => {
 		const windowLabel = document.createElement('li');
 		menuListElement.append(windowLabel);
 		windowLabel.classList.add('window-label');
-		windowLabel.textContent = 'Window #' + window.id;
-		windowLabel.title = 'Switch to window #' + window.id;
+		windowLabel.textContent = browser.i18n.getMessage('windowLabel', window.id);
+		windowLabel.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
 		const targetWindowId = window.id;
 		windowLabel.addEventListener('click', (ev) => {
 			browser.windows.update(targetWindowId, {
@@ -296,6 +318,7 @@ globalThis.showNewContainerPane = async () => {
 	let name = nameElement.value;
 	let icon = iconElement.value;
 	let color = colorElement.value;
+	document.querySelector('#new-container .modal-title').textContent = browser.i18n.getMessage('newContainerDialogTitle');
 	location.hash = '#new-container';
 	if (!await new Promise((res) => {
 		const cancelHandler = (ev) => {
@@ -346,6 +369,7 @@ globalThis.showEditContainerPane = async (userContextId) => {
 	nameElement.value = contextualIdentity.name;
 	iconElement.value = contextualIdentity.icon;
 	colorElement.value = contextualIdentity.color;
+	document.querySelector('#new-container .modal-title').textContent = browser.i18n.getMessage('editContainerDialogTitle');
 	let name = nameElement.value;
 	let icon = iconElement.value;
 	let color = colorElement.value;

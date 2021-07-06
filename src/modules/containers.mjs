@@ -72,7 +72,7 @@ export const get = async (aUserContextId) => {
   if (!userContextId) {
     return {
       cookieStoreId,
-      name: 'No container',
+      name: browser.i18n.getMessage('noContainer'),
     };
   }
   try {
@@ -85,7 +85,7 @@ export const get = async (aUserContextId) => {
     // userContext disabled or nonexsistent id
     return {
       cookieStoreId,
-      name: 'Unavailable container ' + userContextId,
+      name: browser.i18n.getMessage('invalidContainerName', userContextId),
     };
   }
 };
@@ -139,7 +139,7 @@ export const create = async (aName, aColor, aIcon) => {
 
   const isUnnamed = '' === name;
   if (isUnnamed) {
-    name = 'Unnamed container';
+    name = '_unnamed_container_';
   }
   const contextualIdentity = await browser.contextualIdentities.create({
     name,
@@ -150,7 +150,7 @@ export const create = async (aName, aColor, aIcon) => {
   console.log('userContext %d created', userContextId);
   if (isUnnamed) {
     await browser.contextualIdentities.update(contextualIdentity.cookieStoreId, {
-      name: 'Container ' + userContextId,
+      name: browser.i18n.getMessage('defaultContainerName', userContextId),
     });
   }
 };
@@ -170,7 +170,7 @@ export const updateProperties = async (aUserContextId, aName, aColor, aIcon) => 
   const userContextId = toUserContextId(cookieStoreId);
   const isUnnamed = '' === name;
   if (isUnnamed) {
-    name = 'Container ' + userContextId;
+    name = browser.i18n.getMessage('defaultContainerName', userContextId);
   }
   await browser.contextualIdentities.update(cookieStoreId, {
     name,

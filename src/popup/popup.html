@@ -2,69 +2,39 @@
 <html lang='en'>
 	<head>
 		<meta charset='utf-8'/>
-		<title>Tab Array: Popup page</title>
+		<title>browserActionPopupTitle</title>
 		<link rel='stylesheet' href='popup.css'/>
 		<script type='module' src='popup.mjs'></script>
 	</head>
 	<body>
 		<div id='main'>
-			<button id='button-hide-inactive'>Collapse containers on this window</button>
+			<button id='button-hide-inactive'>buttonHideInactiveContainers</button>
 			<ul id='menuList'></ul>
 		</div>
 		<div id='bottombox'>
-			<button id='button-new-container'>Create a new container…</button>
+			<button id='button-new-container'>buttonNewContainer</button>
 		</div>
 		<div id='confirm' class='modal'>
 			<div class='modal-content'>
-				<p id='confirm-message'>Do you want to proceed?</p>
+				<p id='confirm-message'></p>
 				<div class='modal-actions'>
-					<button id='confirm-cancel-button'>Cancel</button>
-					<button id='confirm-ok-button' class='button-default'>OK</button>
+					<button id='confirm-cancel-button'>buttonCancel</button>
+					<button id='confirm-ok-button' class='button-default'>buttonOk</button>
 				</div>
 			</div>
 		</div>
 		<div id='new-container' class='modal'>
 			<div class='modal-content'>
-				<h2 class='modal-title'>Editing a container</h2>
+				<h2 class='modal-title'></h2>
 				<div class='input-box'>
-					<label for='new-container-name'>Name</label>
-					<input class='input-box-input' type='text' name='name' id='new-container-name'/>
+					<label for='new-container-name'>newContainerNameLabel</label>
+					<input class='input-box-input' type='text' name='name' id='new-container-name' placeholder='newContainerNamePlaceholder'/>
 				</div>
-				<div class='input-box'>
-					<label for='new-container-icon'>Icon</label>
-					<select id='new-container-icon' class='input-box-input'>
-						<option value='fingerprint'>fingerprint</option>
-						<option value='briefcase'>briefcase</option>
-						<option value='dollar'>dollar</option>
-						<option value='cart'>cart</option>
-						<option value='circle'>circle</option>
-						<option value='gift'>gift</option>
-						<option value='vacation'>vacation</option>
-						<option value='food'>food</option>
-						<option value='fruit'>fruit</option>
-						<option value='pet'>pet</option>
-						<option value='tree'>tree</option>
-						<option value='chill'>chill</option>
-						<option value='fence'>fence</option>
-					</select>
-				</div>
-				<div class='input-box'>
-					<label for='new-container-color'>Color</label>
-					<select id='new-container-color' class='input-box-input'>
-						<option value='blue'>blue</option>
-						<option value='turquoise'>turquoise</option>
-						<option value='green'>green</option>
-						<option value='yellow'>yellow</option>
-						<option value='orange'>orange</option>
-						<option value='red'>red</option>
-						<option value='pink'>pink</option>
-						<option value='purple'>purple</option>
-						<option value='toolbar'>toolbar</option>
-					</select>
-				</div>
+				<usercontext-iconpicker id='new-container-icon'></usercontext-iconpicker>
+				<usercontext-colorpicker id='new-container-color'></usercontext-colorpicker>
 				<div class='modal-actions'>
-					<button id='new-container-cancel-button'>Cancel</button>
-					<button id='new-container-ok-button' class='button-default'>OK</button>
+					<button id='new-container-cancel-button'>buttonCancel</button>
+					<button id='new-container-ok-button' class='button-default'>buttonOk</button>
 				</div>
 			</div>
 		</div>

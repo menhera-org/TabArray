@@ -7,9 +7,10 @@
 			"id": "tab-array@menhera.org"
 		}
 	},
+	"default_locale": "en",
 	"author": "Menhera.org",
 	"homepage_url": "https://github.com/menhera-org/TabArray",
-	"description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
+	"description": "__MSG_extensionDescription__",
 	"permissions": [
 		"tabs",
 		"tabHide",

@@ -114,7 +114,7 @@ sortTabs();
 
 browser.menus.create({
   id: 'tab-hide-container',
-  title: 'Hide this container',
+  title: browser.i18n.getMessage('contextMenuHideSelectedContainer'),
   contexts: ['tab'],
 });
 

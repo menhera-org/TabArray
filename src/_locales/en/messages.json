@@ -1,0 +1,142 @@
+{
+    "extensionDescription": {
+        "message": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
+        "description": "Description of the extension."
+    },
+    "browserActionPopupTitle": {
+        "message": "Tab Array: Popup page",
+        "description": "Title of the popup page for browserAction."
+    },
+    "buttonHideInactiveContainers": {
+        "message": "Collapse containers on this window",
+        "description": "Button label to hide inactive containers on a window."
+    },
+    "buttonNewContainer": {
+        "message": "Create a new container…",
+        "description": "Button label to create a new container."
+    },
+    "buttonCancel": {
+        "message": "Cancel",
+        "description": "Button label to cancel an action."
+    },
+    "buttonOk": {
+        "message": "OK",
+        "description": "Button label to confirm an action."
+    },
+    "newContainerNameLabel": {
+        "message": "Name",
+        "description": "Label for inputting the name of a new container."
+    },
+    "newContainerNamePlaceholder": {
+        "message": "Name of the container",
+        "description": "Placeholder for the input field of the name of a new container."
+    },
+    "newContainerDialogTitle": {
+        "message": "Create a new container",
+        "description": "Title of the dialog prompting for creating a new container."
+    },
+    "editContainerDialogTitle": {
+        "message": "Edit a container",
+        "description": "Title of the dialog prompting for editting a container."
+    },
+    "contextMenuHideSelectedContainer": {
+        "message": "Hide This Container",
+        "description": "Context menu item text for hiding the container of the selected tab."
+    },
+    "tooltipTabPinButton": {
+        "message": "Pin this tab",
+        "description": "Tooltip for the button to pin a tab."
+    },
+    "tooltipTabUnpinButton": {
+        "message": "Unpin this tab",
+        "description": "Tooltip for the button to unpin a tab."
+    },
+    "tooltipHideContainerButton": {
+        "message": "Hide the tabs of this container",
+        "description": "Tooltip for the button to hide the tabs of a container."
+    },
+    "tooltipUnhideContainerButton": {
+        "message": "Show the tabs of this container",
+        "description": "Tooltip for the button to unhide the tabs of a container."
+    },
+    "tooltipEditContainerButton": {
+        "message": "Edit this container",
+        "description": "Tooltip for the button to edit a container."
+    },
+    "currentWindow": {
+        "message": "This window (#$ID$)",
+        "description": "Title of popup section for the current window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "2"
+            }
+        }
+    },
+    "currentWindowMoreContainers": {
+        "message": "More containers for this window",
+        "desciption": "Title for section listing unused containers for a window."
+    },
+    "windowLabel": {
+        "message": "Window #$ID$",
+        "description": "Label for a window with ID.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "tooltipWindowLabel": {
+        "message": "Switch to window #$ID$",
+        "description": "Tooltip for a menu item representing a window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "tooltipContainerCloseAll": {
+        "message": "Close all tabs in this container",
+        "description": "Tooltip for a button to close all tabs of a container."
+    },
+    "tooltipContainerDelete": {
+        "message": "Permanently delete this container",
+        "description": "Tooltip for a button to permanently delete a container."
+    },
+    "confirmContainerDelete": {
+        "message": "Do you want to permanently delete this container: $NAME$?",
+        "description": "Confirmation message before deleting a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "defaultContainerName": {
+        "message": "Container #$ID$",
+        "description": "Descriptive default name of a container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "invalidContainerName": {
+        "message": "Unavailable container $ID$",
+        "description": "Name shown for an unavailable container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "noContainer": {
+        "message": "No Container",
+        "description": "Virtual container name for tabs with no container."
+    }
+}
