@@ -133,6 +133,10 @@ button {
 	opacity: .75;
 }
 
+.tab-active .tab-label {
+	font-weight: bold;
+}
+
 .tab-icon {
 	inline-size: 75%;
 	align-self: center;

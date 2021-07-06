@@ -77,6 +77,9 @@ const renderTab = async (tab) => {
 	if (tab.discarded) {
 		tabElement.classList.add('tab-discarded');
 	}
+	if (tab.active) {
+		tabElement.classList.add('tab-active');
+	}
 
 	tabElement.addEventListener('click', async (ev) => {
 		await browser.tabs.update(tab.id, {
