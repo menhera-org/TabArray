@@ -58,6 +58,9 @@ const renderTab = async (tab) => {
 	} else {
 		tabElement.classList.add('tab-visible');
 	}
+	if (tab.discarded) {
+		tabElement.classList.add('tab-discarded');
+	}
 
 	tabElement.addEventListener('click', async (ev) => {
 		await browser.tabs.update(tab.id, {
