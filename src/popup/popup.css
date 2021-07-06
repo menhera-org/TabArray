@@ -298,6 +298,7 @@ body > .modal:target {
 	inline-size: 100%;
 	block-size: 100%;
 	align-content: center;
+	z-index: 3;
 }
 
 .modal-content {
