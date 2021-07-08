@@ -8,7 +8,7 @@
         "description": "Title of the popup page for browserAction."
     },
     "buttonHideInactiveContainers": {
-        "message": "Collapse containers on this window",
+        "message": "Collapse other containers",
         "description": "Button label to hide inactive containers on a window."
     },
     "buttonNewContainer": {
