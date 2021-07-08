@@ -86,7 +86,37 @@ browser.tabs.onCreated.addListener(async (tab) => {
   tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onMoved.addListener(async () => {
+browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
+  const tab = await browser.tabs.get(tabId);
+  if (tab.pinned) {
+    return;
+  }
+  let prevTab, nextTab;
+  try {
+    prevTab = (await browser.tabs.query({
+      windowId: tab.windowId,
+      index: tab.index - 1,
+      pinned: false,
+    }))[0];
+  } catch (e) {}
+  try {
+    nextTab = (await browser.tabs.query({
+      windowId: tab.windowId,
+      index: tab.index + 1,
+    }))[0];
+  } catch (e) {}
+  if (prevTab || nextTab) {
+    if (prevTab && nextTab && prevTab.cookieStoreId == nextTab.cookieStoreId) {
+      const targetUserContextId = containers.toUserContextId(prevTab.cookieStoreId);
+      await containers.reopenInContainer(targetUserContextId, tab.id);
+    } else if (prevTab && !nextTab) {
+      const targetUserContextId = containers.toUserContextId(prevTab.cookieStoreId);
+      await containers.reopenInContainer(targetUserContextId, tab.id);
+    } else if (!prevTab && nextTab) {
+      const targetUserContextId = containers.toUserContextId(nextTab.cookieStoreId);
+      await containers.reopenInContainer(targetUserContextId, tab.id);
+    }
+  }
   await sortTabs();
   tabChangeChannel.postMessage(true);
 });

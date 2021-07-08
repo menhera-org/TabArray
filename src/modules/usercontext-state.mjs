@@ -15,7 +15,7 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   const tab = await browser.tabs.get(tabId);
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
   activeUserContextIdByWindow.set(tab.windowId, userContextId);
-  console.log('active userContext: %d for window %d', userContextId, tab.windowId);
+  //console.log('active userContext: %d for window %d', userContextId, tab.windowId);
 });
 
 browser.tabs.query({active: true}).then((tabs) => {

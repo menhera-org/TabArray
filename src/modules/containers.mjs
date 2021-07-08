@@ -31,6 +31,14 @@ const ICONS = [
   "fence",
 ];
 
+const PRIVILEGED_SCHEMES = new Set([
+  'about',
+  'chrome',
+  'javascript',
+  'data',
+  'file',
+]);
+
 export const toCookieStoreId = (aUserContextId) => {
   const userContextId = Math.max(0, 0 | aUserContextId);
   if (userContextId) {
@@ -276,6 +284,13 @@ export const reopenInContainer = async (aUserContextId, aTabId) => {
   if (tab.cookieStoreId == cookieStoreId) return;
   const windowId = tab.windowId;
   const url = newtab.isPrivilegedNewTabPage(tab.url) ? undefined : tab.url;
+  if (url) {
+    const scheme = String(url).split(':')[0].toLowerCase();
+    if (PRIVILEGED_SCHEMES.has(scheme)) {
+      console.log('Ignoring privileged tab: %s', url);
+      return;
+    }
+  }
   await browser.tabs.remove(tab.id);
   await browser.tabs.create({
     active: true,
