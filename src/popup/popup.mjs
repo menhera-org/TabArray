@@ -199,7 +199,7 @@ const renderContainer = async (userContextId) => {
 	return containerElement;
 };
 
-let rendering = true;
+let rendering = false;
 let shouldRerender = false;
 globalThis.render = async () => {
 	if (rendering) {

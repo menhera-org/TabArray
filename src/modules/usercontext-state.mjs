@@ -1,6 +1,9 @@
 // vim: ts=2 et ai
 
+import { WebExtensionsBroadcastChannel } from './broadcasting.mjs';
 import * as containers from './containers.mjs';
+
+const syncActiveUserContextChannel = new WebExtensionsBroadcastChannel('sync_active_user_context');
 
 const activeUserContextIdByWindow = new Map;
 
@@ -27,5 +30,20 @@ export const getActiveUserContext = (aWindowId) => {
 };
 
 export const setActiveUserContext = (aWindowId, aUserContextId) => {
-  activeUserContextIdByWindow.set(0|aWindowId, 0|aUserContextId);
+  syncActiveUserContextChannel.postMessage({
+    command: 'setActiveUserContext',
+    windowId: 0 | aWindowId,
+    userContextId: 0 | aUserContextId,
+  });
 };
+
+syncActiveUserContextChannel.addEventListener('message', (ev) => {
+  if (!ev.data) return;
+  switch (ev.data.command) {
+    case 'setActiveUserContext': {
+      const {windowId, userContextId} = ev.data;
+      activeUserContextIdByWindow.set(windowId, userContextId);
+      break;
+    }
+  }
+});
