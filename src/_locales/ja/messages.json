@@ -142,5 +142,13 @@
     "browserActionTitle": {
         "message": "タブ・グループ",
         "description": "Title of browserAction about tabs and container-based groups."
+    },
+    "labelNewTabKeepContainer": {
+        "message": "新しいタブを現在のコンテナーで開く (粘着コンテナー)",
+        "description": "Title of option to always open new tab in current container."
+    },
+    "labelFirstPartyIsolate": {
+        "message": "ファーストパーティ分離 (FPI) を有効化する",
+        "description": "Option to enable first-party isolation."
     }
 }
