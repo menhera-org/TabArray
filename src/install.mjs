@@ -5,7 +5,7 @@
 
 browser.runtime.onInstalled.addListener((details) => {
   // Enable FPI by defailt on installation
-  if ('install' == details.reason) {
+  if ('install' == details.reason || 'update' == details.reason && '1.0' == details.previousVersion) {
     browser.privacy.websites.firstPartyIsolate.get({}).then((details) => {
       if (!details.value) {
         // FPI disabled

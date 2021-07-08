@@ -105,6 +105,7 @@ browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
       index: tab.index + 1,
     }))[0];
   } catch (e) {}
+  // Reopen in a different container when moved to that container.
   if (prevTab || nextTab) {
     if (prevTab && nextTab && prevTab.cookieStoreId == nextTab.cookieStoreId) {
       const targetUserContextId = containers.toUserContextId(prevTab.cookieStoreId);
