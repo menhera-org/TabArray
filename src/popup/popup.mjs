@@ -199,74 +199,91 @@ const renderContainer = async (userContextId) => {
 	return containerElement;
 };
 
+let rendering = true;
+let shouldRerender = false;
 globalThis.render = async () => {
-	const menuListElement = document.querySelector('#menuList');
-	menuListElement.textContent = '';
-
-	const currentWindow = await browser.windows.getCurrent();
-	const windowId = currentWindow.id;
-
-	const currentWindowLabel = document.createElement('li');
-	menuListElement.append(currentWindowLabel);
-	currentWindowLabel.classList.add('window-label');
-	currentWindowLabel.textContent = browser.i18n.getMessage('currentWindow', windowId);
-
-	const tabs = await browser.tabs.query({windowId: windowId});
-	const windowTabCount = tabs.length;
-	currentWindowLabel.dataset.tabCount = windowTabCount;
-
-	const openUserContextIdSet = new Set;
-	for (const tab of tabs) {
-		if (!tab.pinned) {
-			openUserContextIdSet.add(toUserContextId(tab.cookieStoreId));
-			continue;
-		}
-		const tabElement = await renderTab(tab);
-		menuListElement.append(tabElement);
+	if (rendering) {
+		shouldRerender = true;
+		return;
 	}
-	
-	const userContextIds = [0, ... await containers.getIds()];
-	const openUserContextIds = userContextIds.filter(userContextId => openUserContextIdSet.has(userContextId));
-	const availableUserContextIds = userContextIds.filter(userContextId => !openUserContextIdSet.has(userContextId));
-	for (const userContextId of openUserContextIds) {
-		const containerElement = await renderContainer(userContextId);
-		menuListElement.append(containerElement);
-	}
+	rendering = true;
+	try {
+		const menuListElement = document.querySelector('#menuList');
+		menuListElement.textContent = '';
 
-	const moreContainersLabel = document.createElement('li');
-	menuListElement.append(moreContainersLabel);
-	moreContainersLabel.classList.add('window-label');
-	moreContainersLabel.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
+		const currentWindow = await browser.windows.getCurrent();
+		const windowId = currentWindow.id;
 
-	for (const userContextId of availableUserContextIds) {
-		const containerElement = await renderContainer(userContextId);
-		menuListElement.append(containerElement);
-	}
+		const currentWindowLabel = document.createElement('li');
+		menuListElement.append(currentWindowLabel);
+		currentWindowLabel.classList.add('window-label');
+		currentWindowLabel.textContent = browser.i18n.getMessage('currentWindow', windowId);
 
-	const windows = await browser.windows.getAll({
-		windowTypes: ['normal'],
-	});
-	for (const window of windows) {
-		if (window.id == windowId) continue;
-		const windowLabel = document.createElement('li');
-		menuListElement.append(windowLabel);
-		windowLabel.classList.add('window-label');
-		windowLabel.textContent = browser.i18n.getMessage('windowLabel', window.id);
-		windowLabel.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
-		const targetWindowId = window.id;
-		windowLabel.addEventListener('click', (ev) => {
-			browser.windows.update(targetWindowId, {
-				focused: true,
-			}).catch(e => console.error(e));
-		});
-		const tabs = await browser.tabs.query({
-			windowId: window.id,
-		});
-		windowLabel.dataset.tabCount = tabs.length;
+		const tabs = await browser.tabs.query({windowId: windowId});
+		const windowTabCount = tabs.length;
+		currentWindowLabel.dataset.tabCount = windowTabCount;
+
+		const openUserContextIdSet = new Set;
 		for (const tab of tabs) {
-			if (!tab.active) continue;
+			if (!tab.pinned) {
+				openUserContextIdSet.add(toUserContextId(tab.cookieStoreId));
+				continue;
+			}
 			const tabElement = await renderTab(tab);
 			menuListElement.append(tabElement);
+		}
+		
+		const userContextIds = [0, ... await containers.getIds()];
+		const openUserContextIds = userContextIds.filter(userContextId => openUserContextIdSet.has(userContextId));
+		const availableUserContextIds = userContextIds.filter(userContextId => !openUserContextIdSet.has(userContextId));
+		for (const userContextId of openUserContextIds) {
+			const containerElement = await renderContainer(userContextId);
+			menuListElement.append(containerElement);
+		}
+
+		const moreContainersLabel = document.createElement('li');
+		menuListElement.append(moreContainersLabel);
+		moreContainersLabel.classList.add('window-label');
+		moreContainersLabel.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
+
+		for (const userContextId of availableUserContextIds) {
+			const containerElement = await renderContainer(userContextId);
+			menuListElement.append(containerElement);
+		}
+
+		const windows = await browser.windows.getAll({
+			windowTypes: ['normal'],
+		});
+		for (const window of windows) {
+			if (window.id == windowId) continue;
+			const windowLabel = document.createElement('li');
+			menuListElement.append(windowLabel);
+			windowLabel.classList.add('window-label');
+			windowLabel.textContent = browser.i18n.getMessage('windowLabel', window.id);
+			windowLabel.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
+			const targetWindowId = window.id;
+			windowLabel.addEventListener('click', (ev) => {
+				browser.windows.update(targetWindowId, {
+					focused: true,
+				}).catch(e => console.error(e));
+			});
+			const tabs = await browser.tabs.query({
+				windowId: window.id,
+			});
+			windowLabel.dataset.tabCount = tabs.length;
+			for (const tab of tabs) {
+				if (!tab.active) continue;
+				const tabElement = await renderTab(tab);
+				menuListElement.append(tabElement);
+			}
+		}
+	} finally {
+		rendering = false;
+		if (shouldRerender) {
+			shouldRerender = false;
+			setTimeout(() => {
+				render();
+			}, 0);
 		}
 	}
 };
