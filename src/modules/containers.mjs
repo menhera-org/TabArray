@@ -1,5 +1,8 @@
 // vim: ts=2 et ai
 
+import * as newtab from './newtab.mjs';
+import { setActiveUserContext } from './usercontext-state.mjs';
+
 const COLORS = [
   "blue",
   "turquoise",
@@ -264,4 +267,32 @@ export const hideAll = async (aWindowId) => {
   for (const userContextId of userContextIds) {
     await hide(userContextId, aWindowId);
   }
+};
+
+export const reopenInContainer = async (aUserContextId, aTabId) => {
+  const tab = await browser.tabs.get(aTabId);
+  const cookieStoreId = toCookieStoreId(aUserContextId);
+  const userContextId = toUserContextId(cookieStoreId);
+  if (tab.cookieStoreId == cookieStoreId) return;
+  const windowId = tab.windowId;
+  const url = newtab.isPrivilegedNewTabPage(tab.url) ? undefined : tab.url;
+  await browser.tabs.remove(tab.id);
+  await browser.tabs.create({
+    active: true,
+    windowId,
+    cookieStoreId,
+    url,
+  });
+};
+
+export const openNewTabInContainer = async (aUserContextId, aWindowId) => {
+  const windowId = aWindowId;
+  const cookieStoreId = toCookieStoreId(aUserContextId);
+  const userContextId = toUserContextId(cookieStoreId);
+  setActiveUserContext(windowId, userContextId);
+  await browser.tabs.create({
+    active: true,
+    windowId,
+    cookieStoreId,
+  });
 };

@@ -123,11 +123,7 @@ const renderContainer = async (userContextId) => {
 		await render();
 	});
 	const newTabHandler = async (ev) => {
-		await browser.tabs.create({
-			active: true,
-			windowId: browser.windows.WINDOW_ID_CURRENT,
-			cookieStoreId,
-		});
+		await containers.openNewTabInContainer(userContextId, windowId);
 		window.close();
 	};
 	const containerIcon = document.createElement('div');

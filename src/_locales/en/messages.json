@@ -142,5 +142,13 @@
     "browserActionTitle": {
         "message": "Tabs and Groups",
         "description": "Title of browserAction about tabs and container-based groups."
+    },
+    "labelNewTabKeepContainer": {
+        "message": "Open new tab in current container (sticky container)",
+        "description": "Title of option to always open new tab in current container."
+    },
+    "labelFirstPartyIsolate": {
+        "message": "Enable First-Party Isolate",
+        "description": "Option to enable first-party isolation."
     }
 }

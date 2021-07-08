@@ -1,13 +1,24 @@
 // vim: ts=2 et ai
 
 import * as containers from './modules/containers.mjs';
+import { isNewTabPage } from './modules/newtab.mjs';
 
 import {WebExtensionsBroadcastChannel} from './modules/broadcasting.mjs';
+import '/install.mjs';
+import { getActiveUserContext } from './modules/usercontext-state.mjs';
+import {config} from './modules/config.mjs';
 
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
 let tabSorting = false;
+let configNewTabInContainerEnabled = true;
+config.observe('newtab.keepContainer', (value) => {
+  if (undefined !== value) {
+    configNewTabInContainerEnabled = value;
+  }
+});
+
 
 globalThis.getWindowIds = async () => {
   try {
@@ -64,7 +75,13 @@ browser.tabs.onAttached.addListener(async () => {
   tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onCreated.addListener(async () => {
+browser.tabs.onCreated.addListener(async (tab) => {
+  const userContextId = containers.toUserContextId(tab.cookieStoreId);
+  const activeUserContextId = getActiveUserContext(tab.windowId);
+  if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
+    console.log('active user context: %d for window %d', getActiveUserContext(tab.windowId), tab.windowId);
+    await containers.reopenInContainer(activeUserContextId, tab.id);
+  }
   await sortTabs();
   tabChangeChannel.postMessage(true);
 });
