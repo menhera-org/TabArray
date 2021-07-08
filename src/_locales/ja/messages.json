@@ -150,5 +150,9 @@
     "labelFirstPartyIsolate": {
         "message": "ファーストパーティ分離 (FPI) を有効化する",
         "description": "Option to enable first-party isolation."
+    },
+    "buttonAboutAddon": {
+        "message": "Container Tab Groups について・評価…",
+        "description": "Menu item to open the extension's addons.mozilla.org page."
     }
 }
