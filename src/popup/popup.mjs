@@ -11,6 +11,8 @@ const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
 const STATE_VISIBLE_TABS = 2;
 
+const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
+
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
 document.querySelector('#button-hide-inactive').textContent = browser.i18n.getMessage('buttonHideInactiveContainers');
 document.querySelector('#button-new-container').textContent = browser.i18n.getMessage('buttonNewContainer');
@@ -20,6 +22,7 @@ document.querySelector('#new-container-cancel-button').textContent = browser.i18
 document.querySelector('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 document.querySelector('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
 document.querySelector('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
+document.querySelector('#button-about-addon').textContent = browser.i18n.getMessage('buttonAboutAddon');
 
 const renderTab = async (tab) => {
 	const windowId = (await browser.windows.getCurrent()).id;
@@ -453,3 +456,13 @@ browser.runtime.getBackgroundPage().then(background => {
 	}
 	globalThis.console = background.console;
 }).catch(e => console.error(e));
+
+document.querySelector('#button-about-addon').addEventListener('click', (ev) => {
+	browser.tabs.create({
+		active: true,
+		windowId: browser.windows.WINDOW_ID_CURRENT,
+		url: ADDON_PAGE,
+	}).then(() => {
+		window.close();
+	}).catch((e) => console.error(e));
+});

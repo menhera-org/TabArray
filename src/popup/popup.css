@@ -73,9 +73,10 @@ button {
 	box-shadow: 0 0 .5rem #888;
 }
 
-#button-new-container, #button-hide-inactive {
+#button-new-container, #button-hide-inactive, #button-about-addon {
 	display: block grid;
 	grid-template-columns: max-content 1fr;
+	column-gap: .5em;
 }
 
 #button-new-container::before {
@@ -90,6 +91,20 @@ button {
 
 #button-hide-inactive::before {
 	background-image: url(/img/unfold_less_black_24dp.svg);
+	content: '';
+	background-repeat: no-repeat;
+	background-size: 1.5em;
+	background-position: center center;
+	block-size: 1em;
+	inline-size: 2em;
+}
+
+#button-about-addon {
+	border-block-start: solid .125rem #888;
+}
+
+#button-about-addon::before {
+	background-image: url(/icon.svg);
 	content: '';
 	background-repeat: no-repeat;
 	background-size: 1.5em;
@@ -175,10 +190,6 @@ button {
 
 .tab > .tab-close-button:focus, .tab > .tab-close-button:hover {
 	opacity: .5;
-}
-
-#menuList > li.checked {
-	background-image: url('/img/done-black-18dp.svg');
 }
 
 #menuList .window-label {

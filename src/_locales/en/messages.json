@@ -150,5 +150,9 @@
     "labelFirstPartyIsolate": {
         "message": "Enable First-Party Isolate",
         "description": "Option to enable first-party isolation."
+    },
+    "buttonAboutAddon": {
+        "message": "More about Container Tab Groups & reviews…",
+        "description": "Menu item to open the extension's addons.mozilla.org page."
     }
 }
