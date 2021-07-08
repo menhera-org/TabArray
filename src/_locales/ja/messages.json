@@ -8,7 +8,7 @@
         "description": "Title of the popup page for browserAction."
     },
     "buttonHideInactiveContainers": {
-        "message": "このウィンドウのコンテナーを最小化する",
+        "message": "他のコンテナーを最小化する",
         "description": "Button label to hide inactive containers on a window."
     },
     "buttonNewContainer": {
