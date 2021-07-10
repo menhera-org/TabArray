@@ -153,7 +153,7 @@ const renderContainer = async (userContextId) => {
 	closeContainerButton.classList.add('close-container-button');
 	closeContainerButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
 	closeContainerButton.addEventListener('click', async (ev) => {
-		await containers.closeAllTabs(userContextId);
+		await containers.closeAllTabs(userContextId, true);
 		await render();
 	});
 	if (!userContextId) {

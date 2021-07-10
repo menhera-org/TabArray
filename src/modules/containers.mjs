@@ -117,8 +117,8 @@ export const getTabIds = async (aUserContextId, aExcludePinned) => {
   return [... tabs].filter((tab) => !aExcludePinned || !tab.pinned).map((tab) => 0 | tab.id);
 };
 
-export const closeAllTabs = async (aUserContextId) => {
-  const tabIds = aUserContextId ? await getTabIds(aUserContextId) : await getTabIds(aUserContextId, true);
+export const closeAllTabs = async (aUserContextId, aExcludePinned) => {
+  const tabIds = aUserContextId ? await getTabIds(aUserContextId, !!aExcludePinned) : await getTabIds(aUserContextId, true);
   console.log('Closing %d tab(s)', tabIds.length);
   if (tabIds.length) {
     await browser.tabs.remove(tabIds);
