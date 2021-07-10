@@ -1,4 +1,9 @@
 
+:root {
+	inline-size: max-content;
+	block-size: max-content;
+}
+
 body {
 	font-family: system-ui, sans-serif;
 	color: #222;
