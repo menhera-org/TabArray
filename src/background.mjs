@@ -144,6 +144,15 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   //console.log('active tab changed on window %d', windowId);
   const tab = await browser.tabs.get(tabId);
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
+  const contextualIdentity = await containers.get(userContextId);
+  const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', contextualIdentity.name);
+  try {
+    await browser.windows.update(windowId, {
+      titlePreface: windowTitlePreface,
+    });
+  } catch (e) {
+    console.error(e);
+  }
   if (!tab.pinned) {
     await containers.show(userContextId, windowId);
   }
@@ -171,5 +180,24 @@ browser.menus.onClicked.addListener((info, tab) => {
   if (info.menuItemId == 'tab-hide-container') {
     const userContextId = containers.toUserContextId(tab.cookieStoreId);
     containers.hide(userContextId, tab.windowId).catch(e => console.error(e));
+  }
+});
+
+browser.windows.getAll({
+  windowTypes: ['normal'],
+}).then(async (windows) => {
+  for (const window of windows) {
+    const activeTabs = await browser.tabs.query({
+      windowId: window.id,
+      active: true,
+    });
+    for (const activeTab of activeTabs) {
+      const userContextId = containers.toUserContextId(activeTab.cookieStoreId);
+      const contextualIdentity = await containers.get(userContextId);
+      const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', contextualIdentity.name);
+      await browser.windows.update(window.id, {
+        titlePreface: windowTitlePreface,
+      });
+    }
   }
 });
