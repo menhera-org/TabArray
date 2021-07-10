@@ -168,5 +168,9 @@
     "buttonSettings": {
         "message": "設定",
         "description": "Menu item to open the extensions's settings."
+    },
+    "labelResistFingerprinting": {
+        "message": "Firefoxのフィンガープリント防止機能を有効化する (privacy.resistFingerprinting)",
+        "description": "Option to enable privacy.resistFingerprinting."
     }
 }
