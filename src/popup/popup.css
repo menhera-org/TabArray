@@ -89,6 +89,7 @@ button {
 	grid-template-columns: max-content 1fr;
 	padding: 0;
 	padding-inline-start: 1em;
+	color: inherit;
 }
 
 .menu-part > button::before {
