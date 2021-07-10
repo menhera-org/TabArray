@@ -50,8 +50,12 @@ const renderTab = async (tab) => {
 		}
 	});
 	const tabIconElement = document.createElement('img');
-	tabIconElement.src = tab.favIconUrl;
 	tabIconElement.classList.add('tab-icon');
+	let iconUrl = tab.favIconUrl;
+	if (!iconUrl) {
+		iconUrl = '/img/transparent.png';
+	}
+	tabIconElement.src = iconUrl;
 	tabIconElement.addEventListener('error', ev => {
 		ev.target.classList.add('img-error');
 		ev.target.src = '/img/transparent.png';
