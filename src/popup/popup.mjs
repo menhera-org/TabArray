@@ -210,7 +210,10 @@ globalThis.render = async () => {
 		return;
 	}
 	rendering = true;
+	const mainElement = document.querySelector('#main');
 	try {
+		mainElement.classList.add('rendering');
+		const initScrollY = mainElement.scrollTop;
 		const menuListElement = document.querySelector('#menuList');
 		menuListElement.textContent = '';
 
@@ -280,6 +283,7 @@ globalThis.render = async () => {
 				menuListElement.append(tabElement);
 			}
 		}
+		mainElement.scrollTop = initScrollY;
 	} finally {
 		rendering = false;
 		if (shouldRerender) {
@@ -287,6 +291,8 @@ globalThis.render = async () => {
 			setTimeout(() => {
 				render();
 			}, 0);
+		} else {
+			mainElement.classList.remove('rendering');
 		}
 	}
 };

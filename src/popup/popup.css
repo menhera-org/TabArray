@@ -72,6 +72,12 @@ button {
 
 #main {
 	overflow: auto;
+	transition: opacity .1s ease-in;
+}
+
+#main.rendering {
+	opacity: .5;
+	transition: none;
 }
 
 #bottombox {
