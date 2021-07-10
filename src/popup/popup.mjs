@@ -14,15 +14,15 @@ const STATE_VISIBLE_TABS = 2;
 const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
 
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
-document.querySelector('#button-hide-inactive').textContent = browser.i18n.getMessage('buttonHideInactiveContainers');
-document.querySelector('#button-new-container').textContent = browser.i18n.getMessage('buttonNewContainer');
+document.querySelector('#button-hide-inactive > .button-text').textContent = browser.i18n.getMessage('buttonHideInactiveContainers');
+document.querySelector('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
 document.querySelector('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 document.querySelector('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 document.querySelector('#new-container-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 document.querySelector('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 document.querySelector('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
 document.querySelector('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
-document.querySelector('#button-about-addon').textContent = browser.i18n.getMessage('buttonAboutAddon');
+document.querySelector('#button-about-addon > .button-text').textContent = browser.i18n.getMessage('buttonAboutAddon');
 
 const renderTab = async (tab) => {
 	const windowId = (await browser.windows.getCurrent()).id;

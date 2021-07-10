@@ -76,7 +76,13 @@ button {
 #button-new-container, #button-hide-inactive, #button-about-addon {
 	display: block grid;
 	grid-template-columns: max-content 1fr;
-	column-gap: .5em;
+	padding: 0;
+	padding-inline-start: 1em;
+}
+
+.button-text {
+	padding-inline: .5em;
+	padding-block: .5em;
 }
 
 #button-new-container::before {
@@ -85,7 +91,7 @@ button {
 	background-repeat: no-repeat;
 	background-size: 1.5em;
 	background-position: center center;
-	block-size: 1em;
+	block-size: 100%;
 	inline-size: 2em;
 }
 
@@ -95,7 +101,7 @@ button {
 	background-repeat: no-repeat;
 	background-size: 1.5em;
 	background-position: center center;
-	block-size: 1em;
+	block-size: 100%;
 	inline-size: 2em;
 }
 
@@ -109,7 +115,7 @@ button {
 	background-repeat: no-repeat;
 	background-size: 1.5em;
 	background-position: center center;
-	block-size: 1em;
+	block-size: 100%;
 	inline-size: 2em;
 }
 
