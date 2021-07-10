@@ -148,7 +148,7 @@
         "description": "Title of option to always open new tab in current container."
     },
     "labelFirstPartyIsolate": {
-        "message": "Enable First-Party Isolate",
+        "message": "Enable First-Party Isolate (FPI)",
         "description": "Option to enable first-party isolation."
     },
     "buttonAboutAddon": {
@@ -168,5 +168,9 @@
     "buttonSettings": {
         "message": "Settings",
         "description": "Menu item to open the extensions's settings."
+    },
+    "labelResistFingerprinting": {
+        "message": "Enable Firefox's fingerprint resistance feature (privacy.resistFingerprinting)",
+        "description": "Option to enable privacy.resistFingerprinting."
     }
 }
