@@ -8,7 +8,7 @@ import '/install.mjs';
 import { getActiveUserContext } from './modules/usercontext-state.mjs';
 import {config} from './modules/config.mjs';
 import { setActiveUserContext } from './modules/usercontext-state.mjs';
-
+import { ADDON_PAGE } from './defs.mjs';
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
@@ -224,3 +224,5 @@ browser.windows.getAll({
     }
   }
 });
+
+browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));

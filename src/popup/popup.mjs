@@ -6,12 +6,11 @@ import {sleep} from '../modules/utils.mjs';
 import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
 import '/components/usercontext-colorpicker.mjs';
 import '/components/usercontext-iconpicker.mjs';
+import {ADDON_PAGE} from '../defs.mjs';
 
 const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
 const STATE_VISIBLE_TABS = 2;
-
-const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
 
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
 document.querySelector('#button-hide-inactive > .button-text').textContent = browser.i18n.getMessage('buttonHideInactiveContainers');
