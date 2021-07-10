@@ -79,8 +79,9 @@ browser.tabs.onAttached.addListener(async () => {
 browser.tabs.onCreated.addListener(async (tab) => {
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
   const activeUserContextId = getActiveUserContext(tab.windowId);
+  const windowId = tab.windowId;
   if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
-    console.log('Reopening new tab in active user context: %d for window %d', getActiveUserContext(tab.windowId), tab.windowId);
+    console.log('Reopening new tab in active user context: %d for window %d', activeUserContextId, windowId);
     await browser.tabs.remove(tab.id);
     await containers.openNewTabInContainer(activeUserContextId, windowId);
   }
