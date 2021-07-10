@@ -164,5 +164,9 @@
                 "example": "Container 1"
             }
         }
+    },
+    "buttonSettings": {
+        "message": "Settings",
+        "description": "Menu item to open the extensions's settings."
     }
 }

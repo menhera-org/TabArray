@@ -84,11 +84,20 @@ button {
 	box-shadow: 0 0 .5rem #888;
 }
 
-#button-new-container, #button-hide-inactive, #button-about-addon {
+.menu-part > button {
 	display: block grid;
 	grid-template-columns: max-content 1fr;
 	padding: 0;
 	padding-inline-start: 1em;
+}
+
+.menu-part > button::before {
+	content: '';
+	background-repeat: no-repeat;
+	background-size: 1.5em;
+	background-position: center center;
+	block-size: 100%;
+	inline-size: 2em;
 }
 
 .button-text {
@@ -98,22 +107,10 @@ button {
 
 #button-new-container::before {
 	background-image: url(/img/add_black_24dp.svg);
-	content: '';
-	background-repeat: no-repeat;
-	background-size: 1.5em;
-	background-position: center center;
-	block-size: 100%;
-	inline-size: 2em;
 }
 
 #button-hide-inactive::before {
 	background-image: url(/img/unfold_less_black_24dp.svg);
-	content: '';
-	background-repeat: no-repeat;
-	background-size: 1.5em;
-	background-position: center center;
-	block-size: 100%;
-	inline-size: 2em;
 }
 
 #button-about-addon {
@@ -122,12 +119,10 @@ button {
 
 #button-about-addon::before {
 	background-image: url(/icon.svg);
-	content: '';
-	background-repeat: no-repeat;
-	background-size: 1.5em;
-	background-position: center center;
-	block-size: 100%;
-	inline-size: 2em;
+}
+
+#button-settings::before {
+	background-image: url(/img/settings_black_24dp.svg);
 }
 
 #menuList, #menuList ul {

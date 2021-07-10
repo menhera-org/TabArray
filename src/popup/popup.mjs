@@ -23,6 +23,7 @@ document.querySelector('#new-container-ok-button').textContent = browser.i18n.ge
 document.querySelector('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
 document.querySelector('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
 document.querySelector('#button-about-addon > .button-text').textContent = browser.i18n.getMessage('buttonAboutAddon');
+document.querySelector('#button-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
 
 const renderTab = async (tab) => {
 	const windowId = (await browser.windows.getCurrent()).id;
@@ -473,6 +474,12 @@ document.querySelector('#button-about-addon').addEventListener('click', (ev) => 
 		windowId: browser.windows.WINDOW_ID_CURRENT,
 		url: ADDON_PAGE,
 	}).then(() => {
+		window.close();
+	}).catch((e) => console.error(e));
+});
+
+document.querySelector('#button-settings').addEventListener('click', (ev) => {
+	browser.runtime.openOptionsPage().then(() => {
 		window.close();
 	}).catch((e) => console.error(e));
 });
