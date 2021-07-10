@@ -154,5 +154,15 @@
     "buttonAboutAddon": {
         "message": "Container Tab Groups について・評価…",
         "description": "Menu item to open the extension's addons.mozilla.org page."
+    },
+    "windowTitlePrefaceTemplate": {
+        "message": "($CONTAINER$)",
+        "description": "String to add before window title",
+        "placeholders": {
+            "container": {
+                "content": "$1",
+                "example": "Container 1"
+            }
+        }
     }
 }
