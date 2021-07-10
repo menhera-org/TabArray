@@ -7,6 +7,7 @@ import {WebExtensionsBroadcastChannel} from './modules/broadcasting.mjs';
 import '/install.mjs';
 import { getActiveUserContext } from './modules/usercontext-state.mjs';
 import {config} from './modules/config.mjs';
+import { setActiveUserContext } from './modules/usercontext-state.mjs';
 
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
@@ -79,8 +80,9 @@ browser.tabs.onCreated.addListener(async (tab) => {
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
   const activeUserContextId = getActiveUserContext(tab.windowId);
   if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
-    console.log('active user context: %d for window %d', getActiveUserContext(tab.windowId), tab.windowId);
-    await containers.reopenInContainer(activeUserContextId, tab.id);
+    console.log('Reopening new tab in active user context: %d for window %d', getActiveUserContext(tab.windowId), tab.windowId);
+    await browser.tabs.remove(tab.id);
+    await containers.openNewTabInContainer(activeUserContextId, windowId);
   }
   await sortTabs();
   tabChangeChannel.postMessage(true);
@@ -104,6 +106,9 @@ browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
       windowId: tab.windowId,
       index: tab.index + 1,
     }))[0];
+    if (nextTab.status == 'loading') {
+      nextTab = undefined;
+    }
   } catch (e) {}
   // Reopen in a different container when moved to that container.
   if (prevTab || nextTab) {
@@ -137,6 +142,23 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 }, {
   properties: [
     'hidden',
+  ],
+});
+
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  const userContextId = containers.toUserContextId(tab.cookieStoreId);
+  const windowId = tab.windowId;
+  const activeUserContextId = getActiveUserContext(tab.windowId);
+  if (configNewTabInContainerEnabled && isNewTabPage(tab.url) && 0 == userContextId && 0 != activeUserContextId) {
+    console.log('Reopening new tab in active user context: %d for window %d', activeUserContextId, tab.windowId);
+    await browser.tabs.remove(tab.id);
+    await containers.openNewTabInContainer(activeUserContextId, windowId);
+    return;
+  }
+  setActiveUserContext(tab.windowId, userContextId);
+}, {
+  properties: [
+    'url',
   ],
 });
 

@@ -14,6 +14,9 @@ browser.windows.onRemoved.addListener((windowId) => {
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   const tab = await browser.tabs.get(tabId);
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
+  if (tab.status == 'loading' && tab.url == 'about:blank') {
+    return;
+  }
   activeUserContextIdByWindow.set(tab.windowId, userContextId);
   //console.log('active userContext: %d for window %d', userContextId, tab.windowId);
 });

@@ -279,6 +279,10 @@ export const hideAll = async (aWindowId) => {
 
 export const reopenInContainer = async (aUserContextId, aTabId) => {
   const tab = await browser.tabs.get(aTabId);
+  if (tab.id != aTabId) {
+    console.error('Tab mismatch');
+    throw new Error('Tab mismatch');
+  }
   const cookieStoreId = toCookieStoreId(aUserContextId);
   const userContextId = toUserContextId(cookieStoreId);
   if (tab.cookieStoreId == cookieStoreId) return;
@@ -291,13 +295,38 @@ export const reopenInContainer = async (aUserContextId, aTabId) => {
       return;
     }
   }
-  await browser.tabs.remove(tab.id);
-  await browser.tabs.create({
-    active: true,
+  const containerTabs = await browser.tabs.query({
+    pinned: false,
+    cookieStoreId: cookieStoreId,
     windowId,
-    cookieStoreId,
-    url,
   });
+  let lastIndex = undefined;
+  for (const containerTab of containerTabs) {
+    const index = containerTab.index;
+    if (undefined === lastIndex) {
+      lastIndex = index;
+    } else {
+      lastIndex = Math.max(lastIndex, index);
+    }
+  }
+  console.log('reopenInContainer: userContext=%d, windowId=%d, tabId=%d, url=%s', userContextId, windowId, tab.id, url);
+  await browser.tabs.remove(tab.id);
+  if (undefined === lastIndex) {
+    await browser.tabs.create({
+      active: true,
+      windowId,
+      cookieStoreId,
+      url,
+    });
+  } else {
+    await browser.tabs.create({
+      active: true,
+      windowId,
+      cookieStoreId,
+      url,
+      index: lastIndex + 1,
+    });
+  }
 };
 
 export const openNewTabInContainer = async (aUserContextId, aWindowId) => {
@@ -305,9 +334,33 @@ export const openNewTabInContainer = async (aUserContextId, aWindowId) => {
   const cookieStoreId = toCookieStoreId(aUserContextId);
   const userContextId = toUserContextId(cookieStoreId);
   setActiveUserContext(windowId, userContextId);
-  await browser.tabs.create({
-    active: true,
+  const containerTabs = await browser.tabs.query({
+    pinned: false,
+    cookieStoreId: cookieStoreId,
     windowId,
-    cookieStoreId,
   });
+  let lastIndex = undefined;
+  for (const containerTab of containerTabs) {
+    const index = containerTab.index;
+    if (undefined === lastIndex) {
+      lastIndex = index;
+    } else {
+      lastIndex = Math.max(lastIndex, index);
+    }
+  }
+  console.log('openNewTabInContainer: userContext=%d, windowId=%d', userContextId, windowId);
+  if (undefined === lastIndex) {
+    await browser.tabs.create({
+      active: true,
+      windowId,
+      cookieStoreId,
+    });
+  } else {
+    await browser.tabs.create({
+      active: true,
+      windowId,
+      cookieStoreId,
+      index: lastIndex + 1,
+    });
+  }
 };
