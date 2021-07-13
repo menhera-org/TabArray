@@ -96,6 +96,7 @@ browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
   }
   let prevTab, nextTab;
   try {
+    if (tabSorting) throw void 0;
     prevTab = (await browser.tabs.query({
       windowId: tab.windowId,
       index: tab.index - 1,
@@ -103,6 +104,7 @@ browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
     }))[0];
   } catch (e) {}
   try {
+    if (tabSorting) throw void 0;
     nextTab = (await browser.tabs.query({
       windowId: tab.windowId,
       index: tab.index + 1,
