@@ -1,4 +1,4 @@
-// vim: ts=2 et ai
+// vim: ts=2 sw=2 et ai
 
 import { WebExtensionsBroadcastChannel } from './broadcasting.mjs';
 import * as containers from './containers.mjs';

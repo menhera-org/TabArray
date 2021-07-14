@@ -1,4 +1,4 @@
-// vim: ts=2 et ai
+// vim: ts=2 sw=2 et ai
 
 import * as containers from './modules/containers.mjs';
 import { isNewTabPage } from './modules/newtab.mjs';
@@ -9,6 +9,7 @@ import { getActiveUserContext } from './modules/usercontext-state.mjs';
 import {config} from './modules/config.mjs';
 import { setActiveUserContext } from './modules/usercontext-state.mjs';
 import { ADDON_PAGE } from './defs.mjs';
+import { getWindowIds } from './modules/windows.mjs';
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
@@ -26,18 +27,6 @@ config.observe('gesture.dragTabBetweenContainers', (value) => {
     configDragBetweenContainers = value;
   }
 });
-
-globalThis.getWindowIds = async () => {
-  try {
-    const windows = await browser.windows.getAll({
-      populate: false,
-      windowTypes: ['normal'],
-    });
-    return windows.map(window => window.id);
-  } catch (e) {
-    return [];
-  }
-};
 
 globalThis.sortTabsByWindow = async (windowId) => {
   try {

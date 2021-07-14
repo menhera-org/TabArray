@@ -1,4 +1,4 @@
-// vim: ts=2 et ai
+// vim: ts=2 sw=2 et ai
 
 import * as newtab from './newtab.mjs';
 import { setActiveUserContext } from './usercontext-state.mjs';
