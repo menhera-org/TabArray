@@ -1,3 +1,21 @@
+// vim: ts=2 sw=2 et ai
+/*
+  Container Tab Groups
+  Copyright (C) 2021 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 import {config} from '../modules/config.mjs';
 
@@ -19,55 +37,55 @@ const inputDragTabToChangeContainer = document.querySelector('#input-dragTabToCh
 document.querySelector('label[for="input-dragTabToChangeContainer"]').textContent = browser.i18n.getMessage('labelDragTabToChangeContainer');
 
 config.observe('newtab.keepContainer', (value) => {
-    if (undefined === value) {
-        config.set('newtab.keepContainer', true);
-        return;
-    }
-    inputNewTabKeepContainer.checked = value;
+  if (undefined === value) {
+    config.set('newtab.keepContainer', true);
+    return;
+  }
+  inputNewTabKeepContainer.checked = value;
 });
 
 inputNewTabKeepContainer.addEventListener('change', (ev) => {
-    config.set('newtab.keepContainer', ev.target.checked)
-    .catch(e => console.error(e));
+  config.set('newtab.keepContainer', ev.target.checked)
+  .catch(e => console.error(e));
 });
 
 config.observe('gesture.dragTabBetweenContainers', (value) => {
-    if (undefined === value) {
-        config.set('gesture.dragTabBetweenContainers', true);
-        return;
-    }
-    inputDragTabToChangeContainer.checked = value;
+  if (undefined === value) {
+    config.set('gesture.dragTabBetweenContainers', true);
+    return;
+  }
+  inputDragTabToChangeContainer.checked = value;
 });
 
 inputDragTabToChangeContainer.addEventListener('change', (ev) => {
-    config.set('gesture.dragTabBetweenContainers', ev.target.checked)
-    .catch(e => console.error(e));
+  config.set('gesture.dragTabBetweenContainers', ev.target.checked)
+  .catch(e => console.error(e));
 });
 
 browser.privacy.websites.firstPartyIsolate.get({}).then((details) => {
-    inputFirstPartyIsolate.checked = details.value;
+  inputFirstPartyIsolate.checked = details.value;
 });
 
 browser.privacy.websites.firstPartyIsolate.onChange.addListener((details) => {
-    inputFirstPartyIsolate.checked = details.value;
+  inputFirstPartyIsolate.checked = details.value;
 });
 
 inputFirstPartyIsolate.addEventListener('change', (ev) => {
-    browser.privacy.websites.firstPartyIsolate.set({
-        value: ev.target.checked,
-    }).catch((e) => console.error(e));
+  browser.privacy.websites.firstPartyIsolate.set({
+    value: ev.target.checked,
+  }).catch((e) => console.error(e));
 });
 
 browser.privacy.websites.resistFingerprinting.get({}).then((details) => {
-    inputResistFingerprinting.checked = details.value;
+  inputResistFingerprinting.checked = details.value;
 });
 
 browser.privacy.websites.resistFingerprinting.onChange.addListener((details) => {
-    inputResistFingerprinting.checked = details.value;
+  inputResistFingerprinting.checked = details.value;
 });
 
 inputResistFingerprinting.addEventListener('change', (ev) => {
-    browser.privacy.websites.resistFingerprinting.set({
-        value: ev.target.checked,
-    }).catch((e) => console.error(e));
+  browser.privacy.websites.resistFingerprinting.set({
+    value: ev.target.checked,
+  }).catch((e) => console.error(e));
 });
