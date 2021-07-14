@@ -1,4 +1,8 @@
 {
+    "effectiveLocale": {
+        "message": "ja",
+        "description": "Locale of this messages.json."
+    },
     "extensionDescription": {
         "message": "プライベートで隔離されたコンテナーを使用したChromeのようなタブグループ：Firefoxのための究極のタブ管理とグループ。",
         "description": "Description of the extension."

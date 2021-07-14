@@ -29,6 +29,7 @@ const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
 const STATE_VISIBLE_TABS = 2;
 
+document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
 document.querySelector('#button-hide-inactive > .button-text').textContent = browser.i18n.getMessage('buttonHideInactiveContainers');
 document.querySelector('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');

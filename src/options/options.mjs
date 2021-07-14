@@ -19,6 +19,8 @@
 
 import {config} from '../modules/config.mjs';
 
+document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
+
 document.querySelector('#optionsHeadingExperimental').textContent = browser.i18n.getMessage('optionsHeadingExperimental');
 document.querySelector('#optionsHeadingFirefox').textContent = browser.i18n.getMessage('optionsHeadingFirefox');
 document.querySelector('#optionsDescriptionExperimental').textContent = browser.i18n.getMessage('optionsDescriptionExperimental');

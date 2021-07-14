@@ -1,4 +1,8 @@
 {
+    "effectiveLocale": {
+        "message": "en",
+        "description": "Locale of this messages.json."
+    },
     "extensionDescription": {
         "message": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
         "description": "Description of the extension."
