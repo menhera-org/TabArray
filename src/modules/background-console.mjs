@@ -29,3 +29,7 @@ browser.runtime.getBackgroundPage().then((background) => {
   globalThis.console = background.console;
   console.log('Attached view: %s', location.href);
 }).catch((e) => console.error(e));
+
+window.addEventListener('unload', (ev) => {
+  console.log('Unloading view: %s', location.href);
+});
