@@ -27,4 +27,5 @@ browser.runtime.getBackgroundPage().then((background) => {
     return;
   }
   globalThis.console = background.console;
+  console.log('Attached view: %s', location.href);
 }).catch((e) => console.error(e));
