@@ -176,5 +176,21 @@
     "labelDragTabToChangeContainer": {
         "message": "Drag a Tab to move between containers",
         "description": "Option to enable the user to drag a tab to move between containers."
+    },
+    "optionsHeadingExperimental": {
+        "message": "Experimental Features",
+        "description": "Heading text of options page for experimental addon features."
+    },
+    "optionsHeadingFirefox": {
+        "message": "Firefox Settings",
+        "description": "Heading text of options page for changing Firefox settings."
+    },
+    "optionsDescriptionExperimental": {
+        "message": "Disabling some of these options can solve buggy behaviors when observed.",
+        "description": "Description text for experimental features options."
+    },
+    "optionsDescriptionFirefox": {
+        "message": "Here you can change some hidden Firefox settings related to privacy.",
+        "description": "Description text for Firefox settings options."
     }
 }

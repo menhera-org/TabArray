@@ -1,6 +1,11 @@
 
 import {config} from '../modules/config.mjs';
 
+document.querySelector('#optionsHeadingExperimental').textContent = browser.i18n.getMessage('optionsHeadingExperimental');
+document.querySelector('#optionsHeadingFirefox').textContent = browser.i18n.getMessage('optionsHeadingFirefox');
+document.querySelector('#optionsDescriptionExperimental').textContent = browser.i18n.getMessage('optionsDescriptionExperimental');
+document.querySelector('#optionsDescriptionFirefox').textContent = browser.i18n.getMessage('optionsDescriptionFirefox');
+
 const inputNewTabKeepContainer = document.querySelector('#input-newtabKeepContainer');
 document.querySelector('label[for="input-newtabKeepContainer"]').textContent = browser.i18n.getMessage('labelNewTabKeepContainer');
 
