@@ -17,6 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import '../modules/background-console.mjs';
 import {config} from '../modules/config.mjs';
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');

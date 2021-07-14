@@ -17,6 +17,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import '../modules/background-console.mjs';
 import * as containers from '../modules/containers.mjs';
 import { toUserContextId } from '../modules/containers.mjs';
 import {sleep} from '../modules/utils.mjs';
@@ -475,15 +476,6 @@ const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 tabChangeChannel.addEventListener('message', ev => {
 	render().catch(e => console.error(e));
 });
-
-// log to the background page when possible
-browser.runtime.getBackgroundPage().then(background => {
-	if (!background || !background.console) {
-		console.error('Failed to fetch the Window object of the background page');
-		return;
-	}
-	globalThis.console = background.console;
-}).catch(e => console.error(e));
 
 document.querySelector('#button-about-addon').addEventListener('click', (ev) => {
 	browser.tabs.create({
