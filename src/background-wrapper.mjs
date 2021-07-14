@@ -1,4 +1,5 @@
-<!-- vim: set ts=2 sw=2 et ai :
+// vim: ts=2 sw=2 et ai
+/*
   Container Tab Groups
   Copyright (C) 2021 Menhera.org
 
@@ -14,13 +15,18 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-<!DOCTYPE html>
-<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
-  <head>
-    <meta charset='utf-8'/>
-    <title></title>
-    <script type='module' src='background-wrapper.mjs'></script>
-  </head>
-  <body></body>
-</html>
+*/
+
+const views = browser.extension.getViews();
+let loaded = false;
+for (const view of views) {
+  if (window == view) continue;
+  if (view.location.pathname == location.pathname) {
+    loaded = true;
+    break;
+  }
+}
+
+if (!loaded) {
+  import('/background.mjs').catch((e) => console.error(e));
+}
