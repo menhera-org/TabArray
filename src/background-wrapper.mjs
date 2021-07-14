@@ -28,5 +28,8 @@ for (const view of views) {
 }
 
 if (!loaded) {
+  console.log('Loading the background script.');
   import('/background.mjs').catch((e) => console.error(e));
+} else {
+  console.warn('Background script already loaded, aborting.');
 }
