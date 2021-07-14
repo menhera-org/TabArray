@@ -176,5 +176,21 @@
     "labelDragTabToChangeContainer": {
         "message": "タブをドラッグしてコンテナーに移動する",
         "description": "Option to enable the user to drag a tab to move between containers."
+    },
+    "optionsHeadingExperimental": {
+        "message": "実験的な機能",
+        "description": "Heading text of options page for experimental addon features."
+    },
+    "optionsHeadingFirefox": {
+        "message": "Firefox 設定",
+        "description": "Heading text of options page for changing Firefox settings."
+    },
+    "optionsDescriptionExperimental": {
+        "message": "これらのオプションの一部を無効にすることでバグっぽい動作がみられる場合に対処することができる場合があります．",
+        "description": "Description text for experimental features options."
+    },
+    "optionsDescriptionFirefox": {
+        "message": "ここでプライバシー関連の隠された Firefox 設定の一部を変更することができます．",
+        "description": "Description text for Firefox settings options."
     }
 }
