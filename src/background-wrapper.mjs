@@ -29,7 +29,10 @@ for (const view of views) {
 
 if (!loaded) {
   console.log('Loading the background script.');
-  import('/background.mjs').catch((e) => console.error(e));
+  const loadingStartTime = +new Date;
+  import('/background.mjs').then(() => {
+    console.log('Background script loaded in %d ms.', (+new Date) - loadingStartTime);
+  }).catch((e) => console.error(e));
 } else {
   console.warn('Background script already loaded, aborting.');
 }
