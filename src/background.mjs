@@ -21,7 +21,6 @@ import * as containers from './modules/containers.mjs';
 import { isNewTabPage } from './modules/newtab.mjs';
 
 import {WebExtensionsBroadcastChannel} from './modules/broadcasting.mjs';
-import '/install.mjs';
 import { getActiveUserContext } from './modules/usercontext-state.mjs';
 import {config} from './modules/config.mjs';
 import { setActiveUserContext } from './modules/usercontext-state.mjs';
