@@ -196,5 +196,21 @@
     "optionsDescriptionFirefox": {
         "message": "Here you can change some hidden Firefox settings related to privacy.",
         "description": "Description text for Firefox settings options."
+    },
+    "panoramaGrid": {
+        "message": "Panorama Grid",
+        "description": "Panorama Grid page (grid view of container and tabs)"
+    },
+    "buttonPanorama": {
+        "message": "Open Panorama Grid",
+        "description": "Button label to open Panorama Grid"
+    },
+    "buttonOpenTabInContainer": {
+        "message": "Open New Tab",
+        "description": "Button label to open a new tab in the specified container"
+    },
+    "buttonTabClose": {
+        "message": "Close This Tab",
+        "description": "Button label to close a tab."
     }
 }

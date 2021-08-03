@@ -17,5 +17,5 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
-export const PANORAMA_PAGE = '/panorama/panorama.html';
+
+globalThis.TabArray = null;

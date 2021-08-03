@@ -24,7 +24,7 @@ import {sleep} from '../modules/utils.mjs';
 import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
 import '/components/usercontext-colorpicker.mjs';
 import '/components/usercontext-iconpicker.mjs';
-import {ADDON_PAGE} from '../defs.mjs';
+import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.mjs';
 
 const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
@@ -32,6 +32,7 @@ const STATE_VISIBLE_TABS = 2;
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
+document.querySelector('#button-panorama > .button-text').textContent = browser.i18n.getMessage('buttonPanorama');
 document.querySelector('#button-hide-inactive > .button-text').textContent = browser.i18n.getMessage('buttonHideInactiveContainers');
 document.querySelector('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
 document.querySelector('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
@@ -86,7 +87,7 @@ const renderTab = async (tab) => {
 	tabLabelElement.textContent = tab.title;
 	const tabCloseButton = document.createElement('button');
 	tabCloseButton.classList.add('tab-close-button');
-	tabCloseButton.title = 'Close this tab';
+	tabCloseButton.title = browser.i18n.getMessage('buttonTabClose');
 	tabElement.append(tabCloseButton);
 	tabCloseButton.addEventListener('click', async (ev) => {
 		ev.stopImmediatePropagation();
@@ -489,6 +490,16 @@ document.querySelector('#button-about-addon').addEventListener('click', (ev) => 
 
 document.querySelector('#button-settings').addEventListener('click', (ev) => {
 	browser.runtime.openOptionsPage().then(() => {
+		window.close();
+	}).catch((e) => console.error(e));
+});
+
+document.querySelector('#button-panorama').addEventListener('click', (ev) => {
+	browser.tabs.create({
+		active: true,
+		windowId: browser.windows.WINDOW_ID_CURRENT,
+		url: browser.runtime.getURL(PANORAMA_PAGE),
+	}).then(() => {
 		window.close();
 	}).catch((e) => console.error(e));
 });

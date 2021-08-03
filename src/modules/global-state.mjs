@@ -17,5 +17,16 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
-export const PANORAMA_PAGE = '/panorama/panorama.html';
+browser.runtime.getBackgroundPage().then(async (background) => {
+  if (!background || !background.console) {
+    console.error('Failed to fetch the Window object of the background page');
+    return;
+  }
+  if (background == window) {
+    // this is background page; load only once
+    await import('../background-state.mjs');
+  }
+  const {TabArray} = background;
+}).catch((e) => {
+  console.error(e);
+});
