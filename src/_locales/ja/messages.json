@@ -196,5 +196,21 @@
     "optionsDescriptionFirefox": {
         "message": "ここでプライバシー関連の隠された Firefox 設定の一部を変更することができます．",
         "description": "Description text for Firefox settings options."
+    },
+    "panoramaGrid": {
+        "message": "パノラマ・グリッド",
+        "description": "Panorama Grid page (grid view of container and tabs)"
+    },
+    "buttonPanorama": {
+        "message": "パノラマ・グリッドを開く",
+        "description": "Button label to open Panorama Grid"
+    },
+    "buttonOpenTabInContainer": {
+        "message": "新しいタブを開く",
+        "description": "Button label to open a new tab in the specified container"
+    },
+    "buttonTabClose": {
+        "message": "このタブを閉じる",
+        "description": "Button label to close a tab."
     }
 }
