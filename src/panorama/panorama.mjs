@@ -99,7 +99,7 @@ const renderContainer = async (userContextId, containerElement) => {
 
   await Promise.all(tabs.map((tab) => renderTab(tab).then((tabElement) => {
     containerTabsElement.append(tabElement);
-    tabElement.addEventListener('click', async (ev) => {
+    tabElement.addEventListener('button-tab-click', async (ev) => {
       await browser.tabs.update(tab.id, {
         active: true,
       });

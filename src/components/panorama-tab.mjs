@@ -26,9 +26,13 @@ customElements.define('panorama-tab', class PanoramaTabElement extends HTMLEleme
     css.rel = 'stylesheet';
     css.href = '/components/panorama-tab.css';
     this.shadowRoot.append(css);
-    const tabPreview = document.createElement('div');
+    const tabPreview = document.createElement('button');
     tabPreview.id = 'tab-preview';
     this.shadowRoot.append(tabPreview);
+    tabPreview.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      this.dispatchEvent(new Event('button-tab-click'));
+    });
     const tabPreviewImg = document.createElement('img');
     tabPreviewImg.id = 'tab-preview-img';
     tabPreview.append(tabPreviewImg);
@@ -48,6 +52,10 @@ customElements.define('panorama-tab', class PanoramaTabElement extends HTMLEleme
     const tabInfo = document.createElement('div');
     tabInfo.id = 'tab-info';
     this.shadowRoot.append(tabInfo);
+    tabInfo.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      this.dispatchEvent(new Event('button-tab-click'));
+    });
     const tabIconElement = document.createElement('img');
     tabIconElement.id = 'tab-icon';
     tabIconElement.src = '/img/transparent.png';

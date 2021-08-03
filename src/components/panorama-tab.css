@@ -41,6 +41,10 @@
   background-color: #fff;
   display: grid;
   align-content: center;
+  border: none;
+  appearance: none;
+  margin: 0;
+  padding: 0;
 }
 
 #tab-preview-img {
