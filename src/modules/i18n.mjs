@@ -17,19 +17,14 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export const getStateManager = async () => {
-  const background = await browser.runtime.getBackgroundPage();
-  if (!background) {
-    throw new Error('Invalid background page');
-  }
-  while (!background.StateManager) {
-    await new Promise((res) => setTimeout(() => res(), 100));
-  }
-  const {StateManager} = background;
-  if (!StateManager.initialized) {
-    await new Promise((res) => StateManager.addEventListener('initialized', (ev) => {
-      res();
-    }));
-  }
-  return StateManager;
+export const getMessage = (messageName, ... args) => {
+    return '' + (browser.i18n.getMessage(messageName, ... args) || '');
+};
+
+export const getEffectiveLocale = () => {
+    return getMessage('effectiveLocale');
+};
+
+export const getBrowserLocale = () => {
+  return browser.i18n.getUILanguage();
 };

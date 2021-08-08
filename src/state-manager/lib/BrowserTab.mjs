@@ -17,19 +17,31 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export const getStateManager = async () => {
-  const background = await browser.runtime.getBackgroundPage();
-  if (!background) {
-    throw new Error('Invalid background page');
+// BrowserTab
+const CLASS_ID = 'ac14db90-8a54-41f5-b080-0cc73dd5a937';
+
+export class BrowserTab extends EventTarget {
+  id = 0;
+  userContextId = 0;
+  windowId = 0;
+  url = '';
+  closed = false;
+  favIconUrl = '';
+  initialized = false;
+  discarded = false;
+  active = false;
+  index = 0;
+  pinned = false;
+  hidden = false;
+  previewUrl = '';
+  title = '';
+
+  constructor(id) {
+    super();
+    this.id = 0|id;
   }
-  while (!background.StateManager) {
-    await new Promise((res) => setTimeout(() => res(), 100));
+
+  async close() {
+    //
   }
-  const {StateManager} = background;
-  if (!StateManager.initialized) {
-    await new Promise((res) => StateManager.addEventListener('initialized', (ev) => {
-      res();
-    }));
-  }
-  return StateManager;
-};
+}

@@ -22,11 +22,11 @@ import '../components/panorama-tab.mjs';
 import '../modules/background-console.mjs';
 import * as containers from '../modules/containers.mjs';
 import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
+import { getStateManager } from '../modules/global-state.mjs';
 
 document.title = browser.i18n.getMessage('panoramaGrid');
 
-const renderTab = async (tab) => {
-  //
+const renderTab = (tab) => {
   const tabElement = document.createElement('panorama-tab');
   if (tab.url) {
     tabElement.title = tab.url;
@@ -39,22 +39,17 @@ const renderTab = async (tab) => {
   if (tab.favIconUrl) {
     tabElement.iconUrl = tab.favIconUrl;
   }
-  if (tab.discarded) {
-    //
-  } else {
-    browser.tabs.captureTab(tab.id, {scale: .25}).then((url) => {
-      tabElement.previewUrl = url;
-    });
+  if (tab.previewUrl) {
+    tabElement.previewUrl = tab.previewUrl;
   }
   return tabElement;
 };
 
-const renderContainer = async (userContextId, containerElement) => {
-  //
-  const windowId = (await browser.windows.getCurrent()).id;
+const renderContainer = (userContextId, containerElement) => {
 	const cookieStoreId = containers.toCookieStoreId(userContextId);
-	const container = await containers.get(userContextId);
-	const tabs = await browser.tabs.query({cookieStoreId});
+  const userContext = StateManager.getUserContext(userContextId);
+  const container = userContext;
+  const tabs = userContext.getBrowserTabs();
   if (!containerElement) {
     containerElement = document.createElement('div');
     containerElement.classList.add('panorama-container');
@@ -97,50 +92,49 @@ const renderContainer = async (userContextId, containerElement) => {
     });
   });
 
-  await Promise.all(tabs.map((tab) => renderTab(tab).then((tabElement) => {
+  for (const browserTab of tabs) {
+    const tabElement = renderTab(browserTab);
     containerTabsElement.append(tabElement);
     tabElement.addEventListener('button-tab-click', async (ev) => {
-      await browser.tabs.update(tab.id, {
+      await browser.tabs.update(browserTab.id, {
         active: true,
       });
-      if (windowId != tab.windowId) {
-        await browser.windows.update(tab.windowId, {
-          focused: true,
-        });
-      }
+      await browser.windows.update(browserTab.windowId, {
+        focused: true,
+      });
       window.close();
     });
     tabElement.addEventListener('button-tab-close', async (ev) => {
-      await browser.tabs.remove(tab.id);
+      await browser.tabs.remove(browserTab.id);
 		  await render();
     });
-    return tabElement;
-  })));
+  }
 
   return containerElement;
 };
 
-const render = async () => {
-  //
-  const userContextIds = [0, ... await containers.getIds()];
+const render = () => {
+  const userContexts = StateManager.getUserContexts();
   const containersElement = document.querySelector('#containers');
   containersElement.textContent = '';
-  const activeUserContextIds = await containers.getActiveIds();
-  for (const userContextId of userContextIds) {
-    if (!activeUserContextIds.includes(userContextId)) continue;
-    const containerElement = await renderContainer(userContextId);
+  for (const userContext of userContexts) {
+    if (!userContext.tabIds.size) continue;
+    const containerElement = renderContainer(userContext.id);
     containersElement.append(containerElement);
   }
-  for (const userContextId of userContextIds) {
-    if (activeUserContextIds.includes(userContextId)) continue;
-    const containerElement = await renderContainer(userContextId);
+  for (const userContext of userContexts) {
+    if (userContext.tabIds.size) continue;
+    const containerElement = renderContainer(userContext.id);
     containersElement.append(containerElement);
   }
 };
 
-render().catch(e => console.error(e));
+getStateManager().then((StateManager) => {
+  globalThis.StateManager = StateManager;
+  render();
+});
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 tabChangeChannel.addEventListener('message', ev => {
-	render().catch(e => console.error(e));
+	render();
 });

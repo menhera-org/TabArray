@@ -26,6 +26,7 @@ import {config} from './modules/config.mjs';
 import { setActiveUserContext } from './modules/usercontext-state.mjs';
 import { ADDON_PAGE } from './defs.mjs';
 import { getWindowIds } from './modules/windows.mjs';
+import './state-manager/StateManager.mjs';
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
@@ -173,6 +174,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 }, {
   properties: [
     'url',
+    'status',
   ],
 });
 
