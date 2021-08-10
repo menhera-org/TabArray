@@ -17,33 +17,21 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { LifecycleEventTarget } from "./LifecycleEventTarget.mjs";
-
-// BrowserTab
-const CLASS_ID = 'ac14db90-8a54-41f5-b080-0cc73dd5a937';
-
-export class BrowserTab extends LifecycleEventTarget {
-  id = 0;
-  userContextId = 0;
-  windowId = 0;
-  url = '';
-  closed = false;
-  favIconUrl = '';
-  initialized = false;
-  discarded = false;
-  active = false;
-  index = 0;
-  pinned = false;
-  hidden = false;
-  previewUrl = '';
-  title = '';
-
-  constructor(id) {
+export class LifecycleEventTarget extends EventTarget {
+  constructor() {
     super();
-    this.id = 0|id;
   }
 
-  async close() {
-    //
+  addEventListenerWindow(aWindow, aEventType, aListener) {
+    this.addEventListener(aEventType, aListener, {
+      capture: false,
+      passive: true,
+    });
+    aWindow.addEventListener('unload', (ev) => {
+      this.removeEventListener(aEventType, aListener, {
+        capture: false,
+        passive: true,
+      });
+    });
   }
 }

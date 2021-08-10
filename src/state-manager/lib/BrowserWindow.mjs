@@ -17,7 +17,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export class BrowserWindow extends EventTarget {
+import { LifecycleEventTarget } from "./LifecycleEventTarget.mjs";
+
+export class BrowserWindow extends LifecycleEventTarget {
   id = -1;
   tabIds = new Set;
   activeTabId = -1;

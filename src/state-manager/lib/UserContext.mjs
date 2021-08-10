@@ -17,6 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { LifecycleEventTarget } from "./LifecycleEventTarget.mjs";
+
 // UserContext
 const CLASS_ID = 'f06149ff-6503-4d9b-88fe-196ea5b64b5c';
 
@@ -50,7 +52,7 @@ const ICONS = [
 
 const DEFAULT_ICON_URL = browser.runtime.getURL('/img/category_black_24dp.svg');
 
-export class UserContext extends EventTarget {
+export class UserContext extends LifecycleEventTarget {
   id = 0;
   name = '';
   colorName = 'toolbar';

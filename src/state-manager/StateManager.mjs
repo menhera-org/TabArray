@@ -21,10 +21,11 @@ import { BrowserWindow } from "./lib/BrowserWindow.mjs";
 import { BrowserTab } from "./lib/BrowserTab.mjs";
 import { UserContext } from "./lib/UserContext.mjs";
 import * as i18n from '../modules/i18n.mjs';
+import { LifecycleEventTarget } from "./lib/LifecycleEventTarget.mjs";
 
 const startTime = +new Date;
 
-export const state = new class StateManager extends EventTarget {
+export const state = new class StateManager extends LifecycleEventTarget {
   // Map from windowId (int) to BrowserWindow
   _browserWindows = new Map;
 
@@ -104,6 +105,12 @@ const getBrowserWindow = (windowId) => {
   const browserWindow = new BrowserWindow(windowId);
   browserWindow.stateManager = state;
   state._browserWindows.set(windowId, browserWindow);
+  state.dispatchEvent(new CustomEvent('windowOpen', {
+    cancelable: false,
+    detail: {
+      windowId,
+    },
+  }));
   return browserWindow;
 };
 
@@ -170,6 +177,13 @@ const updateTabInfo = (tabObj) => {
       }
       console.log('Shifted %d tab(s) to end at index %d on window %d', shiftedTabCount, browserTab.index, browserTab.windowId);
     }
+    browserWindow.dispatchEvent(new CustomEvent('tabOpen', {
+      cancelable: false,
+      detail: {
+        tabId: browserTab.id,
+        userContextId,
+      },
+    }));
     state.dispatchEvent(new CustomEvent('tabOpen', {
       cancelable: false,
       detail: {
@@ -231,8 +245,52 @@ const updateTabInfo = (tabObj) => {
     if (hiddenChanged) {
       if (browserTab.hidden) {
         // tab is made hidden
+        browserTab.dispatchEvent(new CustomEvent('hide', {
+          cancelable: false,
+          detail: {
+            windowId: browserTab.windowId,
+            userContextId,
+          },
+        }));
+        browserWindow.dispatchEvent(new CustomEvent('tabHide', {
+          cancelable: false,
+          detail: {
+            tabId: browserTab.id,
+            userContextId,
+          },
+        }));
+        state.dispatchEvent(new CustomEvent('tabHide', {
+          cancelable: false,
+          detail: {
+            tabId: browserTab.id,
+            windowId: browserTab.windowId,
+            userContextId,
+          },
+        }));
       } else {
         // tab is made visible
+        browserTab.dispatchEvent(new CustomEvent('show', {
+          cancelable: false,
+          detail: {
+            windowId: browserTab.windowId,
+            userContextId,
+          },
+        }));
+        browserWindow.dispatchEvent(new CustomEvent('tabShow', {
+          cancelable: false,
+          detail: {
+            tabId: browserTab.id,
+            userContextId,
+          },
+        }));
+        state.dispatchEvent(new CustomEvent('tabShow', {
+          cancelable: false,
+          detail: {
+            tabId: browserTab.id,
+            windowId: browserTab.windowId,
+            userContextId,
+          },
+        }));
       }
     }
     browserTab.dispatchEvent(new CustomEvent('change', {
@@ -435,13 +493,13 @@ browser.contextualIdentities.onUpdated.addListener(({contextualIdentity}) => {
       },
     }));
   } else {
-    userContext.dispatchEvent(new CustomEvent('update', {
+    userContext.dispatchEvent(new CustomEvent('change', {
       cancelable: false,
       detail: {
         userContextId,
       },
     }));
-    state.dispatchEvent(new CustomEvent('userContextUpdate', {
+    state.dispatchEvent(new CustomEvent('userContextChange', {
       cancelable: false,
       detail: {
         userContextId,
@@ -560,7 +618,7 @@ browser.tabs.onAttached.addListener((tabId, {newWindowId, newPosition}) => {
       },
     }));
   }
-  state.dispatchEvent(new CustomEvent('tabAttach', {
+  state.dispatchEvent(new CustomEvent('tabWindowChange', {
     cancelable: false,
     detail: {
       windowId: browserWindow.id,
