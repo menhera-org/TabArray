@@ -212,5 +212,13 @@
     "buttonTabClose": {
         "message": "このタブを閉じる",
         "description": "Button label to close a tab."
+    },
+    "tooltipCollapseContainers": {
+        "message": "コンテナーを最小化する",
+        "description": "Tooltip for the button to collapse inactive containers."
+    },
+    "tooltipExpandContainers": {
+        "message": "すべてのコンテナーを表示",
+        "description": "Tooltip for the button to expand containers."
     }
 }
