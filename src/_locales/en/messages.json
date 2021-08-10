@@ -212,5 +212,13 @@
     "buttonTabClose": {
         "message": "Close This Tab",
         "description": "Button label to close a tab."
+    },
+    "tooltipCollapseContainers": {
+        "message": "Collapse Containers",
+        "description": "Tooltip for the button to collapse inactive containers."
+    },
+    "tooltipExpandContainers": {
+        "message": "Expand Containers",
+        "description": "Tooltip for the button to expand containers."
     }
 }

@@ -142,6 +142,20 @@ export const closeAllTabs = async (aUserContextId, aExcludePinned) => {
   }
 };
 
+export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
+  const cookieStoreId = toCookieStoreId(aUserContextId);
+  const userContextId = toUserContextId(cookieStoreId);
+  const tabIds = (await browser.tabs.query({
+    windowId: aWindowId,
+    pinned: false,
+    cookieStoreId,
+  })).map((tabObj) => tabObj.id);
+  console.log('Closing %d tab(s)', tabIds.length);
+  if (tabIds.length) {
+    await browser.tabs.remove(tabIds);
+  }
+};
+
 export const remove = async (aUserContextId) => {
   try {
     await closeAllTabs(aUserContextId);
@@ -292,6 +306,13 @@ export const hideAll = async (aWindowId) => {
   for (const userContextId of userContextIds) {
     await hide(userContextId, aWindowId);
   }
+};
+
+export const showAll = async (aWindowId) => {
+  const tabIds = (await browser.tabs.query({
+    windowId: aWindowId,
+  })).map((tabObj) => tabObj.id);
+  await browser.tabs.show(tabIds);
 };
 
 export const reopenInContainer = async (aUserContextId, aTabId) => {
