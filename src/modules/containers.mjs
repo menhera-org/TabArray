@@ -394,6 +394,7 @@ export const openNewTabInContainer = async (aUserContextId, aWindowId) => {
       cookieStoreId,
     });
   } else {
+    console.log('Inserting a new tab at index %d', lastIndex + 1);
     await browser.tabs.create({
       active: true,
       windowId,

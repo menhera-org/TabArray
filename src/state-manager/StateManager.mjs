@@ -135,6 +135,10 @@ const updateTabInfo = (tabObj) => {
   browserTab.title = tabObj.title || '';
   const browserWindow = getBrowserWindow(browserTab.windowId);
   browserWindow.tabIds.add(browserTab.id);
+  const userContext = state._userContexts.get(userContextId);
+  if (userContext) {
+    userContext.tabIds.add(browserTab.id);
+  }
   const pinChanged = (browserTab.pinned != !!tabObj.pinned) && !tabCreated;
   browserTab.pinned = !!tabObj.pinned;
   const hiddenChanged = (browserTab.hidden != !!tabObj.hidden) && !tabCreated;
@@ -144,10 +148,28 @@ const updateTabInfo = (tabObj) => {
     if (browserWindow.activeTabId != browserTab.id) {
       browserWindow.activeTabId = browserTab.id;
       activeTabChanged = true;
+      for (const browserTab of browserWindow.getTabs()) {
+        if (browserWindow.activeTabId != browserTab.id) {
+          browserTab.active = false;
+        }
+      }
     }
   }
   if (tabCreated) {
     state._browserTabs.set(browserTab.id, browserTab);
+    const previousTabCount = browserWindow.tabIds.size - 1;
+    if (previousTabCount > browserTab.index) {
+      const browserTabs = browserWindow.getTabs();
+      let shiftedTabCount = 0;
+      for (const otherTab of browserTabs) {
+        if (otherTab.id == browserTab.id) continue;
+        if (otherTab.index >= browserTab.index) {
+          otherTab.index = otherTab.index + 1;
+          shiftedTabCount++;
+        }
+      }
+      console.log('Shifted %d tab(s) to end at index %d on window %d', shiftedTabCount, browserTab.index, browserTab.windowId);
+    }
     state.dispatchEvent(new CustomEvent('tabOpen', {
       cancelable: false,
       detail: {
@@ -255,6 +277,7 @@ const updateTabInfo = (tabObj) => {
       },
     }));
   }
+  return browserTab;
 };
 
 const updateTabById = async (tabId) => {
@@ -440,6 +463,24 @@ browser.tabs.onRemoved.addListener((tabId, {windowId}) => {
   userContext.tabIds.delete(tabId);
   const browserWindow = getBrowserWindow(browserTab.windowId);
   browserWindow.tabIds.delete(browserTab.id);
+
+  // workaround
+  const removedIndex = browserTab.index;
+  let visited = false;
+  let indexShifted = false;
+  for (const browserTab of browserWindow.getTabs()) {
+    if (browserTab.index == removedIndex) {
+      visited = true;
+    }
+    if (browserTab.index > removedIndex && !visited) {
+      browserTab.index = browserTab.index - 1;
+      indexShifted = true;
+    }
+  }
+  if (indexShifted) {
+    console.log('Index shift at index %d on window %d', removedIndex, windowId);
+  }
+
   browserTab.dispatchEvent(new Event('close', {
     cancelable: false,
   }));
@@ -472,33 +513,10 @@ browser.tabs.onCreated.addListener((tabObj) => {
     console.warn('assertion failed: BrowserTab already exists');
     return;
   }
-  const browserTab = new BrowserTab(tabObj.id);
-  const userContextId = UserContext.toUserContextId(tabObj.cookieStoreId);
-  browserTab.userContextId = userContextId;
-  browserTab.windowId = tabObj.windowId;
-  browserTab.url = tabObj.url || '';
-  browserTab.initialized = !!browserTab.url && browserTab.url != 'about:blank';
-  browserTab.favIconUrl = tabObj.favIconUrl || '';
-  browserTab.index = tabObj.index;
-  state._browserTabs.set(browserTab.id, browserTab);
+  const browserTab = updateTabInfo(tabObj);
+  const {userContextId} = browserTab;
   const browserWindow = getBrowserWindow(browserTab.windowId);
-  browserWindow.tabIds.add(browserTab.id);
-  browserWindow.dispatchEvent(new CustomEvent('tabOpen', {
-    cancelable: false,
-    detail: {
-      tabId: browserTab.id,
-      userContextId,
-      tabIndex: browserTab.index,
-    },
-  }));
-  state.dispatchEvent(new CustomEvent('tabOpen', {
-    cancelable: false,
-    detail: {
-      tabId: browserTab.id,
-      windowId: browserTab.windowId,
-      userContextId,
-    },
-  }));
+  //browserWindow.tabIds.add(browserTab.id);
 });
 
 browser.tabs.onAttached.addListener((tabId, {newWindowId, newPosition}) => {
@@ -640,6 +658,11 @@ browser.tabs.onActivated.addListener(({tabId, windowId, previousTabId}) => {
       }
     }
     browserWindow.activeTabId = tabId;
+    for (const browserTab of browserWindow.getTabs()) {
+      if (browserWindow.activeTabId != browserTab.id) {
+        browserTab.active = false;
+      }
+    }
     browserWindow.dispatchEvent(new CustomEvent('activeTabChange', {
       cancelable: false,
       detail: {
