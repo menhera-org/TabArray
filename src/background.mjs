@@ -241,3 +241,31 @@ browser.windows.getAll({
 });
 
 browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
+
+browser.webRequest.onBeforeRequest.addListener((details) => {
+  //
+  const userContextId = containers.toUserContextId(details.cookieStoreId);
+  const result = {};
+  do {
+    //
+    if (details.frameId != 0) break;
+    if (details.incognito) break;
+    if (details.originUrl) break;
+    if (0 != userContextId) break;
+    const {url} = details;
+    console.log('New navigation target: %s', url);
+    const confirmPage = browser.runtime.getURL('navigation/confirm.html');
+    result.redirectUrl = confirmPage + '?' + (new URLSearchParams({
+      url,
+    }));
+  } while (false);
+  return result;
+}, {
+  incognito: false,
+  urls: [
+    '*://*/*'
+  ],
+  types: [
+    'main_frame',
+  ],
+}, ['blocking']);

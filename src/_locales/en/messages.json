@@ -220,5 +220,23 @@
     "tooltipExpandContainers": {
         "message": "Expand Containers",
         "description": "Tooltip for the button to expand containers."
+    },
+    "titleSelectContainer": {
+        "message": "Select a Container",
+        "description": "Title of the popup asking the user to choose a container to open a new tab in."
+    },
+    "descriptionSelectContainer": {
+        "message": "You are about to open a new Tab: $URL$.",
+        "description": "Confirmation message before the user chooses a container to open a new tab in.",
+        "placeholders": {
+            "url": {
+                "content": "$1",
+                "example": "https://example.com/"
+            }
+        }
+    },
+    "promptSelectContainer": {
+        "message": "Please select a Container to open this tab in.",
+        "description": "Message asking the user to select a container for a new tab."
     }
 }

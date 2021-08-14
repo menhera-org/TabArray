@@ -84,6 +84,10 @@ export class UserContext extends LifecycleEventTarget {
     return browserTabs;
   }
 
+  get cookieStoreId() {
+    return UserContext.toCookieStoreId(this.id);
+  }
+
   async close() {
     //
   }
