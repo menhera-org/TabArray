@@ -89,6 +89,9 @@ export class UserContext extends LifecycleEventTarget {
   }
 
   async remove() {
+    if (!this.isDefined) {
+      return;
+    }
     await browser.contextualIdentities.remove(this.cookieStoreId);
   }
 
