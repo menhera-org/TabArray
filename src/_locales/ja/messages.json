@@ -220,5 +220,23 @@
     "tooltipExpandContainers": {
         "message": "すべてのコンテナーを表示",
         "description": "Tooltip for the button to expand containers."
+    },
+    "titleSelectContainer": {
+        "message": "コンテナーを選択",
+        "description": "Title of the popup asking the user to choose a container to open a new tab in."
+    },
+    "descriptionSelectContainer": {
+        "message": "あなたは以下の新しいタブを開こうとしています：$URL$．",
+        "description": "Confirmation message before the user chooses a container to open a new tab in.",
+        "placeholders": {
+            "url": {
+                "content": "$1",
+                "example": "https://example.com/"
+            }
+        }
+    },
+    "promptSelectContainer": {
+        "message": "このタブを開くコンテナーを選択してください．",
+        "description": "Message asking the user to select a container for a new tab."
     }
 }
