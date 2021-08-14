@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Container Tab Groups",
-	"version": "3",
+	"version": "4",
 	"browser_specific_settings": {
   	"gecko": {
 			"id": "tab-array@menhera.org"
