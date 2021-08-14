@@ -33,6 +33,7 @@ const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 let tabSorting = false;
 let configNewTabInContainerEnabled = true;
 let configDragBetweenContainers = true;
+let configExternalTabChooseContainer = true;
 config.observe('newtab.keepContainer', (value) => {
   if (undefined !== value) {
     configNewTabInContainerEnabled = value;
@@ -43,6 +44,15 @@ config.observe('gesture.dragTabBetweenContainers', (value) => {
   if (undefined !== value) {
     configDragBetweenContainers = value;
   }
+});
+
+config.observe('tab.external.chooseContainer', (value) => {
+  if (undefined === value) {
+    configExternalTabChooseContainer = true;
+    config.set('tab.external.chooseContainer', true);
+    return;
+  }
+  configExternalTabChooseContainer = !!value;
 });
 
 globalThis.sortTabsByWindow = async (windowId) => {
@@ -252,6 +262,7 @@ browser.webRequest.onBeforeRequest.addListener((details) => {
     if (details.incognito) break;
     if (details.originUrl) break;
     if (0 != userContextId) break;
+    if (!configExternalTabChooseContainer) break;
     const {url} = details;
     console.log('New navigation target: %s', url);
     const confirmPage = browser.runtime.getURL(CONFIRM_PAGE);
