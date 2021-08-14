@@ -23,8 +23,10 @@ import '../modules/background-console.mjs';
 import * as containers from '../modules/containers.mjs';
 import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
 import { getStateManager } from '../modules/global-state.mjs';
+import * as i18n from '../modules/i18n.mjs';
 
-document.title = browser.i18n.getMessage('panoramaGrid');
+document.title = i18n.getMessage('panoramaGrid');
+document.documentElement.lang = i18n.getEffectiveLocale();
 
 const renderTab = (tab) => {
   const tabElement = document.createElement('panorama-tab');
