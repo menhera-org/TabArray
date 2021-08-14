@@ -24,7 +24,7 @@ import {WebExtensionsBroadcastChannel} from './modules/broadcasting.mjs';
 import { getActiveUserContext } from './modules/usercontext-state.mjs';
 import {config} from './modules/config.mjs';
 import { setActiveUserContext } from './modules/usercontext-state.mjs';
-import { ADDON_PAGE } from './defs.mjs';
+import { ADDON_PAGE, CONFIRM_PAGE } from './defs.mjs';
 import { getWindowIds } from './modules/windows.mjs';
 import './state-manager/StateManager.mjs';
 
@@ -254,7 +254,7 @@ browser.webRequest.onBeforeRequest.addListener((details) => {
     if (0 != userContextId) break;
     const {url} = details;
     console.log('New navigation target: %s', url);
-    const confirmPage = browser.runtime.getURL('navigation/confirm.html');
+    const confirmPage = browser.runtime.getURL(CONFIRM_PAGE);
     result.redirectUrl = confirmPage + '?' + (new URLSearchParams({
       url,
     }));

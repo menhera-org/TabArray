@@ -19,3 +19,4 @@
 
 export const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
 export const PANORAMA_PAGE = '/panorama/panorama.html';
+export const CONFIRM_PAGE = '/navigation/confirm.html';
