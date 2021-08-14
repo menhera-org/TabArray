@@ -274,7 +274,7 @@ browser.webRequest.onBeforeRequest.addListener((details) => {
 }, {
   incognito: false,
   urls: [
-    '*://*/*'
+    '*://*/*', // all HTTP/HTTPS requests.
   ],
   types: [
     'main_frame',
