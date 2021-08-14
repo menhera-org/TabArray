@@ -69,6 +69,7 @@ inputDragTabToChangeContainer.addEventListener('change', (ev) => {
 });
 
 config.observe('tab.external.chooseContainer', (value) => {
+  console.log('value:', value);
   if (undefined === value) {
     config.set('tab.external.chooseContainer', true);
     return;

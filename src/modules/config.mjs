@@ -51,8 +51,8 @@ export class Configuration {
     browser.storage.onChanged.addListener((changes, areaName) => {
       if ('sync' != areaName) return;
       if (!(key in changes)) return;
-      const value = changes[key];
-      callIgnoringErrors(aCallback, value);
+      const {newValue} = changes[key];
+      callIgnoringErrors(aCallback, newValue);
     });
   }
 }
