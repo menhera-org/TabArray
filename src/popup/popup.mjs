@@ -491,9 +491,14 @@ document.querySelector('#button-new-container').addEventListener('click', ev => 
 	showNewContainerPane().catch(e => console.error(e));
 });
 
-getStateManager().then(async (StateManager) => {
-  globalThis.StateManager = StateManager;
-  currentWindowId = (await browser.windows.get(browser.windows.WINDOW_ID_CURRENT)).id;
+Promise.all([
+	browser.windows.get(browser.windows.WINDOW_ID_CURRENT).then((windowObj) => {
+		return windowObj.id;
+	}),
+	getStateManager(),
+]).then(async ([windowId, aStateManager]) => {
+  globalThis.StateManager = aStateManager;
+  currentWindowId = windowId;
   render();
   StateManager.addEventListenerWindow(window, 'tabOpen', (ev) => {
 	  render();
