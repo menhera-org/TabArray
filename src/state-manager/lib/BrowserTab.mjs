@@ -23,24 +23,22 @@ import { LifecycleEventTarget } from "./LifecycleEventTarget.mjs";
 const CLASS_ID = 'ac14db90-8a54-41f5-b080-0cc73dd5a937';
 
 export class BrowserTab extends LifecycleEventTarget {
-  id = 0;
-  userContextId = 0;
-  windowId = 0;
-  url = '';
-  closed = false;
-  favIconUrl = '';
-  initialized = false;
-  discarded = false;
-  active = false;
-  index = 0;
-  pinned = false;
-  hidden = false;
-  previewUrl = '';
-  title = '';
-
   constructor(id) {
     super();
     this.id = 0|id;
+    this.userContextId = 0;
+    this.windowId = 0;
+    this.url = '';
+    this.closed = false;
+    this.favIconUrl = '';
+    this.initialized = false;
+    this.discarded = false;
+    this.active = false;
+    this.index = 0;
+    this.pinned = false;
+    this.hidden = false;
+    this.previewUrl = '';
+    this.title = '';
   }
 
   async close() {

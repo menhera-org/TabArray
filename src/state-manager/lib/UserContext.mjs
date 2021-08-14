@@ -53,19 +53,17 @@ const ICONS = [
 const DEFAULT_ICON_URL = browser.runtime.getURL('/img/category_black_24dp.svg');
 
 export class UserContext extends LifecycleEventTarget {
-  id = 0;
-  name = '';
-  colorName = 'toolbar';
-  iconName = 'circle';
-  colorCode = '#7c7c7d';
-  iconUrl = DEFAULT_ICON_URL;
-  isDefined = true;
-  tabIds = new Set;
-  stateManager = null;
-
   constructor(id) {
     super();
     this.id = 0|id;
+    this.name = '';
+    this.colorName = 'toolbar';
+    this.iconName = 'circle';
+    this.colorCode = '#7c7c7d';
+    this.iconUrl = DEFAULT_ICON_URL;
+    this.isDefined = true;
+    this.tabIds = new Set;
+    this.stateManager = null;
   }
 
   get CLASS_ID() {

@@ -26,22 +26,22 @@ import { LifecycleEventTarget } from "./lib/LifecycleEventTarget.mjs";
 const startTime = +new Date;
 
 export const state = new class StateManagerConstructor extends LifecycleEventTarget {
-  // Map from windowId (int) to BrowserWindow
-  _browserWindows = new Map;
-
-  // Map from tabId (int) to BrowserTab
-  _browserTabs = new Map;
-
-  // Map from userContextId (int) to UserContext
-  _userContexts = new Map;
-
-  // Set of userContextId(s) (int) currently in use (open tabs)
-  _openUserContextIds = new Set;
-
-  _initialized = false;
-
   constructor() {
     super();
+
+    // Map from windowId (int) to BrowserWindow
+    this._browserWindows = new Map;
+
+    // Map from tabId (int) to BrowserTab
+    this._browserTabs = new Map;
+
+    // Map from userContextId (int) to UserContext
+    this._userContexts = new Map;
+
+    // Set of userContextId(s) (int) currently in use (open tabs)
+    this._openUserContextIds = new Set;
+
+    this._initialized = false;
   }
 
   get initialized() {

@@ -20,16 +20,14 @@
 import { LifecycleEventTarget } from "./LifecycleEventTarget.mjs";
 
 export class BrowserWindow extends LifecycleEventTarget {
-  id = -1;
-  tabIds = new Set;
-  activeTabId = -1;
-  closed = false;
-  isNormal = true;
-  stateManager = null;
-
   constructor(id) {
     super();
     this.id = 0|id;
+    this.tabIds = new Set;
+    this.activeTabId = -1;
+    this.closed = false;
+    this.isNormal = true;
+    this.stateManager = null;
   }
 
   getTabs() {
