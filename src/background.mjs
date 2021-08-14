@@ -103,7 +103,6 @@ browser.tabs.onCreated.addListener(async (tab) => {
   const activeUserContextId = getActiveUserContext(tab.windowId);
   const windowId = tab.windowId;
   if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
-    //console.log('Reopening new tab in active user context: %d for window %d', activeUserContextId, windowId);
     await browser.tabs.remove(tab.id);
     await containers.openNewTabInContainer(activeUserContextId, windowId);
   }
@@ -189,7 +188,6 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 });
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
-  //console.log('active tab changed on window %d', windowId);
   const tab = await browser.tabs.get(tabId);
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
   const contextualIdentity = await containers.get(userContextId);
@@ -253,11 +251,9 @@ browser.windows.getAll({
 browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
 
 browser.webRequest.onBeforeRequest.addListener((details) => {
-  //
   const userContextId = containers.toUserContextId(details.cookieStoreId);
   const result = {};
   do {
-    //
     if (details.frameId != 0) break;
     if (details.incognito) break;
     if (details.originUrl) break;
@@ -277,6 +273,6 @@ browser.webRequest.onBeforeRequest.addListener((details) => {
     '*://*/*', // all HTTP/HTTPS requests.
   ],
   types: [
-    'main_frame',
+    'main_frame', // top-level windows.
   ],
 }, ['blocking']);
