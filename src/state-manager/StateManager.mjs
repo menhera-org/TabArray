@@ -25,7 +25,7 @@ import { LifecycleEventTarget } from "./lib/LifecycleEventTarget.mjs";
 
 const startTime = +new Date;
 
-export const state = new class StateManager extends LifecycleEventTarget {
+export const state = new class StateManagerConstructor extends LifecycleEventTarget {
   // Map from windowId (int) to BrowserWindow
   _browserWindows = new Map;
 
