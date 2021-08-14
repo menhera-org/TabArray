@@ -77,7 +77,7 @@ config.observe('tab.external.chooseContainer', (value) => {
 });
 
 inputSelectContainerExternalTabs.addEventListener('change', (ev) => {
-  config.set('newtab.keepContainer', ev.target.checked)
+  config.set('tab.external.chooseContainer', !!ev.target.checked)
   .catch(e => console.error(e));
 });
 
