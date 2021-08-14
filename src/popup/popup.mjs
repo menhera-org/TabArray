@@ -342,7 +342,7 @@ globalThis.render = () => {
 			if (!shouldRerender) return;
 			shouldRerender = false;
 			render();
-		}, 100);
+		}, 200);
 	}
 };
 
