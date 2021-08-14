@@ -229,7 +229,7 @@ button {
 
 #menuList .window-label {
 	position: sticky;
-	inset-block-start: 0;
+	inset-block-start: -.125rem;
 	background-color: #fff;
 	z-index: 2;
 	box-shadow: 0 0 .5em #fff, 0 0 .5em #fff;
