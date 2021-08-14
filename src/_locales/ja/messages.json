@@ -238,5 +238,9 @@
     "promptSelectContainer": {
         "message": "このタブを開くコンテナーを選択してください．",
         "description": "Message asking the user to select a container for a new tab."
+    },
+    "labelSelectContainerExternalTabs": {
+        "message": "外部アプリケーションがタブを開くときにコンテナーを選ぶ",
+        "description": "Option to enable container selection on externally opened tabs."
     }
 }
