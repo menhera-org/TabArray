@@ -93,7 +93,7 @@ button {
 }
 
 #main.rendering {
-	opacity: .5;
+	opacity: .75;
 	transition: none;
 }
 
