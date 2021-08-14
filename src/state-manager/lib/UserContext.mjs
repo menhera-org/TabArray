@@ -88,8 +88,8 @@ export class UserContext extends LifecycleEventTarget {
     return UserContext.toCookieStoreId(this.id);
   }
 
-  async close() {
-    //
+  async remove() {
+    await browser.contextualIdentities.remove(this.cookieStoreId);
   }
 
   static [Symbol.hasInstance](obj) {

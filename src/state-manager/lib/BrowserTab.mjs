@@ -44,6 +44,9 @@ export class BrowserTab extends LifecycleEventTarget {
   }
 
   async close() {
-    //
+    if (this.closed) {
+      return;
+    }
+    await browser.tabs.remove(this.id);
   }
 }

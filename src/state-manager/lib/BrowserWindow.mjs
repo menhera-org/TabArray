@@ -52,6 +52,9 @@ export class BrowserWindow extends LifecycleEventTarget {
   }
 
   async close() {
-    //
+    if (this.closed) {
+      return;
+    }
+    await browser.windows.remove(this.id);
   }
 }
