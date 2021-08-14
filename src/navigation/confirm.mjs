@@ -59,13 +59,18 @@ const createUserContextElement = (userContext) => {
   const userContextElement = renderUserContext(userContext);
   containersElement.append(userContextElement);
   userContextElement.addEventListener('click', (ev) => {
-    browser.tabs.create({
-      active: true,
-      windowId: browser.windows.WINDOW_ID_CURRENT,
-      cookieStoreId: userContext.cookieStoreId,
-      url,
-    }).then((tabObj) => {
-      window.close();
+    Promise.all([
+      browser.tabs.getCurrent(),
+      browser.tabs.create({
+        active: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        cookieStoreId: userContext.cookieStoreId,
+        url,
+      }),
+    ]).then(([currentTabObj, _createdTabObj]) => {
+      return browser.tabs.remove(currentTabObj.id);
+    }).catch((e) => {
+      console.error(e);
     });
   });
   userContext.addEventListenerWindow(window, 'remove', (ev) => {
