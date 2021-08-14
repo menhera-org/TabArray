@@ -55,6 +55,27 @@ const renderUserContext = (userContext, aUserContextElement) => {
   return userContextElement;
 };
 
+const createUserContextElement = (userContext) => {
+  const userContextElement = renderUserContext(userContext);
+  containersElement.append(userContextElement);
+  userContextElement.addEventListener('click', (ev) => {
+    browser.tabs.create({
+      active: true,
+      windowId: browser.windows.WINDOW_ID_CURRENT,
+      cookieStoreId: userContext.cookieStoreId,
+      url,
+    }).then((tabObj) => {
+      window.close();
+    });
+  });
+  userContext.addEventListenerWindow(window, 'remove', (ev) => {
+    userContextElement.remove();
+  });
+  userContext.addEventListenerWindow(window, 'change', (ev) => {
+    renderUserContext(userContext, userContextElement);
+  });
+};
+
 try {
   const urlObj = new URL(url);
   getStateManager().then((aStateManager) => {
@@ -62,19 +83,13 @@ try {
     const userContexts = StateManager.getUserContexts();
     containersElement.textContent = '';
     for (const userContext of userContexts) {
-      const userContextElement = renderUserContext(userContext);
-      containersElement.append(userContextElement);
-      userContextElement.addEventListener('click', (ev) => {
-        browser.tabs.create({
-          active: true,
-          windowId: browser.windows.WINDOW_ID_CURRENT,
-          cookieStoreId: userContext.cookieStoreId,
-          url,
-        }).then((tabObj) => {
-          window.close();
-        });
-      });
+      createUserContextElement(userContext);
     }
+    StateManager.addEventListenerWindow(window, 'userContextCreate', (ev) => {
+      const {userContextId} = ev.detail;
+      const userContext = StateManager.getUserContext(userContextId);
+      createUserContextElement(userContext);
+    });
   });
 } catch (e) {
   console.warn('Invalid URL: %s', url);
