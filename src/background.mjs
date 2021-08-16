@@ -117,6 +117,8 @@ browser.tabs.onCreated.addListener((tab) => {
 
   if (tab.url && tab.url != 'about:blank') {
     openTabs.add(tab.id);
+  } else if (tab.pinned) {
+    openTabs.add(tab.id);
   }
   sortTabs().then(() => {
     tabChangeChannel.postMessage(true);
@@ -203,6 +205,8 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
   }
   if (tabObj.url && tabObj.url != 'about:blank') {
     openTabs.add(tabObj.id);
+  } else if (tabObj.pinned) {
+    openTabs.add(tabObj.id);
   }
   setActiveUserContext(tabObj.windowId, userContextId);
 }, {
@@ -275,33 +279,35 @@ browser.windows.getAll({
 
 browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
 
-browser.webRequest.onBeforeRequest.addListener((details) => {
-  const userContextId = containers.toUserContextId(details.cookieStoreId);
-  const result = {};
-  do {
-    if (details.frameId != 0) break;
-    if (details.incognito) break;
-    if (details.originUrl) break;
-    if (0 != userContextId) break;
-    if (!configExternalTabChooseContainer) break;
-    if (openTabs.has(details.tabId)) {
-      console.info('Ignoring manually navigated tab: %d', details.tabId);
-      break;
-    }
-    const {url} = details;
-    console.log('New navigation target: %s', url);
-    const confirmPage = browser.runtime.getURL(CONFIRM_PAGE);
-    result.redirectUrl = confirmPage + '?' + (new URLSearchParams({
-      url,
-    }));
-  } while (false);
-  return result;
-}, {
-  incognito: false,
-  urls: [
-    '*://*/*', // all HTTP/HTTPS requests.
-  ],
-  types: [
-    'main_frame', // top-level windows.
-  ],
-}, ['blocking']);
+setTimeout(() => {
+  browser.webRequest.onBeforeRequest.addListener((details) => {
+    const userContextId = containers.toUserContextId(details.cookieStoreId);
+    const result = {};
+    do {
+      if (details.frameId != 0) break;
+      if (details.incognito) break;
+      if (details.originUrl) break;
+      if (0 != userContextId) break;
+      if (!configExternalTabChooseContainer) break;
+      if (openTabs.has(details.tabId)) {
+        console.info('Ignoring manually navigated tab: %d', details.tabId);
+        break;
+      }
+      const {url} = details;
+      console.log('New navigation target: %s', url);
+      const confirmPage = browser.runtime.getURL(CONFIRM_PAGE);
+      result.redirectUrl = confirmPage + '?' + (new URLSearchParams({
+        url,
+      }));
+    } while (false);
+    return result;
+  }, {
+    incognito: false,
+    urls: [
+      '*://*/*', // all HTTP/HTTPS requests.
+    ],
+    types: [
+      'main_frame', // top-level windows.
+    ],
+  }, ['blocking']);
+}, 100);
