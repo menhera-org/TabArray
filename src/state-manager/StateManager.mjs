@@ -364,6 +364,63 @@ const updateWindowInfo = (windowObj) => {
   browserWindow.isNormal = windowObj.type == 'normal';
 };
 
+const tabClosedHandler = (tabId) => {
+  const browserTab = state._browserTabs.get(tabId);
+  if (!browserTab) {
+    return;
+  }
+  const windowId = browserTab.windowId;
+  state._browserTabs.delete(tabId);
+  browserTab.closed = true;
+  const userContext = state.getUserContext(browserTab.userContextId);
+  userContext.tabIds.delete(tabId);
+  const browserWindow = getBrowserWindow(browserTab.windowId);
+  browserWindow.tabIds.delete(browserTab.id);
+
+  // workaround
+  const removedIndex = browserTab.index;
+  let visited = false;
+  let indexShifted = false;
+  for (const browserTab of browserWindow.getTabs()) {
+    if (browserTab.index == removedIndex) {
+      visited = true;
+    }
+    if (browserTab.index > removedIndex && !visited) {
+      browserTab.index = browserTab.index - 1;
+      indexShifted = true;
+    }
+  }
+  if (indexShifted) {
+    console.log('Index shift at index %d on window %d', removedIndex, windowId);
+  }
+
+  browserTab.dispatchEvent(new Event('close', {
+    cancelable: false,
+  }));
+  userContext.dispatchEvent(new CustomEvent('tabClose', {
+    cancelable: false,
+    detail: {
+      tabId,
+      windowId,
+    },
+  }));
+  browserWindow.dispatchEvent(new CustomEvent('tabClose', {
+    cancelable: false,
+    detail: {
+      tabId,
+      userContextId: browserTab.userContextId,
+    },
+  }));
+  state.dispatchEvent(new CustomEvent('tabClose', {
+    cancelable: false,
+    detail: {
+      tabId,
+      windowId,
+      userContextId: browserTab.userContextId,
+    },
+  }));
+};
+
 // collect information about browser windows
 const initialization = {
   browserWindows: browser.windows.getAll({
@@ -533,56 +590,8 @@ browser.tabs.onRemoved.addListener((tabId, {windowId}) => {
     console.warn('assertion failed: no such BrowserTab');
     return;
   }
-  state._browserTabs.delete(tabId);
   browserTab.windowId = windowId;
-  browserTab.closed = true;
-  const userContext = state.getUserContext(browserTab.userContextId);
-  userContext.tabIds.delete(tabId);
-  const browserWindow = getBrowserWindow(browserTab.windowId);
-  browserWindow.tabIds.delete(browserTab.id);
-
-  // workaround
-  const removedIndex = browserTab.index;
-  let visited = false;
-  let indexShifted = false;
-  for (const browserTab of browserWindow.getTabs()) {
-    if (browserTab.index == removedIndex) {
-      visited = true;
-    }
-    if (browserTab.index > removedIndex && !visited) {
-      browserTab.index = browserTab.index - 1;
-      indexShifted = true;
-    }
-  }
-  if (indexShifted) {
-    console.log('Index shift at index %d on window %d', removedIndex, windowId);
-  }
-
-  browserTab.dispatchEvent(new Event('close', {
-    cancelable: false,
-  }));
-  userContext.dispatchEvent(new CustomEvent('tabClose', {
-    cancelable: false,
-    detail: {
-      tabId,
-      windowId,
-    },
-  }));
-  browserWindow.dispatchEvent(new CustomEvent('tabClose', {
-    cancelable: false,
-    detail: {
-      tabId,
-      userContextId: browserTab.userContextId,
-    },
-  }));
-  state.dispatchEvent(new CustomEvent('tabClose', {
-    cancelable: false,
-    detail: {
-      tabId,
-      windowId,
-      userContextId: browserTab.userContextId,
-    },
-  }));
+  tabClosedHandler(tabId);
 });
 
 browser.tabs.onCreated.addListener((tabObj) => {
@@ -784,3 +793,21 @@ browser.windows.onRemoved.addListener((windowId) => {
 browser.windows.onCreated.addListener((windowObj) => {
   updateWindowInfo(windowObj);
 });
+
+// Automatic state corruption recovery
+setInterval(() => {
+  browser.tabs.query({}).then((tabs) => {
+    const currentTabIds = new Set;
+    for (const tabObj of tabs) {
+      currentTabIds.add(tabObj.id);
+      if (!state._browserTabs.has(tabObj.id)) {
+        updateTabInfo(tabObj);
+      }
+    }
+    for (const [tabId, _browserTab] of state._browserTabs) {
+      if (!currentTabIds.has(tabId)) {
+        tabClosedHandler(tabId);
+      }
+    }
+  })
+}, 10000);
