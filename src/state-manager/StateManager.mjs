@@ -25,6 +25,7 @@ import { LifecycleEventTarget } from "./lib/LifecycleEventTarget.mjs";
 
 const startTime = +new Date;
 
+// global StateManager object
 export const state = new class StateManagerConstructor extends LifecycleEventTarget {
   constructor() {
     super();
@@ -114,9 +115,11 @@ const getBrowserWindow = (windowId) => {
   return browserWindow;
 };
 
+// List of tab IDs where capture is taking place
 const capturingTabs = new Set;
 const updateTabPreview = (browserTab) => {
   if (capturingTabs.has(browserTab.id)) {
+    // already tab capture in progress
     return;
   }
   capturingTabs.add(browserTab.id);
@@ -429,12 +432,15 @@ Promise.all([
   initialization.browserTabsAndUserContexts,
   initialization.browserTabsAndBrowserWindows,
 ]).then(() => {
+  // StateManager's initialization delay in milliseconds
+  const initializationDelay = (+new Date) - startTime;
+  console.log('StateManager initialized in %d ms', initializationDelay);
+
   state._initialized = true;
   state.dispatchEvent(new CustomEvent('initialized', {
     cancelable: false,
     detail: {
-      // initialization delay in milliseconds
-      initializationDelay: (+new Date) - startTime,
+      initializationDelay,
     },
   }));
 });
@@ -584,10 +590,7 @@ browser.tabs.onCreated.addListener((tabObj) => {
     console.warn('assertion failed: BrowserTab already exists');
     return;
   }
-  const browserTab = updateTabInfo(tabObj);
-  const {userContextId} = browserTab;
-  const browserWindow = getBrowserWindow(browserTab.windowId);
-  //browserWindow.tabIds.add(browserTab.id);
+  updateTabInfo(tabObj);
 });
 
 browser.tabs.onAttached.addListener((tabId, {newWindowId, newPosition}) => {
