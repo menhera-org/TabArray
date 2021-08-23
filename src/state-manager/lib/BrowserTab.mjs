@@ -39,12 +39,85 @@ export class BrowserTab extends LifecycleEventTarget {
     this.hidden = false;
     this.previewUrl = '';
     this.title = '';
+    this.stateManager = null;
+  }
+
+  async checkForExistence() {
+    try {
+      const tabObj = await browser.tabs.get(this.id);
+      return !!tabObj;
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  _notifyUnavailability() {
+    if (this.stateManager) {
+      this.stateManager.dispatchEvent(new CustomEvent('_tabUnavailable', {
+        detail: {
+          tabId: this.id,
+        },
+      }));
+    }
   }
 
   async close() {
     if (this.closed) {
       return;
     }
-    await browser.tabs.remove(this.id);
+    let success = false;
+    try {
+      await browser.tabs.remove(this.id);
+      success = true;
+    } finally {
+      if (!success && !await this.checkForExistence()) {
+        this._notifyUnavailability();
+      }
+    }
+  }
+
+  async pin() {
+    let success = false;
+    try {
+      await browser.tabs.update(this.id, {
+        pinned: true,
+      });
+      success = true;
+    } finally {
+      if (!success && !await this.checkForExistence()) {
+        this._notifyUnavailability();
+      }
+    }
+  }
+
+  async unpin() {
+    let success = false;
+    try {
+      await browser.tabs.update(this.id, {
+        pinned: false,
+      });
+      success = true;
+    } finally {
+      if (!success && !await this.checkForExistence()) {
+        this._notifyUnavailability();
+      }
+    }
+  }
+
+  async focus() {
+    let success = false;
+    try {
+      await browser.tabs.update(this.id, {
+        active: true,
+      });
+      success = true;
+    } finally {
+      if (!success && !this.checkForExistence()) {
+        this._notifyUnavailability();
+      }
+    }
+    await browser.windows.update(this.windowId, {
+      focused: true,
+    });
   }
 }

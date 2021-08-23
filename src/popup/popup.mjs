@@ -60,15 +60,15 @@ const renderTab = (tab) => {
 		tabPinButton.title = browser.i18n.getMessage('tooltipTabPinButton');
 	}
 	tabElement.append(tabPinButton);
-	tabPinButton.addEventListener('click', async (ev) => {
+	tabPinButton.addEventListener('click', (ev) => {
 		ev.stopImmediatePropagation();
 		if (tab.pinned) {
-			await browser.tabs.update(tab.id, {
-				pinned: false,
+			tab.unpin().catch((e) => {
+				console.error(e);
 			});
 		} else {
-			await browser.tabs.update(tab.id, {
-				pinned: true,
+			tab.pin().catch((e) => {
+				console.error(e);
 			});
 		}
 	});
@@ -94,7 +94,7 @@ const renderTab = (tab) => {
 	tabElement.append(tabCloseButton);
 	tabCloseButton.addEventListener('click', (ev) => {
 		ev.stopImmediatePropagation();
-		browser.tabs.remove(tab.id).catch((e) => {
+		tab.close().catch((e) => {
 			console.error(e);
 		});
 	});
@@ -112,14 +112,12 @@ const renderTab = (tab) => {
 		tabElement.classList.add('tab-active');
 	}
 
-	tabElement.addEventListener('click', async (ev) => {
-		await browser.tabs.update(tab.id, {
-			active: true,
+	tabElement.addEventListener('click', (_ev) => {
+		tab.focus().then(() => {
+			window.close();
+		}).catch((e) => {
+			console.error(e);
 		});
-		await browser.windows.update(tab.windowId, {
-			focused: true,
-		});
-		window.close();
 	});
 
 	const {userContextId} = tab;
@@ -327,11 +325,8 @@ globalThis.render = () => {
 			windowLabel.append(windowLabelContent);
 			windowLabelContent.textContent = browser.i18n.getMessage('windowLabel', window.id);
 			windowLabelContent.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
-			const targetWindowId = window.id;
 			windowLabel.addEventListener('click', (ev) => {
-				browser.windows.update(targetWindowId, {
-					focused: true,
-				}).catch(e => console.error(e));
+				window.focus().catch(e => console.error(e));
 			});
 			const tabs = window.getTabs();
 			windowLabelContent.dataset.tabCount = tabs.length;

@@ -49,6 +49,12 @@ export class BrowserWindow extends LifecycleEventTarget {
     return this.getTabs().filter((browserTab) => !browserTab.pinned);
   }
 
+  async focus() {
+    await browser.windows.update(this.id, {
+      focused: true,
+    });
+  }
+
   async close() {
     if (this.closed) {
       return;

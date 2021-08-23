@@ -139,6 +139,7 @@ const updateTabInfo = (tabObj) => {
     browserTab = state._browserTabs.get(tabObj.id);
   } else {
     browserTab = new BrowserTab(tabObj.id);
+    browserTab.stateManager = state;
     tabCreated = true;
   }
   const userContextId = UserContext.toUserContextId(tabObj.cookieStoreId);
@@ -811,3 +812,8 @@ setInterval(() => {
     }
   })
 }, 10000);
+
+state.addEventListener('_tabUnavailable', (ev) => {
+  const {tabId} = ev.detail;
+  tabClosedHandler(tabId);
+});
