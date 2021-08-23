@@ -82,7 +82,7 @@ const createUserContextElement = (userContext) => {
 };
 
 try {
-  const urlObj = new URL(url);
+  new URL(url);
   getStateManager().then((aStateManager) => {
     globalThis.StateManager = aStateManager;
     const userContexts = StateManager.getUserContexts();
@@ -95,6 +95,13 @@ try {
       const userContext = StateManager.getUserContext(userContextId);
       createUserContextElement(userContext);
     });
+  });
+
+  // If pinned, continue to load the url
+  browser.tabs.getCurrent().then((tabObj) => {
+    if (tabObj.pinned) {
+      location.href = url;
+    }
   });
 } catch (e) {
   console.warn('Invalid URL: %s', url);
