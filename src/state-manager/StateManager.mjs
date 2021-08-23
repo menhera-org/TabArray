@@ -114,6 +114,21 @@ const getBrowserWindow = (windowId) => {
   return browserWindow;
 };
 
+const capturingTabs = new Set;
+const updateTabPreview = (browserTab) => {
+  if (capturingTabs.has(browserTab.id)) {
+    return;
+  }
+  capturingTabs.add(browserTab.id);
+  browser.tabs.captureTab(browserTab.id, {scale: .25}).then((url) => {
+    browserTab.previewUrl = url;
+    capturingTabs.delete(browserTab.id);
+  }).catch((e) => {
+    capturingTabs.delete(browserTab.id);
+    console.warn('Error in captureTab:', e);
+  });
+};
+
 const updateTabInfo = (tabObj) => {
   let browserTab;
   let tabCreated = false;
@@ -128,11 +143,9 @@ const updateTabInfo = (tabObj) => {
   browserTab.windowId = tabObj.windowId;
   if (browserTab.url != tabObj.url && tabObj.url && tabObj.url != 'about:blank') {
     browserTab.url = tabObj.url;
-    browser.tabs.captureTab(browserTab.id, {scale: .25}).then((url) => {
-      browserTab.previewUrl = url;
-    }).catch((e) => {
-      console.warn('Error in captureTab:', e);
-    });
+    updateTabPreview(browserTab);
+  } else if (!browserTab.previewUrl && !tabObj.discarded) {
+    updateTabPreview(browserTab);
   }
   browserTab.initialized = !!browserTab.url && browserTab.url != 'about:blank';
   browserTab.favIconUrl = tabObj.favIconUrl || '';
