@@ -310,4 +310,4 @@ setTimeout(() => {
       'main_frame', // top-level windows.
     ],
   }, ['blocking']);
-}, 100);
+}, 1000);
