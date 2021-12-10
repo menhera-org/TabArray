@@ -105,3 +105,4 @@ dist
 
 *.zip
 *.xpi
+.DS_Store
