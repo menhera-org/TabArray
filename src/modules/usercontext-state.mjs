@@ -24,6 +24,17 @@ const syncActiveUserContextChannel = new WebExtensionsBroadcastChannel('sync_act
 
 const activeUserContextIdByWindow = new Map;
 
+const forceUpdate = () => {
+  browser.tabs.query({active: true}).then((tabs) => {
+    for (const tab of tabs) {
+      const userContextId = containers.toUserContextId(tab.cookieStoreId);
+      activeUserContextIdByWindow.set(tab.windowId, userContextId);
+    }
+  }).catch((e) => {
+    console.error(e);
+  });
+};
+
 browser.windows.onRemoved.addListener((windowId) => {
   activeUserContextIdByWindow.delete(windowId);
 });
@@ -36,13 +47,6 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   }
   activeUserContextIdByWindow.set(tab.windowId, userContextId);
   //console.log('active userContext: %d for window %d', userContextId, tab.windowId);
-});
-
-browser.tabs.query({active: true}).then((tabs) => {
-  for (const tab of tabs) {
-    const userContextId = containers.toUserContextId(tab.cookieStoreId);
-    activeUserContextIdByWindow.set(tab.windowId, userContextId);
-  }
 });
 
 export const getActiveUserContext = (aWindowId) => {
@@ -67,3 +71,8 @@ syncActiveUserContextChannel.addEventListener('message', (ev) => {
     }
   }
 });
+
+forceUpdate();
+
+// startup workaround
+setTimeout(() => forceUpdate(), 500);

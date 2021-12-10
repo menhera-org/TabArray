@@ -17,6 +17,19 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
-export const PANORAMA_PAGE = '/panorama/panorama.html';
-export const CONFIRM_PAGE = '/navigation/confirm.html';
+export const getStateManager = async () => {
+  const background = await browser.runtime.getBackgroundPage();
+  if (!background) {
+    throw new Error('Invalid background page');
+  }
+  while (!background.StateManager) {
+    await new Promise((res) => setTimeout(() => res(), 100));
+  }
+  const {StateManager} = background;
+  if (!StateManager.initialized) {
+    await new Promise((res) => StateManager.addEventListener('initialized', (ev) => {
+      res();
+    }));
+  }
+  return StateManager;
+};

@@ -17,6 +17,21 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
-export const PANORAMA_PAGE = '/panorama/panorama.html';
-export const CONFIRM_PAGE = '/navigation/confirm.html';
+export class LifecycleEventTarget extends EventTarget {
+  constructor() {
+    super();
+  }
+
+  addEventListenerWindow(aWindow, aEventType, aListener) {
+    this.addEventListener(aEventType, aListener, {
+      capture: false,
+      passive: true,
+    });
+    aWindow.addEventListener('unload', (ev) => {
+      this.removeEventListener(aEventType, aListener, {
+        capture: false,
+        passive: true,
+      });
+    });
+  }
+}

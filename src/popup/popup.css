@@ -93,7 +93,7 @@ button {
 }
 
 #main.rendering {
-	opacity: .5;
+	opacity: .75;
 	transition: none;
 }
 
@@ -129,6 +129,10 @@ button {
 
 #button-hide-inactive::before {
 	background-image: url(/img/unfold_less_black_24dp.svg);
+}
+
+#button-panorama::before {
+	background-image: url(/img/grid_view_black_24dp.svg);
 }
 
 #button-about-addon {
@@ -192,13 +196,14 @@ button {
 	visibility: hidden;
 }
 
-.tab > button, .container > button {
+.tab > button, .container > button, .window-label > button {
 	background-size: 1.5em;
 	background-repeat: no-repeat;
 	background-position: center center;
 	opacity: 0;
 	padding: 0;
 	background-color: transparent;
+	display: block;
 }
 
 .tab > .tab-pin-button {
@@ -223,23 +228,45 @@ button {
 }
 
 #menuList .window-label {
+	position: sticky;
+	inset-block-start: -.125rem;
+	background-color: #fff;
+	z-index: 2;
+	box-shadow: 0 0 .5em #fff, 0 0 .5em #fff;
+	display: grid;
+	grid-template-columns: 1fr 2em 2em;
+	border-block-start: solid .125rem #888;
+	padding-inline-end: 1em;
+}
+
+.window-label > .window-label-name {
 	padding-inline: 2em;
 	padding-block: .5em;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	font-weight: bold;
-	border-block-start: solid .125rem #888;
-	position: sticky;
-	inset-block-start: 0;
-	background-color: #fff;
-	z-index: 2;
-	box-shadow: 0 0 .5em #fff;
 }
 
-.window-label[data-tab-count]::after {
+.window-label > .window-label-name[data-tab-count]::after {
 	content: ' (' attr(data-tab-count) ')';
 	opacity: .5;
+}
+
+.window-label > button {
+	opacity: .5;
+}
+
+.window-label > button:focus, .window-label > button:hover {
+	opacity: 1;
+}
+
+.window-label > .window-collapse-button {
+	background-image: url(/img/unfold_less_black_24dp.svg);
+}
+
+.window-label > .window-expand-button {
+	background-image: url(/img/unfold_more_black_24dp.svg);
 }
 
 .container {
@@ -257,8 +284,8 @@ button {
 	visibility: hidden;
 }
 
-.container > .container-visibility-toggle:hover, .container > .container-visibility-toggle:focus {
-	opacity: 1;
+.container > button:hover, .container > button:focus {
+	opacity: 1 !important;
 }
 
 .container-visible > .container-visibility-toggle {
@@ -296,12 +323,8 @@ button {
 	opacity: .25;
 }
 
-.container > .edit-container-button:disabled {
+.container > button:disabled {
 	visibility: hidden;
-}
-
-.container > .edit-container-button:focus, .container > .edit-container-button:hover {
-	opacity: 1;
 }
 
 .container > .close-container-button {
@@ -312,14 +335,6 @@ button {
 .container > .delete-container-button {
 	background-image: url(/img/delete_black_24dp.svg);
 	opacity: .25;
-}
-
-.container > .delete-container-button:disabled {
-	visibility: hidden;
-}
-
-.container > .delete-container-button:focus, .container > .delete-container-button:hover {
-	opacity: 1;
 }
 
 .container > .container-tabs {

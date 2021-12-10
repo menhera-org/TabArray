@@ -24,15 +24,18 @@ import {sleep} from '../modules/utils.mjs';
 import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
 import '/components/usercontext-colorpicker.mjs';
 import '/components/usercontext-iconpicker.mjs';
-import {ADDON_PAGE} from '../defs.mjs';
+import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.mjs';
+import { getStateManager } from '../modules/global-state.mjs';
 
 const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
 const STATE_VISIBLE_TABS = 2;
 
+let currentWindowId;
+
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
-document.querySelector('#button-hide-inactive > .button-text').textContent = browser.i18n.getMessage('buttonHideInactiveContainers');
+document.querySelector('#button-panorama > .button-text').textContent = browser.i18n.getMessage('buttonPanorama');
 document.querySelector('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
 document.querySelector('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 document.querySelector('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
@@ -43,8 +46,9 @@ document.querySelector('#new-container-name').placeholder = browser.i18n.getMess
 document.querySelector('#button-about-addon > .button-text').textContent = browser.i18n.getMessage('buttonAboutAddon');
 document.querySelector('#button-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
 
-const renderTab = async (tab) => {
-	const windowId = (await browser.windows.getCurrent()).id;
+document.querySelector('#main').classList.add('rendering');
+
+const renderTab = (tab) => {
 	const tabElement = document.createElement('li');
 	tabElement.title = tab.url;
 	tabElement.classList.add('tab');
@@ -56,15 +60,15 @@ const renderTab = async (tab) => {
 		tabPinButton.title = browser.i18n.getMessage('tooltipTabPinButton');
 	}
 	tabElement.append(tabPinButton);
-	tabPinButton.addEventListener('click', async (ev) => {
+	tabPinButton.addEventListener('click', (ev) => {
 		ev.stopImmediatePropagation();
 		if (tab.pinned) {
-			await browser.tabs.update(tab.id, {
-				pinned: false,
+			tab.unpin().catch((e) => {
+				console.error(e);
 			});
 		} else {
-			await browser.tabs.update(tab.id, {
-				pinned: true,
+			tab.pin().catch((e) => {
+				console.error(e);
 			});
 		}
 	});
@@ -86,12 +90,13 @@ const renderTab = async (tab) => {
 	tabLabelElement.textContent = tab.title;
 	const tabCloseButton = document.createElement('button');
 	tabCloseButton.classList.add('tab-close-button');
-	tabCloseButton.title = 'Close this tab';
+	tabCloseButton.title = browser.i18n.getMessage('buttonTabClose');
 	tabElement.append(tabCloseButton);
-	tabCloseButton.addEventListener('click', async (ev) => {
+	tabCloseButton.addEventListener('click', (ev) => {
 		ev.stopImmediatePropagation();
-		await browser.tabs.remove(tab.id);
-		await render();
+		tab.close().catch((e) => {
+			console.error(e);
+		});
 	});
 	if (tab.pinned) {
 		tabElement.classList.add('tab-pinned');
@@ -107,31 +112,26 @@ const renderTab = async (tab) => {
 		tabElement.classList.add('tab-active');
 	}
 
-	tabElement.addEventListener('click', async (ev) => {
-		await browser.tabs.update(tab.id, {
-			active: true,
+	tabElement.addEventListener('click', (_ev) => {
+		tab.focus().then(() => {
+			window.close();
+		}).catch((e) => {
+			console.error(e);
 		});
-		if (windowId != tab.windowId) {
-			await browser.windows.update(tab.windowId, {
-				focused: true,
-			});
-		}
-		window.close();
 	});
 
-	const userContextId = containers.toUserContextId(tab.cookieStoreId);
-	const container = await containers.get(userContextId);
-	if (container) {
+	const {userContextId} = tab;
+	const container = StateManager.getUserContext(userContextId);
+	if (container && container.id != 0) {
 		tabElement.style.borderColor = container.colorCode;
 	}
 	return tabElement;
 };
 
-const renderContainer = async (userContextId) => {
-	const cookieStoreId = containers.toCookieStoreId(userContextId);
-	const container = await containers.get(userContextId);
-	const tabs = await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT});
-	const windowId = (await browser.windows.getCurrent()).id;
+const renderContainer = (userContextId) => {
+	const container = StateManager.getUserContext(userContextId);
+	const tabs = StateManager.getBrowserWindow(currentWindowId).getTabs();
+	const windowId = currentWindowId;
 	const containerElement = document.createElement('li');
 	containerElement.classList.add('container');
 	if (!userContextId) {
@@ -146,7 +146,7 @@ const renderContainer = async (userContextId) => {
 		} else if (containerElement.classList.contains('container-visible')) {
 			await containers.hide(userContextId, windowId);
 		}
-		await render();
+		render();
 	});
 	const newTabHandler = async (ev) => {
 		await containers.openNewTabInContainer(userContextId, windowId);
@@ -175,9 +175,10 @@ const renderContainer = async (userContextId) => {
 	containerElement.append(closeContainerButton);
 	closeContainerButton.classList.add('close-container-button');
 	closeContainerButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
-	closeContainerButton.addEventListener('click', async (ev) => {
-		await containers.closeAllTabs(userContextId, true);
-		await render();
+	closeContainerButton.addEventListener('click', (ev) => {
+		containers.closeAllTabsOnWindow(userContextId, windowId).catch((e) => {
+			console.error(e);
+		});
 	});
 	if (!userContextId) {
 		editContainerButton.disabled = true;
@@ -186,10 +187,13 @@ const renderContainer = async (userContextId) => {
 		containerElement.append(deleteContainerButton);
 		deleteContainerButton.title = browser.i18n.getMessage('tooltipContainerDelete');
 		deleteContainerButton.classList.add('delete-container-button');
-		deleteContainerButton.addEventListener('click', async (ev) => {
-			if (!await confirmAsync(browser.i18n.getMessage('confirmContainerDelete', container.name))) return;
-			await containers.remove(userContextId);
-			await render();
+		deleteContainerButton.addEventListener('click', (ev) => {
+			confirmAsync(browser.i18n.getMessage('confirmContainerDelete', container.name)).then((result) => {
+				if (!result) return;
+				return containers.remove(userContextId);
+			}).catch((e) => {
+				console.error(e);
+			});
 		});
 	}
 	const tabListElement = document.createElement('ul');
@@ -199,13 +203,13 @@ const renderContainer = async (userContextId) => {
 	let tabCount = 0;
 	for (const tab of tabs) {
 		if (tab.pinned) continue;
-		if (tab.cookieStoreId != cookieStoreId) continue;
+		if (tab.userContextId != userContextId) continue;
 		tabCount++;
 		if (tab.hidden) {
 			containerState = STATE_HIDDEN_TABS;
 		} else {
 			containerState = STATE_VISIBLE_TABS;
-			const tabElement = await renderTab(tab);
+			const tabElement = renderTab(tab);
 			tabListElement.append(tabElement);
 		}
 	}
@@ -221,18 +225,22 @@ const renderContainer = async (userContextId) => {
 			containerElement.classList.add('container-visible');
 			visibilityToggleButton.title = browser.i18n.getMessage('tooltipHideContainerButton');
 			break;
+
+		default:
+			closeContainerButton.disabled = true;
 	}
 	return containerElement;
 };
 
 let rendering = false;
 let shouldRerender = false;
-globalThis.render = async () => {
+globalThis.render = () => {
 	if (rendering) {
 		shouldRerender = true;
 		return;
 	}
 	rendering = true;
+	shouldRerender = false;
 	const mainElement = document.querySelector('#main');
 	try {
 		mainElement.classList.add('rendering');
@@ -240,84 +248,119 @@ globalThis.render = async () => {
 		const menuListElement = document.querySelector('#menuList');
 		menuListElement.textContent = '';
 
-		const currentWindow = await browser.windows.getCurrent();
-		const windowId = currentWindow.id;
+		const windowId = currentWindowId;
 
 		const currentWindowLabel = document.createElement('li');
 		menuListElement.append(currentWindowLabel);
 		currentWindowLabel.classList.add('window-label');
-		currentWindowLabel.textContent = browser.i18n.getMessage('currentWindow', windowId);
+		const currentWindowLabelContent = document.createElement('div');
+		currentWindowLabel.append(currentWindowLabelContent);
+		currentWindowLabelContent.classList.add('window-label-name');
+		currentWindowLabelContent.textContent = browser.i18n.getMessage('currentWindow', windowId);
 
-		const tabs = await browser.tabs.query({windowId: windowId});
+		const currentWindowLabelCollapseButton = document.createElement('button');
+		currentWindowLabel.append(currentWindowLabelCollapseButton);
+		currentWindowLabelCollapseButton.classList.add('window-collapse-button');
+		currentWindowLabelCollapseButton.title = browser.i18n.getMessage('tooltipCollapseContainers');
+		currentWindowLabelCollapseButton.addEventListener('click', (ev) => {
+			containers.hideAll(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
+				console.error(e);
+			});
+		});
+
+		const currentWindowLabelExpandButton = document.createElement('button');
+		currentWindowLabel.append(currentWindowLabelExpandButton);
+		currentWindowLabelExpandButton.classList.add('window-expand-button');
+		currentWindowLabelExpandButton.title = browser.i18n.getMessage('tooltipExpandContainers');
+		currentWindowLabelExpandButton.addEventListener('click', (ev) => {
+			containers.showAll(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
+				console.error(e);
+			});
+		});
+
+		const tabs = StateManager.getBrowserWindow(currentWindowId).getTabs();
 		const windowTabCount = tabs.length;
-		currentWindowLabel.dataset.tabCount = windowTabCount;
+		currentWindowLabelContent.dataset.tabCount = windowTabCount;
 
 		const openUserContextIdSet = new Set;
 		for (const tab of tabs) {
 			if (!tab.pinned) {
-				openUserContextIdSet.add(toUserContextId(tab.cookieStoreId));
+				openUserContextIdSet.add(tab.userContextId);
 				continue;
 			}
-			const tabElement = await renderTab(tab);
+			const tabElement = renderTab(tab);
 			menuListElement.append(tabElement);
 		}
 		
-		const userContextIds = [0, ... await containers.getIds()];
+		const userContextIds = StateManager.getUserContexts().map((userContext) => userContext.id);
 		const openUserContextIds = userContextIds.filter(userContextId => openUserContextIdSet.has(userContextId));
 		const availableUserContextIds = userContextIds.filter(userContextId => !openUserContextIdSet.has(userContextId));
 		for (const userContextId of openUserContextIds) {
-			const containerElement = await renderContainer(userContextId);
+			const containerElement = renderContainer(userContextId);
 			menuListElement.append(containerElement);
 		}
 
 		const moreContainersLabel = document.createElement('li');
 		menuListElement.append(moreContainersLabel);
 		moreContainersLabel.classList.add('window-label');
-		moreContainersLabel.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
+		const moreContainersLabelContent = document.createElement('div');
+		moreContainersLabelContent.classList.add('window-label-name');
+		moreContainersLabel.append(moreContainersLabelContent);
+		moreContainersLabelContent.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
 
 		for (const userContextId of availableUserContextIds) {
-			const containerElement = await renderContainer(userContextId);
+			const containerElement = renderContainer(userContextId);
 			menuListElement.append(containerElement);
 		}
 
-		const windows = await browser.windows.getAll({
-			windowTypes: ['normal'],
-		});
+		const windows = StateManager.getBrowserWindows()
+		.filter((browserWindow) => browserWindow.isNormal);
 		for (const window of windows) {
 			if (window.id == windowId) continue;
 			const windowLabel = document.createElement('li');
 			menuListElement.append(windowLabel);
 			windowLabel.classList.add('window-label');
-			windowLabel.textContent = browser.i18n.getMessage('windowLabel', window.id);
-			windowLabel.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
-			const targetWindowId = window.id;
+			const windowLabelContent = document.createElement('div');
+			windowLabelContent.classList.add('window-label-name');
+			windowLabel.append(windowLabelContent);
+			windowLabelContent.textContent = browser.i18n.getMessage('windowLabel', window.id);
+			windowLabelContent.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
 			windowLabel.addEventListener('click', (ev) => {
-				browser.windows.update(targetWindowId, {
-					focused: true,
-				}).catch(e => console.error(e));
+				window.focus().catch(e => console.error(e));
 			});
-			const tabs = await browser.tabs.query({
-				windowId: window.id,
-			});
-			windowLabel.dataset.tabCount = tabs.length;
+			const tabs = window.getTabs();
+			windowLabelContent.dataset.tabCount = tabs.length;
 			for (const tab of tabs) {
 				if (!tab.active) continue;
-				const tabElement = await renderTab(tab);
+				const tabElement = renderTab(tab);
 				menuListElement.append(tabElement);
 			}
 		}
 		mainElement.scrollTop = initScrollY;
 	} finally {
-		rendering = false;
-		if (shouldRerender) {
+		mainElement.classList.remove('rendering');
+		setTimeout(() => {
+			rendering = false;
+			if (!shouldRerender) return;
 			shouldRerender = false;
-			setTimeout(() => {
-				render();
-			}, 0);
-		} else {
-			mainElement.classList.remove('rendering');
-		}
+			render();
+		}, 100);
 	}
+};
+
+globalThis.renderDelay = () => {
+	if (rendering) {
+		shouldRerender = true;
+		return;
+	}
+	rendering = true;
+	shouldRerender = true;
+	setTimeout(() => {
+		rendering = false;
+		if (!shouldRerender) return;
+		shouldRerender = false;
+		render();
+	}, 100);
 };
 
 globalThis.confirmAsync = (msg) => {
@@ -404,7 +447,7 @@ globalThis.showNewContainerPane = async () => {
 		return;
 	}
 	await containers.create(name, color, icon);
-	await render();
+	render();
 };
 
 globalThis.showEditContainerPane = async (userContextId) => {
@@ -458,24 +501,75 @@ globalThis.showEditContainerPane = async (userContextId) => {
 		return;
 	}
 	await containers.updateProperties(userContextId, name, color, icon);
-	await render();
+	render();
 };
 
 document.querySelector('#button-new-container').addEventListener('click', ev => {
 	showNewContainerPane().catch(e => console.error(e));
 });
 
-document.querySelector('#button-hide-inactive').addEventListener('click', async (ev) => {
-	await containers.hideAll(browser.windows.WINDOW_ID_CURRENT);
-	await render();
+Promise.all([
+	browser.windows.get(browser.windows.WINDOW_ID_CURRENT).then((windowObj) => {
+		return windowObj.id;
+	}),
+	getStateManager(),
+]).then(async ([windowId, aStateManager]) => {
+  globalThis.StateManager = aStateManager;
+  currentWindowId = windowId;
+  render();
+  StateManager.addEventListenerWindow(window, 'tabOpen', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'tabChange', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'tabClose', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'tabWindowChange', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'tabMove', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'tabShow', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'tabHide', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'tabPinned', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'tabUnpinned', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'activeTabChange', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'windowOpen', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'windowClose', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'userContextCreate', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'userContextChange', (ev) => {
+	  renderDelay();
+  });
+  StateManager.addEventListenerWindow(window, 'userContextRemove', (ev) => {
+	  renderDelay();
+  });
 });
 
-render().catch(e => console.error(e));
-
+/*
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 tabChangeChannel.addEventListener('message', ev => {
-	render().catch(e => console.error(e));
+	render();
 });
+*/
 
 document.querySelector('#button-about-addon').addEventListener('click', (ev) => {
 	browser.tabs.create({
@@ -489,6 +583,16 @@ document.querySelector('#button-about-addon').addEventListener('click', (ev) => 
 
 document.querySelector('#button-settings').addEventListener('click', (ev) => {
 	browser.runtime.openOptionsPage().then(() => {
+		window.close();
+	}).catch((e) => console.error(e));
+});
+
+document.querySelector('#button-panorama').addEventListener('click', (ev) => {
+	browser.tabs.create({
+		active: true,
+		windowId: browser.windows.WINDOW_ID_CURRENT,
+		url: browser.runtime.getURL(PANORAMA_PAGE),
+	}).then(() => {
 		window.close();
 	}).catch((e) => console.error(e));
 });

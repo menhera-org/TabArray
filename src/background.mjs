@@ -21,18 +21,23 @@ import * as containers from './modules/containers.mjs';
 import { isNewTabPage } from './modules/newtab.mjs';
 
 import {WebExtensionsBroadcastChannel} from './modules/broadcasting.mjs';
-import '/install.mjs';
 import { getActiveUserContext } from './modules/usercontext-state.mjs';
 import {config} from './modules/config.mjs';
 import { setActiveUserContext } from './modules/usercontext-state.mjs';
-import { ADDON_PAGE } from './defs.mjs';
+import { ADDON_PAGE, CONFIRM_PAGE } from './defs.mjs';
 import { getWindowIds } from './modules/windows.mjs';
+import './state-manager/StateManager.mjs';
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
+
+// Set<number>
+// Set of tab IDs.
+const openTabs = new Set;
 
 let tabSorting = false;
 let configNewTabInContainerEnabled = true;
 let configDragBetweenContainers = true;
+let configExternalTabChooseContainer = true;
 config.observe('newtab.keepContainer', (value) => {
   if (undefined !== value) {
     configNewTabInContainerEnabled = value;
@@ -43,6 +48,15 @@ config.observe('gesture.dragTabBetweenContainers', (value) => {
   if (undefined !== value) {
     configDragBetweenContainers = value;
   }
+});
+
+config.observe('tab.external.chooseContainer', (value) => {
+  if (undefined === value) {
+    configExternalTabChooseContainer = true;
+    config.set('tab.external.chooseContainer', true);
+    return;
+  }
+  configExternalTabChooseContainer = !!value;
 });
 
 globalThis.sortTabsByWindow = async (windowId) => {
@@ -88,17 +102,33 @@ browser.tabs.onAttached.addListener(async () => {
   tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onCreated.addListener(async (tab) => {
+browser.tabs.onCreated.addListener((tab) => {
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
   const activeUserContextId = getActiveUserContext(tab.windowId);
   const windowId = tab.windowId;
   if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
-    //console.log('Reopening new tab in active user context: %d for window %d', activeUserContextId, windowId);
-    await browser.tabs.remove(tab.id);
-    await containers.openNewTabInContainer(activeUserContextId, windowId);
+    browser.tabs.remove(tab.id).then(() => {
+      return containers.openNewTabInContainer(activeUserContextId, windowId);
+    }).catch((e) => {
+      console.error(e);
+    });
+    return;
   }
-  await sortTabs();
-  tabChangeChannel.postMessage(true);
+
+  if (tab.url && tab.url != 'about:blank') {
+    openTabs.add(tab.id);
+  } else if (tab.pinned) {
+    openTabs.add(tab.id);
+  }
+  sortTabs().then(() => {
+    tabChangeChannel.postMessage(true);
+  }).catch((e) => {
+    console.error(e);
+  });
+});
+
+browser.tabs.onRemoved.addListener((tabId, {windowId}) => {
+  openTabs.delete(tabId);
 });
 
 browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
@@ -160,25 +190,33 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   ],
 });
 
-browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  const userContextId = containers.toUserContextId(tab.cookieStoreId);
-  const windowId = tab.windowId;
-  const activeUserContextId = getActiveUserContext(tab.windowId);
-  if (configNewTabInContainerEnabled && isNewTabPage(tab.url) && 0 == userContextId && 0 != activeUserContextId) {
-    console.log('Reopening new tab in active user context: %d for window %d', activeUserContextId, tab.windowId);
-    await browser.tabs.remove(tab.id);
-    await containers.openNewTabInContainer(activeUserContextId, windowId);
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
+  const userContextId = containers.toUserContextId(tabObj.cookieStoreId);
+  const windowId = tabObj.windowId;
+  const activeUserContextId = getActiveUserContext(tabObj.windowId);
+  if (configNewTabInContainerEnabled && isNewTabPage(tabObj.url) && 0 == userContextId && 0 != activeUserContextId) {
+    console.log('Reopening new tab in active user context: %d for window %d', activeUserContextId, tabObj.windowId);
+    browser.tabs.remove(tabObj.id).then(() => {
+      return containers.openNewTabInContainer(activeUserContextId, windowId);
+    }).catch((e) => {
+      console.error(e);
+    });
     return;
   }
-  setActiveUserContext(tab.windowId, userContextId);
+  if (tabObj.url && tabObj.url != 'about:blank') {
+    openTabs.add(tabObj.id);
+  } else if (tabObj.pinned) {
+    openTabs.add(tabObj.id);
+  }
+  setActiveUserContext(tabObj.windowId, userContextId);
 }, {
   properties: [
     'url',
+    'status',
   ],
 });
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
-  //console.log('active tab changed on window %d', windowId);
   const tab = await browser.tabs.get(tabId);
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
   const contextualIdentity = await containers.get(userContextId);
@@ -240,3 +278,36 @@ browser.windows.getAll({
 });
 
 browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
+
+setTimeout(() => {
+  browser.webRequest.onBeforeRequest.addListener((details) => {
+    const userContextId = containers.toUserContextId(details.cookieStoreId);
+    const result = {};
+    do {
+      if (details.frameId != 0) break;
+      if (details.incognito) break;
+      if (details.originUrl) break;
+      if (0 != userContextId) break;
+      if (!configExternalTabChooseContainer) break;
+      if (openTabs.has(details.tabId)) {
+        console.info('Ignoring manually navigated tab: %d', details.tabId);
+        break;
+      }
+      const {url} = details;
+      console.log('New navigation target: %s', url);
+      const confirmPage = browser.runtime.getURL(CONFIRM_PAGE);
+      result.redirectUrl = confirmPage + '?' + (new URLSearchParams({
+        url,
+      }));
+    } while (false);
+    return result;
+  }, {
+    incognito: false,
+    urls: [
+      '*://*/*', // all HTTP/HTTPS requests.
+    ],
+    types: [
+      'main_frame', // top-level windows.
+    ],
+  }, ['blocking']);
+}, 1000);

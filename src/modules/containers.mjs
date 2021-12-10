@@ -142,6 +142,20 @@ export const closeAllTabs = async (aUserContextId, aExcludePinned) => {
   }
 };
 
+export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
+  const cookieStoreId = toCookieStoreId(aUserContextId);
+  const userContextId = toUserContextId(cookieStoreId);
+  const tabIds = (await browser.tabs.query({
+    windowId: aWindowId,
+    pinned: false,
+    cookieStoreId,
+  })).map((tabObj) => tabObj.id);
+  console.log('Closing %d tab(s)', tabIds.length);
+  if (tabIds.length) {
+    await browser.tabs.remove(tabIds);
+  }
+};
+
 export const remove = async (aUserContextId) => {
   try {
     await closeAllTabs(aUserContextId);
@@ -294,6 +308,13 @@ export const hideAll = async (aWindowId) => {
   }
 };
 
+export const showAll = async (aWindowId) => {
+  const tabIds = (await browser.tabs.query({
+    windowId: aWindowId,
+  })).map((tabObj) => tabObj.id);
+  await browser.tabs.show(tabIds);
+};
+
 export const reopenInContainer = async (aUserContextId, aTabId) => {
   const tab = await browser.tabs.get(aTabId);
   if (tab.id != aTabId) {
@@ -373,6 +394,7 @@ export const openNewTabInContainer = async (aUserContextId, aWindowId) => {
       cookieStoreId,
     });
   } else {
+    console.log('Inserting a new tab at index %d', lastIndex + 1);
     await browser.tabs.create({
       active: true,
       windowId,

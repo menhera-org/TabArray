@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Container Tab Groups",
-	"version": "2.2",
+	"version": "6",
 	"browser_specific_settings": {
   	"gecko": {
 			"id": "tab-array@menhera.org"
@@ -20,7 +20,9 @@
 		"menus",
 		"storage",
 		"browserSettings",
-		"privacy"
+		"privacy",
+		"webRequest",
+		"webRequestBlocking"
 	],
 	"incognito": "not_allowed",
 	"background": {
@@ -50,5 +52,8 @@
 	"icons": {
 		"48": "icon.svg",
 		"96": "icon.svg"
-	}
+	},
+	"web_accessible_resources": [
+		"navigation/confirm.html"
+	]
 }

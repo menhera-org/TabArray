@@ -17,6 +17,14 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
-export const PANORAMA_PAGE = '/panorama/panorama.html';
-export const CONFIRM_PAGE = '/navigation/confirm.html';
+export const getMessage = (messageName, ... args) => {
+    return '' + (browser.i18n.getMessage(messageName, ... args) || '');
+};
+
+export const getEffectiveLocale = () => {
+    return getMessage('effectiveLocale');
+};
+
+export const getBrowserLocale = () => {
+  return browser.i18n.getUILanguage();
+};
