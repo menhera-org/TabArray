@@ -19,12 +19,27 @@
 :root {
 	inline-size: max-content;
 	block-size: max-content;
+	--text-color: #222;
+	--background-color: #fff;
+	--border-color: #888;
+	--hover-color: rgba(0, 0, 0, 0.1);
+	--secondary-background-color: #d7d7db;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--text-color: #fff;
+		--background-color: #0c0c0d;
+		--border-color: #999;
+		--hover-color: rgba(255, 255, 255, 0.1);
+		--secondary-background-color: #4a4a4f;
+	}
 }
 
 body {
 	font-family: system-ui, sans-serif;
-	color: #222;
-	background-color: #fff;
+	color: var(--text-color);
+	background-color: var(--background-color);
 	width: 400px;
 	height: 333px;
 	overflow-block: auto;
@@ -63,7 +78,7 @@ button {
 .input-box {
 	display: block grid;
 	grid-template-columns: max-content 1fr;
-	border-block: solid .125rem #888;
+	border-block: solid .125rem var(--border-color);
 	margin-block: .5rem;
 	padding-inline: .5rem;
 }
@@ -124,19 +139,22 @@ button {
 }
 
 #button-new-container::before {
-	background-image: url(/img/add_black_24dp.svg);
+	mask: url(/img/add_black_24dp.svg) center center/contain no-repeat;
+	background-color: var(--text-color);
 }
 
 #button-hide-inactive::before {
-	background-image: url(/img/unfold_less_black_24dp.svg);
+	mask: url(/img/unfold_less_black_24dp.svg) center center/contain no-repeat;
+	background-color: var(--text-color);
 }
 
 #button-panorama::before {
-	background-image: url(/img/grid_view_black_24dp.svg);
+	mask: url(/img/grid_view_black_24dp.svg) center center/contain no-repeat;
+	background-color: var(--text-color);
 }
 
 #button-about-addon {
-	border-block-start: solid .125rem #888;
+	border-block-start: solid .125rem var(--border-color);
 }
 
 #button-about-addon::before {
@@ -144,7 +162,8 @@ button {
 }
 
 #button-settings::before {
-	background-image: url(/img/settings_black_24dp.svg);
+	mask: url(/img/settings_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
 }
 
 #menuList, #menuList ul {
@@ -159,7 +178,7 @@ button {
 }
 
 .tab:hover, button:hover {
-	background-color: rgba(0, 0, 0, .1);
+	background-color: var(--hover-color);
 }
 
 #menuList .tab {
@@ -207,7 +226,8 @@ button {
 }
 
 .tab > .tab-pin-button {
-	background-image: url(/img/push_pin_black_24dp.svg);
+	mask: url(/img/push_pin_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
 }
 
 .tab > .tab-pin-button:hover, .tab > .tab-pin-button:focus {
@@ -219,7 +239,8 @@ button {
 }
 
 .tab > .tab-close-button {
-	background-image: url(/img/close_black_24dp.svg);
+	mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
 	opacity: .25;
 }
 
@@ -230,12 +251,12 @@ button {
 #menuList .window-label {
 	position: sticky;
 	inset-block-start: -.125rem;
-	background-color: #fff;
+	background-color: var(--background-color);
 	z-index: 2;
 	box-shadow: 0 0 .5em #fff, 0 0 .5em #fff;
 	display: grid;
 	grid-template-columns: 1fr 2em 2em;
-	border-block-start: solid .125rem #888;
+	border-block-start: solid .125rem var(--border-color);
 	padding-inline-end: 1em;
 }
 
@@ -262,11 +283,13 @@ button {
 }
 
 .window-label > .window-collapse-button {
-	background-image: url(/img/unfold_less_black_24dp.svg);
+	mask: url(/img/unfold_less_black_24dp.svg) center center/contain no-repeat;
+	background-color: var(--text-color);
 }
 
 .window-label > .window-expand-button {
-	background-image: url(/img/unfold_more_black_24dp.svg);
+	mask: url(/img/unfold_more_black_24dp.svg) center center/contain no-repeat;
+	background-color: var(--text-color);
 }
 
 .container {
@@ -289,12 +312,14 @@ button {
 }
 
 .container-visible > .container-visibility-toggle {
-	background-image: url(/img/expand_less_black_24dp.svg);
+	mask: url(/img/expand_less_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
 	visibility: visible;
 }
 
 .container-hidden > .container-visibility-toggle {
-	background-image: url(/img/expand_more_black_24dp.svg);
+	mask: url(/img/expand_more_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
 	visibility: visible;
 }
 
@@ -319,7 +344,8 @@ button {
 }
 
 .container > .edit-container-button {
-	background-image: url(/img/edit_black_24dp.svg);
+	mask: url(/img/edit_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
 	opacity: .25;
 }
 
@@ -328,12 +354,14 @@ button {
 }
 
 .container > .close-container-button {
-	background-image: url(/img/close_black_24dp.svg);
+	mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
 	opacity: .25;
 }
 
 .container > .delete-container-button {
-	background-image: url(/img/delete_black_24dp.svg);
+	mask: url(/img/delete_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
 	opacity: .25;
 }
 
@@ -343,7 +371,7 @@ button {
 
 body > .modal {
 	display: none;
-	background-color: #eee;
+	background-color: var(--secondary-background-color);
 }
 
 body > .modal:target {
@@ -358,7 +386,7 @@ body > .modal:target {
 }
 
 .modal-content {
-	background-color: #fff;
+	background-color: var(--background-color);
 }
 
 .modal-title {
