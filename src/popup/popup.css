@@ -16,24 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+@import url(/theme.css);
+
 :root {
 	inline-size: max-content;
 	block-size: max-content;
-	--text-color: #222;
-	--background-color: #fff;
-	--border-color: #888;
-	--hover-color: rgba(0, 0, 0, 0.1);
-	--secondary-background-color: #d7d7db;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--text-color: #fff;
-		--background-color: #0c0c0d;
-		--border-color: #999;
-		--hover-color: rgba(255, 255, 255, 0.1);
-		--secondary-background-color: #4a4a4f;
-	}
 }
 
 body {
@@ -253,7 +240,7 @@ button {
 	inset-block-start: -.125rem;
 	background-color: var(--background-color);
 	z-index: 2;
-	box-shadow: 0 0 .5em #fff, 0 0 .5em #fff;
+	box-shadow: 0 0 .5em var(--background-color), 0 0 .5em var(--background-color);
 	display: grid;
 	grid-template-columns: 1fr 2em 2em;
 	border-block-start: solid .125rem var(--border-color);
