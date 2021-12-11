@@ -16,24 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+@import url(/theme.css);
+
 :root {
 	inline-size: max-content;
 	block-size: max-content;
-	--text-color: #222;
-	--background-color: #fff;
-	--border-color: #888;
-	--hover-color: rgba(0, 0, 0, 0.1);
-	--secondary-background-color: #d7d7db;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--text-color: #fff;
-		--background-color: #0c0c0d;
-		--border-color: #999;
-		--hover-color: rgba(255, 255, 255, 0.1);
-		--secondary-background-color: #4a4a4f;
-	}
 }
 
 body {
