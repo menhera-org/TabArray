@@ -240,7 +240,7 @@ button {
 	inset-block-start: -.125rem;
 	background-color: var(--background-color);
 	z-index: 2;
-	box-shadow: 0 0 .5em #fff, 0 0 .5em #fff;
+	box-shadow: 0 0 .5em var(--background-color), 0 0 .5em var(--background-color);
 	display: grid;
 	grid-template-columns: 1fr 2em 2em;
 	border-block-start: solid .125rem var(--border-color);
