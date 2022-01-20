@@ -28,7 +28,7 @@ const forceUpdate = () => {
   browser.tabs.query({active: true}).then((tabs) => {
     for (const tab of tabs) {
       const userContextId = containers.toUserContextId(tab.cookieStoreId);
-      if (tabObj.url == 'about:blank' && tabObj.status == 'loading' && activeUserContextIdByWindow.has(tab.windowId)) {
+      if (tab.url == 'about:blank' && tab.status == 'loading' && activeUserContextIdByWindow.has(tab.windowId)) {
         continue;
       }
       activeUserContextIdByWindow.set(tab.windowId, userContextId);
