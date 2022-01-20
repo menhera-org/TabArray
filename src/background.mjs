@@ -208,7 +208,9 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
   } else if (tabObj.pinned) {
     openTabs.add(tabObj.id);
   }
-  setActiveUserContext(tabObj.windowId, userContextId);
+  if ((tabObj.url != 'about:blank' || tabObj.status != 'loading') && tabObj.active) {
+    setActiveUserContext(tabObj.windowId, userContextId);
+  }
 }, {
   properties: [
     'url',
