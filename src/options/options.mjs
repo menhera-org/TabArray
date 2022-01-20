@@ -42,6 +42,8 @@ document.querySelector('label[for="input-dragTabToChangeContainer"]').textConten
 const inputSelectContainerExternalTabs = document.querySelector('#input-selectContainerExternalTabs');
 document.querySelector('label[for="input-selectContainerExternalTabs"]').textContent = browser.i18n.getMessage('labelSelectContainerExternalTabs');
 
+const selectExternalTabContainerOption = document.querySelector('#select-externalTabContainerOption');
+
 config.observe('newtab.keepContainer', (value) => {
   if (undefined === value) {
     config.set('newtab.keepContainer', true);
@@ -66,6 +68,13 @@ config.observe('gesture.dragTabBetweenContainers', (value) => {
 inputDragTabToChangeContainer.addEventListener('change', (ev) => {
   config.set('gesture.dragTabBetweenContainers', ev.target.checked)
   .catch(e => console.error(e));
+});
+
+config.observe('tab.external.containerOption', (value) => {
+  if (undefined === value) {
+    return;
+  }
+  selectExternalTabContainerOption.value = value;
 });
 
 config.observe('tab.external.chooseContainer', (value) => {

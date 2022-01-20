@@ -38,6 +38,7 @@ let tabSorting = false;
 let configNewTabInContainerEnabled = true;
 let configDragBetweenContainers = true;
 let configExternalTabChooseContainer = true;
+let configExternalTabContainerOption = 'choose';
 config.observe('newtab.keepContainer', (value) => {
   if (undefined !== value) {
     configNewTabInContainerEnabled = value;
@@ -57,6 +58,14 @@ config.observe('tab.external.chooseContainer', (value) => {
     return;
   }
   configExternalTabChooseContainer = !!value;
+});
+
+config.observe('tab.external.containerOption', (value) => {
+  if (undefined === value) {
+    config.set('tab.external.containerOption', 'choose');
+    return;
+  }
+  configExternalTabContainerOption = value;
 });
 
 globalThis.sortTabsByWindow = async (windowId) => {
