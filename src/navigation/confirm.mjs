@@ -57,6 +57,7 @@ const renderUserContext = (userContext, aUserContextElement) => {
 
 const createUserContextElement = (userContext) => {
   const userContextElement = renderUserContext(userContext);
+  const cookieStoreId = userContext.cookieStoreId;
   containersElement.append(userContextElement);
   userContextElement.addEventListener('click', (ev) => {
     Promise.all([
@@ -64,7 +65,7 @@ const createUserContextElement = (userContext) => {
       browser.tabs.create({
         active: true,
         windowId: browser.windows.WINDOW_ID_CURRENT,
-        cookieStoreId: userContext.cookieStoreId,
+        cookieStoreId,
         url,
       }),
     ]).then(([currentTabObj, _createdTabObj]) => {
