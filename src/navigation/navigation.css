@@ -17,6 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+@import url(/theme.css);
+
 :root {
   --in-content-container-min-width: 13em;
   --in-content-container-max-width: 52em;
@@ -30,6 +32,8 @@ body {
   padding: 40px 48px;
   align-items: center;
   justify-content: center;
+	color: var(--text-color);
+	background-color: var(--background-color);
 }
 
 .container {
@@ -54,6 +58,7 @@ body {
   margin: 0;
   font: inherit;
   padding-inline: .5em;
+  color: inherit;
 }
 
 .userContext-button:hover {
