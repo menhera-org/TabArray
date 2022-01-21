@@ -36,6 +36,6 @@ This extension is intended to replace the following features/extensions:
 
 ## License
 
-Copyright &copy; 2021 Menhera.org.
+Copyright &copy; 2022 Menhera.org.
 
 Licensed under GNU GPL version 3 **or later**.
