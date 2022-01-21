@@ -303,13 +303,30 @@ setTimeout(() => {
       const tabId = details.tabId;
       if (-1 != tabId) {
         browser.tabs.get(tabId).then((tabObj) => {
-          const activeUserContextId = getActiveUserContext(tabObj.windowId);
+          const {windowId} = tabObj;
+          const activeUserContextId = getActiveUserContext(windowId);
           if ('sticky' == configExternalTabContainerOption) {
             if (userContextId == activeUserContextId) {
-              location.href = url;
+              browser.tabs.update(tabId, {
+                url,
+              }).then(() => {
+                console.log('Opened %s in tab %d', url, tabId);
+              }).catch((e) => {
+                console.error(e);
+              });
             } else {
-              containers.reopenInContainer(activeUserContextId, tabId)
-              .catch((e) => console.error(e));
+              browser.tabs.remove(tabId).then(() => {
+                browser.tabs.create({
+                  active: true,
+                  url,
+                  cookieStoreId: containers.toCookieStoreId(activeUserContextId),
+                  windowId,
+                }).then(() => {
+                  console.log('Reopened %s in container id %d', url, activeUserContextId);
+                }).catch((e) => {
+                  console.error(e);
+                });
+              });
             }
           }
         });
