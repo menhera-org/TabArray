@@ -302,9 +302,17 @@ setTimeout(() => {
       }
       const tabId = details.tabId;
       if (-1 != tabId) {
-        browser.tabs.get(tabId).then((tabObj) => {
+        browser.tabs.get(tabId).then(async (tabObj) => {
           const {windowId} = tabObj;
-          const activeUserContextId = getActiveUserContext(windowId);
+          const activeTabs = await browser.tabs.query({
+            windowId,
+            active: true,
+          });
+          let activeUserContextId = 0;
+          for (const activeTabObj of activeTabs) {
+            activeUserContextId = containers.toUserContextId(activeTabObj.cookieStoreId);
+            break;
+          }
           if ('sticky' == configExternalTabContainerOption) {
             if (userContextId == activeUserContextId) {
               browser.tabs.update(tabId, {
