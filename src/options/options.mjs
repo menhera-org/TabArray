@@ -43,6 +43,11 @@ const inputSelectContainerExternalTabs = document.querySelector('#input-selectCo
 document.querySelector('label[for="input-selectContainerExternalTabs"]').textContent = browser.i18n.getMessage('labelSelectContainerExternalTabs');
 
 const selectExternalTabContainerOption = document.querySelector('#select-externalTabContainerOption');
+document.querySelector('label[for="select-externalTabContainerOption"]').textContent = browser.i18n.getMessage('labelExternalTabSelectContainerOption');
+
+document.querySelector('#select-externalTabContainerOption > option[value="choose"]').textContent = browser.i18n.getMessage('labelExternalTabOptionChooseContainer');
+document.querySelector('#select-externalTabContainerOption > option[value="sticky"]').textContent = browser.i18n.getMessage('labelExternalTabOptionStickyContainer');
+document.querySelector('#select-externalTabContainerOption > option[value="disabled"]').textContent = browser.i18n.getMessage('labelExternalTabOptionDisabled');
 
 config.observe('newtab.keepContainer', (value) => {
   if (undefined === value) {
