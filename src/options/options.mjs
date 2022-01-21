@@ -39,8 +39,12 @@ document.querySelector('label[for="input-resistFingerprinting"]').textContent = 
 const inputDragTabToChangeContainer = document.querySelector('#input-dragTabToChangeContainer');
 document.querySelector('label[for="input-dragTabToChangeContainer"]').textContent = browser.i18n.getMessage('labelDragTabToChangeContainer');
 
-const inputSelectContainerExternalTabs = document.querySelector('#input-selectContainerExternalTabs');
-document.querySelector('label[for="input-selectContainerExternalTabs"]').textContent = browser.i18n.getMessage('labelSelectContainerExternalTabs');
+const selectExternalTabContainerOption = document.querySelector('#select-externalTabContainerOption');
+document.querySelector('label[for="select-externalTabContainerOption"]').textContent = browser.i18n.getMessage('labelExternalTabSelectContainerOption');
+
+document.querySelector('#select-externalTabContainerOption > option[value="choose"]').textContent = browser.i18n.getMessage('labelExternalTabOptionChooseContainer');
+document.querySelector('#select-externalTabContainerOption > option[value="sticky"]').textContent = browser.i18n.getMessage('labelExternalTabOptionStickyContainer');
+document.querySelector('#select-externalTabContainerOption > option[value="disabled"]').textContent = browser.i18n.getMessage('labelExternalTabOptionDisabled');
 
 config.observe('newtab.keepContainer', (value) => {
   if (undefined === value) {
@@ -68,16 +72,15 @@ inputDragTabToChangeContainer.addEventListener('change', (ev) => {
   .catch(e => console.error(e));
 });
 
-config.observe('tab.external.chooseContainer', (value) => {
+config.observe('tab.external.containerOption', (value) => {
   if (undefined === value) {
-    config.set('tab.external.chooseContainer', true);
     return;
   }
-  inputSelectContainerExternalTabs.checked = value;
+  selectExternalTabContainerOption.value = value;
 });
 
-inputSelectContainerExternalTabs.addEventListener('change', (ev) => {
-  config.set('tab.external.chooseContainer', !!ev.target.checked)
+selectExternalTabContainerOption.addEventListener('change', (ev) => {
+  config.set('tab.external.containerOption', ev.target.value)
   .catch(e => console.error(e));
 });
 

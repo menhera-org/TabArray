@@ -20,6 +20,7 @@
 import { getStateManager } from '../modules/global-state.mjs';
 import { BrowserTab } from '../state-manager/lib/BrowserTab.mjs';
 import * as i18n from '../modules/i18n.mjs';
+import { config } from '../modules/config.mjs';
 
 const params = new URLSearchParams(location.search);
 
@@ -57,6 +58,7 @@ const renderUserContext = (userContext, aUserContextElement) => {
 
 const createUserContextElement = (userContext) => {
   const userContextElement = renderUserContext(userContext);
+  const cookieStoreId = userContext.cookieStoreId;
   containersElement.append(userContextElement);
   userContextElement.addEventListener('click', (ev) => {
     Promise.all([
@@ -64,7 +66,7 @@ const createUserContextElement = (userContext) => {
       browser.tabs.create({
         active: true,
         windowId: browser.windows.WINDOW_ID_CURRENT,
-        cookieStoreId: userContext.cookieStoreId,
+        cookieStoreId,
         url,
       }),
     ]).then(([currentTabObj, _createdTabObj]) => {
@@ -102,6 +104,14 @@ try {
     if (tabObj.pinned) {
       location.href = url;
     }
+    config.get('tab.external.containerOption').then(async (optionValue) => {
+      if ('sticky' == optionValue) {
+        const activeTabs = await browser.tabs.query({
+          windowId: tabObj.windowId,
+          active: true,
+        })
+      }
+    });
   });
 } catch (e) {
   console.warn('Invalid URL: %s', url);

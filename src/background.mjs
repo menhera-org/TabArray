@@ -38,6 +38,7 @@ let tabSorting = false;
 let configNewTabInContainerEnabled = true;
 let configDragBetweenContainers = true;
 let configExternalTabChooseContainer = true;
+let configExternalTabContainerOption = 'choose';
 config.observe('newtab.keepContainer', (value) => {
   if (undefined !== value) {
     configNewTabInContainerEnabled = value;
@@ -50,13 +51,17 @@ config.observe('gesture.dragTabBetweenContainers', (value) => {
   }
 });
 
-config.observe('tab.external.chooseContainer', (value) => {
+config.observe('tab.external.containerOption', (value) => {
   if (undefined === value) {
-    configExternalTabChooseContainer = true;
-    config.set('tab.external.chooseContainer', true);
+    config.set('tab.external.containerOption', 'choose');
     return;
   }
-  configExternalTabChooseContainer = !!value;
+  configExternalTabContainerOption = value;
+  if (value == 'disabled') {
+    configExternalTabChooseContainer = false;
+  } else {
+    configExternalTabChooseContainer = true;
+  }
 });
 
 globalThis.sortTabsByWindow = async (windowId) => {
@@ -294,6 +299,37 @@ setTimeout(() => {
       if (openTabs.has(details.tabId)) {
         console.info('Ignoring manually navigated tab: %d', details.tabId);
         break;
+      }
+      const tabId = details.tabId;
+      if (-1 != tabId) {
+        const tabObj = StateManager.getBrowserTab(tabId);
+        const {windowId} = tabObj;
+        const activeUserContextId = getActiveUserContext(windowId);
+        if ('sticky' == configExternalTabContainerOption) {
+          if (userContextId == activeUserContextId) {
+            openTabs.add(tabId);
+            browser.tabs.update(tabId, {
+              url,
+            }).then(() => {
+              console.log('Opened %s in tab %d', url, tabId);
+            }).catch((e) => {
+              console.error(e);
+            });
+          } else {
+            browser.tabs.remove(tabId).then(() => {
+              browser.tabs.create({
+                active: true,
+                url,
+                cookieStoreId: containers.toCookieStoreId(activeUserContextId),
+                windowId,
+              }).then(() => {
+                console.log('Reopened %s in container id %d', url, activeUserContextId);
+              }).catch((e) => {
+                console.error(e);
+              });
+            });
+          }
+        }
       }
       const {url} = details;
       console.log('New navigation target: %s', url);

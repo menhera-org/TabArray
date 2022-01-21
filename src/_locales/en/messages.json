@@ -242,5 +242,21 @@
     "labelSelectContainerExternalTabs": {
         "message": "Select a Container when an external application open a Tab",
         "description": "Option to enable container selection on externally opened tabs."
+    },
+    "labelExternalTabSelectContainerOption": {
+        "message": "When an external application opens a tab:",
+        "description": "Label for option for handling of externally opened tabs"
+    },
+    "labelExternalTabOptionChooseContainer": {
+        "message": "Choose a container every time",
+        "description": "Option to choose a container every time an external application opens a tab."
+    },
+    "labelExternalTabOptionStickyContainer": {
+        "message": "Open in last active container",
+        "description": "Option to use the last active container for externally opened tabs."
+    },
+    "labelExternalTabOptionDisabled": {
+        "message": "Open in default container (No Container)",
+        "description": "Option to disable handling of externally opened tabs."
     }
 }
