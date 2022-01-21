@@ -300,6 +300,20 @@ setTimeout(() => {
         console.info('Ignoring manually navigated tab: %d', details.tabId);
         break;
       }
+      const tabId = details.tabId;
+      if (-1 != tabId) {
+        browser.tabs.get(tabId).then((tabObj) => {
+          const activeUserContextId = getActiveUserContext(tabObj.windowId);
+          if ('sticky' == configExternalTabContainerOption) {
+            if (userContextId == activeUserContextId) {
+              location.href = url;
+            } else {
+              containers.reopenInContainer(activeUserContextId, tabId)
+              .catch((e) => console.error(e));
+            }
+          }
+        });
+      }
       const {url} = details;
       console.log('New navigation target: %s', url);
       const confirmPage = browser.runtime.getURL(CONFIRM_PAGE);
