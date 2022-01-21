@@ -51,21 +51,17 @@ config.observe('gesture.dragTabBetweenContainers', (value) => {
   }
 });
 
-config.observe('tab.external.chooseContainer', (value) => {
-  if (undefined === value) {
-    configExternalTabChooseContainer = true;
-    config.set('tab.external.chooseContainer', true);
-    return;
-  }
-  configExternalTabChooseContainer = !!value;
-});
-
 config.observe('tab.external.containerOption', (value) => {
   if (undefined === value) {
     config.set('tab.external.containerOption', 'choose');
     return;
   }
   configExternalTabContainerOption = value;
+  if (value == 'disabled') {
+    configExternalTabChooseContainer = false;
+  } else {
+    configExternalTabChooseContainer = true;
+  }
 });
 
 globalThis.sortTabsByWindow = async (windowId) => {

@@ -39,9 +39,6 @@ document.querySelector('label[for="input-resistFingerprinting"]').textContent = 
 const inputDragTabToChangeContainer = document.querySelector('#input-dragTabToChangeContainer');
 document.querySelector('label[for="input-dragTabToChangeContainer"]').textContent = browser.i18n.getMessage('labelDragTabToChangeContainer');
 
-const inputSelectContainerExternalTabs = document.querySelector('#input-selectContainerExternalTabs');
-document.querySelector('label[for="input-selectContainerExternalTabs"]').textContent = browser.i18n.getMessage('labelSelectContainerExternalTabs');
-
 const selectExternalTabContainerOption = document.querySelector('#select-externalTabContainerOption');
 document.querySelector('label[for="select-externalTabContainerOption"]').textContent = browser.i18n.getMessage('labelExternalTabSelectContainerOption');
 
@@ -82,16 +79,8 @@ config.observe('tab.external.containerOption', (value) => {
   selectExternalTabContainerOption.value = value;
 });
 
-config.observe('tab.external.chooseContainer', (value) => {
-  if (undefined === value) {
-    config.set('tab.external.chooseContainer', true);
-    return;
-  }
-  inputSelectContainerExternalTabs.checked = value;
-});
-
-inputSelectContainerExternalTabs.addEventListener('change', (ev) => {
-  config.set('tab.external.chooseContainer', !!ev.target.checked)
+selectExternalTabContainerOption.addEventListener('change', (ev) => {
+  config.set('tab.external.containerOption', ev.target.value)
   .catch(e => console.error(e));
 });
 
