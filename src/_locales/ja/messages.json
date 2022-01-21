@@ -242,5 +242,21 @@
     "labelSelectContainerExternalTabs": {
         "message": "外部アプリケーションがタブを開くときにコンテナーを選ぶ",
         "description": "Option to enable container selection on externally opened tabs."
+    },
+    "labelExternalTabSelectContainerOption": {
+        "message": "外部アプリケーションがタブを開いたとき：",
+        "description": "Label for option for handling of externally opened tabs"
+    },
+    "labelExternalTabOptionChooseContainer": {
+        "message": "毎回コンテナーを選択する",
+        "description": "Option to choose a container every time an external application opens a tab."
+    },
+    "labelExternalTabOptionStickyContainer": {
+        "message": "最後に使用したコンテナーで開く",
+        "description": "Option to use the last active container for externally opened tabs."
+    },
+    "labelExternalTabOptionDisabled": {
+        "message": "デフォルトのコンテナーで開く (コンテナーなし)",
+        "description": "Option to disable handling of externally opened tabs."
     }
 }
