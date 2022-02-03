@@ -258,5 +258,21 @@
     "labelExternalTabOptionDisabled": {
         "message": "Open in default container (No Container)",
         "description": "Option to disable handling of externally opened tabs."
+    },
+    "labelGroupIndexOption": {
+        "message": "Show an index tab for each container",
+        "description": "Option to show index tabs for containers."
+    },
+    "labelGroupIndexOptionAlways": {
+        "message": "All containers",
+        "description": "Option to show index tabs for all containers."
+    },
+    "labelGroupIndexOptionCollapsed": {
+        "message": "Collapsed containers",
+        "description": "Option to show index tabs for collapsed containers."
+    },
+    "labelGroupIndexOptionNever": {
+        "message": "Never",
+        "description": "Option to show index tabs for no containers."
     }
 }

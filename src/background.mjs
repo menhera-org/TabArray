@@ -44,6 +44,16 @@ config.observe('newtab.keepContainer', (value) => {
   }
 });
 
+// 'never' -- do not show indeces
+// 'collapsed' -- show indeces for collapsed containers
+// 'always' -- always show indeces
+let configGroupIndexOption = 'never';
+config.observe('tab.groups.indexOption', (value) => {
+  if (undefined !== value) {
+    configGroupIndexOption = value;
+  }
+});
+
 config.observe('tab.external.containerOption', (value) => {
   if (undefined === value) {
     config.set('tab.external.containerOption', 'choose');

@@ -43,6 +43,13 @@ document.querySelector('#select-externalTabContainerOption > option[value="choos
 document.querySelector('#select-externalTabContainerOption > option[value="sticky"]').textContent = browser.i18n.getMessage('labelExternalTabOptionStickyContainer');
 document.querySelector('#select-externalTabContainerOption > option[value="disabled"]').textContent = browser.i18n.getMessage('labelExternalTabOptionDisabled');
 
+const selectGroupIndexOption = document.querySelector('#select-groupIndexOption');
+document.querySelector('label[for="select-groupIndexOption"]').textContent = browser.i18n.getMessage('labelGroupIndexOption');
+
+document.querySelector('#select-groupIndexOption > option[value="always"]').textContent = browser.i18n.getMessage('labelGroupIndexOptionAlways');
+document.querySelector('#select-groupIndexOption > option[value="collapsed"]').textContent = browser.i18n.getMessage('labelGroupIndexOptionCollapsed');
+document.querySelector('#select-groupIndexOption > option[value="never"]').textContent = browser.i18n.getMessage('labelGroupIndexOptionNever');
+
 config.observe('newtab.keepContainer', (value) => {
   if (undefined === value) {
     config.set('newtab.keepContainer', true);
@@ -65,6 +72,18 @@ config.observe('tab.external.containerOption', (value) => {
 
 selectExternalTabContainerOption.addEventListener('change', (ev) => {
   config.set('tab.external.containerOption', ev.target.value)
+  .catch(e => console.error(e));
+});
+
+config.observe('tab.groups.indexOption', (value) => {
+  if (undefined === value) {
+    return;
+  }
+  selectGroupIndexOption.value = value;
+});
+
+selectGroupIndexOption.addEventListener('change', (ev) => {
+  config.set('tab.groups.indexOption', ev.target.value)
   .catch(e => console.error(e));
 });
 
