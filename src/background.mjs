@@ -36,18 +36,11 @@ const openTabs = new Set;
 
 let tabSorting = false;
 let configNewTabInContainerEnabled = true;
-let configDragBetweenContainers = true;
 let configExternalTabChooseContainer = true;
 let configExternalTabContainerOption = 'choose';
 config.observe('newtab.keepContainer', (value) => {
   if (undefined !== value) {
     configNewTabInContainerEnabled = value;
-  }
-});
-
-config.observe('gesture.dragTabBetweenContainers', (value) => {
-  if (undefined !== value) {
-    configDragBetweenContainers = value;
   }
 });
 
@@ -140,38 +133,6 @@ browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
   const tab = await browser.tabs.get(tabId);
   if (tab.pinned) {
     return;
-  }
-  let prevTab, nextTab;
-  try {
-    if (tabSorting || !configDragBetweenContainers) throw void 0;
-    prevTab = (await browser.tabs.query({
-      windowId: tab.windowId,
-      index: tab.index - 1,
-      pinned: false,
-    }))[0];
-  } catch (e) {}
-  try {
-    if (tabSorting || !configDragBetweenContainers) throw void 0;
-    nextTab = (await browser.tabs.query({
-      windowId: tab.windowId,
-      index: tab.index + 1,
-    }))[0];
-    if (nextTab.status == 'loading') {
-      nextTab = undefined;
-    }
-  } catch (e) {}
-  // Reopen in a different container when moved to that container.
-  if (prevTab || nextTab) {
-    if (prevTab && nextTab && prevTab.cookieStoreId == nextTab.cookieStoreId) {
-      const targetUserContextId = containers.toUserContextId(prevTab.cookieStoreId);
-      await containers.reopenInContainer(targetUserContextId, tab.id);
-    } else if (prevTab && !nextTab) {
-      const targetUserContextId = containers.toUserContextId(prevTab.cookieStoreId);
-      await containers.reopenInContainer(targetUserContextId, tab.id);
-    } else if (!prevTab && nextTab) {
-      const targetUserContextId = containers.toUserContextId(nextTab.cookieStoreId);
-      await containers.reopenInContainer(targetUserContextId, tab.id);
-    }
   }
   await sortTabs();
   tabChangeChannel.postMessage(true);

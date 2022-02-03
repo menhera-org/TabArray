@@ -36,9 +36,6 @@ document.querySelector('label[for="input-firstPartyIsolate"]').textContent = bro
 const inputResistFingerprinting = document.querySelector('#input-resistFingerprinting');
 document.querySelector('label[for="input-resistFingerprinting"]').textContent = browser.i18n.getMessage('labelResistFingerprinting');
 
-const inputDragTabToChangeContainer = document.querySelector('#input-dragTabToChangeContainer');
-document.querySelector('label[for="input-dragTabToChangeContainer"]').textContent = browser.i18n.getMessage('labelDragTabToChangeContainer');
-
 const selectExternalTabContainerOption = document.querySelector('#select-externalTabContainerOption');
 document.querySelector('label[for="select-externalTabContainerOption"]').textContent = browser.i18n.getMessage('labelExternalTabSelectContainerOption');
 
@@ -56,19 +53,6 @@ config.observe('newtab.keepContainer', (value) => {
 
 inputNewTabKeepContainer.addEventListener('change', (ev) => {
   config.set('newtab.keepContainer', ev.target.checked)
-  .catch(e => console.error(e));
-});
-
-config.observe('gesture.dragTabBetweenContainers', (value) => {
-  if (undefined === value) {
-    config.set('gesture.dragTabBetweenContainers', true);
-    return;
-  }
-  inputDragTabToChangeContainer.checked = value;
-});
-
-inputDragTabToChangeContainer.addEventListener('change', (ev) => {
-  config.set('gesture.dragTabBetweenContainers', ev.target.checked)
   .catch(e => console.error(e));
 });
 
