@@ -771,7 +771,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
   updateTabInfo(tabObj);
 });
 
-browser.windows.onRemoved.addListener((windowId) => {
+const handleWindowClosed = (windowId) => {
   const browserWindow = state._browserWindows.get(windowId);
   if (!browserWindow) {
     console.warn('assertion failed: no such BrowserWindow: %d', windowId);
@@ -789,6 +789,10 @@ browser.windows.onRemoved.addListener((windowId) => {
       windowId,
     },
   }));
+};
+
+browser.windows.onRemoved.addListener((windowId) => {
+  handleWindowClosed(windowId);
 });
 
 browser.windows.onCreated.addListener((windowObj) => {
@@ -810,7 +814,18 @@ setInterval(() => {
         tabClosedHandler(tabId);
       }
     }
-  })
+  });
+  browser.windows.getAll().then((windowObjects) => {
+    const currentWindowIds = new Set;
+    for (const windowObj of windowObjects) {
+      currentWindowIds.add(windowObj.id);
+    }
+    for (const [windowId, browserWindow] of state._browserWindows) {
+      if (!currentWindowIds.has(windowId)) {
+        handleWindowClosed(windowId);
+      }
+    }
+  });
 }, 10000);
 
 state.addEventListener('_tabUnavailable', (ev) => {
