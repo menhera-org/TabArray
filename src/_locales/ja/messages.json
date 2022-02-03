@@ -258,5 +258,21 @@
     "labelExternalTabOptionDisabled": {
         "message": "デフォルトのコンテナーで開く (コンテナーなし)",
         "description": "Option to disable handling of externally opened tabs."
+    },
+    "labelGroupIndexOption": {
+        "message": "各コンテナーに見出しタブを表示する",
+        "description": "Option to show index tabs for containers."
+    },
+    "labelGroupIndexOptionAlways": {
+        "message": "すべてのコンテナー",
+        "description": "Option to show index tabs for all containers."
+    },
+    "labelGroupIndexOptionCollapsed": {
+        "message": "最小化されたコンテナー",
+        "description": "Option to show index tabs for collapsed containers."
+    },
+    "labelGroupIndexOptionNever": {
+        "message": "無効",
+        "description": "Option to show index tabs for no containers."
     }
 }
