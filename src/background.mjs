@@ -27,6 +27,7 @@ import { setActiveUserContext } from './modules/usercontext-state.mjs';
 import { ADDON_PAGE, CONFIRM_PAGE } from './defs.mjs';
 import { getWindowIds } from './modules/windows.mjs';
 import './state-manager/StateManager.mjs';
+import {IndexTab} from './modules/IndexTab.mjs';
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
@@ -75,6 +76,16 @@ globalThis.sortTabsByWindow = async (windowId) => {
     sortedTabs.sort((tab1, tab2) => {
       const userContextId1 = containers.toUserContextId(tab1.cookieStoreId);
       const userContextId2 = containers.toUserContextId(tab2.cookieStoreId);
+      if (userContextId1 == userContextId2) {
+        try {
+          const indexTab = new IndexTab(tab1.url);
+          return -1;
+        } catch (e) {}
+        try {
+          const indexTab = new IndexTab(tab2.url);
+          return 1;
+        } catch (e) {}
+      }
       return userContextId1 - userContextId2;
     });
     const pinnedCount = pinnedTabs.length;

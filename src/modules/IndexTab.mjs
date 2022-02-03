@@ -28,8 +28,18 @@ export class IndexTab {
     if (url.href != indexPageUrl) {
       throw new TypeError('Not an IndexTab');
     }
+    this.url = url.href;
     const params = new URLSearchParams(hash);
     this.iconUrl = params.i || defaultIconUrl;
     this.title = params.t || '';
+  }
+
+  static getUrl(title, iconUrl) {
+    const url = new URL(indexPageUrl);
+    const params = new URLSearchParams();
+    params.set('i', iconUrl);
+    params.set('t', title);
+    url.hash = '#' + params;
+    return new IndexTab(url.href);
   }
 }

@@ -17,8 +17,20 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { config } from './config.mjs';
+import { IndexTab } from './IndexTab.mjs';
 import * as newtab from './newtab.mjs';
 import { setActiveUserContext } from './usercontext-state.mjs';
+
+// 'never' -- do not show indeces
+// 'collapsed' -- show indeces for collapsed containers
+// 'always' -- always show indeces
+let configGroupIndexOption = 'never';
+config.observe('tab.groups.indexOption', (value) => {
+  if (undefined !== value) {
+    configGroupIndexOption = value;
+  }
+});
 
 const COLORS = [
   "blue",
@@ -230,9 +242,12 @@ export const hide = async (aUserContextId, aWindowId) => {
   const tabs = await browser.tabs.query({
     windowId: aWindowId,
   });
+  const userContext = await get(userContextId);
   const userContexts = new Map;
   let active = false;
   const tabsToHide = [];
+  let minIndex = Infinity;
+  let indexExists = false;
   for (const tab of tabs) {
     if (tab.cookieStoreId != cookieStoreId || tab.pinned) {
       if (!tab.hidden) {
@@ -240,12 +255,25 @@ export const hide = async (aUserContextId, aWindowId) => {
       }
       continue;
     }
+    minIndex = Math.min(minIndex, tab.index);
     if (tab.active) {
       active = true;
     }
     if (!tab.hidden) {
-      tabsToHide.push(tab.id);
+      try {
+        new IndexTab(tab.url);
+        indexExists = true;
+      } catch (e) {
+        tabsToHide.push(tab.id);
+      }
     }
+  }
+  if (!indexExists && isFinite(minIndex) && 'collapsed' == configGroupIndexOption) {
+    await browser.tabs.create({
+      url: IndexTab.getUrl(userContext.name, userContext.iconUrl).url,
+      index: minIndex,
+      windowId: aWindowId,
+    });
   }
   if (1 > tabsToHide.length) {
     console.log('No tabs to hide on window %d for userContext %d', aWindowId, userContextId);
