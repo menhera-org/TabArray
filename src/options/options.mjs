@@ -53,8 +53,8 @@ document.querySelector('#select-groupIndexOption > option[value="never"]').textC
 const selectPopupSize = document.querySelector('#select-popupSize');
 document.querySelector('label[for="select-popupSize"]').textContent = browser.i18n.getMessage('labelPopupSize');
 
-document.querySelector('#select-popupSIze > option[value="standard"]').textContent = browser.i18n.getMessage('labelPopupSizeStandard');
-document.querySelector('#select-popupSIze > option[value="large"]').textContent = browser.i18n.getMessage('labelPopupSizeLarge');
+document.querySelector('#select-popupSize > option[value="standard"]').textContent = browser.i18n.getMessage('labelPopupSizeStandard');
+document.querySelector('#select-popupSize > option[value="large"]').textContent = browser.i18n.getMessage('labelPopupSizeLarge');
 
 config.observe('newtab.keepContainer', (value) => {
   if (undefined === value) {
