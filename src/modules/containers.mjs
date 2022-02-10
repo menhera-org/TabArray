@@ -240,6 +240,7 @@ export const createIndexTab = async (aUserContextId, aWindowId) => {
     url,
     cookieStoreId: toCookieStoreId(aUserContextId),
     windowId: aWindowId,
+    active: false,
   });
   await browser.sessions.setTabValue(tabObj.id, 'indexTabUrl', url);
   return tabObj;
