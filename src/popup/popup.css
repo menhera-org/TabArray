@@ -221,6 +221,14 @@ button {
 	border-inline-start: solid .25rem transparent;
 }
 
+#menuList.search-result .tab, #menuList.search-result .window-label {
+	display: none;
+}
+
+#menuList.search-result .container:not(.search-matched) {
+	display: none;
+}
+
 .tab-label, .container-label {
 	padding-inline: .5em;
 	padding-block: .5em;

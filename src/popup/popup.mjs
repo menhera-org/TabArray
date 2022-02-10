@@ -1,7 +1,7 @@
 // vim: ts=4 noet ai
 /*
 	Container Tab Groups
-	Copyright (C) 2021 Menhera.org
+	Copyright (C) 2022 Menhera.org
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -144,6 +144,7 @@ const renderContainer = (userContextId) => {
 	const tabs = StateManager.getBrowserWindow(currentWindowId).getTabs();
 	const windowId = currentWindowId;
 	const containerElement = document.createElement('li');
+	containerElement.dataset.name = container.name;
 	containerElement.classList.add('container');
 	if (!userContextId) {
 		containerElement.classList.add('container-default');
@@ -612,6 +613,33 @@ document.querySelector('#button-panorama').addEventListener('click', (ev) => {
 	}).catch((e) => console.error(e));
 });
 
-document.querySelector('#search').focus();
+const searchBox = document.querySelector('#search');
+const menuListElement = document.querySelector('#menuList');
 
-document.querySelector('#search').placeholder = browser.i18n.getMessage('searchPlaceholder');
+searchBox.focus();
+searchBox.placeholder = browser.i18n.getMessage('searchPlaceholder');
+searchBox.addEventListener('input', (ev) => {
+	const rawValue = ev.target.value;
+	const values = rawValue.trim().split(/\s+/u).map((value) => value.trim()).filter((value) => !!value);
+	if (values.length) {
+		const containers = menuListElement.querySelectorAll('.container');
+		for (const container of containers) {
+			const name = container.dataset.name.toLowerCase();
+			let matched = false;
+			for (const searchString of values) {
+				if (name.includes(searchString.toLowerCase())) {
+					matched = true;
+					break;
+				}
+			}
+			if (matched) {
+				container.classList.add('search-matched');
+			} else {
+				container.classList.remove('search-matched');
+			}
+		}
+		menuListElement.classList.add('search-result');
+	} else {
+		menuListElement.classList.remove('search-result');
+	}
+});
