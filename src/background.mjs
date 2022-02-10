@@ -93,11 +93,12 @@ globalThis.sortTabsByWindow = async (windowId) => {
           await browser.tabs.remove(tabId);
           sortedTabs = sortedTabs.filter((tabObj) => tabObj.id != tabId);
         }
-      } else if (configGroupIndexOption == 'always') {
+      } else if (configGroupIndexOption != 'never') {
         if (indexTabs.has(userContextId)) {
           continue;
         }
         const tabObj = await browser.tabs.create({
+          windowId,
           cookieStoreId: containers.toCookieStoreId(userContextId),
           url: String(IndexTab.getUrl()),
         });
@@ -200,7 +201,7 @@ StateManager.addEventListener('tabClose', async ({detail}) => {
     cookieStoreId: containers.toCookieStoreId(userContextId),
   }).then(async (tabs) => {
     const indexTabs = new Set;
-    const tabCount = 0;
+    let tabCount = 0;
     for (const tabObj of tabs) {
       try {
         new IndexTab(tabObj.url);
