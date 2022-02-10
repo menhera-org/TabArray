@@ -72,7 +72,43 @@ globalThis.sortTabsByWindow = async (windowId) => {
   try {
     const tabs = await browser.tabs.query({windowId: windowId});
     const pinnedTabs = tabs.filter(tab => tab.pinned);
-    const sortedTabs = tabs.filter(tab => !tab.pinned);
+    let sortedTabs = tabs.filter(tab => !tab.pinned);
+
+    const userContextIds = new Set(tabs.map(tabObj => containers.toUserContextId(tabObj.cookieStoreId)));
+    const hiddenUserContextIds = new Set(tabs.filter(tabObj => tabObj.hidden).map(tabObj => containers.toUserContextId(tabObj.cookieStoreId)));
+    const indexedUserContextIds = new Set;
+    const indexTabs = new Map;
+    for (const tabObj of tabs) {
+      const userContextId = containers.toUserContextId(tabObj.cookieStoreId);
+      try {
+        new IndexTab(tabObj.url);
+        indexedUserContextIds.add(userContextId);
+        indexTabs.set(userContextId, tabObj.id);
+      } catch (e) {}
+    }
+    for (const userContextId of userContextIds) {
+      if (configGroupIndexOption == 'collapsed' && !hiddenUserContextIds.has(userContextId)) {
+        if (indexTabs.has(userContextId)) {
+          const tabId = indexTabs.get(userContextId);
+          await browser.tabs.remove(tabId);
+          sortedTabs = sortedTabs.filter((tabObj) => tabObj.id != tabId);
+        }
+      } else if (configGroupIndexOption == 'always') {
+        if (indexTabs.has(userContextId)) {
+          continue;
+        }
+        const tabObj = await browser.tabs.create({
+          cookieStoreId: containers.toCookieStoreId(userContextId),
+          url: String(IndexTab.getUrl()),
+        });
+        sortedTabs.push(tabObj);
+      } else {
+        break;
+      }
+    }
+    if ('collapsed' == configGroupIndexOption) {
+      
+    }
     sortedTabs.sort((tab1, tab2) => {
       const userContextId1 = containers.toUserContextId(tab1.cookieStoreId);
       const userContextId2 = containers.toUserContextId(tab2.cookieStoreId);
@@ -150,6 +186,37 @@ browser.tabs.onRemoved.addListener((tabId, {windowId}) => {
   openTabs.delete(tabId);
 });
 
+StateManager.addEventListener('tabClose', async ({detail}) => {
+  const {userContextId, windowId, browserTab} = detail;
+  try {
+    new IndexTab(browserTab.url);
+    // index closed, close all tabs of that group
+    await containers.closeAllTabsOnWindow(userContextId, windowId);
+    return;
+  } catch (e) {}
+
+  browser.tabs.query({
+    windowId,
+    cookieStoreId: containers.toCookieStoreId(userContextId),
+  }).then(async (tabs) => {
+    const indexTabs = new Set;
+    const tabCount = 0;
+    for (const tabObj of tabs) {
+      try {
+        new IndexTab(tabObj.url);
+        indexTabs.add(tabObj.id);
+      } catch (e) {
+        tabCount++;
+      }
+    }
+    if (tabCount < 1) {
+      await browser.tabs.remove([... indexTabs]);
+    }
+  }).catch((e) => {
+    console.error(e);
+  });
+});
+
 browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
   const tab = await browser.tabs.get(tabId);
   if (tab.pinned) {
@@ -159,7 +226,14 @@ browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
   tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onUpdated.addListener(async () => {
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tabObj) => {
+  try {
+    const tabObj = tab;
+    new IndexTab(tabObj.url);
+    await browser.tabs.update(tabId, {
+      pinned: false,
+    });
+  } catch (e) {}
   await sortTabs();
   tabChangeChannel.postMessage(true);
 }, {
@@ -210,6 +284,21 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   const userContextId = containers.toUserContextId(tab.cookieStoreId);
   const contextualIdentity = await containers.get(userContextId);
   const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', contextualIdentity.name);
+  try {
+    const tabObj = tab;
+    new IndexTab(tabObj.url);
+    const nextTabs = await browser.tabs.query({
+      windowId: tabObj.windowId,
+      index: tabObj.index + 1,
+    });
+    for (const nextTab of nextTabs) {
+      await browser.tabs.update(nextTab.id, {
+        active: true,
+      });
+      break;
+    }
+  } catch (e) {}
+  
   try {
     await browser.windows.update(windowId, {
       titlePreface: windowTitlePreface,

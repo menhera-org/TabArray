@@ -270,7 +270,7 @@ export const hide = async (aUserContextId, aWindowId) => {
   }
   if (!indexExists && isFinite(minIndex) && 'collapsed' == configGroupIndexOption) {
     await browser.tabs.create({
-      url: IndexTab.getUrl(userContext.name, userContext.iconUrl).url,
+      url: IndexTab.getUrl(userContext.name, userContext.iconUrl, userContextId.colorCode).url,
       index: minIndex,
       windowId: aWindowId,
     });
@@ -309,6 +309,14 @@ export const show = async (aUserContextId, aWindowId) => {
   if (1 > tabs.length) {
     console.log('No tabs to show on window %d for userContext %d', aWindowId, userContextId);
     return;
+  }
+  for (const tabObj of tabs) {
+    try {
+      new IndexTab(tabObj.url);
+      if ('collapsed' == configGroupIndexOption) {
+        await browser.tabs.remove(tabObj.id);
+      }
+    } catch (e) {}
   }
   const tabIds = [... tabs].map((tab) => 0 | tab.id);
   await browser.tabs.show(tabIds);

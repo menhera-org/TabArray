@@ -17,15 +17,22 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { IndexTab } from "../modules/IndexTab.mjs";
+import { LifecycleEventTarget } from "./LifecycleEventTarget.mjs";
 
-const canvas = document.querySelector('#icon');
-const ctx = canvas.getContext('2d');
+const CLASS_ID = '2675782A-2B71-47D2-9A6B-6A374F421FE2';
 
-const indexTab = new IndexTab(location.href);
-document.title = indexTab.title;
 
-const svgSource = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'>
-<rect x='0' y='0' width='256' height='256' fill='${indexTab.colorCode}' style='mask-image:url(${indexTab.iconUrl})'/>
-</svg>`;
-document.querySelector(`link[rel="icon"]`).href = 'data:image/svg+xml,' + encodeURIComponent(svgSource);
+export class TabGroup extends LifecycleEventTarget {
+  constructor(userContextId, windowId) {
+    super();
+    this.userContextId = 0|userContextId;
+    this.windowId = 0|windowId;
+    this.tabIds = new Set;
+    this._startIndex = 0;
+    this.stateManager = null;
+  }
+
+  get CLASS_ID() {
+    return CLASS_ID;
+  }
+}

@@ -410,6 +410,7 @@ const tabClosedHandler = (tabId) => {
     detail: {
       tabId,
       userContextId: browserTab.userContextId,
+      browserTab,
     },
   }));
   state.dispatchEvent(new CustomEvent('tabClose', {
@@ -418,6 +419,7 @@ const tabClosedHandler = (tabId) => {
       tabId,
       windowId,
       userContextId: browserTab.userContextId,
+      browserTab,
     },
   }));
 };

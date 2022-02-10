@@ -32,13 +32,15 @@ export class IndexTab {
     const params = new URLSearchParams(hash);
     this.iconUrl = params.i || defaultIconUrl;
     this.title = params.t || '';
+    this.colorCode = params.c || '#000000';
   }
 
-  static getUrl(title, iconUrl) {
+  static getUrl(title, iconUrl, colorCode) {
     const url = new URL(indexPageUrl);
     const params = new URLSearchParams();
     params.set('i', iconUrl);
     params.set('t', title);
+    params.set('c', colorCode);
     url.hash = '#' + params;
     return new IndexTab(url.href);
   }
