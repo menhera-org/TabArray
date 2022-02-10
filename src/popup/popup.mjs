@@ -39,6 +39,7 @@ let currentWindowId;
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
 document.querySelector('#button-panorama > .button-text').textContent = browser.i18n.getMessage('buttonPanorama');
+document.querySelector('#button-panorama').title = browser.i18n.getMessage('buttonPanorama');
 document.querySelector('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
 document.querySelector('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 document.querySelector('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
