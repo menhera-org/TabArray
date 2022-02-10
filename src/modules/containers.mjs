@@ -322,6 +322,7 @@ export const show = async (aUserContextId, aWindowId) => {
     console.log('No tabs to show on window %d for userContext %d', aWindowId, userContextId);
     return;
   }
+  const tabsToShow = [];
   for (const tabObj of tabs) {
     try {
       const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
@@ -332,10 +333,11 @@ export const show = async (aUserContextId, aWindowId) => {
         await browser.sessions.removeTabValue(tabObj.id, 'indexTabUrl');
         await browser.tabs.remove(tabObj.id);
       }
-    } catch (e) {}
+    } catch (e) {
+      tabsToShow.push(tabObj.id);
+    }
   }
-  const tabIds = [... tabs].map((tab) => 0 | tab.id);
-  await browser.tabs.show(tabIds);
+  await browser.tabs.show(tabsToShow);
 };
 
 export const getInactiveIds = async (aWindowId) => {
