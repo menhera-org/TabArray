@@ -19,14 +19,11 @@
 
 import { IndexTab } from "../modules/IndexTab.mjs";
 
-const canvas = document.querySelector('#icon');
-const ctx = canvas.getContext('2d');
-
 const indexTab = new IndexTab(location.href);
 document.title = indexTab.title;
 
 const svgSource = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'>
-<rect x='0' y='0' width='256' height='256' fill='${indexTab.colorCode}' style='mask-image:url(${indexTab.iconUrl})'/>
+<rect x='0' y='0' width='256' height='256' fill='${indexTab.colorCode}'/>
 </svg>`;
 const blob = new Blob([svgSource], {
   type: 'image/svg+xml',
