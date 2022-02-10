@@ -293,7 +293,10 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', contextualIdentity.name);
   try {
     const tabObj = tab;
-    new IndexTab(tabObj.url);
+    const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
+    if (!indexTabUrl) {
+      throw void 0;
+    };
     const nextTabs = await browser.tabs.query({
       windowId: tabObj.windowId,
       index: tabObj.index + 1,
