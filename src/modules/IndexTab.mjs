@@ -23,12 +23,12 @@ const defaultIconUrl = browser.runtime.getURL('/icon.svg');
 export class IndexTab {
   constructor(aUrl) {
     const url = new URL(aUrl);
+    this.url = url.href;
     const hash = url.hash.slice(1);
     url.hash = '';
     if (url.href != indexPageUrl) {
       throw new TypeError('Not an IndexTab');
     }
-    this.url = url.href;
     const params = new URLSearchParams(hash);
     this.iconUrl = params.i || defaultIconUrl;
     this.title = params.t || '';
