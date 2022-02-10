@@ -53,7 +53,7 @@ config.observe('tab.groups.indexOption', (value) => {
   if (undefined !== value) {
     configGroupIndexOption = value;
   } else {
-    config.set('tab.groups.indexOption', 'always');
+    config.set('tab.groups.indexOption', 'never');
   }
 });
 
