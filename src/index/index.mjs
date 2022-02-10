@@ -28,4 +28,8 @@ document.title = indexTab.title;
 const svgSource = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'>
 <rect x='0' y='0' width='256' height='256' fill='${indexTab.colorCode}' style='mask-image:url(${indexTab.iconUrl})'/>
 </svg>`;
-document.querySelector(`link[rel="icon"]`).href = 'data:image/svg+xml,' + encodeURIComponent(svgSource);
+const blob = new Blob([svgSource], {
+  type: 'image/svg+xml',
+});
+const objectUrl = URL.createObjectURL(blob)
+document.querySelector(`link[rel="icon"]`).href = objectUrl;
