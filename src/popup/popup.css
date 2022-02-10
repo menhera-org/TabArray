@@ -33,7 +33,7 @@ body {
 	overflow-inline: hidden;
 	margin: 0;
 	display: grid;
-	grid-template-rows: 1fr max-content;
+	grid-template-rows: max-content 1fr max-content;
 	position: relative;
 }
 
@@ -130,6 +130,51 @@ button {
 	padding-block: .5em;
 }
 
+#topbox {
+	display: block grid;
+	grid-template-columns: 1fr max-content;
+	grid-template-rows: 2.5em;
+	padding-inline-start: 1em;
+}
+
+#search-wrapper {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+}
+
+#search-wrapper::before {
+	display: block;
+	content: '';
+	inline-size: 2.5em;
+	block-size: 100%;
+	mask: url(/img/search_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
+}
+
+#search {
+	display: grid;
+	inline-size: 100%;
+	border: none;
+	outline: none;
+	padding: 0;
+	margin: 0;
+}
+
+#button-panorama {
+	background-repeat: no-repeat;
+	background-size: 1.5em;
+	background-position: center center;
+	block-size: 100%;
+	inline-size: 2.5em;
+	color: inherit;
+	mask: url(/img/grid_view_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
+}
+
+#button-panorama > .button-text {
+	display: none;
+}
+
 #button-new-container::before {
 	mask: url(/img/add_black_24dp.svg) center center/contain no-repeat;
 	background-color: var(--text-color);
@@ -137,11 +182,6 @@ button {
 
 #button-hide-inactive::before {
 	mask: url(/img/unfold_less_black_24dp.svg) center center/contain no-repeat;
-	background-color: var(--text-color);
-}
-
-#button-panorama::before {
-	mask: url(/img/grid_view_black_24dp.svg) center center/contain no-repeat;
 	background-color: var(--text-color);
 }
 

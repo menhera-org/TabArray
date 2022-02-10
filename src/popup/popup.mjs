@@ -611,3 +611,7 @@ document.querySelector('#button-panorama').addEventListener('click', (ev) => {
 		window.close();
 	}).catch((e) => console.error(e));
 });
+
+document.querySelector('#search').focus();
+
+document.querySelector('#search').placeholder = browser.i18n.getMessage('searchPlaceholder');

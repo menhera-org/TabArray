@@ -290,5 +290,9 @@
     "labelPopupSizeLarge": {
         "message": "Large",
         "description": "Label text for large popup size."
+    },
+    "searchPlaceholder": {
+        "message": "Search containers",
+        "description": "Placeholder text for searching containers."
     }
 }
