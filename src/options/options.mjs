@@ -127,3 +127,8 @@ config.observe('appearance.popupSize', (value) => {
   }
   selectPopupSize.value = value;
 });
+
+selectPopupSize.addEventListener('change', (ev) => {
+  config.set('appearance.popupSize', ev.target.value)
+  .catch((e) => console.error(e));
+})
