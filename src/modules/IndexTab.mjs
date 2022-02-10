@@ -30,9 +30,9 @@ export class IndexTab {
       throw new TypeError('Not an IndexTab');
     }
     const params = new URLSearchParams(hash);
-    this.iconUrl = params.i || defaultIconUrl;
-    this.title = params.t || '';
-    this.colorCode = params.c || '#000000';
+    this.iconUrl = params.get('i') || defaultIconUrl;
+    this.title = params.get('t') || '';
+    this.colorCode = params.get('c') || '#000000';
   }
 
   static getUrl(title, iconUrl, colorCode) {
