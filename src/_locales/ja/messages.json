@@ -290,5 +290,9 @@
     "labelPopupSizeLarge": {
         "message": "大きい",
         "description": "Label text for large popup size."
+    },
+    "searchPlaceholder": {
+        "message": "コンテナーを検索",
+        "description": "Placeholder text for searching containers."
     }
 }
