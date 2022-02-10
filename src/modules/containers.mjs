@@ -329,6 +329,7 @@ export const show = async (aUserContextId, aWindowId) => {
         throw void 0;
       }
       if ('collapsed' == configGroupIndexOption) {
+        await browser.sessions.removeTabValue(tabObj.id, 'indexTabUrl');
         await browser.tabs.remove(tabObj.id);
       }
     } catch (e) {}

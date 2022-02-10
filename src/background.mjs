@@ -92,6 +92,7 @@ globalThis.sortTabsByWindow = async (windowId) => {
       if (configGroupIndexOption == 'collapsed' && !hiddenUserContextIds.has(userContextId)) {
         if (indexTabs.has(userContextId)) {
           const tabId = indexTabs.get(userContextId);
+          await browser.sessions.removeTabValue(tabId, 'indexTabUrl');
           await browser.tabs.remove(tabId);
           sortedTabs = sortedTabs.filter((tabObj) => tabObj.id != tabId);
         }
