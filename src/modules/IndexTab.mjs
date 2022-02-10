@@ -44,9 +44,9 @@ export class IndexTab {
   static getUrl(title, icon, colorCode) {
     const url = new URL(indexPageUrl);
     const params = new URLSearchParams();
-    params.set('i', icon);
-    params.set('t', title);
-    params.set('c', colorCode);
+    params.set('i', icon || '');
+    params.set('t', title || '');
+    params.set('c', colorCode || '#000000');
     url.hash = '#' + params;
     return new IndexTab(url.href);
   }
