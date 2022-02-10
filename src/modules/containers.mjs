@@ -238,6 +238,7 @@ export const createIndexTab = async (aUserContextId, aWindowId) => {
   const url = IndexTab.getUrl(userContext.name, userContext.iconUrl, userContext.colorCode).url;
   const tabObj = await browser.tabs.create({
     url,
+    cookieStoreId: toCookieStoreId(aUserContextId),
     windowId: aWindowId,
   });
   await browser.sessions.setTabValue(tabObj.id, 'indexTabUrl', url);
