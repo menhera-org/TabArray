@@ -191,7 +191,10 @@ browser.tabs.onRemoved.addListener((tabId, {windowId}) => {
 StateManager.addEventListener('tabClose', async ({detail}) => {
   const {userContextId, windowId, browserTab} = detail;
   try {
-    new IndexTab(browserTab.url);
+    const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
+    if (!indexTabUrl) {
+      throw void 0;
+    }
     // index closed, close all tabs of that group
     await containers.closeAllTabsOnWindow(userContextId, windowId);
     return;
