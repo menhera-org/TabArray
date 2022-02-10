@@ -235,7 +235,7 @@ export const updateProperties = async (aUserContextId, aName, aColor, aIcon) => 
 
 export const createIndexTab = async (aUserContextId, aWindowId) => {
   const userContext = await get(aUserContextId);
-  const url = IndexTab.getUrl(userContext.name, userContext.iconUrl, userContextId.colorCode).url;
+  const url = IndexTab.getUrl(userContext.name, userContext.iconUrl, userContext.colorCode).url;
   const tabObj = await browser.tabs.create({
     url,
     index: minIndex,
