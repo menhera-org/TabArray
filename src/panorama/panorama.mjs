@@ -24,6 +24,7 @@ import * as containers from '../modules/containers.mjs';
 import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
 import { getStateManager } from '../modules/global-state.mjs';
 import * as i18n from '../modules/i18n.mjs';
+import { IndexTab } from '../modules/IndexTab.mjs';
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -95,6 +96,10 @@ const renderContainer = (userContextId, containerElement) => {
   });
 
   for (const browserTab of tabs) {
+    try {
+      new IndexTab(browserTab.url);
+      continue;
+    } catch (e) {}
     const tabElement = renderTab(browserTab);
     containerTabsElement.append(tabElement);
     tabElement.addEventListener('button-tab-click', async (ev) => {
