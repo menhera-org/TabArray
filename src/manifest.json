@@ -22,7 +22,8 @@
 		"browserSettings",
 		"privacy",
 		"webRequest",
-		"webRequestBlocking"
+		"webRequestBlocking",
+		"sessions"
 	],
 	"incognito": "not_allowed",
 	"background": {

@@ -52,6 +52,8 @@ let configGroupIndexOption = 'never';
 config.observe('tab.groups.indexOption', (value) => {
   if (undefined !== value) {
     configGroupIndexOption = value;
+  } else {
+    config.set('tab.groups.indexOption', 'always');
   }
 });
 
@@ -98,11 +100,7 @@ globalThis.sortTabsByWindow = async (windowId) => {
           continue;
         }
         const userContext = await containers.get(userContextId);
-        const tabObj = await browser.tabs.create({
-          windowId,
-          cookieStoreId: containers.toCookieStoreId(userContextId),
-          url: IndexTab.getUrl(userContext.name, userContext.iconUrl, userContext.colorCode).url,
-        });
+        const tabObj = await containers.createIndexTab(userContextId, windowId);
         sortedTabs.push(tabObj);
       } else {
         break;
@@ -111,18 +109,19 @@ globalThis.sortTabsByWindow = async (windowId) => {
     if ('collapsed' == configGroupIndexOption) {
       
     }
+    for (const tabObj of sortedTabs) {
+      tabObj.indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
+    }
     sortedTabs.sort((tab1, tab2) => {
       const userContextId1 = containers.toUserContextId(tab1.cookieStoreId);
       const userContextId2 = containers.toUserContextId(tab2.cookieStoreId);
       if (userContextId1 == userContextId2) {
-        try {
-          const indexTab = new IndexTab(tab1.url);
+        if (tab1.indexTabUrl) {
           return -1;
-        } catch (e) {}
-        try {
-          const indexTab = new IndexTab(tab2.url);
+        }
+        if (tab2.indexTabUrl) {
           return 1;
-        } catch (e) {}
+        }
       }
       return userContextId1 - userContextId2;
     });
@@ -205,7 +204,10 @@ StateManager.addEventListener('tabClose', async ({detail}) => {
     let tabCount = 0;
     for (const tabObj of tabs) {
       try {
-        new IndexTab(tabObj.url);
+        const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
+        if (!indexTabUrl) {
+          throw void 0;
+        }
         indexTabs.add(tabObj.id);
       } catch (e) {
         tabCount++;
@@ -231,7 +233,10 @@ browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tabObj) => {
   try {
     const tabObj = tab;
-    new IndexTab(tabObj.url);
+    const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
+    if (!indexTabUrl) {
+      throw void 0;
+    }
     await browser.tabs.update(tabId, {
       pinned: false,
     });

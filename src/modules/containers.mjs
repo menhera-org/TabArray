@@ -233,6 +233,18 @@ export const updateProperties = async (aUserContextId, aName, aColor, aIcon) => 
   });
 };
 
+export const createIndexTab = async (aUserContextId, aWindowId) => {
+  const userContext = await get(aUserContextId);
+  const url = IndexTab.getUrl(userContext.name, userContext.iconUrl, userContextId.colorCode).url;
+  const tabObj = await browser.tabs.create({
+    url,
+    index: minIndex,
+    windowId: aWindowId,
+  });
+  await browser.sessions.setTabValue(tabObj.id, 'indexTabUrl', url);
+  return tabObj;
+};
+
 export const hide = async (aUserContextId, aWindowId) => {
   if (!aWindowId) {
     throw new TypeError('Unimplemented');
@@ -261,7 +273,10 @@ export const hide = async (aUserContextId, aWindowId) => {
     }
     if (!tab.hidden) {
       try {
-        new IndexTab(tab.url);
+        const indexTabUrl = await browser.sessions.getTabValue(tab.id, 'indexTabUrl');
+        if (!indexTabUrl) {
+          throw void 0;
+        }
         indexExists = true;
       } catch (e) {
         tabsToHide.push(tab.id);
@@ -269,11 +284,7 @@ export const hide = async (aUserContextId, aWindowId) => {
     }
   }
   if (!indexExists && isFinite(minIndex) && 'collapsed' == configGroupIndexOption) {
-    await browser.tabs.create({
-      url: IndexTab.getUrl(userContext.name, userContext.iconUrl, userContextId.colorCode).url,
-      index: minIndex,
-      windowId: aWindowId,
-    });
+    await createIndexTab(userContextId, aWindowId);
   }
   if (1 > tabsToHide.length) {
     console.log('No tabs to hide on window %d for userContext %d', aWindowId, userContextId);
@@ -312,7 +323,10 @@ export const show = async (aUserContextId, aWindowId) => {
   }
   for (const tabObj of tabs) {
     try {
-      new IndexTab(tabObj.url);
+      const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
+      if (!indexTabUrl) {
+        throw void 0;
+      }
       if ('collapsed' == configGroupIndexOption) {
         await browser.tabs.remove(tabObj.id);
       }
