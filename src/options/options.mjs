@@ -50,6 +50,12 @@ document.querySelector('#select-groupIndexOption > option[value="always"]').text
 document.querySelector('#select-groupIndexOption > option[value="collapsed"]').textContent = browser.i18n.getMessage('labelGroupIndexOptionCollapsed');
 document.querySelector('#select-groupIndexOption > option[value="never"]').textContent = browser.i18n.getMessage('labelGroupIndexOptionNever');
 
+const selectPopupSize = document.querySelector('#select-popupSize');
+document.querySelector('label[for="select-popupSize"]').textContent = browser.i18n.getMessage('labelPopupSize');
+
+document.querySelector('#select-popupSIze > option[value="standard"]').textContent = browser.i18n.getMessage('labelPopupSizeStandard');
+document.querySelector('#select-popupSIze > option[value="large"]').textContent = browser.i18n.getMessage('labelPopupSizeLarge');
+
 config.observe('newtab.keepContainer', (value) => {
   if (undefined === value) {
     config.set('newtab.keepContainer', true);
@@ -113,4 +119,11 @@ inputResistFingerprinting.addEventListener('change', (ev) => {
   browser.privacy.websites.resistFingerprinting.set({
     value: ev.target.checked,
   }).catch((e) => console.error(e));
+});
+
+config.observe('appearance.popupSize', (value) => {
+  if (undefined === value) {
+    return;
+  }
+  selectPopupSize.value = value;
 });

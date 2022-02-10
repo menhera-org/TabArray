@@ -57,6 +57,12 @@ config.observe('tab.groups.indexOption', (value) => {
   }
 });
 
+config.observe('appearance.popupSize', (value) => {
+  if (undefined === value) {
+    config.set('appearance.popupSize', 'standard');
+  };
+});
+
 config.observe('tab.external.containerOption', (value) => {
   if (undefined === value) {
     config.set('tab.external.containerOption', 'choose');

@@ -37,6 +37,11 @@ body {
 	position: relative;
 }
 
+body.large {
+	width: 480px;
+	height: 500px;
+}
+
 a, button {
 	color: #0033cc;
 	background-color: transparent;

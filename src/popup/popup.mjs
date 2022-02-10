@@ -49,6 +49,14 @@ document.querySelector('#button-settings > .button-text').textContent = browser.
 
 document.querySelector('#main').classList.add('rendering');
 
+let configPopupSize;
+config.observe('appearance.popupSize', (value) => {
+	configPopupSize = value;
+	if (configPopupSize == 'large') {
+		document.body.classList.add('large');
+	}
+});
+
 const renderTab = (tab) => {
 	const tabElement = document.createElement('li');
 	tabElement.title = tab.url;

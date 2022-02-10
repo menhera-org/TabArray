@@ -274,5 +274,21 @@
     "labelGroupIndexOptionNever": {
         "message": "Never",
         "description": "Option to show index tabs for no containers."
+    },
+    "optionsHeadingAppearance": {
+        "message": "Appearance Options",
+        "description": "Heading text of options page for changing appearance settings."
+    },
+    "labelPopupSize": {
+        "message": "Popup size",
+        "description": "Prompt for changing popup size."
+    },
+    "labelPopupSizeStandard": {
+        "message": "Standard",
+        "description": "Label text for standard popup size."
+    },
+    "labelPopupSizeLarge": {
+        "message": "Large",
+        "description": "Label text for large popup size."
     }
 }
