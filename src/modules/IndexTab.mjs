@@ -18,7 +18,7 @@
 */
 
 const indexPageUrl = browser.runtime.getURL('/index/index.html');
-const defaultIconUrl = browser.runtime.getURL('/icon.svg');
+const defaultIconUrl = browser.runtime.getURL('/img/category_black_24dp.svg');
 
 export class IndexTab {
   constructor(aUrl) {
