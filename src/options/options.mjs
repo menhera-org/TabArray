@@ -50,6 +50,9 @@ document.querySelector('#select-groupIndexOption > option[value="always"]').text
 document.querySelector('#select-groupIndexOption > option[value="collapsed"]').textContent = browser.i18n.getMessage('labelGroupIndexOptionCollapsed');
 document.querySelector('#select-groupIndexOption > option[value="never"]').textContent = browser.i18n.getMessage('labelGroupIndexOptionNever');
 
+
+document.querySelector('#optionsHeadingAppearance').textContent = browser.i18n.getMessage('optionsHeadingAppearance');
+
 const selectPopupSize = document.querySelector('#select-popupSize');
 document.querySelector('label[for="select-popupSize"]').textContent = browser.i18n.getMessage('labelPopupSize');
 
