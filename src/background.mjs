@@ -101,7 +101,7 @@ globalThis.sortTabsByWindow = async (windowId) => {
         const tabObj = await browser.tabs.create({
           windowId,
           cookieStoreId: containers.toCookieStoreId(userContextId),
-          url: String(IndexTab.getUrl(userContext.name, userContext.iconUrl, userContext.colorCode)),
+          url: IndexTab.getUrl(userContext.name, userContext.iconUrl, userContext.colorCode).url,
         });
         sortedTabs.push(tabObj);
       } else {
