@@ -18,7 +18,8 @@
 */
 
 const indexPageUrl = browser.runtime.getURL('/index/index.html');
-const defaultIconUrl = browser.runtime.getURL('/img/category_black_24dp.svg');
+const defaultIconUrl = browser.runtime.getURL('/img/category_black_24dp.svg')
+const iconUrl = browser.runtime.getURL('/img/usercontext.svg');;
 
 export class IndexTab {
   constructor(aUrl) {
@@ -30,15 +31,20 @@ export class IndexTab {
       throw new TypeError('Not an IndexTab');
     }
     const params = new URLSearchParams(hash);
-    this.iconUrl = params.get('i') || defaultIconUrl;
+    const icon = params.get('i');
+    if (!icon) {
+      this.iconUrl = defaultIconUrl;
+    } else {
+      this.iconUrl = iconUrl + '#' + icon;
+    }
     this.title = params.get('t') || '';
     this.colorCode = params.get('c') || '#000000';
   }
 
-  static getUrl(title, iconUrl, colorCode) {
+  static getUrl(title, icon, colorCode) {
     const url = new URL(indexPageUrl);
     const params = new URLSearchParams();
-    params.set('i', iconUrl);
+    params.set('i', icon);
     params.set('t', title);
     params.set('c', colorCode);
     url.hash = '#' + params;
