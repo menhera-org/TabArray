@@ -274,5 +274,21 @@
     "labelGroupIndexOptionNever": {
         "message": "無効",
         "description": "Option to show index tabs for no containers."
+    },
+    "optionsHeadingAppearance": {
+        "message": "外観設定",
+        "description": "Heading text of options page for changing appearance settings."
+    },
+    "labelPopupSize": {
+        "message": "ポップアップの大きさ",
+        "description": "Prompt for changing popup size."
+    },
+    "labelPopupSizeStandard": {
+        "message": "標準",
+        "description": "Label text for standard popup size."
+    },
+    "labelPopupSizeLarge": {
+        "message": "大きい",
+        "description": "Label text for large popup size."
     }
 }
