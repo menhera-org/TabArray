@@ -26,6 +26,7 @@ import '/components/usercontext-colorpicker.mjs';
 import '/components/usercontext-iconpicker.mjs';
 import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.mjs';
 import { getStateManager } from '../modules/global-state.mjs';
+import { IndexTab } from '../modules/IndexTab.mjs';
 
 const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
@@ -202,6 +203,10 @@ const renderContainer = (userContextId) => {
 	let containerState = STATE_NO_TABS;
 	let tabCount = 0;
 	for (const tab of tabs) {
+		try {
+			new IndexTab(tab.url);
+			continue;
+		} catch (e) {}
 		if (tab.pinned) continue;
 		if (tab.userContextId != userContextId) continue;
 		tabCount++;
