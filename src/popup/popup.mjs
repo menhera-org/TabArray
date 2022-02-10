@@ -28,6 +28,8 @@ import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.mjs';
 import { getStateManager } from '../modules/global-state.mjs';
 import { IndexTab } from '../modules/IndexTab.mjs';
 
+import {config} from './modules/config.mjs';
+
 const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
 const STATE_VISIBLE_TABS = 2;
