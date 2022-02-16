@@ -23,6 +23,8 @@ import { UserContext } from "./lib/UserContext.mjs";
 import * as i18n from '../modules/i18n.mjs';
 import { LifecycleEventTarget } from "./lib/LifecycleEventTarget.mjs";
 
+const ICON_EXTENSION = browser.runtime.getURL('/img/extension.svg');
+
 const startTime = +new Date;
 
 // global StateManager object
@@ -152,7 +154,12 @@ const updateTabInfo = (tabObj) => {
     updateTabPreview(browserTab);
   }
   browserTab.initialized = !!browserTab.url && browserTab.url != 'about:blank';
-  browserTab.favIconUrl = tabObj.favIconUrl || '';
+  if (tabObj.favIconUrl == 'chrome://mozapps/skin/extensions/extension.svg') {
+    // extension icon is not available in addons, so replace it with our one
+    browserTab.favIconUrl = ICON_EXTENSION;
+  } else {
+    browserTab.favIconUrl = tabObj.favIconUrl || '';
+  }
   browserTab.index = tabObj.index;
   browserTab.discarded = !!tabObj.discarded;
   browserTab.active = !!tabObj.active;

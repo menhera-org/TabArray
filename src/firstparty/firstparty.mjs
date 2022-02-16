@@ -21,7 +21,9 @@
 
 const CONTENT_SCRIPT = '/firstparty/content.js';
 
-const registrableDomains = new Set;
+const registrableDomains = new Set([
+  'mozilla.org', // because addons cannot access addons.mozilla.org
+]);
 
 browser.contentScripts.register({
   matches: ['*://*/*'],
