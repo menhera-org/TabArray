@@ -183,6 +183,16 @@ browser.tabs.onCreated.addListener((tab) => {
     openTabs.add(tab.id);
   } else if (tab.pinned) {
     openTabs.add(tab.id);
+  } else if (tab.url == 'about:blank') {
+    // handles the case when the new tab page is about:blank
+    const tabId = tab.id;
+    setTimeout(() => {
+      browser.tabs.get(tabId).then((tab) => {
+        if (tab.url == 'about:blank' && tab.status != 'loading') {
+          openTabs.add(tab.id);
+        }
+      });
+    }, 3000);
   }
   sortTabs().then(() => {
     tabChangeChannel.postMessage(true);
