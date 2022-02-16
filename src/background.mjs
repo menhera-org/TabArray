@@ -28,6 +28,7 @@ import { ADDON_PAGE, CONFIRM_PAGE } from './defs.mjs';
 import { getWindowIds } from './modules/windows.mjs';
 import './state-manager/StateManager.mjs';
 import {IndexTab} from './modules/IndexTab.mjs';
+import '/firstparty/firstparty.mjs';
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
