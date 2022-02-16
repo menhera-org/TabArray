@@ -50,6 +50,7 @@ if (isDomainName(location.hostname)) {
       document.cookie = `${key}=1;domain=${domain}`;
       const keys = getCookieKeys();
       if (keys.includes(key)) {
+        // cookie set, remove now
         document.cookie = `${key}=;domain=${domain};expires=Thu, 01 Jan 1970 00:00:00 GMT`;
         reportRegistrableDomain(domain);
         break;

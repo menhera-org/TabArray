@@ -25,6 +25,21 @@ const registrableDomains = new Set([
   'mozilla.org', // because addons cannot access addons.mozilla.org
 ]);
 
+globalThis.FirstpartyManager = {};
+
+FirstpartyManager.getRegistrableDomain = (aDomain) =>
+{
+	if (!aDomain) return null;
+	const domain = String(aDomain);
+	const parts = domain.split('.');
+	if (parts.length < 2) return domain;
+	for (let i = 2; i <= parts.length; i++) {
+		const domain = parts.slice(- i).join('.');
+		if (registrableDomains.has(domain)) return domain;
+	}
+	return domain;
+};
+
 browser.contentScripts.register({
   matches: ['*://*/*'],
   js: [
