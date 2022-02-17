@@ -40,8 +40,50 @@ FirstpartyManager.getRegistrableDomain = (aDomain) =>
 	return domain;
 };
 
+FirstpartyManager.isDomainName = (hostname) => !String(hostname).match(/^[0-9]+(\.[0-9]+)*$/) && !String(hostname).startsWith('[');
+
+FirstpartyManager.getAll = async () => {
+  const tabs = await browser.tabs.query({
+    windowType: 'normal',
+  });
+  const sites = new Map;
+  for (const tabObj of tabs) {
+    try {
+      const url = new URL(tabObj.url);
+      const hostname = url.hostname;
+      if (!FirstpartyManager.isDomainName(hostname)) {
+        continue;
+      }
+      const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname);
+      if (!sites.has(registrableDomain)) {
+        sites.set(registrableDomain, {});
+      }
+      const site = sites.get(registrableDomain);
+      if (!!tabObj.title) {
+        site.title = tabObj.title;
+      }
+      if (!!tabObj.favIconUrl) {
+        site.icon = tabObj.favIconUrl;
+      }
+    } catch (e) {
+      continue;
+    }
+  }
+  const result = {};
+  const registrableDomains = [... sites.keys()];
+  registrableDomains.sort();
+  for (const registrableDomain of registrableDomains) {
+    if (!registrableDomain) {
+      result[''] = sites.get(registrableDomain);
+    } else {
+      result[registrableDomain] = sites.get(registrableDomain);
+    }
+  }
+  return result;
+};
+
 browser.contentScripts.register({
-  matches: ['*://*/*'],
+  matches: ['*://*/*'], // all HTTP/HTTPS page
   js: [
     {file: CONTENT_SCRIPT},
   ],
