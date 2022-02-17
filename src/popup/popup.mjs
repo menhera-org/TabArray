@@ -423,6 +423,9 @@ globalThis.render = () => {
 			}
 		}
 		mainElement.scrollTop = initScrollY;
+
+		const sitesPaneTop = document.querySelector('#sites-pane-top');
+		const sitePaneDetails = document.querySelector('#site-pane-details');
 	} finally {
 		mainElement.classList.remove('rendering');
 		setTimeout(() => {

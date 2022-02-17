@@ -224,6 +224,18 @@ button {
 	background-color: var(--text-color);
 }
 
+#sites > * {
+	display: none;
+}
+
+#sites[data-active-content="sites"] > [data-content-id="sites"] {
+	display: block;
+}
+
+#sites[data-active-content="sites-details"] > [data-content-id="sites-details"] {
+	display: grid;
+}
+
 #bottom-menu {
 	display: flex;
 	flex-direction: row;
