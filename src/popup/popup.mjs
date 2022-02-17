@@ -25,7 +25,7 @@ import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
 import '/components/usercontext-colorpicker.mjs';
 import '/components/usercontext-iconpicker.mjs';
 import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.mjs';
-import { getStateManager } from '../modules/global-state.mjs';
+import { getStateManager, getFirstpartyManager } from '../modules/global-state.mjs';
 import { IndexTab } from '../modules/IndexTab.mjs';
 
 import {config} from '../modules/config.mjs';
@@ -41,16 +41,26 @@ document.title = browser.i18n.getMessage('browserActionPopupTitle');
 document.querySelector('#button-panorama > .button-text').textContent = browser.i18n.getMessage('buttonPanorama');
 document.querySelector('#button-panorama').title = browser.i18n.getMessage('buttonPanorama');
 document.querySelector('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
+document.querySelector('#button-new-container').title = browser.i18n.getMessage('buttonNewContainer');
 document.querySelector('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 document.querySelector('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 document.querySelector('#new-container-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 document.querySelector('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 document.querySelector('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
 document.querySelector('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
-document.querySelector('#button-about-addon > .button-text').textContent = browser.i18n.getMessage('buttonAboutAddon');
-document.querySelector('#button-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
+document.querySelector('#menu-item-main > .button-text').textContent = browser.i18n.getMessage('menuItemMain');
+document.querySelector('#menu-item-windows > .button-text').textContent = browser.i18n.getMessage('menuItemWindows');
+document.querySelector('#menu-item-sites > .button-text').textContent = browser.i18n.getMessage('menuItemSites');
+document.querySelector('#menu-item-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
+document.querySelector('#button-new-window > .button-text').textContent = browser.i18n.getMessage('buttonNewWindow');
 
 document.querySelector('#main').classList.add('rendering');
+
+location.hash = '#main';
+document.body.dataset.activeContent = 'main';
+window.addEventListener('hashchange', (ev) => {
+	document.body.dataset.activeContent = location.hash.slice(1);
+});
 
 let configPopupSize;
 config.observe('appearance.popupSize', (value) => {
@@ -58,6 +68,15 @@ config.observe('appearance.popupSize', (value) => {
 	if (configPopupSize == 'large') {
 		document.body.classList.add('large');
 	}
+});
+
+const buttonNewWindow = document.querySelector('#button-new-window');
+buttonNewWindow.addEventListener('click', (ev) => {
+	browser.windows.create({}).then((windowObj) => {
+		console.log('New window (#%d) opened', windowObj.id);
+	}).catch((e) => {
+		console.error(e);
+	});
 });
 
 const renderTab = (tab) => {
@@ -138,6 +157,31 @@ const renderTab = (tab) => {
 		tabElement.style.borderColor = container.colorCode;
 	}
 	return tabElement;
+};
+
+const renderContainerHeading = (userContextId) => {
+	const container = StateManager.getUserContext(userContextId);
+	const containerElement = document.createElement('li');
+	containerElement.dataset.name = container.name;
+	containerElement.classList.add('container');
+	if (!userContextId) {
+		containerElement.classList.add('container-default');
+	}
+	const visibilityToggleButton = document.createElement('button');
+	visibilityToggleButton.classList.add('container-visibility-toggle');
+	containerElement.append(visibilityToggleButton);
+	visibilityToggleButton.disabled = true;
+	const containerIcon = document.createElement('div');
+	const iconUrl = container.iconUrl || '/img/category_black_24dp.svg';
+	containerIcon.style.mask = `url(${iconUrl}) center center/contain no-repeat`;
+	containerIcon.style.backgroundColor = container.colorCode || '#000';
+	containerIcon.classList.add('container-icon');
+	containerElement.append(containerIcon);
+	const containerLabel = document.createElement('div');
+	containerElement.append(containerLabel);
+	containerLabel.classList.add('container-label');
+	containerLabel.textContent = container.name;
+	return containerElement;
 };
 
 const renderContainer = (userContextId) => {
@@ -251,6 +295,7 @@ const renderContainer = (userContextId) => {
 
 let rendering = false;
 let shouldRerender = false;
+let sitesRendering = false;
 globalThis.render = () => {
 	if (rendering) {
 		shouldRerender = true;
@@ -330,30 +375,84 @@ globalThis.render = () => {
 			menuListElement.append(containerElement);
 		}
 
+		const windowMenuListElement = document.querySelector('#windowMenuList');
+		windowMenuListElement.textContent = '';
 		const windows = StateManager.getBrowserWindows()
 		.filter((browserWindow) => browserWindow.isNormal);
 		for (const window of windows) {
-			if (window.id == windowId) continue;
 			const windowLabel = document.createElement('li');
-			menuListElement.append(windowLabel);
+			windowMenuListElement.append(windowLabel);
 			windowLabel.classList.add('window-label');
 			const windowLabelContent = document.createElement('div');
 			windowLabelContent.classList.add('window-label-name');
 			windowLabel.append(windowLabelContent);
 			windowLabelContent.textContent = browser.i18n.getMessage('windowLabel', window.id);
 			windowLabelContent.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
-			windowLabel.addEventListener('click', (ev) => {
+			windowLabelContent.addEventListener('click', (ev) => {
 				window.focus().catch(e => console.error(e));
+			});
+			const windowLabelCloseButton = document.createElement('button');
+			windowLabel.append(windowLabelCloseButton);
+			windowLabelCloseButton.classList.add('window-close-button');
+			windowLabelCloseButton.title = browser.i18n.getMessage('tooltipCloseWindow');
+			windowLabelCloseButton.addEventListener('click', (ev) => {
+				window.close().catch(e => console.error(e));
 			});
 			const tabs = window.getTabs();
 			windowLabelContent.dataset.tabCount = tabs.length;
 			for (const tab of tabs) {
 				if (!tab.active) continue;
+				const containerElement = renderContainerHeading(tab.userContextId, tab.windowId);
+				windowMenuListElement.append(containerElement);
 				const tabElement = renderTab(tab);
-				menuListElement.append(tabElement);
+				windowMenuListElement.append(tabElement);
 			}
 		}
 		mainElement.scrollTop = initScrollY;
+
+		const sitesPaneTop = document.querySelector('#sites-pane-top');
+		const sitePaneDetails = document.querySelector('#site-pane-details');
+
+		if (sitesRendering) {
+			throw void 0;
+		}
+		sitesRendering = true;
+		FirstpartyManager.getAll().then((registrableDomainsData) => {
+			sitesPaneTop.textContent = '';
+			const registrableDomains = Reflect.ownKeys(registrableDomainsData);
+			for (const registrableDomain of registrableDomains) {
+				const data = registrableDomainsData[registrableDomain];
+				const button = document.createElement('button');
+				const buttonText = document.createElement('span');
+				buttonText.classList.add('button-text');
+				button.append(buttonText);
+				buttonText.dataset.tabCount = data.tabCount;
+				buttonText.textContent = registrableDomain || '(null)';
+				sitesPaneTop.append(button);
+				const tabIconElement = document.createElement('img');
+				tabIconElement.classList.add('tab-icon');
+				const site = document.createElement('span');
+				site.classList.add('site');
+				button.append(site);
+				let iconUrl = data.icon;
+				if (!iconUrl) {
+					iconUrl = '/img/transparent.png';
+				}
+				tabIconElement.src = iconUrl;
+				site.append(tabIconElement);
+				const siteTitle = document.createElement('span');
+				siteTitle.classList.add('tab-label');
+				siteTitle.textContent = data.title;
+				site.append(siteTitle);
+				button.addEventListener('click', (ev) => {
+					renderSiteDetails(registrableDomain)
+					.catch((e) => {
+						console.error(e);
+					});
+				});
+			}
+			sitesRendering = false;
+		});
 	} finally {
 		mainElement.classList.remove('rendering');
 		setTimeout(() => {
@@ -406,7 +505,7 @@ globalThis.confirmAsync = (msg) => {
 			}
 		};
 		const cleanUp = () => {
-			location.hash = '';
+			location.hash = '#main';
 			cancelButton.removeEventListener('click', cancelHandler);
 			okButton.removeEventListener('click', okHandler);
 			document.removeEventListener('keydown', keyHandler);
@@ -448,7 +547,7 @@ globalThis.showNewContainerPane = async () => {
 			}
 		};
 		const cleanUp = () => {
-			location.hash = '';
+			location.hash = '#main';
 			cancelButton.removeEventListener('click', cancelHandler);
 			okButton.removeEventListener('click', okHandler);
 			document.removeEventListener('keydown', keyHandler);
@@ -502,7 +601,7 @@ globalThis.showEditContainerPane = async (userContextId) => {
 			}
 		};
 		const cleanUp = () => {
-			location.hash = '';
+			location.hash = '#main';
 			cancelButton.removeEventListener('click', cancelHandler);
 			okButton.removeEventListener('click', okHandler);
 			document.removeEventListener('keydown', keyHandler);
@@ -521,6 +620,56 @@ globalThis.showEditContainerPane = async (userContextId) => {
 	render();
 };
 
+const sitesElement = document.querySelector('#sites');
+
+globalThis.renderSiteDetails = async (aSite) => {
+	const menuListElement = document.querySelector('#siteMenuList');
+	menuListElement.textContent = '';
+	sitesElement.dataset.activeContent = 'sites-details';
+	document.querySelector('#site-pane-details-domain').textContent = aSite;
+	const tabs = await browser.tabs.query({
+		windowType: 'normal',
+		url: ['*://*/*'], // HTTP and HTTPS
+	});
+	const tabsByUserContextId = new Map;
+	for (const tabObj of tabs) {
+		const url = new URL(tabObj.url); // this should not throw
+		if (url.protocol != 'http:' && url.protocol != 'https:') {
+			console.warn('This should not happen');
+			continue;
+		}
+		const {hostname} = url;
+		const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname);
+		if (registrableDomain != aSite) {
+			continue;
+		}
+		const userContextId = containers.toUserContextId(tabObj.cookieStoreId);
+		if (!tabsByUserContextId.has(userContextId)) {
+			tabsByUserContextId.set(userContextId, []);
+		}
+		const matchedTabs = tabsByUserContextId.get(userContextId);
+		matchedTabs.push(StateManager.getBrowserTab(tabObj.id));
+	}
+	const userContextIds = [... tabsByUserContextId.keys()].sort();
+	for (const userContextId of userContextIds) {
+		const containerElement = renderContainerHeading(userContextId);
+		menuListElement.append(containerElement);
+		const tabs = tabsByUserContextId.get(userContextId);
+		for (const tab of tabs) {
+			const tabElement = renderTab(tab);
+			menuListElement.append(tabElement);
+		}
+	}
+};
+
+document.querySelector('#site-pane-details-back-button').addEventListener('click', ev => {
+	sitesElement.dataset.activeContent = 'sites';
+});
+
+document.querySelector('#menu-item-sites').addEventListener('click', ev => {
+	sitesElement.dataset.activeContent = 'sites';
+});
+
 document.querySelector('#button-new-container').addEventListener('click', ev => {
 	showNewContainerPane().catch(e => console.error(e));
 });
@@ -530,8 +679,10 @@ Promise.all([
 		return windowObj.id;
 	}),
 	getStateManager(),
-]).then(async ([windowId, aStateManager]) => {
+	getFirstpartyManager(),
+]).then(async ([windowId, aStateManager, aFirstpartyManager]) => {
   globalThis.StateManager = aStateManager;
+  globalThis.FirstpartyManager = aFirstpartyManager;
   currentWindowId = windowId;
   render();
   StateManager.addEventListenerWindow(window, 'tabOpen', (ev) => {
@@ -588,17 +739,8 @@ tabChangeChannel.addEventListener('message', ev => {
 });
 */
 
-document.querySelector('#button-about-addon').addEventListener('click', (ev) => {
-	browser.tabs.create({
-		active: true,
-		windowId: browser.windows.WINDOW_ID_CURRENT,
-		url: ADDON_PAGE,
-	}).then(() => {
-		window.close();
-	}).catch((e) => console.error(e));
-});
-
-document.querySelector('#button-settings').addEventListener('click', (ev) => {
+document.querySelector('#menu-item-settings').addEventListener('click', (ev) => {
+	ev.preventDefault();
 	browser.runtime.openOptionsPage().then(() => {
 		window.close();
 	}).catch((e) => console.error(e));

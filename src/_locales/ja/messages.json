@@ -294,5 +294,25 @@
     "searchPlaceholder": {
         "message": "コンテナーを検索",
         "description": "Placeholder text for searching containers."
+    },
+    "menuItemMain": {
+        "message": "コンテナー",
+        "description": "Menu item for containers view."
+    },
+    "menuItemWindows": {
+        "message": "ウィンドウ",
+        "description": "Menu item for windows view"
+    },
+    "menuItemSites": {
+        "message": "サイト",
+        "description": "Menu item for sites view"
+    },
+    "tooltipCloseWindow": {
+        "message": "ウィンドウを閉じる",
+        "description": "Tooltip for a button to close all tabs of a window."
+    },
+    "buttonNewWindow": {
+        "message": "新規ウインドウ",
+        "description": "Button to open a new window."
     }
 }
