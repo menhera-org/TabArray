@@ -24,28 +24,46 @@
 		<script type='module' src='popup.mjs'></script>
 	</head>
 	<body>
-		<div id='topbox'>
-			<div id='search-wrapper'>
-				<input type='search' id='search'/>
+		<div id='main' class='content'>
+			<div id='topbox'>
+				<div id='search-wrapper'>
+					<input type='search' id='search'/>
+				</div>
+				<button id='button-new-container'>
+					<span class='button-text'>buttonNewContainer</span>
+				</button>
+				<button id='button-panorama'>
+					<span class='button-text'>buttonPanorama</span>
+				</button>
 			</div>
-			<button id='button-new-container'>
-				<span class='button-text'>buttonNewContainer</span>
-			</button>
-			<button id='button-panorama'>
-				<span class='button-text'>buttonPanorama</span>
-			</button>
+			<div id='main-inner' class='menu-part'>
+				<ul id='menuList'></ul>
+				<button id='button-about-addon'>
+					<span class='button-text'>buttonAboutAddon</span>
+				</button>
+				<button id='button-settings'>
+					<span class='button-text'>buttonSettings</span>
+				</button>
+			</div>
 		</div>
-		<div id='main' class='menu-part'>
-			<ul id='menuList'></ul>
-			<button id='button-about-addon'>
-				<span class='button-text'>buttonAboutAddon</span>
-			</button>
-			<button id='button-settings'>
-				<span class='button-text'>buttonSettings</span>
-			</button>
+		<div id='windows' class='content'>
+			Windows
+		</div>
+		<div id='sites' class='content'>
+			Sites
 		</div>
 		<div id='bottombox' class='menu-part'>
-
+			<nav id='bottom-menu'>
+				<a id='menu-item-main' class='menu-item' href='#main'>
+					<span class='button-text'>menuItemContainers</span>
+				</a>
+				<a id='menu-item-windows' class='menu-item' href='#windows'>
+					<span class='button-text'>menuItemWindows</span>
+				</a>
+				<a id='menu-item-sites' class='menu-item' href='#sites'>
+					<span class='button-text'>menuItemSites</span>
+				</a>
+			</nav>
 		</div>
 		<div id='confirm' class='modal'>
 			<div class='modal-content'>

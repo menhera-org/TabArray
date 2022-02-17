@@ -50,8 +50,17 @@ document.querySelector('label[for="new-container-name"]').textContent = browser.
 document.querySelector('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
 document.querySelector('#button-about-addon > .button-text').textContent = browser.i18n.getMessage('buttonAboutAddon');
 document.querySelector('#button-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
+document.querySelector('#menu-item-main > .button-text').textContent = browser.i18n.getMessage('menuItemMain');
+document.querySelector('#menu-item-windows > .button-text').textContent = browser.i18n.getMessage('menuItemWindows');
+document.querySelector('#menu-item-sites > .button-text').textContent = browser.i18n.getMessage('menuItemSites');
 
 document.querySelector('#main').classList.add('rendering');
+
+location.hash = '#main';
+document.body.dataset.activeContent = 'main';
+window.addEventListener('hashchange', (ev) => {
+	document.body.dataset.activeContent = location.hash.slice(1);
+});
 
 let configPopupSize;
 config.observe('appearance.popupSize', (value) => {
@@ -407,7 +416,7 @@ globalThis.confirmAsync = (msg) => {
 			}
 		};
 		const cleanUp = () => {
-			location.hash = '';
+			location.hash = '#main';
 			cancelButton.removeEventListener('click', cancelHandler);
 			okButton.removeEventListener('click', okHandler);
 			document.removeEventListener('keydown', keyHandler);
@@ -449,7 +458,7 @@ globalThis.showNewContainerPane = async () => {
 			}
 		};
 		const cleanUp = () => {
-			location.hash = '';
+			location.hash = '#main';
 			cancelButton.removeEventListener('click', cancelHandler);
 			okButton.removeEventListener('click', okHandler);
 			document.removeEventListener('keydown', keyHandler);
@@ -503,7 +512,7 @@ globalThis.showEditContainerPane = async (userContextId) => {
 			}
 		};
 		const cleanUp = () => {
-			location.hash = '';
+			location.hash = '#main';
 			cancelButton.removeEventListener('click', cancelHandler);
 			okButton.removeEventListener('click', okHandler);
 			document.removeEventListener('keydown', keyHandler);

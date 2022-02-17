@@ -294,5 +294,17 @@
     "searchPlaceholder": {
         "message": "Search containers",
         "description": "Placeholder text for searching containers."
+    },
+    "menuItemMain": {
+        "message": "Containers",
+        "description": "Menu item for containers view."
+    },
+    "menuItemWindows": {
+        "message": "Windows",
+        "description": "Menu item for windows view"
+    },
+    "menuItemSites": {
+        "message": "Sites",
+        "description": "Menu item for sites view"
     }
 }
