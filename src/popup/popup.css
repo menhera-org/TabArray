@@ -272,13 +272,13 @@ button {
 	padding: 0;
 }
 
-#menuList, #menuList ul {
+.menu-list, .menu-list ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
-#menuList li {
+.menu-list li {
 	padding: 0;
 	margin: 0;
 }
@@ -287,7 +287,7 @@ button {
 	background-color: var(--hover-color);
 }
 
-#menuList .tab {
+.menu-list .tab {
 	display: block grid;
 	grid-template-columns: 2em 2em 1fr 2em;
 	margin-inline-start: calc(2em - 0.25em);
@@ -295,11 +295,11 @@ button {
 	border-inline-start: solid .25rem transparent;
 }
 
-#menuList.search-result .tab, #menuList.search-result .window-label {
+.menu-list.search-result .tab, .menu-list.search-result .window-label {
 	display: none;
 }
 
-#menuList.search-result .container:not(.search-matched) {
+.menu-list.search-result .container:not(.search-matched) {
 	display: none;
 }
 
@@ -362,7 +362,7 @@ button {
 	opacity: .5;
 }
 
-#menuList .window-label {
+.menu-list .window-label {
 	position: sticky;
 	inset-block-start: -.125rem;
 	background-color: var(--background-color);
@@ -403,6 +403,11 @@ button {
 
 .window-label > .window-expand-button {
 	mask: url(/img/unfold_more_black_24dp.svg) center center/contain no-repeat;
+	background-color: var(--text-color);
+}
+
+.window-label > .window-close-button {
+	mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
 	background-color: var(--text-color);
 }
 

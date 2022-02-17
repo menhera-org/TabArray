@@ -150,6 +150,45 @@ const renderTab = (tab) => {
 	return tabElement;
 };
 
+const renderContainerHeading = (userContextId, windowId) => {
+	const container = StateManager.getUserContext(userContextId);
+	const containerElement = document.createElement('li');
+	containerElement.dataset.name = container.name;
+	containerElement.classList.add('container');
+	if (!userContextId) {
+		containerElement.classList.add('container-default');
+	}
+	const visibilityToggleButton = document.createElement('button');
+	visibilityToggleButton.classList.add('container-visibility-toggle');
+	containerElement.append(visibilityToggleButton);
+	visibilityToggleButton.addEventListener('click', async (ev) => {
+		if (containerElement.classList.contains('container-hidden')) {
+			await containers.show(userContextId, windowId);
+		} else if (containerElement.classList.contains('container-visible')) {
+			await containers.hide(userContextId, windowId);
+		}
+		render();
+	});
+	visibilityToggleButton.disabled = true;
+	const newTabHandler = async (ev) => {
+		await containers.openNewTabInContainer(userContextId, windowId);
+		window.close();
+	};
+	const containerIcon = document.createElement('div');
+	const iconUrl = container.iconUrl || '/img/category_black_24dp.svg';
+	containerIcon.style.mask = `url(${iconUrl}) center center/contain no-repeat`;
+	containerIcon.style.backgroundColor = container.colorCode || '#000';
+	containerIcon.classList.add('container-icon');
+	containerElement.append(containerIcon);
+	containerIcon.addEventListener('click', newTabHandler);
+	const containerLabel = document.createElement('div');
+	containerElement.append(containerLabel);
+	containerLabel.classList.add('container-label');
+	containerLabel.textContent = container.name;
+	containerLabel.addEventListener('click', newTabHandler);
+	return containerElement;
+};
+
 const renderContainer = (userContextId) => {
 	const container = StateManager.getUserContext(userContextId);
 	const tabs = StateManager.getBrowserWindow(currentWindowId).getTabs();
@@ -340,27 +379,37 @@ globalThis.render = () => {
 			menuListElement.append(containerElement);
 		}
 
+		const windowMenuListElement = document.querySelector('#windowMenuList');
+		windowMenuListElement.textContent = '';
 		const windows = StateManager.getBrowserWindows()
 		.filter((browserWindow) => browserWindow.isNormal);
 		for (const window of windows) {
-			if (window.id == windowId) continue;
 			const windowLabel = document.createElement('li');
-			menuListElement.append(windowLabel);
+			windowMenuListElement.append(windowLabel);
 			windowLabel.classList.add('window-label');
 			const windowLabelContent = document.createElement('div');
 			windowLabelContent.classList.add('window-label-name');
 			windowLabel.append(windowLabelContent);
 			windowLabelContent.textContent = browser.i18n.getMessage('windowLabel', window.id);
 			windowLabelContent.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
-			windowLabel.addEventListener('click', (ev) => {
+			windowLabelContent.addEventListener('click', (ev) => {
 				window.focus().catch(e => console.error(e));
+			});
+			const windowLabelCloseButton = document.createElement('button');
+			windowLabel.append(windowLabelCloseButton);
+			windowLabelCloseButton.classList.add('window-close-button');
+			windowLabelCloseButton.title = browser.i18n.getMessage('tooltipCloseWindow');
+			windowLabelCloseButton.addEventListener('click', (ev) => {
+				window.close().catch(e => console.error(e));
 			});
 			const tabs = window.getTabs();
 			windowLabelContent.dataset.tabCount = tabs.length;
 			for (const tab of tabs) {
 				if (!tab.active) continue;
+				const containerElement = renderContainerHeading(tab.userContextId, tab.windowId);
+				windowMenuListElement.append(containerElement);
 				const tabElement = renderTab(tab);
-				menuListElement.append(tabElement);
+				windowMenuListElement.append(tabElement);
 			}
 		}
 		mainElement.scrollTop = initScrollY;

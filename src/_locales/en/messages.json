@@ -306,5 +306,9 @@
     "menuItemSites": {
         "message": "Sites",
         "description": "Menu item for sites view"
+    },
+    "tooltipCloseWindow": {
+        "message": "Close window",
+        "description": "Tooltip for a button to close all tabs of a window."
     }
 }
