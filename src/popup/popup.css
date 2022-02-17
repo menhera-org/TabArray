@@ -234,6 +234,24 @@ button {
 
 #sites[data-active-content="sites-details"] > [data-content-id="sites-details"] {
 	display: grid;
+	grid-template-rows: max-content 1fr;
+}
+
+#sites-pane-details > .heading {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	align-content: center;
+	align-items: center;
+	box-shadow: 0 0 .5rem var(--border-color);
+}
+
+#site-pane-details-back-button {
+	padding: 0;
+	display: block;
+	inline-size: 3rem;
+	block-size: 3rem;
+	mask: url(/img/arrow_back_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
 }
 
 #bottom-menu {

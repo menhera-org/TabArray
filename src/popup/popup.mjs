@@ -458,6 +458,9 @@ globalThis.render = () => {
 				siteTitle.classList.add('tab-label');
 				siteTitle.textContent = data.title;
 				site.append(siteTitle);
+				button.addEventListener('click', (ev) => {
+					renderSiteDetails(registrableDomain);
+				});
 			}
 			sitesRendering = false;
 		});
@@ -627,6 +630,23 @@ globalThis.showEditContainerPane = async (userContextId) => {
 	await containers.updateProperties(userContextId, name, color, icon);
 	render();
 };
+
+const sitesElement = document.querySelector('#sites');
+
+globalThis.renderSiteDetails = (aSite) => {
+	const menuListElement = document.querySelector('#siteMenuList');
+	menuListElement.textContent = '';
+	sitesElement.dataset.activeContent = 'sites-details';
+	document.querySelector('#site-pane-details-domain').textContent = aSite;
+};
+
+document.querySelector('#site-pane-details-back-button').addEventListener('click', ev => {
+	sitesElement.dataset.activeContent = 'sites';
+});
+
+document.querySelector('#menu-item-sites').addEventListener('click', ev => {
+	sitesElement.dataset.activeContent = 'sites';
+});
 
 document.querySelector('#button-new-container').addEventListener('click', ev => {
 	showNewContainerPane().catch(e => console.error(e));
