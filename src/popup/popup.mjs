@@ -25,7 +25,7 @@ import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
 import '/components/usercontext-colorpicker.mjs';
 import '/components/usercontext-iconpicker.mjs';
 import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.mjs';
-import { getStateManager } from '../modules/global-state.mjs';
+import { getStateManager, getFirstpartyManager } from '../modules/global-state.mjs';
 import { IndexTab } from '../modules/IndexTab.mjs';
 
 import {config} from '../modules/config.mjs';
@@ -599,8 +599,10 @@ Promise.all([
 		return windowObj.id;
 	}),
 	getStateManager(),
-]).then(async ([windowId, aStateManager]) => {
+	getFirstpartyManager(),
+]).then(async ([windowId, aStateManager, aFirstpartyManager]) => {
   globalThis.StateManager = aStateManager;
+  globalThis.FirstpartyManager = aFirstpartyManager;
   currentWindowId = windowId;
   render();
   StateManager.addEventListenerWindow(window, 'tabOpen', (ev) => {
