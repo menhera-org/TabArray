@@ -272,6 +272,10 @@ button {
 	mask: url(/img/window_black_24dp.svg) center center/75% no-repeat;
 }
 
+#bottom-menu > #menu-item-settings::before {
+	mask: url(/img/settings_black_24dp.svg) center center/75% no-repeat;
+}
+
 [data-active-content="main"] #menu-item-main {
 	opacity: 1;
 }

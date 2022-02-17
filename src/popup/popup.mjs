@@ -48,11 +48,10 @@ document.querySelector('#new-container-cancel-button').textContent = browser.i18
 document.querySelector('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 document.querySelector('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
 document.querySelector('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
-document.querySelector('#button-about-addon > .button-text').textContent = browser.i18n.getMessage('buttonAboutAddon');
-document.querySelector('#button-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
 document.querySelector('#menu-item-main > .button-text').textContent = browser.i18n.getMessage('menuItemMain');
 document.querySelector('#menu-item-windows > .button-text').textContent = browser.i18n.getMessage('menuItemWindows');
 document.querySelector('#menu-item-sites > .button-text').textContent = browser.i18n.getMessage('menuItemSites');
+document.querySelector('#menu-item-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
 document.querySelector('#button-new-window > .button-text').textContent = browser.i18n.getMessage('buttonNewWindow');
 
 document.querySelector('#main').classList.add('rendering');
@@ -698,17 +697,8 @@ tabChangeChannel.addEventListener('message', ev => {
 });
 */
 
-document.querySelector('#button-about-addon').addEventListener('click', (ev) => {
-	browser.tabs.create({
-		active: true,
-		windowId: browser.windows.WINDOW_ID_CURRENT,
-		url: ADDON_PAGE,
-	}).then(() => {
-		window.close();
-	}).catch((e) => console.error(e));
-});
-
-document.querySelector('#button-settings').addEventListener('click', (ev) => {
+document.querySelector('#menu-item-settings').addEventListener('click', (ev) => {
+	ev.preventDefault();
 	browser.runtime.openOptionsPage().then(() => {
 		window.close();
 	}).catch((e) => console.error(e));
