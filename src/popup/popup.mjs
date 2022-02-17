@@ -310,6 +310,7 @@ const renderContainer = (userContextId) => {
 
 let rendering = false;
 let shouldRerender = false;
+let sitesRendering = false;
 globalThis.render = () => {
 	if (rendering) {
 		shouldRerender = true;
@@ -426,6 +427,40 @@ globalThis.render = () => {
 
 		const sitesPaneTop = document.querySelector('#sites-pane-top');
 		const sitePaneDetails = document.querySelector('#site-pane-details');
+
+		if (sitesRendering) {
+			throw void 0;
+		}
+		sitesRendering = true;
+		FirstpartyManager.getAll().then((registrableDomainsData) => {
+			sitesPaneTop.textContent = '';
+			const registrableDomains = Reflect.ownKeys(registrableDomainsData);
+			for (const registrableDomain of registrableDomains) {
+				const data = registrableDomainsData[registrableDomain];
+				const button = document.createElement('button');
+				const buttonText = document.createElement('span');
+				buttonText.classList.add('button-text');
+				button.append(buttonText);
+				buttonText.textContent = registrableDomain || '(null)';
+				sitesPaneTop.append(button);
+				const tabIconElement = document.createElement('img');
+				tabIconElement.classList.add('tab-icon');
+				const site = document.createElement('span');
+				site.classList.add('site');
+				button.append(site);
+				let iconUrl = data.icon;
+				if (!iconUrl) {
+					iconUrl = '/img/transparent.png';
+				}
+				tabIconElement.src = iconUrl;
+				site.append(tabIconElement);
+				const siteTitle = document.createElement('span');
+				siteTitle.classList.add('tab-label');
+				siteTitle.textContent = data.title;
+				site.append(siteTitle);
+			}
+			sitesRendering = false;
+		});
 	} finally {
 		mainElement.classList.remove('rendering');
 		setTimeout(() => {

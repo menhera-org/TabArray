@@ -50,6 +50,9 @@ FirstpartyManager.getAll = async () => {
   for (const tabObj of tabs) {
     try {
       const url = new URL(tabObj.url);
+      if (url.protocol != 'http:' && url.protocol != 'https:') {
+        continue;
+      }
       const hostname = url.hostname;
       if (!FirstpartyManager.isDomainName(hostname)) {
         continue;

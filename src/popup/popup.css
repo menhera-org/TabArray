@@ -284,6 +284,28 @@ button {
 	opacity: 1;
 }
 
+#sites {
+	overflow: auto;
+}
+
+#sites > * > button {
+	display: block;
+	color: inherit;
+	margin: 0;
+	padding: 0;
+}
+
+#sites > * > button > .button-text {
+	display: block;
+	opacity: .5;
+}
+
+#sites > * > button > .site {
+	display: grid;
+	grid-template-columns: 2rem 1fr;
+	padding-inline-start: 1rem;
+}
+
 #bottom-menu > .menu-item > .button-text {
 	display: block;
 	padding: 0;
