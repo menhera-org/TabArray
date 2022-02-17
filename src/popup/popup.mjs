@@ -159,7 +159,7 @@ const renderTab = (tab) => {
 	return tabElement;
 };
 
-const renderContainerHeading = (userContextId, windowId) => {
+const renderContainerHeading = (userContextId) => {
 	const container = StateManager.getUserContext(userContextId);
 	const containerElement = document.createElement('li');
 	containerElement.dataset.name = container.name;
@@ -170,31 +170,17 @@ const renderContainerHeading = (userContextId, windowId) => {
 	const visibilityToggleButton = document.createElement('button');
 	visibilityToggleButton.classList.add('container-visibility-toggle');
 	containerElement.append(visibilityToggleButton);
-	visibilityToggleButton.addEventListener('click', async (ev) => {
-		if (containerElement.classList.contains('container-hidden')) {
-			await containers.show(userContextId, windowId);
-		} else if (containerElement.classList.contains('container-visible')) {
-			await containers.hide(userContextId, windowId);
-		}
-		render();
-	});
 	visibilityToggleButton.disabled = true;
-	const newTabHandler = async (ev) => {
-		await containers.openNewTabInContainer(userContextId, windowId);
-		window.close();
-	};
 	const containerIcon = document.createElement('div');
 	const iconUrl = container.iconUrl || '/img/category_black_24dp.svg';
 	containerIcon.style.mask = `url(${iconUrl}) center center/contain no-repeat`;
 	containerIcon.style.backgroundColor = container.colorCode || '#000';
 	containerIcon.classList.add('container-icon');
 	containerElement.append(containerIcon);
-	containerIcon.addEventListener('click', newTabHandler);
 	const containerLabel = document.createElement('div');
 	containerElement.append(containerLabel);
 	containerLabel.classList.add('container-label');
 	containerLabel.textContent = container.name;
-	containerLabel.addEventListener('click', newTabHandler);
 	return containerElement;
 };
 
@@ -459,7 +445,10 @@ globalThis.render = () => {
 				siteTitle.textContent = data.title;
 				site.append(siteTitle);
 				button.addEventListener('click', (ev) => {
-					renderSiteDetails(registrableDomain);
+					renderSiteDetails(registrableDomain)
+					.catch((e) => {
+						console.error(e);
+					});
 				});
 			}
 			sitesRendering = false;
@@ -633,11 +622,44 @@ globalThis.showEditContainerPane = async (userContextId) => {
 
 const sitesElement = document.querySelector('#sites');
 
-globalThis.renderSiteDetails = (aSite) => {
+globalThis.renderSiteDetails = async (aSite) => {
 	const menuListElement = document.querySelector('#siteMenuList');
 	menuListElement.textContent = '';
 	sitesElement.dataset.activeContent = 'sites-details';
 	document.querySelector('#site-pane-details-domain').textContent = aSite;
+	const tabs = await browser.tabs.query({
+		windowType: 'normal',
+		url: ['*://*/*'], // HTTP and HTTPS
+	});
+	const tabsByUserContextId = new Map;
+	for (const tabObj of tabs) {
+		const url = new URL(tabObj.url); // this should not throw
+		if (url.protocol != 'http:' && url.protocol != 'https:') {
+			console.warn('This should not happen');
+			continue;
+		}
+		const {hostname} = url;
+		const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname);
+		if (registrableDomain != aSite) {
+			continue;
+		}
+		const userContextId = containers.toUserContextId(tabObj.cookieStoreId);
+		if (!tabsByUserContextId.has(userContextId)) {
+			tabsByUserContextId.set(userContextId, []);
+		}
+		const matchedTabs = tabsByUserContextId.get(userContextId);
+		matchedTabs.push(StateManager.getBrowserTab(tabObj.id));
+	}
+	const userContextIds = [... tabsByUserContextId.keys()].sort();
+	for (const userContextId of userContextIds) {
+		const containerElement = renderContainerHeading(userContextId);
+		menuListElement.append(containerElement);
+		const tabs = tabsByUserContextId.get(userContextId);
+		for (const tab of tabs) {
+			const tabElement = renderTab(tab);
+			menuListElement.append(tabElement);
+		}
+	}
 };
 
 document.querySelector('#site-pane-details-back-button').addEventListener('click', ev => {
