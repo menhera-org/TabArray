@@ -441,6 +441,7 @@ globalThis.render = () => {
 				const buttonText = document.createElement('span');
 				buttonText.classList.add('button-text');
 				button.append(buttonText);
+				buttonText.dataset.tabCount = data.tabCount;
 				buttonText.textContent = registrableDomain || '(null)';
 				sitesPaneTop.append(button);
 				const tabIconElement = document.createElement('img');

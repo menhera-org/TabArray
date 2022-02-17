@@ -300,6 +300,10 @@ button {
 	opacity: .5;
 }
 
+#sites > * > button > .button-text[data-tab-count]::after {
+	content: ' (' attr(data-tab-count) ')';
+}
+
 #sites > * > button > .site {
 	display: grid;
 	grid-template-columns: 2rem 1fr;

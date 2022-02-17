@@ -59,9 +59,10 @@ FirstpartyManager.getAll = async () => {
       }
       const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname);
       if (!sites.has(registrableDomain)) {
-        sites.set(registrableDomain, {});
+        sites.set(registrableDomain, {tabCount: 0});
       }
       const site = sites.get(registrableDomain);
+      site.tabCount += 1;
       if (!!tabObj.title) {
         site.title = tabObj.title;
       }
