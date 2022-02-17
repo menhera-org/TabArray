@@ -310,5 +310,9 @@
     "tooltipCloseWindow": {
         "message": "Close window",
         "description": "Tooltip for a button to close all tabs of a window."
+    },
+    "buttonNewWindow": {
+        "message": "New Window",
+        "description": "Button to open a new window."
     }
 }

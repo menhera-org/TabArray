@@ -53,6 +53,7 @@ document.querySelector('#button-settings > .button-text').textContent = browser.
 document.querySelector('#menu-item-main > .button-text').textContent = browser.i18n.getMessage('menuItemMain');
 document.querySelector('#menu-item-windows > .button-text').textContent = browser.i18n.getMessage('menuItemWindows');
 document.querySelector('#menu-item-sites > .button-text').textContent = browser.i18n.getMessage('menuItemSites');
+document.querySelector('#button-new-window > .button-text').textContent = browser.i18n.getMessage('buttonNewWindow');
 
 document.querySelector('#main').classList.add('rendering');
 
@@ -68,6 +69,15 @@ config.observe('appearance.popupSize', (value) => {
 	if (configPopupSize == 'large') {
 		document.body.classList.add('large');
 	}
+});
+
+const buttonNewWindow = document.querySelector('#button-new-window');
+buttonNewWindow.addEventListener('click', (ev) => {
+	browser.windows.create({}).then((windowObj) => {
+		console.log('New window (#%d) opened', windowObj.id);
+	}).catch((e) => {
+		console.error(e);
+	});
 });
 
 const renderTab = (tab) => {

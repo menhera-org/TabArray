@@ -219,6 +219,11 @@ button {
 	background-color: var(--text-color);
 }
 
+#button-new-window::before {
+	mask: url(/img/add_black_24dp.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
+}
+
 #bottom-menu {
 	display: flex;
 	flex-direction: row;
