@@ -142,6 +142,11 @@ FirstpartyManager.closeAllByContainer = async (aRegistrableDomain, aUserContextI
   await browser.tabs.remove(tabIdsClosed);
 };
 
+FirstpartyManager.clearData = async () => {
+  registrableDomains.clear();
+  await FirstpartyManager.saveData();
+};
+
 browser.contentScripts.register({
   matches: ['*://*/*'], // all HTTP/HTTPS page
   js: [
