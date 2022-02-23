@@ -179,9 +179,11 @@ browser.tabs.onCreated.addListener((tab) => {
     return;
   }
 
-  if (tab.url && tab.url != 'about:blank') {
+  if (tab.url && tab.url != 'about:blank' && tab.status != 'loading') {
+    console.log('Manually opened tab: %d', tab.id);
     openTabs.add(tab.id);
   } else if (tab.pinned) {
+    console.log('Pinned tab: %d', tab.id);
     openTabs.add(tab.id);
   } else if (tab.url == 'about:blank') {
     // handles the case when the new tab page is about:blank
@@ -190,6 +192,9 @@ browser.tabs.onCreated.addListener((tab) => {
       browser.tabs.get(tabId).then((tab) => {
         if (tab.url == 'about:blank' && tab.status != 'loading') {
           openTabs.add(tab.id);
+          if (tab.active) {
+            setActiveUserContext(tab.windowId, userContextId);
+          }
         }
       });
     }, 3000);
@@ -292,12 +297,15 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
     });
     return;
   }
-  if (tabObj.url && tabObj.url != 'about:blank') {
+  if (tabObj.url && tabObj.url != 'about:blank' && tabObj.status != 'loading') {
+    console.log('Manually opened tab: %d', tab.id);
     openTabs.add(tabObj.id);
   } else if (tabObj.pinned) {
+    console.log('Pinned tab: %d', tab.id);
     openTabs.add(tabObj.id);
   }
-  if ((tabObj.url != 'about:blank' || tabObj.status != 'loading') && tabObj.active) {
+  if (tabObj.url != 'about:blank' && tabObj.status != 'loading' && tabObj.active) {
+    console.log('setActiveUserContext for window %d and user context %d', tabObj.windowId, userContextId);
     setActiveUserContext(tabObj.windowId, userContextId);
   }
 }, {
@@ -409,6 +417,7 @@ setTimeout(() => {
         const activeUserContextId = getActiveUserContext(windowId);
         if ('sticky' == configExternalTabContainerOption) {
           if (userContextId == activeUserContextId) {
+            console.log('Tab %d in active user context %d', tabId, userContextId);
             openTabs.add(tabId);
             browser.tabs.update(tabId, {
               url,
