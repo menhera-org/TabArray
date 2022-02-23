@@ -31,11 +31,21 @@ const containersElement = document.querySelector('#containers');
 const headingElement = document.querySelector('#heading');
 const descriptionElement = document.querySelector('#description');
 const promptElement = document.querySelector('#prompt');
+const settingsButton = document.querySelector('#button-settings');
 
 document.title = i18n.getMessage('titleSelectContainer');
 headingElement.textContent = i18n.getMessage('titleSelectContainer');
 descriptionElement.textContent = i18n.getMessage('descriptionSelectContainer', url || 'about:blank');
 promptElement.textContent = i18n.getMessage('promptSelectContainer');
+settingsButton.textContent = i18n.getMessage('buttonSettings');
+
+settingsButton.addEventListener('click', (ev) => {
+  browser.runtime.openOptionsPage().then(() => {
+    console.log('Opened options page');
+  }).catch((e) => {
+    console.error(e);
+  });
+});
 
 const renderUserContext = (userContext, aUserContextElement) => {
   const userContextElement = aUserContextElement || document.createElement('button');
