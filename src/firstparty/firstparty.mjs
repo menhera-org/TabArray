@@ -17,15 +17,42 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { toCookieStoreId } from "../modules/containers.mjs";
+
 // This file is to be loaded only by background.mjs.
 
 const CONTENT_SCRIPT = '/firstparty/content.js';
 
-const registrableDomains = new Set([
+const STORAGE_MAX_ENTRIES = 1000;
+const STORAGE_KEY = 'firstparty.domains';
+
+let registrableDomains = new Set([
   'mozilla.org', // because addons cannot access addons.mozilla.org
 ]);
 
 globalThis.FirstpartyManager = {};
+
+browser.storage.local.get(STORAGE_KEY).then((values) => {
+  if (!values) {
+    return;
+  }
+  if (!Array.isArray(values[STORAGE_KEY])) {
+    return;
+  }
+  const domains = values[STORAGE_KEY].filter((domain) => (
+    'string' == typeof domain && !registrableDomains.has(domain)
+  ));
+  console.log('%d registrable domain(s) imported from storage', domains.length);
+  domains.push(... registrableDomains);
+  registrableDomains = new Set(domains);
+});
+
+FirstpartyManager.saveData = async () => {
+  const data = [...registrableDomains].slice(- STORAGE_MAX_ENTRIES);
+  await browser.storage.local.set({
+    [STORAGE_KEY]: data,
+  });
+}
 
 FirstpartyManager.getRegistrableDomain = (aDomain) =>
 {
@@ -86,6 +113,35 @@ FirstpartyManager.getAll = async () => {
   return result;
 };
 
+FirstpartyManager.closeAllByContainer = async (aRegistrableDomain, aUserContextId) => {
+  const registrableDomain = aRegistrableDomain || '';
+  const cookieStoreId = toCookieStoreId(aUserContextId);
+  const tabs = await browser.tabs.query({
+    cookieStoreId,
+    windowType: 'normal',
+		url: ['*://*/*'], // HTTP and HTTPS
+  });
+  const tabIdsClosed = [];
+  for (const tabObj of tabs) {
+    try {
+      const url = new URL(tabObj.url); // this should not throw
+      if (url.protocol != 'http:' && url.protocol != 'https:') {
+        console.warn('This should not happen');
+        continue;
+      }
+      const {hostname} = url;
+      const tabRegistrableDomain = FirstpartyManager.getRegistrableDomain(hostname) || '';
+      if (registrableDomain != tabRegistrableDomain) {
+        continue;
+      }
+      tabIdsClosed.push(tabObj.id);
+    } catch (e) {
+      console.error('This should not happen!', e);
+    }
+  }
+  await browser.tabs.remove(tabIdsClosed);
+};
+
 browser.contentScripts.register({
   matches: ['*://*/*'], // all HTTP/HTTPS page
   js: [
@@ -100,9 +156,19 @@ browser.contentScripts.register({
 browser.runtime.onMessage.addListener((message) => {
   if (message.command == 'registrable_domain') {
     const {domain} = message;
+    if ('string' != typeof domain) {
+      return;
+    }
     if (!registrableDomains.has(domain)) {
       console.log('registrable domain:', domain);
+      registrableDomains.add(domain);
+    } else {
+      // make the item last
+      registrableDomains.delete(domain);
+      registrableDomains.add(domain);
     }
-    registrableDomains.add(domain);
+    FirstpartyManager.saveData().catch((e) => {
+      console.error('Error saving domains data', e);
+    });
   }
 });
