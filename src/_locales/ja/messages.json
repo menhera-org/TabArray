@@ -315,6 +315,10 @@
         "message": "新規ウインドウ",
         "description": "Button to open a new window."
     },
+    "buttonSidebar": {
+        "message": "サイドバーを開く",
+        "description": "Button to open Sidebar."
+    },
     "optionsHeadingUserData": {
         "message": "あなたのデータ",
         "description": "Heading text of options page for managing user data."
