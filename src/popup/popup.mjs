@@ -247,7 +247,8 @@ const renderTab = (tab) => {
 	return tabElement;
 };
 
-const renderContainerHeading = (userContextId) => {
+const renderContainerHeading = (userContextId, details) => {
+	const mode = details ? details.mode : '';
 	const container = StateManager.getUserContext(userContextId);
 	const containerElement = document.createElement('li');
 	containerElement.dataset.name = container.name;
@@ -269,6 +270,34 @@ const renderContainerHeading = (userContextId) => {
 	containerElement.append(containerLabel);
 	containerLabel.classList.add('container-label');
 	containerLabel.textContent = container.name;
+	const closeContainerButton = document.createElement('button');
+	containerElement.append(closeContainerButton);
+	closeContainerButton.classList.add('close-container-button');
+	closeContainerButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
+	switch (mode) {
+		case 'window': {
+			const {windowId} = details;
+			closeContainerButton.addEventListener('click', (ev) => {
+				containers.closeAllTabsOnWindow(userContextId, windowId).catch((e) => {
+					console.error(e);
+				});
+			});
+			break;
+		}
+		case 'site': {
+			const {site} = details;
+			closeContainerButton.addEventListener('click', (ev) => {
+				FirstpartyManager.closeAllByContainer(site, userContextId).catch((e) => {
+					console.error(e);
+				});
+			});
+			break;
+		}
+		default: {
+			closeContainerButton.disabled = true;
+		}
+	}
+	
 	return containerElement;
 };
 
@@ -490,7 +519,10 @@ globalThis.render = () => {
 			windowLabelContent.dataset.tabCount = tabs.length;
 			for (const tab of tabs) {
 				if (!tab.active) continue;
-				const containerElement = renderContainerHeading(tab.userContextId, tab.windowId);
+				const containerElement = renderContainerHeading(tab.userContextId, {
+					mode: 'window',
+					windowId: tab.windowId
+				});
 				windowMenuListElement.append(containerElement);
 				const tabElement = renderTab(tab);
 				windowMenuListElement.append(tabElement);
@@ -500,6 +532,11 @@ globalThis.render = () => {
 
 		const sitesPaneTop = document.querySelector('#sites-pane-top');
 		const sitePaneDetails = document.querySelector('#site-pane-details');
+		
+		// refresh content of site details view
+		renderSiteDetails(null).catch((e) => {
+			console.error(e);
+		});
 
 		if (sitesRendering) {
 			throw void 0;
@@ -513,10 +550,20 @@ globalThis.render = () => {
 				const button = document.createElement('button');
 				const buttonText = document.createElement('span');
 				buttonText.classList.add('button-text');
+				const closeButton = document.createElement('button');
+				closeButton.classList.add('site-close');
 				button.append(buttonText);
+				button.append(closeButton);
 				buttonText.dataset.tabCount = data.tabCount;
 				buttonText.textContent = registrableDomain || '(null)';
 				sitesPaneTop.append(button);
+
+				closeButton.addEventListener('click', (ev) => {
+					ev.stopImmediatePropagation();
+					closeSite(registrableDomain).catch((e) => {
+						console.error(e);
+					});
+				});
 				const tabIconElement = document.createElement('img');
 				tabIconElement.classList.add('tab-icon');
 				const site = document.createElement('span');
@@ -710,10 +757,18 @@ globalThis.showEditContainerPane = async (userContextId) => {
 
 const sitesElement = document.querySelector('#sites');
 
+let renderedSite = '';
 globalThis.renderSiteDetails = async (aSite) => {
 	const menuListElement = document.querySelector('#siteMenuList');
 	menuListElement.textContent = '';
-	sitesElement.dataset.activeContent = 'sites-details';
+	if (aSite) {
+		sitesElement.dataset.activeContent = 'sites-details';
+		renderedSite = aSite;
+	} else if (renderedSite) {
+		aSite = renderedSite;
+	} else {
+		return;
+	}
 	document.querySelector('#site-pane-details-domain').textContent = aSite;
 	const tabs = await browser.tabs.query({
 		windowType: 'normal',
@@ -721,26 +776,33 @@ globalThis.renderSiteDetails = async (aSite) => {
 	});
 	const tabsByUserContextId = new Map;
 	for (const tabObj of tabs) {
-		const url = new URL(tabObj.url); // this should not throw
-		if (url.protocol != 'http:' && url.protocol != 'https:') {
-			console.warn('This should not happen');
-			continue;
+		try {
+			const url = new URL(tabObj.url); // this should not throw
+			if (url.protocol != 'http:' && url.protocol != 'https:') {
+				console.warn('This should not happen');
+				continue;
+			}
+			const {hostname} = url;
+			const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname);
+			if (registrableDomain != aSite) {
+				continue;
+			}
+			const userContextId = containers.toUserContextId(tabObj.cookieStoreId);
+			if (!tabsByUserContextId.has(userContextId)) {
+				tabsByUserContextId.set(userContextId, []);
+			}
+			const matchedTabs = tabsByUserContextId.get(userContextId);
+			matchedTabs.push(StateManager.getBrowserTab(tabObj.id));
+		} catch (e) {
+			console.error('This should not happen!', e);
 		}
-		const {hostname} = url;
-		const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname);
-		if (registrableDomain != aSite) {
-			continue;
-		}
-		const userContextId = containers.toUserContextId(tabObj.cookieStoreId);
-		if (!tabsByUserContextId.has(userContextId)) {
-			tabsByUserContextId.set(userContextId, []);
-		}
-		const matchedTabs = tabsByUserContextId.get(userContextId);
-		matchedTabs.push(StateManager.getBrowserTab(tabObj.id));
 	}
 	const userContextIds = [... tabsByUserContextId.keys()].sort();
 	for (const userContextId of userContextIds) {
-		const containerElement = renderContainerHeading(userContextId);
+		const containerElement = renderContainerHeading(userContextId, {
+			mode: 'site',
+			site: aSite,
+		});
 		menuListElement.append(containerElement);
 		const tabs = tabsByUserContextId.get(userContextId);
 		for (const tab of tabs) {
@@ -748,6 +810,29 @@ globalThis.renderSiteDetails = async (aSite) => {
 			menuListElement.append(tabElement);
 		}
 	}
+};
+
+globalThis.closeSite = async (aRegistrableDomain) => {
+	//
+	const tabs = await browser.tabs.query({
+		windowType: 'normal',
+		url: ['*://*/*'], // HTTP and HTTPS
+	});
+	const tabIdsClosed = [];
+	for (const tabObj of tabs) {
+		const url = new URL(tabObj.url); // this should not throw
+		if (url.protocol != 'http:' && url.protocol != 'https:') {
+			console.warn('This should not happen');
+			continue;
+		}
+		const {hostname} = url;
+		const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname) || '';
+		if (aRegistrableDomain != registrableDomain) {
+			continue;
+		}
+		tabIdsClosed.push(tabObj.id);
+	}
+	await browser.tabs.remove(tabIdsClosed);
 };
 
 document.querySelector('#site-pane-details-back-button').addEventListener('click', ev => {

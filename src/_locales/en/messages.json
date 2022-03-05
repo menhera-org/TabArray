@@ -318,5 +318,17 @@
     "buttonSidebar": {
         "message": "Open Sidebar",
         "description": "Button to open Sidebar."
+    },
+    "optionsHeadingUserData": {
+        "message": "Your Data",
+        "description": "Heading text of options page for managing user data."
+    },
+    "labelClearRecentSites": {
+        "message": "Clear the list of recently visited sites",
+        "description": "Label text for clearing the list of visited sites"
+    },
+    "buttonClear": {
+        "message": "Clear",
+        "description": "Button to clear data."
     }
 }

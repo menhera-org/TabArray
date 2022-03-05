@@ -19,11 +19,13 @@
 
 import '../modules/background-console.mjs';
 import {config} from '../modules/config.mjs';
+import { getFirstpartyManager } from '../modules/global-state.mjs';
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
 document.querySelector('#optionsHeadingExperimental').textContent = browser.i18n.getMessage('optionsHeadingExperimental');
 document.querySelector('#optionsHeadingFirefox').textContent = browser.i18n.getMessage('optionsHeadingFirefox');
+document.querySelector('#optionsHeadingUserData').textContent = browser.i18n.getMessage('optionsHeadingUserData');
 document.querySelector('#optionsDescriptionExperimental').textContent = browser.i18n.getMessage('optionsDescriptionExperimental');
 document.querySelector('#optionsDescriptionFirefox').textContent = browser.i18n.getMessage('optionsDescriptionFirefox');
 
@@ -58,6 +60,22 @@ document.querySelector('label[for="select-popupSize"]').textContent = browser.i1
 
 document.querySelector('#select-popupSize > option[value="standard"]').textContent = browser.i18n.getMessage('labelPopupSizeStandard');
 document.querySelector('#select-popupSize > option[value="large"]').textContent = browser.i18n.getMessage('labelPopupSizeLarge');
+
+const buttonClearRecentSites = document.querySelector('#button-clearRecentSites');
+buttonClearRecentSites.textContent = browser.i18n.getMessage('buttonClear');
+document.querySelector('label[for="button-clearRecentSites"]').textContent = browser.i18n.getMessage('labelClearRecentSites');
+
+getFirstpartyManager().then((FirstpartyManager) => {
+  globalThis.FirstpartyManager = FirstpartyManager;
+});
+
+buttonClearRecentSites.addEventListener('click', (ev) => {
+  FirstpartyManager.clearData().then(() => {
+    console.log('Cleared the list of visited sites');
+  }).catch((e) => {
+    console.error(e);
+  });
+});
 
 config.observe('newtab.keepContainer', (value) => {
   if (undefined === value) {

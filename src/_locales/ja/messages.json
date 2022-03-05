@@ -314,5 +314,17 @@
     "buttonNewWindow": {
         "message": "新規ウインドウ",
         "description": "Button to open a new window."
+    },
+    "optionsHeadingUserData": {
+        "message": "あなたのデータ",
+        "description": "Heading text of options page for managing user data."
+    },
+    "labelClearRecentSites": {
+        "message": "最近訪問したサイトのリストを消去する",
+        "description": "Label text for clearing the list of visited sites"
+    },
+    "buttonClear": {
+        "message": "消去",
+        "description": "Button to clear data."
     }
 }

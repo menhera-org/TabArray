@@ -176,6 +176,8 @@ button {
 	outline: none;
 	padding: 0;
 	margin: 0;
+	background-color: transparent;
+	color: inherit;
 }
 
 #button-sidebar {
@@ -325,7 +327,8 @@ button {
 }
 
 #sites > * > button {
-	display: block;
+	display: grid;
+	grid-template-columns: 1fr max-content;
 	color: inherit;
 	margin: 0;
 	padding: 0;
@@ -334,16 +337,42 @@ button {
 #sites > * > button > .button-text {
 	display: block;
 	opacity: .5;
+	grid-row: 1;
+	grid-column: 1;
 }
 
 #sites > * > button > .button-text[data-tab-count]::after {
 	content: ' (' attr(data-tab-count) ')';
 }
 
+#sites > * > button > .site-close {
+	display: block;
+	grid-row: 1;
+	grid-column: 2;
+	inline-size: 2rem;
+	opacity: .5;
+	background-color: var(--text-color);
+	mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+}
+
+#sites > * > button > .site-close:hover {
+	opacity: 1;
+}
+
 #sites > * > button > .site {
 	display: grid;
-	grid-template-columns: 2rem 1fr;
+	grid-template-columns: 2rem 1fr max-content;
 	padding-inline-start: 1rem;
+	grid-row: 2;
+	grid-column: 1;
+}
+
+#sites > * > button > .site::after {
+	display: block;
+	content: '';
+	inline-size: 2rem;
+	background-color: var(--text-color);
+	mask: url(/img/chevron_right_black_24dp.svg) center center/75% no-repeat;
 }
 
 #bottom-menu > .menu-item > .button-text {
