@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Container Tab Groups",
-	"version": "9",
+	"version": "10",
 	"browser_specific_settings": {
   	"gecko": {
 			"id": "tab-array@menhera.org"
@@ -49,6 +49,14 @@
 		"page": "options/options.html",
 		"browser_style": true,
 		"open_in_tab": false
+	},
+	"sidebar_action": {
+		"browser_style": true,
+		"default_icon": {
+			"16": "icon.svg",
+			"32": "icon.svg"
+		},
+		"default_panel": "sidebar/sidebar.html"
 	},
 	"icons": {
 		"48": "icon.svg",

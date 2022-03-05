@@ -27,8 +27,6 @@ body {
 	font-family: system-ui, sans-serif;
 	color: var(--text-color);
 	background-color: var(--background-color);
-	width: 400px;
-	height: 333px;
 	overflow-block: auto;
 	overflow-inline: hidden;
 	margin: 0;
@@ -37,7 +35,12 @@ body {
 	position: relative;
 }
 
-body.large {
+body:not(.sidebar) {
+	width: 400px;
+	height: 333px;
+}
+
+body.large:not(.sidebar) {
 	width: 480px;
 	height: 500px;
 }
@@ -147,7 +150,7 @@ button {
 
 #topbox {
 	display: block grid;
-	grid-template-columns: 1fr max-content max-content;
+	grid-template-columns: 1fr max-content max-content max-content;
 	grid-template-rows: 2.5em;
 	padding-inline-start: 1em;
 }
@@ -173,6 +176,17 @@ button {
 	outline: none;
 	padding: 0;
 	margin: 0;
+}
+
+#button-sidebar {
+	background-repeat: no-repeat;
+	background-size: 1.5em;
+	background-position: center center;
+	block-size: 100%;
+	inline-size: 2.5em;
+	color: inherit;
+	mask: url(/img/sidebar.svg) center center/75% no-repeat;
+	background-color: var(--text-color);
 }
 
 #button-panorama {

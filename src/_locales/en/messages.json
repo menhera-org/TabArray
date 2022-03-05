@@ -314,5 +314,9 @@
     "buttonNewWindow": {
         "message": "New Window",
         "description": "Button to open a new window."
+    },
+    "buttonSidebar": {
+        "message": "Open Sidebar",
+        "description": "Button to open Sidebar."
     }
 }
