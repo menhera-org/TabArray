@@ -37,6 +37,10 @@ This extension is intended to replace the following features/extensions:
 ## Known bugs
 - View source (view-source: URLs) on No Container does not work. This is the limitation of WebExtensions API.
 
+## What's next
+
+- Keyboard shortcuts will be implemented.
+
 ## License
 
 Copyright &copy; 2022 Menhera.org.
