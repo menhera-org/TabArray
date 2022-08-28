@@ -21,7 +21,7 @@ Chrome-like tab groups using isolated containers: The ultimate tab manager and g
 
 ## Usage
 
-The button to open the main controls is by default added at the tab bar at the top, as shown below. The button has theree dots.
+The button to open the main controls is by default added at the tab bar at the top, as shown below. The button has three dots.
 
 ![screenshot](tab-button.png)
 
