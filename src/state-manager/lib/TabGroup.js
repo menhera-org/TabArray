@@ -17,27 +17,22 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { IndexTab } from "../modules/IndexTab.mjs";
+import { LifecycleEventTarget } from "./LifecycleEventTarget.js";
 
-const indexTab = new IndexTab(location.href);
-document.title = indexTab.title;
+const CLASS_ID = '2675782A-2B71-47D2-9A6B-6A374F421FE2';
 
-const rect = document.querySelector('#rect');
 
-rect.setAttribute('fill', indexTab.colorCode);
-rect.style.mask = `url(${indexTab.iconUrl}) center / contain no-repeat`;
+export class TabGroup extends LifecycleEventTarget {
+  constructor(userContextId, windowId) {
+    super();
+    this.userContextId = 0|userContextId;
+    this.windowId = 0|windowId;
+    this.tabIds = new Set;
+    this._startIndex = 0;
+    this.stateManager = null;
+  }
 
-browser.tabs.getCurrent().then(async (tabObj) => {
-  const tabId = tabObj.id;
-  const imageUrl = await browser.tabs.captureTab(tabId, {
-    scale: 1,
-    rect: {
-      x: 0,
-      y: 0,
-      width: 256,
-      height: 256,
-    }
-  });
-  document.querySelector(`link[rel="icon"]`).href = imageUrl;
-});
-
+  get CLASS_ID() {
+    return CLASS_ID;
+  }
+}

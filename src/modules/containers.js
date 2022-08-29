@@ -17,10 +17,10 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { config } from './config.mjs';
-import { IndexTab } from './IndexTab.mjs';
-import * as newtab from './newtab.mjs';
-import { setActiveUserContext } from './usercontext-state.mjs';
+import { config } from './config.js';
+import { IndexTab } from './IndexTab.js';
+import * as newtab from './newtab.js';
+import { setActiveUserContext } from './usercontext-state.js';
 
 // 'never' -- do not show indeces
 // 'collapsed' -- show indeces for collapsed containers

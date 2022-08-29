@@ -17,7 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { LifecycleEventTarget } from "./LifecycleEventTarget.mjs";
+import { LifecycleEventTarget } from "./LifecycleEventTarget.js";
 
 // BrowserTab
 const CLASS_ID = 'ac14db90-8a54-41f5-b080-0cc73dd5a937';

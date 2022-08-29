@@ -17,9 +17,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { toCookieStoreId } from "../modules/containers.mjs";
+import { toCookieStoreId } from "../modules/containers.js";
 
-// This file is to be loaded only by background.mjs.
+// This file is to be loaded only by background.js.
 
 const CONTENT_SCRIPT = '/firstparty/content.js';
 

@@ -17,9 +17,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import '../modules/background-console.mjs';
-import {config} from '../modules/config.mjs';
-import { getFirstpartyManager } from '../modules/global-state.mjs';
+import '../modules/background-console.js';
+import {config} from '../modules/config.js';
+import { getFirstpartyManager } from '../modules/global-state.js';
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
