@@ -21,6 +21,10 @@ Chrome-like tab groups using isolated containers: The ultimate tab manager and g
 
 ## Usage
 
+The button to open the main controls is by default added at the tab bar at the top, as shown below. The button has three dots.
+
+![screenshot](tab-button.png)
+
 1. Before starting a task, create a new container for it!
 2. Open tabs related to the task in that container.
 3. When finished, delete the container to remove all the clutters.
@@ -36,6 +40,10 @@ This extension is intended to replace the following features/extensions:
 
 ## Known bugs
 - View source (view-source: URLs) on No Container does not work. This is the limitation of WebExtensions API.
+
+## What's next
+
+- Keyboard shortcuts will be implemented.
 
 ## License
 
