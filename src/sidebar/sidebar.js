@@ -17,22 +17,4 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { LifecycleEventTarget } from "./LifecycleEventTarget.mjs";
-
-const CLASS_ID = '2675782A-2B71-47D2-9A6B-6A374F421FE2';
-
-
-export class TabGroup extends LifecycleEventTarget {
-  constructor(userContextId, windowId) {
-    super();
-    this.userContextId = 0|userContextId;
-    this.windowId = 0|windowId;
-    this.tabIds = new Set;
-    this._startIndex = 0;
-    this.stateManager = null;
-  }
-
-  get CLASS_ID() {
-    return CLASS_ID;
-  }
-}
+import '/popup/popup.js';

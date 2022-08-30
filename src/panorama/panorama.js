@@ -18,13 +18,13 @@
 */
 
 
-import '../components/panorama-tab.mjs';
-import '../modules/background-console.mjs';
-import * as containers from '../modules/containers.mjs';
-import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
-import { getStateManager } from '../modules/global-state.mjs';
-import * as i18n from '../modules/i18n.mjs';
-import { IndexTab } from '../modules/IndexTab.mjs';
+import '../components/panorama-tab.js';
+import '../modules/background-console.js';
+import * as containers from '../modules/containers.js';
+import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.js';
+import { getStateManager } from '../modules/global-state.js';
+import * as i18n from '../modules/i18n.js';
+import { IndexTab } from '../modules/IndexTab.js';
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();

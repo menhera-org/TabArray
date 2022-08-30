@@ -17,18 +17,18 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as containers from './modules/containers.mjs';
-import { isNewTabPage } from './modules/newtab.mjs';
+import * as containers from './modules/containers.js';
+import { isNewTabPage } from './modules/newtab.js';
 
-import {WebExtensionsBroadcastChannel} from './modules/broadcasting.mjs';
-import { getActiveUserContext } from './modules/usercontext-state.mjs';
-import {config} from './modules/config.mjs';
-import { setActiveUserContext } from './modules/usercontext-state.mjs';
-import { ADDON_PAGE, CONFIRM_PAGE } from './defs.mjs';
-import { getWindowIds } from './modules/windows.mjs';
-import './state-manager/StateManager.mjs';
-import {IndexTab} from './modules/IndexTab.mjs';
-import '/firstparty/firstparty.mjs';
+import {WebExtensionsBroadcastChannel} from './modules/broadcasting.js';
+import { getActiveUserContext } from './modules/usercontext-state.js';
+import {config} from './modules/config.js';
+import { setActiveUserContext } from './modules/usercontext-state.js';
+import { ADDON_PAGE, CONFIRM_PAGE } from './defs.js';
+import { getWindowIds } from './modules/windows.js';
+import './state-manager/StateManager.js';
+import {IndexTab} from './modules/IndexTab.js';
+import '/firstparty/firstparty.js';
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 

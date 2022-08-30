@@ -17,8 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebExtensionsBroadcastChannel } from './broadcasting.mjs';
-import * as containers from './containers.mjs';
+import { WebExtensionsBroadcastChannel } from './broadcasting.js';
+import * as containers from './containers.js';
 
 const syncActiveUserContextChannel = new WebExtensionsBroadcastChannel('sync_active_user_context');
 

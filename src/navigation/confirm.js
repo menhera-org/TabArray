@@ -17,10 +17,10 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getStateManager } from '../modules/global-state.mjs';
-import { BrowserTab } from '../state-manager/lib/BrowserTab.mjs';
-import * as i18n from '../modules/i18n.mjs';
-import { config } from '../modules/config.mjs';
+import { getStateManager } from '../modules/global-state.js';
+import { BrowserTab } from '../state-manager/lib/BrowserTab.js';
+import * as i18n from '../modules/i18n.js';
+import { config } from '../modules/config.js';
 
 const params = new URLSearchParams(location.search);
 

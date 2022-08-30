@@ -17,18 +17,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import '../modules/background-console.mjs';
-import * as containers from '../modules/containers.mjs';
-import { toUserContextId } from '../modules/containers.mjs';
-import {sleep} from '../modules/utils.mjs';
-import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.mjs';
-import '/components/usercontext-colorpicker.mjs';
-import '/components/usercontext-iconpicker.mjs';
-import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.mjs';
-import { getStateManager, getFirstpartyManager } from '../modules/global-state.mjs';
-import { IndexTab } from '../modules/IndexTab.mjs';
+import '../modules/background-console.js';
+import * as containers from '../modules/containers.js';
+import { toUserContextId } from '../modules/containers.js';
+import {sleep} from '../modules/utils.js';
+import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.js';
+import '/components/usercontext-colorpicker.js';
+import '/components/usercontext-iconpicker.js';
+import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.js';
+import { getStateManager, getFirstpartyManager } from '../modules/global-state.js';
+import { IndexTab } from '../modules/IndexTab.js';
 
-import {config} from '../modules/config.mjs';
+import {config} from '../modules/config.js';
 
 document.body.innerHTML = `
 <div id='main' class='content'>

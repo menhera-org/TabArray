@@ -17,7 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { LifecycleEventTarget } from "./LifecycleEventTarget.mjs";
+import { LifecycleEventTarget } from "./LifecycleEventTarget.js";
 
 // UserContext
 const CLASS_ID = 'f06149ff-6503-4d9b-88fe-196ea5b64b5c';

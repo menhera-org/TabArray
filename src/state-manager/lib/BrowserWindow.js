@@ -17,7 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { LifecycleEventTarget } from "./LifecycleEventTarget.mjs";
+import { LifecycleEventTarget } from "./LifecycleEventTarget.js";
 
 export class BrowserWindow extends LifecycleEventTarget {
   constructor(id) {

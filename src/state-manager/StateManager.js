@@ -17,11 +17,11 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BrowserWindow } from "./lib/BrowserWindow.mjs";
-import { BrowserTab } from "./lib/BrowserTab.mjs";
-import { UserContext } from "./lib/UserContext.mjs";
-import * as i18n from '../modules/i18n.mjs';
-import { LifecycleEventTarget } from "./lib/LifecycleEventTarget.mjs";
+import { BrowserWindow } from "./lib/BrowserWindow.js";
+import { BrowserTab } from "./lib/BrowserTab.js";
+import { UserContext } from "./lib/UserContext.js";
+import * as i18n from '../modules/i18n.js';
+import { LifecycleEventTarget } from "./lib/LifecycleEventTarget.js";
 
 const ICON_EXTENSION = browser.runtime.getURL('/img/extension.svg');
 
