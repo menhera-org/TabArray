@@ -17,6 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { getStateManager } from '../modules/global-state.js';
 import { BrowserTab } from '../state-manager/lib/BrowserTab.js';
 import * as i18n from '../modules/i18n.js';

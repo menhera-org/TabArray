@@ -1,0 +1,68 @@
+{
+	"manifest_version": 2,
+	"name": "Container Tab Groups",
+	"version": "11",
+	"browser_specific_settings": {
+  	"gecko": {
+			"id": "tab-array@menhera.org"
+		}
+	},
+	"default_locale": "en",
+	"author": "Menhera.org",
+	"homepage_url": "https://github.com/menhera-org/TabArray",
+	"description": "__MSG_extensionDescription__",
+	"permissions": [
+		"tabs",
+		"tabHide",
+		"<all_urls>",
+		"cookies",
+		"contextualIdentities",
+		"menus",
+		"storage",
+		"browserSettings",
+		"privacy",
+		"webRequest",
+		"webRequestBlocking",
+		"sessions"
+	],
+	"incognito": "not_allowed",
+	"background": {
+		"page": "background.html"
+	},
+	"browser_action": {
+		"browser_style": true,
+		"default_icon": {
+			"16": "img/more_vert_black_24dp.svg"
+		},
+		"default_title": "__MSG_browserActionTitle__",
+		"default_popup": "popup/popup.html",
+		"default_area": "tabstrip",
+		"theme_icons": [
+			{
+				"size": 16,
+				"light": "img/more_vert_white_24dp.svg",
+				"dark": "img/more_vert_black_24dp.svg"
+			}
+		]
+	},
+	"options_ui": {
+		"page": "options/options.html",
+		"browser_style": true,
+		"open_in_tab": false
+	},
+	"sidebar_action": {
+		"browser_style": true,
+		"default_icon": {
+			"16": "icon.svg",
+			"32": "icon.svg"
+		},
+		"default_panel": "sidebar/sidebar.html"
+	},
+	"icons": {
+		"48": "icon.svg",
+		"96": "icon.svg"
+	},
+	"web_accessible_resources": [
+		"navigation/confirm.html"
+	]
+}

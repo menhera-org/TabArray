@@ -1,0 +1,73 @@
+<!-- vim: set ts=4 sw=4 et ai :
+    Container Tab Groups
+    Copyright (C) 2021 Menhera.org
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+<head>
+    <meta charset='utf-8'/>
+    <title></title>
+    <link rel='stylesheet' href='./options.css'/>
+    <script defer src='./options.js'></script>
+</head>
+<body>
+    <h2 id='optionsHeadingAppearance'>optionsHeadingAppearance</h2>
+    <p>
+        <label for='select-popupSize'>labelPopupSize</label><br/>
+        <select id='select-popupSize' class='browser-style'>
+            <option value='standard' selected=''>labelPopupSizeStandard</option>
+            <option value='large'>labelPopupSizeLarge</option>
+        </select>
+    </p>
+    <h2 id='optionsHeadingExperimental'>optionsHeadingExperimental</h2>
+    <p id='optionsDescriptionExperimental'>optionsDescriptionExperimental</p>
+    <p class='browser-style'>
+        <input type='checkbox' id='input-newtabKeepContainer'/>
+        <label for='input-newtabKeepContainer'>labelNewTabKeepContainer</label>
+    </p>
+    <p>
+        <label for='select-externalTabContainerOption'>labelExternalTabSelectContainerOption</label><br/>
+        <select id='select-externalTabContainerOption' class='browser-style'>
+            <option value='choose' selected=''>labelExternalTabOptionChooseContainer</option>
+            <option value='sticky'>labelExternalTabOptionStickyContainer</option>
+            <option value='disabled'>labelExternalTabOptionDisabled</option>
+        </select>
+    </p>
+    <p>
+        <label for='select-groupIndexOption'>labelGroupIndexOption</label><br/>
+        <select id='select-groupIndexOption' class='browser-style'>
+            <option value='always' selected=''>labelGroupIndexOptionAlways</option>
+            <option value='collapsed'>labelGroupIndexOptionCollapsed</option>
+            <option value='never'>labelGroupIndexOptionNever</option>
+        </select>
+    </p>
+    <h2 id='optionsHeadingFirefox'>optionsHeadingFirefox</h2>
+    <p id='optionsDescriptionFirefox'>optionsDescriptionFirefox</p>
+    <p class='browser-style'>
+        <input type='checkbox' id='input-firstPartyIsolate'/>
+        <label for='input-firstPartyIsolate'>labelFirstPartyIsolate</label>
+    </p>
+    <p class='browser-style'>
+        <input type='checkbox' id='input-resistFingerprinting'/>
+        <label for='input-resistFingerprinting'>labelResistFingerprinting</label>
+    </p>
+    <h2 id='optionsHeadingUserData'>optionsHeadingUserData</h2>
+    <p>
+        <label for='button-clearRecentSites'>labelClearRecentSites</label><br/>
+        <button id='button-clearRecentSites' class='browser-style'>buttonClear</button>
+    </p>
+</body>
+</html>

@@ -17,6 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
+
 export const getMessage = (messageName, ... args) => {
     return '' + (browser.i18n.getMessage(messageName, ... args) || '');
 };

@@ -17,6 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { BrowserWindow } from "./lib/BrowserWindow.js";
 import { BrowserTab } from "./lib/BrowserTab.js";
 import { UserContext } from "./lib/UserContext.js";
@@ -100,6 +101,7 @@ export const state = new class StateManagerConstructor extends LifecycleEventTar
 };
 
 globalThis.StateManager = state;
+console.log('Defined StateManager:', StateManager);
 
 const getBrowserWindow = (windowId) => {
   if (state._browserWindows.has(windowId)) {

@@ -17,6 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { config } from './config.js';
 import { IndexTab } from './IndexTab.js';
 import * as newtab from './newtab.js';

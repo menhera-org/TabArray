@@ -17,6 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import '../modules/background-console.js';
 import {config} from '../modules/config.js';
 import { getFirstpartyManager } from '../modules/global-state.js';

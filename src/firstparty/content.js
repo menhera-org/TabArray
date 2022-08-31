@@ -17,6 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
+
 /*
   Original code published for _Site-based Tabs_ at https://github.com/menhera-org/tab-policy (2021)
 */

@@ -90,12 +90,16 @@ out
 # Nuxt.js build / generate output
 .nuxt
 
+# TypeScript output
+ts-dist
+
 # Webpack output
 dist/**/*.js
 
 # web-ext output
 *.xpi
 *.zip
+builds
 
 # Gatsby files
 .cache/

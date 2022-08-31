@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- vim: set ts=4 noet ai :
+	Container Tab Groups
+	Copyright (C) 2021 Menhera.org
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+	 y="0px" viewBox="0 0 256 256" style="enable-background:new 0 0 256 256;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+	.st1{fill:#37ADFF;}
+	.st2{fill:#FF4BDA;}
+	.st3{fill:#FFCB00;}
+</style>
+<g>
+	<rect x="23.5" y="23.5" class="st0" width="207" height="207"/>
+	<path d="M230,24v206H24V24H230 M231,23H23v208h208V23L231,23z"/>
+</g>
+<g>
+	<rect x="48" y="120" class="st1" width="64" height="16"/>
+</g>
+<g>
+	<rect x="48" y="190" class="st2" width="128" height="16"/>
+</g>
+<g>
+	<rect x="48" y="155" class="st3" width="96" height="16"/>
+</g>
+<g>
+	<path d="M224.5,15.5h-193c-8.84,0-16,7.16-16,16v193c0,8.84,7.16,16,16,16h193c8.84,0,16-7.16,16-16v-193
+		C240.5,22.66,233.34,15.5,224.5,15.5z M146,53.6h25.6V28h12.8v25.6H210v12.8h-25.6V92h-12.8V66.4H146V53.6z M224.5,224.5h-193v-193
+		H121V106h103.5V224.5z"/>
+</g>
+</svg>

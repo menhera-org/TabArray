@@ -17,6 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import './install.js';
+import browser from 'webextension-polyfill';
 import * as containers from './modules/containers.js';
 import { isNewTabPage } from './modules/newtab.js';
 
@@ -28,7 +30,7 @@ import { ADDON_PAGE, CONFIRM_PAGE } from './defs.js';
 import { getWindowIds } from './modules/windows.js';
 import './state-manager/StateManager.js';
 import {IndexTab} from './modules/IndexTab.js';
-import '/firstparty/firstparty.js';
+import './firstparty/firstparty.js';
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 

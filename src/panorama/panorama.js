@@ -18,6 +18,7 @@
 */
 
 
+import browser from 'webextension-polyfill';
 import '../components/panorama-tab.js';
 import '../modules/background-console.js';
 import * as containers from '../modules/containers.js';

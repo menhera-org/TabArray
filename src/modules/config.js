@@ -17,6 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
+
 import { callIgnoringErrors } from "./utils.js";
 
 const CONFIG_STORAGE_PREFIX = 'config.';

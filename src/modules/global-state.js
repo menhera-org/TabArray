@@ -17,6 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
+
 export const getStateManager = async () => {
   const background = await browser.runtime.getBackgroundPage();
   if (!background) {

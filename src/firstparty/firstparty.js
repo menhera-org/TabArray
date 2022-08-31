@@ -17,6 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { toCookieStoreId } from "../modules/containers.js";
 
 // This file is to be loaded only by background.js.

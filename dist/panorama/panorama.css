@@ -1,0 +1,97 @@
+/* vim: set ts=2 sw=2 et ai : */
+/*
+  Container Tab Groups
+  Copyright (C) 2021 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+@import url(/theme.css);
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+button {
+  color: inherit;
+}
+
+#containers {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.container-heading {
+  display: grid;
+  grid-template-columns: 2rem max-content max-content;
+  padding-inline: 1rem;
+}
+
+.container-heading > *, .container-heading::after {
+  margin: 0;
+  padding: .5rem;
+  display: grid;
+  align-content: baseline;
+}
+
+.container-heading::after {
+  content: '(' attr(data-tab-count) ')';
+  opacity: .5;
+}
+
+.container-tabs {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+  background-color: var(--secondary-background-color);
+  overflow: auto;
+  column-gap: 2rem;
+  box-shadow: inset 0 0 1rem var(--border-color);
+  border: solid .125rem var(--border-color);
+}
+
+.container-tabs > * {
+  flex-shrink: 0;
+}
+
+.container-tabs > :hover, .container-tabs > :focus-within {
+  outline: solid .25rem #48b1ff;
+}
+
+.container-new-tab {
+  display: grid;
+  justify-content: center;
+  align-content: end;
+  appearance: none;
+  border: none;
+  background-color: transparent;
+  font: inherit;
+  box-sizing: border-box;
+  padding: .5rem;
+  text-align: center;
+}
+
+.container-new-tab::before {
+  display: block;
+  content: '';
+	mask: url(/img/add_black_24dp.svg) center center/40% no-repeat;
+	background-color: var(--text-color);
+  inline-size: 16rem;
+  min-block-size: 9rem;
+  box-sizing: border-box;
+}

@@ -17,6 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
+
 let newTabPage = 'about:newtab';
 const privilegedNewTabPages = new Set([
   'about:newtab',
