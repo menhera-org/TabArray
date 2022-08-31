@@ -32,6 +32,10 @@ module.exports = {
       import: './src/panorama/panorama.js',
       filename: 'panorama/panorama.js',
     },
+    'firstparty': {
+      import: './src/firstparty/content.js',
+      filename: 'firstparty/content.js',
+    },
   },
 
   output: {
