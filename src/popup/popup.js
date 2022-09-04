@@ -29,7 +29,7 @@ import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.js';
 import { getStateManager, getFirstpartyManager } from '../modules/global-state.js';
 import { IndexTab } from '../modules/IndexTab.js';
 
-import {config} from '../modules/config.js';
+import { config } from '../config/config';
 
 document.body.innerHTML = `
 <div id='main' class='content'>
@@ -152,7 +152,7 @@ window.addEventListener('hashchange', (ev) => {
 });
 
 let configPopupSize;
-config.observe('appearance.popupSize', (value) => {
+config['appearance.popupSize'].observe((value) => {
 	configPopupSize = value;
 	if (configPopupSize == 'large') {
 		document.body.classList.add('large');

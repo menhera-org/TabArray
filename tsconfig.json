@@ -15,6 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
 		"allowJs": true

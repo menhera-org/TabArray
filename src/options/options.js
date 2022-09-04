@@ -19,8 +19,8 @@
 
 import browser from 'webextension-polyfill';
 import '../modules/background-console.js';
-import {config} from '../modules/config.js';
 import { getFirstpartyManager } from '../modules/global-state.js';
+import { config, privacyConfig } from '../config/config';
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
@@ -78,79 +78,60 @@ buttonClearRecentSites.addEventListener('click', (ev) => {
   });
 });
 
-config.observe('newtab.keepContainer', (value) => {
-  if (undefined === value) {
-    config.set('newtab.keepContainer', true);
-    return;
-  }
+// newtab.keepContainer setting
+config['newtab.keepContainer'].observe((value) => {
   inputNewTabKeepContainer.checked = value;
 });
 
 inputNewTabKeepContainer.addEventListener('change', (ev) => {
-  config.set('newtab.keepContainer', ev.target.checked)
+  config['newtab.keepContainer'].setValue(inputNewTabKeepContainer.checked)
   .catch(e => console.error(e));
 });
 
-config.observe('tab.external.containerOption', (value) => {
-  if (undefined === value) {
-    return;
-  }
+// tab.external.containerOption setting
+config['tab.external.containerOption'].observe((value) => {
   selectExternalTabContainerOption.value = value;
 });
 
 selectExternalTabContainerOption.addEventListener('change', (ev) => {
-  config.set('tab.external.containerOption', ev.target.value)
+  config['tab.external.containerOption'].setValue(selectExternalTabContainerOption.value)
   .catch(e => console.error(e));
 });
 
-config.observe('tab.groups.indexOption', (value) => {
-  if (undefined === value) {
-    return;
-  }
+// tab.groups.indexOption setting
+config['tab.groups.indexOption'].observe((value) => {
   selectGroupIndexOption.value = value;
 });
 
 selectGroupIndexOption.addEventListener('change', (ev) => {
-  config.set('tab.groups.indexOption', ev.target.value)
+  config['tab.groups.indexOption'].setValue(selectGroupIndexOption.value)
   .catch(e => console.error(e));
 });
 
-browser.privacy.websites.firstPartyIsolate.get({}).then((details) => {
-  inputFirstPartyIsolate.checked = details.value;
-});
-
-browser.privacy.websites.firstPartyIsolate.onChange.addListener((details) => {
-  inputFirstPartyIsolate.checked = details.value;
-});
-
-inputFirstPartyIsolate.addEventListener('change', (ev) => {
-  browser.privacy.websites.firstPartyIsolate.set({
-    value: ev.target.checked,
-  }).catch((e) => console.error(e));
-});
-
-browser.privacy.websites.resistFingerprinting.get({}).then((details) => {
-  inputResistFingerprinting.checked = details.value;
-});
-
-browser.privacy.websites.resistFingerprinting.onChange.addListener((details) => {
-  inputResistFingerprinting.checked = details.value;
-});
-
-inputResistFingerprinting.addEventListener('change', (ev) => {
-  browser.privacy.websites.resistFingerprinting.set({
-    value: ev.target.checked,
-  }).catch((e) => console.error(e));
-});
-
-config.observe('appearance.popupSize', (value) => {
-  if (undefined === value) {
-    return;
-  }
+// appearance.popupSize setting
+config['appearance.popupSize'].observe((value) => {
   selectPopupSize.value = value;
 });
 
 selectPopupSize.addEventListener('change', (ev) => {
-  config.set('appearance.popupSize', ev.target.value)
+  config['appearance.popupSize'].setValue(selectPopupSize.value)
+  .catch((e) => console.error(e));
+});
+
+privacyConfig.firstPartyIsolate.observe((value) => {
+  inputFirstPartyIsolate.checked = value;
+});
+
+inputFirstPartyIsolate.addEventListener('change', (ev) => {
+  privacyConfig.firstPartyIsolate.setValue(inputFirstPartyIsolate.checked)
+  .catch((e) => console.error(e));
+});
+
+privacyConfig.resistFingerprinting.observe((value) => {
+  inputResistFingerprinting.checked = value;
+});
+
+inputResistFingerprinting.addEventListener('change', (ev) => {
+  privacyConfig.resistFingerprinting.setValue(inputResistFingerprinting.checked)
   .catch((e) => console.error(e));
 });

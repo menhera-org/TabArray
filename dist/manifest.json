@@ -23,7 +23,8 @@
 		"privacy",
 		"webRequest",
 		"webRequestBlocking",
-		"sessions"
+		"sessions",
+		"browsingData"
 	],
 	"incognito": "not_allowed",
 	"background": {
