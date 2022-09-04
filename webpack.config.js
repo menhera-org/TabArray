@@ -20,10 +20,6 @@ module.exports = {
       import: './src/popup/popup.js',
       filename: 'popup/popup.js',
     },
-    'sidebar': {
-      import: './src/sidebar/sidebar.js',
-      filename: 'sidebar/sidebar.js',
-    },
     'options': {
       import: './src/options/options.js',
       filename: 'options/options.js',
