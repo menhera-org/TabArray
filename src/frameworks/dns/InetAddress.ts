@@ -1,6 +1,8 @@
 // -*- indent-tabs-mode: nil; tab-width: 2; -*-
 // vim: set ts=&2 sw=2 et ai :
 
+import { InetVersion } from "./InetVersion";
+
 /*
   Container Tab Groups
   Copyright (C) 2022 Menhera.org
@@ -19,7 +21,16 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
-export * as config from './config';
-export * as dns from './dns';
-export * as utils from './utils';
+export interface InetAddress {
+  readonly version: InetVersion;
+  
+  /**
+   * Converts this InetAddress to a Uint8Array.
+   */
+  toByteArray(): Uint8Array;
+
+  /**
+   * Converts this InetAddress to a string.
+   */
+  toString(): string;
+}

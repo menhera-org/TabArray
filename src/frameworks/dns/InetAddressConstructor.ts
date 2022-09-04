@@ -19,7 +19,11 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
-export * as config from './config';
-export * as dns from './dns';
-export * as utils from './utils';
+import { InetAddress } from "./InetAddress";
+
+export interface InetAddressConstructor {
+  /**
+   * @throws Error for invalid addresses.
+   */
+  new(str: string): InetAddress;
+}

@@ -19,7 +19,29 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
-export * as config from './config';
-export * as dns from './dns';
-export * as utils from './utils';
+import { InetAddressFactory } from "./InetAddressFactory";
+
+export class HostnameService {
+  private static readonly INSTANCE = new HostnameService();
+
+  public static getInstance(): HostnameService {
+    return this.INSTANCE;
+  }
+
+  private constructor() {}
+
+  public getEncodedDomain(domain: string): string {
+    return new URL(`http://${domain}`).hostname;
+  }
+
+  public isHostnameIpAddress(url: string): boolean {
+    try {
+      const { hostname } = new URL(url);
+      InetAddressFactory.createFromString(hostname);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+}

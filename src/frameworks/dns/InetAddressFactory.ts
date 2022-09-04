@@ -19,7 +19,16 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
-export * as config from './config';
-export * as dns from './dns';
-export * as utils from './utils';
+import { Ipv4Address } from "./Ipv4Address";
+import { Ipv6Address } from "./Ipv6Address";
+import { InetAddress } from "./InetAddress";
+
+export class InetAddressFactory {
+  public static createFromString(address: string): InetAddress {
+    if (address.includes(':')) {
+      return new Ipv6Address(address);
+    } else {
+      return new Ipv4Address(address);
+    }
+  }
+}

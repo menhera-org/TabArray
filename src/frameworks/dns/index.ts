@@ -19,7 +19,11 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
-export * as config from './config';
-export * as dns from './dns';
-export * as utils from './utils';
+export { HostnameService } from './HostnameService';
+export { InetAddress } from './InetAddress';
+export { InetAddressConstructor } from './InetAddressConstructor';
+export { InetAddressFactory } from './InetAddressFactory';
+export { InetVersion } from './InetVersion';
+export { Ipv4Address } from './Ipv4Address';
+export { Ipv6Address } from './Ipv6Address';
+export { RegistrableDomainService } from './RegistrableDomainService';
