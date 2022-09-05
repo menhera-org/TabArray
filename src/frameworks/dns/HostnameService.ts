@@ -23,6 +23,7 @@ import { InetAddressFactory } from "./InetAddressFactory";
 import { Ipv4Address } from "./Ipv4Address";
 
 export class HostnameService {
+  // This must be at the end of static definitions.
   private static readonly INSTANCE = new HostnameService();
 
   public static getInstance(): HostnameService {
