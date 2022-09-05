@@ -167,7 +167,7 @@ export class RegistrableDomainService {
 
   /**
    * Returns the registrable domain for the given domain.
-   * @param domain The domain to check. This must be encoded with Punycode.
+   * @param url The URL to check. This must be encoded with Punycode.
    * @returns The registrable domain, or the empty string if the domain is not
    * a valid domain or is an IP address.
    */

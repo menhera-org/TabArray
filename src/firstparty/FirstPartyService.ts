@@ -94,7 +94,7 @@ export class FirstPartyService {
     return this.initializationPromise.promise;
   }
 
-  public getRegistrableDomain(url: string): string {
-    return this.registrableDomainService.getRegistrableDomain(url);
+  public getRegistrableDomain(url: URL): string {
+    return this.registrableDomainService.getRegistrableDomain(url.href);
   }
 }

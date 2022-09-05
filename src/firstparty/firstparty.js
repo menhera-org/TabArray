@@ -32,7 +32,7 @@ globalThis.FirstpartyManager = {};
 
 FirstpartyManager.getRegistrableDomain = (aDomain) =>
 {
-  return firstPartyService.getRegistrableDomain(`http://${aDomain}/`);
+  return firstPartyService.getRegistrableDomain(new URL(`http://${aDomain}/`));
 };
 
 FirstpartyManager.getAll = async () => {
