@@ -134,7 +134,7 @@ export class TabGroup {
 
   public async refreshTabs(): Promise<void> {
     const query: browser.Tabs.QueryQueryInfoType = {};
-    if (this.originAttributes.userContextId !== undefined || this.originAttributes.isPrivateBrowsing()) {
+    if (this._hasCookieStoreId()) {
       query.cookieStoreId = this.originAttributes.cookieStoreId;
     }
     if (this.originAttributes.hasFirstpartyDomain()) {
