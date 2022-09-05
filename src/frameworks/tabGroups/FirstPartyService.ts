@@ -19,9 +19,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { dns } from "../frameworks";
-import { storage } from "../frameworks";
-import { utils } from "../frameworks";
+import { dns } from "..";
+import { storage } from "..";
+import { utils } from "..";
 
 const { PromiseUtils } = utils;
 
@@ -33,7 +33,7 @@ type PublicSuffixListData = {
 };
 
 export class FirstPartyService {
-  private static PSL_STORAGE_KEY = "dns.publicSuffixList";
+  private static PSL_STORAGE_KEY = "weeg.dns.publicSuffixList";
   private static PSL_UPDATE_INTERVAL = 1000 * 60 * 60 * 24; // 1 day
 
   // This must be at the end of static definitions.
