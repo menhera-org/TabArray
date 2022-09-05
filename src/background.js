@@ -35,6 +35,7 @@ import { config } from 'process';
 
 // watchdog
 let scriptCompleted = false;
+const scriptStart = Date.now();
 window.addEventListener('error', ev => {
   if (!scriptCompleted) {
     setTimeout(() => location.reload(), 10000);
@@ -456,4 +457,5 @@ setTimeout(() => {
   }, ['blocking']);
 }, 1000);
 
+console.log('background.js loaded in %d ms', Date.now() - scriptStart);
 scriptCompleted = true;
