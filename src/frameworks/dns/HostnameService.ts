@@ -20,6 +20,7 @@
 */
 
 import { InetAddressFactory } from "./InetAddressFactory";
+import { Ipv4Address } from "./Ipv4Address";
 
 export class HostnameService {
   private static readonly INSTANCE = new HostnameService();
@@ -37,7 +38,13 @@ export class HostnameService {
   public isHostnameIpAddress(url: string): boolean {
     try {
       const { hostname } = new URL(url);
-      InetAddressFactory.createFromString(hostname);
+      if (hostname.startsWith("[")) {
+        if (hostname.endsWith("]")) {
+          return true;
+        }
+        throw new Error("Invalid hostname");
+      }
+      new Ipv4Address(hostname);
       return true;
     } catch (e) {
       return false;

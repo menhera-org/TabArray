@@ -6,6 +6,7 @@ const path = require('path');
 module.exports = {
   mode: 'production',
   context: __dirname,
+  target: ['web', 'es2020'],
   entry: {
     'background': './src/background.js',
     'index': {
@@ -27,10 +28,6 @@ module.exports = {
     'panorama': {
       import: './src/panorama/panorama.js',
       filename: 'panorama/panorama.js',
-    },
-    'firstparty': {
-      import: './src/firstparty/content.js',
-      filename: 'firstparty/content.js',
     },
   },
 

@@ -33,6 +33,14 @@ import {IndexTab} from './modules/IndexTab.js';
 import './firstparty/firstparty.js';
 import { config } from 'process';
 
+// watchdog
+let scriptCompleted = false;
+window.addEventListener('error', ev => {
+  if (!scriptCompleted) {
+    setTimeout(() => location.reload(), 10000);
+  }
+});
+
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
 // Set<number>
@@ -246,7 +254,6 @@ browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
 
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tabObj) => {
   try {
-    const tabObj = tab;
     const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
     if (!indexTabUrl) {
       throw void 0;
@@ -286,10 +293,10 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
     return;
   }
   if (tabObj.url && tabObj.url != 'about:blank' && tabObj.status != 'loading') {
-    console.log('Manually opened tab: %d', tab.id);
+    console.log('Manually opened tab: %d', tabObj.id);
     openTabs.add(tabObj.id);
   } else if (tabObj.pinned) {
-    console.log('Pinned tab: %d', tab.id);
+    console.log('Pinned tab: %d', tabObj.id);
     openTabs.add(tabObj.id);
   }
   if (tabObj.url != 'about:blank' && tabObj.status != 'loading' && tabObj.active) {
@@ -448,3 +455,5 @@ setTimeout(() => {
     ],
   }, ['blocking']);
 }, 1000);
+
+scriptCompleted = true;
