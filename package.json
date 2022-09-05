@@ -4,9 +4,9 @@
   "description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "webpack ; web-ext build --source-dir ./dist/ --artifacts-dir ./builds/ --overwrite-dest",
+    "build": "node clean.js ; webpack ; web-ext build --source-dir ./dist/ --artifacts-dir ./builds/ --overwrite-dest",
     "watch": "webpack -w",
-    "clean": "rm -rf ./builds/ ; find dist/ -type f -name '*.js' -print -delete"
+    "clean": "node clean.js"
   },
   "author": "Menhera.org",
   "license": "GPL-3.0-or-later",
