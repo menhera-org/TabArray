@@ -54,12 +54,6 @@ export class FirstPartyService {
 
   private constructor() {
     this.publicSuffixListStorage.getValue().then((value) => {
-      Object.defineProperty(globalThis, "registrableDomainService", {
-        configurable: false,
-        enumerable: false,
-        writable: false,
-        value: this.registrableDomainService,
-      });
       if (!value.initialized) {
         this.updatePublicSuffixList().catch((e) => {
           console.error(e);
