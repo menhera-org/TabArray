@@ -33,9 +33,11 @@ type PublicSuffixListData = {
 };
 
 export class FirstPartyService {
-  private static INSTANCE = new FirstPartyService();
   private static PSL_STORAGE_KEY = "dns.publicSuffixList";
   private static PSL_UPDATE_INTERVAL = 1000 * 60 * 60 * 24; // 1 day
+
+  // This must be at the end of static definitions.
+  private static INSTANCE = new FirstPartyService();
 
   private readonly registrableDomainService = new dns.RegistrableDomainService();
   private readonly publicSuffixListStorage = new storage.StorageItem<PublicSuffixListData>(FirstPartyService.PSL_STORAGE_KEY, {
@@ -74,6 +76,7 @@ export class FirstPartyService {
     }).catch((e) => {
       console.error(e);
     });
+    console.assert(FirstPartyService.PSL_UPDATE_INTERVAL > 0);
     setInterval(() => {
       this.updatePublicSuffixList().catch((e) => {
         console.error(e);
@@ -82,9 +85,13 @@ export class FirstPartyService {
   }
 
   public async updatePublicSuffixList(): Promise<void> {
+    let {updatedTime} = await this.publicSuffixListStorage.getValue();
+    if (Date.now() - updatedTime < FirstPartyService.PSL_UPDATE_INTERVAL) {
+      return;
+    }
     await this.registrableDomainService.updateRules();
     const { rules, exceptionRules } = this.registrableDomainService.exportRules();
-    const updatedTime = Date.now();
+    updatedTime = Date.now();
     await this.publicSuffixListStorage.setValue({ rules, exceptionRules, updatedTime, initialized: true });
     this.initializationPromise.resolve();
   }
