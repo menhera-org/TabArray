@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node clean.js ; webpack ; web-ext build --source-dir ./dist/ --artifacts-dir ./builds/ --overwrite-dest",
     "watch": "webpack -w",
-    "clean": "node clean.js"
+    "clean": "node clean.js",
+    "test": "node test.js"
   },
   "author": "Menhera.org",
   "license": "GPL-3.0-or-later",
