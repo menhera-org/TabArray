@@ -17,57 +17,23 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { toCookieStoreId } from "../modules/containers.js";
+import { FirstPartyService } from '../frameworks/tabGroups/FirstPartyService';
+import { dns } from '../frameworks/index';
 
 // This file is to be loaded only by background.js.
 
-const CONTENT_SCRIPT = '/firstparty/content.js';
-
-const STORAGE_MAX_ENTRIES = 1000;
-const STORAGE_KEY = 'firstparty.domains';
-
-let registrableDomains = new Set([
-  'mozilla.org', // because addons cannot access addons.mozilla.org
-]);
+const { HostnameService } = dns;
+const hostnameService = HostnameService.getInstance();
+const firstPartyService = FirstPartyService.getInstance();
 
 globalThis.FirstpartyManager = {};
 
-browser.storage.local.get(STORAGE_KEY).then((values) => {
-  if (!values) {
-    return;
-  }
-  if (!Array.isArray(values[STORAGE_KEY])) {
-    return;
-  }
-  const domains = values[STORAGE_KEY].filter((domain) => (
-    'string' == typeof domain && !registrableDomains.has(domain)
-  ));
-  console.log('%d registrable domain(s) imported from storage', domains.length);
-  domains.push(... registrableDomains);
-  registrableDomains = new Set(domains);
-});
-
-FirstpartyManager.saveData = async () => {
-  const data = [...registrableDomains].slice(- STORAGE_MAX_ENTRIES);
-  await browser.storage.local.set({
-    [STORAGE_KEY]: data,
-  });
-}
-
 FirstpartyManager.getRegistrableDomain = (aDomain) =>
 {
-	if (!aDomain) return null;
-	const domain = String(aDomain);
-	const parts = domain.split('.');
-	if (parts.length < 2) return domain;
-	for (let i = 2; i <= parts.length; i++) {
-		const domain = parts.slice(- i).join('.');
-		if (registrableDomains.has(domain)) return domain;
-	}
-	return domain;
+  return firstPartyService.getRegistrableDomain(new URL(`http://${aDomain}/`));
 };
-
-FirstpartyManager.isDomainName = (hostname) => !String(hostname).match(/^[0-9]+(\.[0-9]+)*$/) && !String(hostname).startsWith('[');
 
 FirstpartyManager.getAll = async () => {
   const tabs = await browser.tabs.query({
@@ -81,7 +47,7 @@ FirstpartyManager.getAll = async () => {
         continue;
       }
       const hostname = url.hostname;
-      if (!FirstpartyManager.isDomainName(hostname)) {
+      if (hostnameService.isHostnameIpAddress(hostname)) {
         continue;
       }
       const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname);
@@ -143,37 +109,5 @@ FirstpartyManager.closeAllByContainer = async (aRegistrableDomain, aUserContextI
 };
 
 FirstpartyManager.clearData = async () => {
-  registrableDomains.clear();
-  await FirstpartyManager.saveData();
+  // NOOP. This is for compatibility with the old implementation.
 };
-
-browser.contentScripts.register({
-  matches: ['*://*/*'], // all HTTP/HTTPS page
-  js: [
-    {file: CONTENT_SCRIPT},
-  ],
-}).then((_reg) => {
-  console.log('Content script registered');
-}).catch((e) => {
-  console.error(e);
-});
-
-browser.runtime.onMessage.addListener((message) => {
-  if (message.command == 'registrable_domain') {
-    const {domain} = message;
-    if ('string' != typeof domain) {
-      return;
-    }
-    if (!registrableDomains.has(domain)) {
-      console.log('registrable domain:', domain);
-      registrableDomains.add(domain);
-    } else {
-      // make the item last
-      registrableDomains.delete(domain);
-      registrableDomains.add(domain);
-    }
-    FirstpartyManager.saveData().catch((e) => {
-      console.error('Error saving domains data', e);
-    });
-  }
-});

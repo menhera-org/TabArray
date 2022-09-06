@@ -17,7 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { config } from './config.js';
+import browser from 'webextension-polyfill';
+import { config } from '../config/config';
 import { IndexTab } from './IndexTab.js';
 import * as newtab from './newtab.js';
 import { setActiveUserContext } from './usercontext-state.js';
@@ -26,10 +27,8 @@ import { setActiveUserContext } from './usercontext-state.js';
 // 'collapsed' -- show indeces for collapsed containers
 // 'always' -- always show indeces
 let configGroupIndexOption = 'never';
-config.observe('tab.groups.indexOption', (value) => {
-  if (undefined !== value) {
-    configGroupIndexOption = value;
-  }
+config['tab.groups.indexOption'].observe((value) => {
+  configGroupIndexOption = value;
 });
 
 const COLORS = [

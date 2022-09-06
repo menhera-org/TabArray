@@ -17,18 +17,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import '../modules/background-console.js';
 import * as containers from '../modules/containers.js';
 import { toUserContextId } from '../modules/containers.js';
 import {sleep} from '../modules/utils.js';
 import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.js';
-import '/components/usercontext-colorpicker.js';
-import '/components/usercontext-iconpicker.js';
+import '../components/usercontext-colorpicker.js';
+import '../components/usercontext-iconpicker.js';
 import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.js';
 import { getStateManager, getFirstpartyManager } from '../modules/global-state.js';
 import { IndexTab } from '../modules/IndexTab.js';
 
-import {config} from '../modules/config.js';
+import { config } from '../config/config';
 
 document.body.innerHTML = `
 <div id='main' class='content'>
@@ -151,7 +152,7 @@ window.addEventListener('hashchange', (ev) => {
 });
 
 let configPopupSize;
-config.observe('appearance.popupSize', (value) => {
+config['appearance.popupSize'].observe((value) => {
 	configPopupSize = value;
 	if (configPopupSize == 'large') {
 		document.body.classList.add('large');

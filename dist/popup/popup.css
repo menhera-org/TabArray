@@ -213,7 +213,7 @@ button {
 	background-color: var(--text-color);	
 }
 
-#button-panorama > .button-text, #button-new-container > .button-text {
+#button-panorama > .button-text, #button-new-container > .button-text, #button-sidebar > .button-text {
 	display: none;
 }
 

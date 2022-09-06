@@ -17,6 +17,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
+
 // log to the background page when possible
 browser.runtime.getBackgroundPage().then((background) => {
   if (!background || !background.console) {

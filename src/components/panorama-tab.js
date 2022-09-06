@@ -17,6 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 
 customElements.define('panorama-tab', class PanoramaTabElement extends HTMLElement {
   constructor() {

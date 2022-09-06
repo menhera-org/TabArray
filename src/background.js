@@ -17,18 +17,30 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import './install.js';
+import browser from 'webextension-polyfill';
 import * as containers from './modules/containers.js';
 import { isNewTabPage } from './modules/newtab.js';
 
 import {WebExtensionsBroadcastChannel} from './modules/broadcasting.js';
 import { getActiveUserContext } from './modules/usercontext-state.js';
-import {config} from './modules/config.js';
+import { config } from './config/config';
 import { setActiveUserContext } from './modules/usercontext-state.js';
 import { ADDON_PAGE, CONFIRM_PAGE } from './defs.js';
 import { getWindowIds } from './modules/windows.js';
 import './state-manager/StateManager.js';
 import {IndexTab} from './modules/IndexTab.js';
-import '/firstparty/firstparty.js';
+import './firstparty/firstparty.js';
+import { config } from 'process';
+
+// watchdog
+let scriptCompleted = false;
+const scriptStart = Date.now();
+window.addEventListener('error', ev => {
+  if (!scriptCompleted) {
+    setTimeout(() => location.reload(), 10000);
+  }
+});
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
@@ -40,36 +52,21 @@ let tabSorting = false;
 let configNewTabInContainerEnabled = true;
 let configExternalTabChooseContainer = true;
 let configExternalTabContainerOption = 'choose';
-config.observe('newtab.keepContainer', (value) => {
-  if (undefined !== value) {
-    configNewTabInContainerEnabled = value;
-  }
+config['newtab.keepContainer'].observe((value) => {
+  configNewTabInContainerEnabled = value;
 });
 
 // 'never' -- do not show indeces
 // 'collapsed' -- show indeces for collapsed containers
 // 'always' -- always show indeces
 let configGroupIndexOption = 'never';
-config.observe('tab.groups.indexOption', (value) => {
-  if (undefined !== value) {
-    configGroupIndexOption = value;
-  } else {
-    config.set('tab.groups.indexOption', 'never');
-  }
+config['tab.groups.indexOption'].observe((value) => {
+  configGroupIndexOption = value;
 });
 
-config.observe('appearance.popupSize', (value) => {
-  if (undefined === value) {
-    config.set('appearance.popupSize', 'standard');
-  };
-});
-
-config.observe('tab.external.containerOption', (value) => {
-  if (undefined === value) {
-    config.set('tab.external.containerOption', 'choose');
-    return;
-  }
+config['tab.external.containerOption'].observe((value) => {
   configExternalTabContainerOption = value;
+
   if (value == 'disabled') {
     configExternalTabChooseContainer = false;
   } else {
@@ -258,7 +255,6 @@ browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
 
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tabObj) => {
   try {
-    const tabObj = tab;
     const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
     if (!indexTabUrl) {
       throw void 0;
@@ -298,10 +294,10 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
     return;
   }
   if (tabObj.url && tabObj.url != 'about:blank' && tabObj.status != 'loading') {
-    console.log('Manually opened tab: %d', tab.id);
+    console.log('Manually opened tab: %d', tabObj.id);
     openTabs.add(tabObj.id);
   } else if (tabObj.pinned) {
-    console.log('Pinned tab: %d', tab.id);
+    console.log('Pinned tab: %d', tabObj.id);
     openTabs.add(tabObj.id);
   }
   if (tabObj.url != 'about:blank' && tabObj.status != 'loading' && tabObj.active) {
@@ -460,3 +456,6 @@ setTimeout(() => {
     ],
   }, ['blocking']);
 }, 1000);
+
+console.log('background.js loaded in %d ms', Date.now() - scriptStart);
+scriptCompleted = true;

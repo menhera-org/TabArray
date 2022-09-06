@@ -17,6 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { WebExtensionsBroadcastChannel } from './broadcasting.js';
 import * as containers from './containers.js';
 

@@ -1,6 +1,11 @@
-<!-- vim: set ts=2 sw=2 et ai :
+// -*- indent-tabs-mode: nil; tab-width: 2; -*-
+// vim: set ts=&2 sw=2 et ai :
+
+import { InetVersion } from "./InetVersion";
+
+/*
   Container Tab Groups
-  Copyright (C) 2021 Menhera.org
+  Copyright (C) 2022 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -14,14 +19,18 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-<!DOCTYPE html>
-<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
-  <head>
-    <meta charset='utf-8'/>
-    <title></title>
-    <script type='module' src='background-wrapper.js'></script>
-    <script src='install.js'></script>
-  </head>
-  <body></body>
-</html>
+*/
+
+export interface InetAddress {
+  readonly version: InetVersion;
+  
+  /**
+   * Converts this InetAddress to a Uint8Array.
+   */
+  toByteArray(): Uint8Array;
+
+  /**
+   * Converts this InetAddress to a string.
+   */
+  toString(): string;
+}

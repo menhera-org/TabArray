@@ -17,6 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { IndexTab } from "../modules/IndexTab.js";
 
 const indexTab = new IndexTab(location.href);

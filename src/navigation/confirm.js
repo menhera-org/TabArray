@@ -17,10 +17,11 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { getStateManager } from '../modules/global-state.js';
-import { BrowserTab } from '../state-manager/lib/BrowserTab.js';
 import * as i18n from '../modules/i18n.js';
-import { config } from '../modules/config.js';
+import { config } from '../config/config';
+import { reopenInContainer, toUserContextId } from '../modules/containers.js';
 
 const params = new URLSearchParams(location.search);
 
@@ -113,13 +114,28 @@ try {
   browser.tabs.getCurrent().then((tabObj) => {
     if (tabObj.pinned) {
       location.href = url;
+      return;
     }
-    config.get('tab.external.containerOption').then(async (optionValue) => {
+    if (tabObj.cookieStoreId != 'firefox-default') {
+      location.href = url;
+      return;
+    }
+
+    config['tab.external.containerOption'].getValue().then(async (optionValue) => {
       if ('sticky' == optionValue) {
         const activeTabs = await browser.tabs.query({
           windowId: tabObj.windowId,
           active: true,
-        })
+        });
+        for (const activeTab of activeTabs) {
+          if (!activeTab.cookieStoreId) continue;
+          const {cookieStoreId} = activeTab;
+          const userContextId = toUserContextId(cookieStoreId);
+          reopenInContainer(userContextId, tabObj.id).catch((e) => {
+            console.error(e);
+          });
+          break;
+        }
       }
     });
   });

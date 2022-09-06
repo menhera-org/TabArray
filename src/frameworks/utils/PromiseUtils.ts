@@ -1,7 +1,9 @@
-// vim: ts=2 sw=2 et ai
+// -*- indent-tabs-mode: nil; tab-width: 2; -*-
+// vim: set ts=&2 sw=2 et ai :
+
 /*
   Container Tab Groups
-  Copyright (C) 2021 Menhera.org
+  Copyright (C) 2022 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -17,22 +19,18 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const views = browser.extension.getViews();
-let loaded = false;
-for (const view of views) {
-  if (window == view) continue;
-  if (view.location.pathname == location.pathname) {
-    loaded = true;
-    break;
+export class PromiseUtils {
+  public static createPromise<T>() {
+    let resolve: (value: T) => void = () => {};
+    let reject: (reason: any) => void = () => {};
+    const promise = new Promise<T>((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return {
+      promise,
+      resolve,
+      reject,
+    };
   }
-}
-
-if (!loaded) {
-  console.log('Loading the background script.');
-  const loadingStartTime = +new Date;
-  import('/background.js').then(() => {
-    console.log('Background script loaded in %d ms.', (+new Date) - loadingStartTime);
-  }).catch((e) => console.error(e));
-} else {
-  console.warn('Background script already loaded, aborting.');
 }
