@@ -24,10 +24,13 @@ import { OriginAttributes } from "./OriginAttributes";
 import { Tab } from "../tabs";
 import { FirstPartyService } from './FirstPartyService';
 
+type TabGroupObserver = (tabGroup: TabGroup) => void;
+
 export class TabGroup {
   public readonly originAttributes: OriginAttributes;
   private readonly _tabIds = new Set<number>();
   private readonly _firstPartyService = FirstPartyService.getInstance();
+  private readonly _observers = new Set<TabGroupObserver>();
 
   private static _urlIsHttpOrHttps(url: string): boolean {
     return url.startsWith('http://') || url.startsWith('https://');
@@ -50,6 +53,7 @@ export class TabGroup {
     browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
       if (this._tabIds.has(tabId)) {
         this._tabIds.delete(tabId);
+        this._notifyObservers();
       }
     });
   }
@@ -63,12 +67,14 @@ export class TabGroup {
         if (this._tabIds.has(tabId)) {
           if (!TabGroup._urlIsHttpOrHttps(tab.url)) {
             this._tabIds.delete(tabId);
+            this._notifyObservers();
             return;
           }
           const url = new URL(tab.url);
           const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
           if (firstPartyDomain !== this.originAttributes.firstpartyDomain) {
             this._tabIds.delete(tabId);
+            this._notifyObservers();
           }
         } else {
           if (!TabGroup._urlIsHttpOrHttps(tab.url)) {
@@ -80,9 +86,11 @@ export class TabGroup {
             if (this._hasCookieStoreId()) {
               if (tab.cookieStoreId === this.originAttributes.cookieStoreId) {
                 this._tabIds.add(tabId);
+                this._notifyObservers();
               }
             } else {
               this._tabIds.add(tabId);
+              this._notifyObservers();
             }
           }
         }
@@ -106,10 +114,12 @@ export class TabGroup {
               const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
               if (firstPartyDomain === this.originAttributes.firstpartyDomain) {
                 this._tabIds.add(tab.id);
+                this._notifyObservers();
               }
             }
           } else {
             this._tabIds.add(tab.id);
+            this._notifyObservers();
           }
         }
       });
@@ -149,5 +159,30 @@ export class TabGroup {
       }
       this._tabIds.add(browserTab.id);
     }
+  }
+
+  public async getTabs(): Promise<Tab[]> {
+    const tabs = [];
+    for (const tabId of this._tabIds) {
+      const tab = await Tab.get(tabId);
+      if (tab !== null) {
+        tabs.push(tab);
+      }
+    }
+    return tabs;
+  }
+
+  private _notifyObservers(): void {
+    for (const observer of this._observers) {
+      observer(this);
+    }
+  }
+
+  public observe(observer: TabGroupObserver): void {
+    this._observers.add(observer);
+  }
+
+  public unobserve(observer: TabGroupObserver): void {
+    this._observers.delete(observer);
   }
 }
