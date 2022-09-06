@@ -66,7 +66,8 @@ export class Tab {
     } else {
       this.isSharing = false;
     }
-    this.originAttributes = OriginAttributes.fromCookieStoreId(browserTab.cookieStoreId ?? "", this.url);
+    const cookieStoreId = browserTab.cookieStoreId ?? (browserTab.incognito ? "firefox-private" : "firefox-default");
+    this.originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId, this.url);
   }
 
   public get cookieStoreId(): string {
