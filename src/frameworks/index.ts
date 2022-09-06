@@ -25,3 +25,4 @@ export * as dns from './dns';
 export * as utils from './utils';
 export * as types from './types';
 export * as tabGroups from './tabGroups';
+export * as tabs from './tabs';

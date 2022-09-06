@@ -127,7 +127,7 @@ export class TabGroup {
   }
 
   private _hasCookieStoreId(): boolean {
-    return this.originAttributes.hasUserContextId() || this.originAttributes.isPrivateBrowsing();
+    return this.originAttributes.hasCookieStoreId();
   }
 
   private _getUrlPattern(): string {

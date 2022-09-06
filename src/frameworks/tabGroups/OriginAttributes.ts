@@ -116,12 +116,23 @@ export class OriginAttributes {
     return this.privateBrowsingId === 1;
   }
 
+  public hasWildCard(): boolean {
+    return this.firstpartyDomain === '' || this.userContextId === null || this.privateBrowsingId === null;
+  }
+
+  public hasCookieStoreId(): boolean {
+    return this.hasUserContextId() || this.isPrivateBrowsing();
+  }
+
   public get cookieStoreId(): string {
     if (this.isPrivateBrowsing()) {
       return OriginAttributes.PRIVATE_STORE;
     }
     if (this.userContextId === 0) {
       return OriginAttributes.DEFAULT_STORE;
+    }
+    if (this.userContextId === null) {
+      throw new Error('OriginAttributes.cookieStoreId: userContextId is null');
     }
     return OriginAttributes.CONTAINER_STORE + this.userContextId;
   }
