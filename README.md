@@ -50,7 +50,7 @@ This extension is intended to replace the following features/extensions:
 ## About the project
 
 - _TabArray_ is the code name, and _Container Tab Groups_ is the user-facing name.
-- The official extension ID is <tab-array@menhera.org>.
+- The official extension ID is `tab-array@menhera.org`. (Not an email address.)
 
 ## License
 
