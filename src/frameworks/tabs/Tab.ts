@@ -92,4 +92,24 @@ export class Tab {
   public canBeHidden(): boolean {
     return !this.isSharing && !this.pinned;
   }
+
+  public async close(): Promise<void> {
+    await browser.tabs.remove(this.id);
+  }
+
+  public async focus(): Promise<Tab> {
+    await browser.windows.update(this.windowId, { focused: true });
+    const browserTab = await browser.tabs.update(this.id, { active: true });
+    return new Tab(browserTab);
+  }
+
+  public async pin(): Promise<Tab> {
+    const browserTab = await browser.tabs.update(this.id, { pinned: true });
+    return new Tab(browserTab);
+  }
+
+  public async unpin(): Promise<Tab> {
+    const browserTab = await browser.tabs.update(this.id, { pinned: false });
+    return new Tab(browserTab);
+  }
 }
