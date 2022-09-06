@@ -92,7 +92,7 @@ export class OriginAttributes {
   }
 
   public constructor(firstpartyDomain = '', userContextId: Uint32.Uint32 | null = null, privateBrowsingId: Uint32.Uint32 | null = null) {
-    if (userContextId !== 0 || userContextId !== null && privateBrowsingId != 0 && privateBrowsingId != null) {
+    if ((userContextId !== 0 || userContextId !== null) && privateBrowsingId != 0 && privateBrowsingId != null) {
       throw new Error('UserContextId must be 0 for private browsing');
     }
     this.firstpartyDomain = firstpartyDomain;
