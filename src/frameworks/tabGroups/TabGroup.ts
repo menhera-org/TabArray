@@ -159,6 +159,7 @@ export class TabGroup {
       }
       this._tabIds.add(browserTab.id);
     }
+    this._notifyObservers();
   }
 
   public async getTabs(): Promise<Tab[]> {
