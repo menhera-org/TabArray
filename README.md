@@ -47,8 +47,13 @@ This extension is intended to replace the following features/extensions:
 
 - Keyboard shortcuts will be implemented.
 
+## About the project
+
+- _TabArray_ is the code name, and _Container Tab Groups_ is the user-facing name.
+- The official extension ID is <tab-array@menhera.org>.
+
 ## License
 
-Copyright &copy; 2022 Menhera.org.
+Copyright &copy; 2022 Menhera.org contributors.
 
 Licensed under GNU GPL version 3 **or later**.
