@@ -1,5 +1,5 @@
 // -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=&2 sw=2 et ai :
+// vim: set ts=2 sw=2 et ai :
 
 /*
   Container Tab Groups
