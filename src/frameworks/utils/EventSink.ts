@@ -19,5 +19,26 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export { PromiseUtils } from './PromiseUtils';
-export { EventSink, EventListener } from './EventSink';
+export type EventListener<T> = (details: T) => void;
+
+export class EventSink<T> {
+  private readonly _listeners = new Set<EventListener<T>>();
+
+  public addListener(listener: EventListener<T>): void {
+    this._listeners.add(listener);
+  }
+
+  public removeListener(listener: EventListener<T>): void {
+    this._listeners.delete(listener);
+  }
+
+  public hasListener(listener: EventListener<T>): boolean {
+    return this._listeners.has(listener);
+  }
+  
+  public dispatch(details: T): void {
+    for (const listener of this._listeners) {
+      listener(details);
+    }
+  }
+}
