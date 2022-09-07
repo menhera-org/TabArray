@@ -13,6 +13,7 @@ Chrome-like tab groups using isolated containers: The ultimate tab manager and g
 - Isolated cookies/logins for each of tab groups because they are containers.
 - Per-window container management.
 - Automatically sorts tabs based on containers.
+- Manage tabs based on the domains of websites.
 - Provides you with a menu where you can do the following actions:
     - List all the tabs for a window.
     - Show/hide tabs of a container.
