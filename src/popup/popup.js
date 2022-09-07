@@ -20,12 +20,9 @@
 import browser from 'webextension-polyfill';
 import '../modules/background-console.js';
 import * as containers from '../modules/containers.js';
-import { toUserContextId } from '../modules/containers.js';
-import {sleep} from '../modules/utils.js';
-import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.js';
 import '../components/usercontext-colorpicker.js';
 import '../components/usercontext-iconpicker.js';
-import {ADDON_PAGE, PANORAMA_PAGE} from '../defs.js';
+import {PANORAMA_PAGE} from '../defs.js';
 import { getStateManager, getFirstpartyManager } from '../modules/global-state.js';
 import { IndexTab } from '../modules/IndexTab.js';
 
