@@ -23,6 +23,7 @@ import { IndexTab } from './IndexTab.js';
 import * as newtab from './newtab.js';
 import { setActiveUserContext } from './usercontext-state.js';
 import { UserContext } from '../frameworks/tabGroups';
+import { UserContextService } from '../userContexts/UserContextService';
 
 // 'never' -- do not show indeces
 // 'collapsed' -- show indeces for collapsed containers
@@ -70,41 +71,11 @@ const PRIVILEGED_SCHEMES = new Set([
 
 export const getIds = async () => {
   try {
-    const containers = await browser.contextualIdentities.query({});
-    return [... new Set([... containers].map(container => UserContext.fromCookieStoreId(container.cookieStoreId)))];
+    return (await UserContext.getAll()).map((userContext) => userContext.id);
   } catch (e) {
     console.error('userContext disabled?');
     return [];
   }
-};
-
-export const get = async (aUserContextId) => {
-  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
-  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
-  if (!userContextId) {
-    return {
-      cookieStoreId,
-      name: browser.i18n.getMessage('noContainer'),
-    };
-  }
-  try {
-    const contextualIdentity = await browser.contextualIdentities.get(cookieStoreId);
-    if (!contextualIdentity) {
-      throw new TypeError('Invalid container object');
-    }
-    return contextualIdentity;
-  } catch (e) {
-    // userContext disabled or nonexsistent id
-    return {
-      cookieStoreId,
-      name: browser.i18n.getMessage('invalidContainerName', userContextId),
-    };
-  }
-};
-
-export const getIndex = async (aId) => {
-  const userContextIds = await getIds();
-  return userContextIds.indexOf(aId);
 };
 
 export const getTabIds = async (aUserContextId, aExcludePinned) => {
@@ -118,26 +89,24 @@ export const getTabIds = async (aUserContextId, aExcludePinned) => {
   return [... tabs].filter((tab) => !aExcludePinned || !tab.pinned).map((tab) => 0 | tab.id);
 };
 
-export const closeAllTabs = async (aUserContextId, aExcludePinned) => {
-  const tabIds = aUserContextId ? await getTabIds(aUserContextId, !!aExcludePinned) : await getTabIds(aUserContextId, true);
-  console.log('Closing %d tab(s)', tabIds.length);
-  if (tabIds.length) {
-    await browser.tabs.remove(tabIds);
-  }
+/**
+ * 
+ * @param {number} aUserContextId 
+ */
+export const closeAllTabs = async (aUserContextId) => {
+  const userContext = new UserContext(aUserContextId);
+  const tabGroup = await userContext.getTabGroup();
+  const tabCount = tabGroup.size;
+  console.log('Closing %d tab(s)', tabCount);
+  await tabGroup.closeTabs();
 };
 
 export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
-  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
-  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
-  const tabIds = (await browser.tabs.query({
-    windowId: aWindowId,
-    pinned: false,
-    cookieStoreId,
-  })).map((tabObj) => tabObj.id);
-  console.log('Closing %d tab(s)', tabIds.length);
-  if (tabIds.length) {
-    await browser.tabs.remove(tabIds);
-  }
+  const userContext = new UserContext(aUserContextId);
+  const tabGroup = await userContext.getTabGroup();
+  const tabCount = tabGroup.size;
+  console.log('Closing %d tab(s)', tabCount);
+  await tabGroup.closeUnpinnedTabsOnWindow(aWindowId);
 };
 
 export const remove = async (aUserContextId) => {
@@ -206,7 +175,8 @@ export const updateProperties = async (aUserContextId, aName, aColor, aIcon) => 
 };
 
 export const createIndexTab = async (aUserContextId, aWindowId) => {
-  const userContext = await get(aUserContextId);
+  const rawUserContext = await UserContext.get(aUserContextId);
+  const userContext = UserContextService.getInstance().fillDefaultValues(rawUserContext);
   const url = IndexTab.getUrl(userContext.name, userContext.icon, userContext.colorCode).url;
   const tabObj = await browser.tabs.create({
     url,
@@ -227,7 +197,6 @@ export const hide = async (aUserContextId, aWindowId) => {
   const tabs = await browser.tabs.query({
     windowId: aWindowId,
   });
-  const userContext = await get(userContextId);
   const userContexts = new Map;
   let active = false;
   const tabsToHide = [];

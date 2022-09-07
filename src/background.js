@@ -33,6 +33,7 @@ import {IndexTab} from './modules/IndexTab.js';
 import './firstparty/firstparty.js';
 import { config } from 'process';
 import { UserContext } from './frameworks/tabGroups';
+import { UserContextService } from './userContexts/UserContextService';
 
 // watchdog
 let scriptCompleted = false;
@@ -42,6 +43,8 @@ window.addEventListener('error', ev => {
     setTimeout(() => location.reload(), 10000);
   }
 });
+
+const userContextService = UserContextService.getInstance();
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
@@ -105,7 +108,6 @@ globalThis.sortTabsByWindow = async (windowId) => {
         if (indexTabs.has(userContextId)) {
           continue;
         }
-        const userContext = await containers.get(userContextId);
         const tabObj = await containers.createIndexTab(userContextId, windowId);
         sortedTabs.push(tabObj);
       } else {
@@ -315,8 +317,8 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   const tab = await browser.tabs.get(tabId);
   const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
-  const contextualIdentity = await containers.get(userContextId);
-  const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', contextualIdentity.name);
+  const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
+  const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
   try {
     const tabObj = tab;
     const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
@@ -382,8 +384,8 @@ browser.windows.getAll({
     });
     for (const activeTab of activeTabs) {
       const userContextId = UserContext.fromCookieStoreId(activeTab.cookieStoreId);
-      const contextualIdentity = await containers.get(userContextId);
-      const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', contextualIdentity.name);
+      const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
+      const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
       await browser.windows.update(window.id, {
         titlePreface: windowTitlePreface,
       });

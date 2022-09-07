@@ -47,6 +47,12 @@ export class UserContextService {
     if (attrs.colorCode === '') {
       attrs.colorCode = UserContextService.DEFAULT_COLOR_CODE;
     }
+    if (attrs.icon === '') {
+      attrs.icon = 'circle';
+    }
+    if (attrs.color === '') {
+      attrs.color = 'toolbar';
+    }
     return new UserContext(attrs.id, attrs.name, attrs.color, attrs.colorCode, attrs.icon, attrs.iconUrl, attrs.defined);
   }
 }

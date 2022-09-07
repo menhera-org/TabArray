@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 import { OriginAttributes } from "./OriginAttributes";
 import { Tab } from "../tabs";
 import { FirstPartyService } from './FirstPartyService';
+import { PromiseUtils } from '../utils';
 
 type TabGroupObserver = (tabGroup: TabGroup) => void;
 
@@ -31,12 +32,19 @@ export class TabGroup {
   private readonly _tabIds = new Set<number>();
   private readonly _firstPartyService = FirstPartyService.getInstance();
   private readonly _observers = new Set<TabGroupObserver>();
+  private readonly _initializationPromise = PromiseUtils.createPromise<void>();
 
   private static _urlIsHttpOrHttps(url: string): boolean {
     return url.startsWith('http://') || url.startsWith('https://');
   }
 
-  public constructor(originAttributes: OriginAttributes) {
+  public static async createTabGroup(originAttributes: OriginAttributes): Promise<TabGroup> {
+    const tabGroup = new TabGroup(originAttributes);
+    await tabGroup.initialized;
+    return tabGroup;
+  }
+
+  private constructor(originAttributes: OriginAttributes) {
     this.originAttributes = originAttributes;
     if (!this.originAttributes.hasFirstpartyDomain() && !this._hasCookieStoreId()) {
       throw new Error('TabGroup must have either a first-party domain or a cookie store ID');
@@ -138,8 +146,16 @@ export class TabGroup {
     }
   }
 
+  public get size(): number {
+    return this._tabIds.size;
+  }
+
   public get tabIds(): IterableIterator<number> {
     return this._tabIds.values();
+  }
+
+  public get initialized(): Promise<void> {
+    return this._initializationPromise.promise;
   }
 
   public async refreshTabs(): Promise<void> {
@@ -159,6 +175,7 @@ export class TabGroup {
       }
       this._tabIds.add(browserTab.id);
     }
+    this._initializationPromise.resolve();
     this._notifyObservers();
   }
 
@@ -185,5 +202,31 @@ export class TabGroup {
 
   public unobserve(observer: TabGroupObserver): void {
     this._observers.delete(observer);
+  }
+
+  public async closeTabs(): Promise<void> {
+    await browser.tabs.remove(Array.from(this._tabIds));
+  }
+
+  public async closeUnpinnedTabs(): Promise<void> {
+    const tabs = await this.getTabs();
+    const tabIds = [];
+    for (const tab of tabs) {
+      if (!tab.pinned) {
+        tabIds.push(tab.id);
+      }
+    }
+    await browser.tabs.remove(tabIds);
+  }
+
+  public async closeUnpinnedTabsOnWindow(windowId: number): Promise<void> {
+    const tabs = await this.getTabs();
+    const tabIds = [];
+    for (const tab of tabs) {
+      if (!tab.pinned && tab.windowId === windowId) {
+        tabIds.push(tab.id);
+      }
+    }
+    await browser.tabs.remove(tabIds);
   }
 }

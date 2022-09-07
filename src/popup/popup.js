@@ -497,10 +497,10 @@ globalThis.showEditContainerPane = async (userContextId) => {
   const nameElement = document.querySelector('#new-container-name');
   const iconElement = document.querySelector('#new-container-icon');
   const colorElement = document.querySelector('#new-container-color');
-  const contextualIdentity = await containers.get(userContextId);
-  nameElement.value = contextualIdentity.name;
-  iconElement.value = contextualIdentity.icon;
-  colorElement.value = contextualIdentity.color;
+  const userContext = await UserContext.get(userContextId);
+  nameElement.value = userContext.name;
+  iconElement.value = userContext.icon;
+  colorElement.value = userContext.color;
   document.querySelector('#new-container .modal-title').textContent = browser.i18n.getMessage('editContainerDialogTitle');
   let name = nameElement.value;
   let icon = iconElement.value;

@@ -254,8 +254,8 @@ export class UserContext {
     return OriginAttributes.fromCookieStoreId(this.cookieStoreId);
   }
 
-  public getTabGroup(): TabGroup {
-    return new TabGroup(this.toOriginAttributes());
+  public getTabGroup(): Promise<TabGroup> {
+    return TabGroup.createTabGroup(this.toOriginAttributes());
   }
 }
 
