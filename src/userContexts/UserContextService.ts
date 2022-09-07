@@ -67,26 +67,23 @@ export class UserContextService {
     // nothing to do.
   }
 
+  private validateValue(aValue: string, aOptions: ReadonlyArray<string>): string {
+    let value = String(aValue).toLowerCase();
+    if (!aOptions[0]) {
+      throw new Error('Default value is not defined'); // this should not happen
+    }
+    if (!aOptions.includes(value)) {
+      value = aOptions[0];
+    }
+    return value;
+  }
+
   private validateColor(aColor: string): string {
-    let color = String(aColor).toLowerCase();
-    if (!UserContextService.COLORS[0]) {
-      throw new Error('color is not defined'); // this should not happen
-    }
-    if (!UserContextService.COLORS.includes(color)) {
-      color = UserContextService.COLORS[0];
-    }
-    return color;
+    return this.validateValue(aColor, UserContextService.COLORS);
   }
 
   private validateIcon(aIcon: string): string {
-    let icon = String(aIcon).toLowerCase();
-    if (!UserContextService.ICONS[0]) {
-      throw new Error('icon is not defined'); // this should not happen
-    }
-    if (!UserContextService.ICONS.includes(icon)) {
-      icon = UserContextService.ICONS[0];
-    }
-    return icon;
+    return this.validateValue(aIcon, UserContextService.ICONS);
   }
 
   private validateName(aName: string): string {
