@@ -45,6 +45,10 @@ export class Tab {
     return new Tab(tab);
   }
 
+  public static getDefaultCookieStoreId(isPrivate: boolean): string {
+    return isPrivate ? "firefox-private" : "firefox-default";
+  }
+
   public constructor(browserTab: browser.Tabs.Tab) {
     if (browserTab.id === undefined) {
       throw new Error("Tab ID is undefined");
@@ -66,7 +70,7 @@ export class Tab {
     } else {
       this.isSharing = false;
     }
-    const cookieStoreId = browserTab.cookieStoreId ?? (browserTab.incognito ? "firefox-private" : "firefox-default");
+    const cookieStoreId = browserTab.cookieStoreId ?? Tab.getDefaultCookieStoreId(browserTab.incognito);
     this.originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId, this.url);
   }
 
@@ -104,13 +108,16 @@ export class Tab {
     return new Tab(browserTab);
   }
 
-  public async pin(): Promise<Tab> {
-    const browserTab = await browser.tabs.update(this.id, { pinned: true });
+  private async changePinState(pinned: boolean): Promise<Tab> {
+    const browserTab = await browser.tabs.update(this.id, { pinned });
     return new Tab(browserTab);
   }
 
+  public async pin(): Promise<Tab> {
+    return this.changePinState(true);
+  }
+
   public async unpin(): Promise<Tab> {
-    const browserTab = await browser.tabs.update(this.id, { pinned: false });
-    return new Tab(browserTab);
+    return this.changePinState(false);
   }
 }
