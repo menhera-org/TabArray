@@ -25,7 +25,7 @@ import browser from 'webextension-polyfill';
 
 browser.runtime.onInstalled.addListener((details) => {
   // Enable FPI by defailt on installation
-  const previousMajorVersion = parseInt((details.previousVersion ?? '0').split('.')[0]);
+  const previousMajorVersion = parseInt((details.previousVersion ?? '0').split('.')[0], 10);
   if ('install' == details.reason || 'update' == details.reason && 3 > previousMajorVersion) {
     browser.privacy.websites.firstPartyIsolate.get({}).then((details) => {
       if (!details.value) {
