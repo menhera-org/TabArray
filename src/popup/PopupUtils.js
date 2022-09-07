@@ -106,8 +106,13 @@ export const renderTab = (tab) => {
   return tabElement;
 };
 
+/**
+ * 
+ * @param {number} userContextId 
+ * @param {{mode: 'window', windowId: number} | {mode: 'site', site: string}} details 
+ * @returns {HTMLLIElement}
+ */
 export const renderContainerHeading = (userContextId, details) => {
-  const mode = details ? details.mode : '';
   const container = StateManager.getUserContext(userContextId);
   const containerElement = document.createElement('li');
   containerElement.dataset.name = container.name;
@@ -133,7 +138,7 @@ export const renderContainerHeading = (userContextId, details) => {
   containerElement.append(closeContainerButton);
   closeContainerButton.classList.add('close-container-button');
   closeContainerButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
-  switch (mode) {
+  switch (details.mode) {
     case 'window': {
       const {windowId} = details;
       closeContainerButton.addEventListener('click', (ev) => {
