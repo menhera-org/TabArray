@@ -104,15 +104,8 @@ export class UserContext {
     return UserContext.CONTAINER_STORE + userContextId;
   }
 
-  public static async get(userContextId: Uint32.Uint32) {
-    if (0 == userContextId) {
-      return UserContext.DEFAULT;
-    }
-    const cookieStoreId = UserContext.toCookieStoreId(userContextId);
-    const identity = await browser.contextualIdentities.get(cookieStoreId);
-    if (!identity) {
-      return UserContext.createIncompleteUserContext(userContextId);
-    }
+  public static fromContextualIdentity(identity: browser.ContextualIdentities.ContextualIdentity): UserContext {
+    const userContextId = UserContext.fromCookieStoreId(identity.cookieStoreId);
     return new UserContext(
       userContextId,
       identity.name,
@@ -122,19 +115,28 @@ export class UserContext {
       identity.iconUrl,
     );
   }
+
+  public static async get(userContextId: Uint32.Uint32) {
+    if (0 == userContextId) {
+      return UserContext.DEFAULT;
+    }
+    const cookieStoreId = UserContext.toCookieStoreId(userContextId);
+    try {
+      const identity = await browser.contextualIdentities.get(cookieStoreId);
+      if (!identity) {
+        throw new Error('Identity not found');
+      }
+      return UserContext.fromContextualIdentity(identity);
+    } catch (_e) {
+      return UserContext.createIncompleteUserContext(userContextId);
+    }
+  }
   
   public static async getAll(): Promise<UserContext[]> {
     const identities = await browser.contextualIdentities.query({});
     const userContexts = identities.map(identity => {
       const userContextId = UserContext.fromCookieStoreId(identity.cookieStoreId);
-      return new UserContext(
-        userContextId,
-        identity.name,
-        identity.color,
-        identity.colorCode,
-        identity.icon,
-        identity.iconUrl,
-      );
+      return UserContext.fromContextualIdentity(identity);
     });
     userContexts.push(UserContext.DEFAULT);
     userContexts.sort((a, b) => a.id - b.id);
@@ -241,14 +243,7 @@ export class UserContext {
 // call event listeners
 browser.contextualIdentities.onCreated.addListener((changeInfo) => {
   const {contextualIdentity} = changeInfo;
-  const userContext = new UserContext(
-    UserContext.fromCookieStoreId(contextualIdentity.cookieStoreId),
-    contextualIdentity.name,
-    contextualIdentity.color,
-    contextualIdentity.colorCode,
-    contextualIdentity.icon,
-    contextualIdentity.iconUrl,
-  );
+  const userContext = UserContext.fromContextualIdentity(contextualIdentity);
   UserContext.onCreated.dispatch(userContext);
 });
 
@@ -260,13 +255,6 @@ browser.contextualIdentities.onRemoved.addListener((changeInfo) => {
 
 browser.contextualIdentities.onUpdated.addListener((changeInfo) => {
   const {contextualIdentity} = changeInfo;
-  const userContext = new UserContext(
-    UserContext.fromCookieStoreId(contextualIdentity.cookieStoreId),
-    contextualIdentity.name,
-    contextualIdentity.color,
-    contextualIdentity.colorCode,
-    contextualIdentity.icon,
-    contextualIdentity.iconUrl,
-  );
+  const userContext = UserContext.fromContextualIdentity(contextualIdentity);
   UserContext.onUpdated.dispatch(userContext);
 });
