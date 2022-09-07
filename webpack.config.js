@@ -14,7 +14,7 @@ module.exports = {
       filename: 'index/index.js',
     },
     'navigation': {
-      import: './src/navigation/confirm.js',
+      import: './src/navigation/select-container.ts',
       filename: 'navigation/confirm.js',
     },
     'popup': {

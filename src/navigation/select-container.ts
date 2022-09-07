@@ -1,7 +1,9 @@
-/* vim: set ts=2 sw=2 et ai : */
+// -*- indent-tabs-mode: nil; tab-width: 2; -*-
+// vim: set ts=&2 sw=2 et ai :
+
 /*
   Container Tab Groups
-  Copyright (C) 2021 Menhera.org
+  Copyright (C) 2022 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,10 +20,13 @@
 */
 
 import browser from 'webextension-polyfill';
-import { getStateManager } from '../modules/global-state.js';
 import * as i18n from '../modules/i18n.js';
+import { Tab } from '../frameworks/tabs';
 import { config } from '../config/config';
-import { reopenInContainer, toUserContextId } from '../modules/containers.js';
+import { UserContext } from '../frameworks/tabGroups';
+import { Uint32 } from '../frameworks/types';
+import * as containers from '../modules/containers';
+import { UserContextService } from '../userContexts/UserContextService';
 
 const params = new URLSearchParams(location.search);
 
@@ -33,6 +38,17 @@ const headingElement = document.querySelector('#heading');
 const descriptionElement = document.querySelector('#description');
 const promptElement = document.querySelector('#prompt');
 const settingsButton = document.querySelector('#button-settings');
+
+if (!url) {
+  throw new Error('No URL provided');
+}
+
+new URL(url); // throws for invalid urls
+
+if (!containersElement || !headingElement || !descriptionElement || !promptElement || !settingsButton) {
+  throw new Error('Missing elements');
+}
+
 
 document.title = i18n.getMessage('titleSelectContainer');
 headingElement.textContent = i18n.getMessage('titleSelectContainer');
@@ -48,8 +64,10 @@ settingsButton.addEventListener('click', (ev) => {
   });
 });
 
-const renderUserContext = (userContext, aUserContextElement) => {
-  const userContextElement = aUserContextElement || document.createElement('button');
+
+const renderUserContext = (origUserContext: UserContext, aUserContextElement: HTMLButtonElement | null = null) => {
+  const userContext = UserContextService.getInstance().fillDefaultValues(origUserContext);
+  const userContextElement = aUserContextElement ?? document.createElement('button');
   userContextElement.classList.add('userContext-button');
   userContextElement.textContent = '';
   userContextElement.title = i18n.getMessage('defaultContainerName', userContext.id);
@@ -67,7 +85,7 @@ const renderUserContext = (userContext, aUserContextElement) => {
   return userContextElement;
 };
 
-const createUserContextElement = (userContext) => {
+const createUserContextElement = (userContext: UserContext) => {
   const userContextElement = renderUserContext(userContext);
   const cookieStoreId = userContext.cookieStoreId;
   containersElement.append(userContextElement);
@@ -81,65 +99,65 @@ const createUserContextElement = (userContext) => {
         url,
       }),
     ]).then(([currentTabObj, _createdTabObj]) => {
+      if (undefined == currentTabObj.id) {
+        throw new Error('Current tab has no ID');
+      }
       return browser.tabs.remove(currentTabObj.id);
     }).catch((e) => {
       console.error(e);
     });
   });
-  userContext.addEventListenerWindow(window, 'remove', (ev) => {
-    userContextElement.remove();
+  UserContext.onRemoved.addListener((removedUserContext) => {
+    if (removedUserContext == userContext.id) {
+      userContextElement.remove();
+    }
   });
-  userContext.addEventListenerWindow(window, 'change', (ev) => {
-    renderUserContext(userContext, userContextElement);
+  UserContext.onUpdated.addListener((updatedUserContext) => {
+    if (updatedUserContext.id == userContext.id) {
+      renderUserContext(updatedUserContext, userContextElement);
+    }
   });
 };
 
-try {
-  new URL(url);
-  getStateManager().then((aStateManager) => {
-    globalThis.StateManager = aStateManager;
-    const userContexts = StateManager.getUserContexts();
-    containersElement.textContent = '';
-    for (const userContext of userContexts) {
-      createUserContextElement(userContext);
-    }
-    StateManager.addEventListenerWindow(window, 'userContextCreate', (ev) => {
-      const {userContextId} = ev.detail;
-      const userContext = StateManager.getUserContext(userContextId);
-      createUserContextElement(userContext);
-    });
-  });
+UserContext.getAll().then((userContexts) => {
+  userContexts.forEach(createUserContextElement);
+});
 
-  // If pinned, continue to load the url
-  browser.tabs.getCurrent().then((tabObj) => {
-    if (tabObj.pinned) {
-      location.href = url;
-      return;
-    }
-    if (tabObj.cookieStoreId != 'firefox-default') {
-      location.href = url;
-      return;
-    }
+UserContext.onCreated.addListener(createUserContextElement);
 
-    config['tab.external.containerOption'].getValue().then(async (optionValue) => {
-      if ('sticky' == optionValue) {
-        const activeTabs = await browser.tabs.query({
-          windowId: tabObj.windowId,
-          active: true,
+browser.tabs.getCurrent().then((browserTab) => {
+  const tab = new Tab(browserTab);
+  if (tab.isPrivate()) {
+    // no containers in private mode
+    location.href = url;
+    return;
+  }
+  if (tab.isContainer()) {
+    // already in a container
+    location.href = url;
+    return;
+  }
+  if (tab.pinned) {
+    // pinned tabs are not from outside Firefox
+    location.href = url;
+    return;
+  }
+
+  config['tab.external.containerOption'].getValue().then(async (optionValue) => {
+    if ('sticky' == optionValue) {
+      const activeTabs = await browser.tabs.query({
+        windowId: browserTab.windowId,
+        active: true,
+      });
+      for (const activeTab of activeTabs) {
+        if (!activeTab.cookieStoreId) continue;
+        const {cookieStoreId} = activeTab;
+        const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
+        containers.reopenInContainer(userContextId, browserTab.id).catch((e) => {
+          console.error(e);
         });
-        for (const activeTab of activeTabs) {
-          if (!activeTab.cookieStoreId) continue;
-          const {cookieStoreId} = activeTab;
-          const userContextId = toUserContextId(cookieStoreId);
-          reopenInContainer(userContextId, tabObj.id).catch((e) => {
-            console.error(e);
-          });
-          break;
-        }
+        break;
       }
-    });
+    }
   });
-} catch (e) {
-  console.warn('Invalid URL: %s', url);
-  // invalid URL state
-}
+});

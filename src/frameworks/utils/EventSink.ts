@@ -19,6 +19,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/**
+ * Event listeners should handle exceptions themselves.
+ */
 export type EventListener<T> = (details: T) => void;
 
 export class EventSink<T> {
@@ -35,7 +38,7 @@ export class EventSink<T> {
   public hasListener(listener: EventListener<T>): boolean {
     return this._listeners.has(listener);
   }
-  
+
   public dispatch(details: T): void {
     for (const listener of this._listeners) {
       listener(details);
