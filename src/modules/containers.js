@@ -78,13 +78,6 @@ export const getIds = async () => {
   }
 };
 
-export const getActiveIds = async () => {
-  const tabs = await browser.tabs.query({});
-  const ids = [... tabs].map(tab => UserContext.fromCookieStoreId(tab.cookieStoreId));
-  ids.sort((a, b) => a - b);
-  return [... new Set(ids)];
-};
-
 export const get = async (aUserContextId) => {
   const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
   const userContextId = UserContext.fromCookieStoreId(cookieStoreId);

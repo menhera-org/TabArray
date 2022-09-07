@@ -22,6 +22,8 @@
 import browser from 'webextension-polyfill';
 import { Uint32 } from '../types';
 import { EventSink } from '../utils';
+import { OriginAttributes } from './OriginAttributes';
+import { TabGroup } from './TabGroup';
 
 /**
  * Represents a user context (contextual identity or container).
@@ -143,6 +145,15 @@ export class UserContext {
     return userContexts;
   }
 
+  public static async getAllActiveIds(): Promise<Uint32.Uint32[]> {
+    const tabs = await browser.tabs.query({});
+    const userContextIds = new Set<Uint32.Uint32>();
+    for (const tab of tabs) {
+      userContextIds.add(UserContext.fromCookieStoreId(tab.cookieStoreId ?? UserContext.DEFAULT_STORE));
+    }
+    return Array.from(userContextIds);
+  }
+
   /**
    * The user context ID for the identity.
    */
@@ -237,6 +248,14 @@ export class UserContext {
       localStorage: true, // not supported on old Firefox
       indexedDB: true,
     });
+  }
+
+  public toOriginAttributes(): OriginAttributes {
+    return OriginAttributes.fromCookieStoreId(this.cookieStoreId);
+  }
+
+  public getTabGroup(): TabGroup {
+    return new TabGroup(this.toOriginAttributes());
   }
 }
 
