@@ -29,6 +29,7 @@ import { getStateManager, getFirstpartyManager } from '../modules/global-state.j
 import { IndexTab } from '../modules/IndexTab.js';
 import { TEMPLATE } from './PopupTemplate';
 import { config } from '../config/config';
+import { renderTab, renderContainerHeading } from './PopupUtils';
 
 document.body.innerHTML = TEMPLATE;
 
@@ -89,141 +90,7 @@ buttonNewWindow.addEventListener('click', (ev) => {
   });
 });
 
-const renderTab = (tab) => {
-  const tabElement = document.createElement('li');
-  tabElement.title = tab.url;
-  tabElement.classList.add('tab');
-  const tabPinButton = document.createElement('button');
-  tabPinButton.classList.add('tab-pin-button');
-  if (tab.pinned) {
-    tabPinButton.title = browser.i18n.getMessage('tooltipTabUnpinButton');
-  } else {
-    tabPinButton.title = browser.i18n.getMessage('tooltipTabPinButton');
-  }
-  tabElement.append(tabPinButton);
-  tabPinButton.addEventListener('click', (ev) => {
-    ev.stopImmediatePropagation();
-    if (tab.pinned) {
-      tab.unpin().catch((e) => {
-        console.error(e);
-      });
-    } else {
-      tab.pin().catch((e) => {
-        console.error(e);
-      });
-    }
-  });
-  const tabIconElement = document.createElement('img');
-  tabIconElement.classList.add('tab-icon');
-  let iconUrl = tab.favIconUrl;
-  if (!iconUrl) {
-    iconUrl = '/img/transparent.png';
-  }
-  tabIconElement.src = iconUrl;
-  tabIconElement.addEventListener('error', ev => {
-    ev.target.classList.add('img-error');
-    ev.target.src = '/img/transparent.png';
-  });
-  tabElement.append(tabIconElement);
-  const tabLabelElement = document.createElement('div');
-  tabLabelElement.classList.add('tab-label');
-  tabElement.append(tabLabelElement);
-  tabLabelElement.textContent = tab.title;
-  const tabCloseButton = document.createElement('button');
-  tabCloseButton.classList.add('tab-close-button');
-  tabCloseButton.title = browser.i18n.getMessage('buttonTabClose');
-  tabElement.append(tabCloseButton);
-  tabCloseButton.addEventListener('click', (ev) => {
-    ev.stopImmediatePropagation();
-    tab.close().catch((e) => {
-      console.error(e);
-    });
-  });
-  if (tab.pinned) {
-    tabElement.classList.add('tab-pinned');
-  } else if (tab.hidden) {
-    tabElement.classList.add('tab-hidden');
-  } else {
-    tabElement.classList.add('tab-visible');
-  }
-  if (tab.discarded) {
-    tabElement.classList.add('tab-discarded');
-  }
-  if (tab.active) {
-    tabElement.classList.add('tab-active');
-  }
-
-  tabElement.addEventListener('click', (_ev) => {
-    tab.focus().then(() => {
-      window.close();
-    }).catch((e) => {
-      console.error(e);
-    });
-  });
-
-  const {userContextId} = tab;
-  const container = StateManager.getUserContext(userContextId);
-  if (container && container.id != 0) {
-    tabElement.style.borderColor = container.colorCode;
-  }
-  return tabElement;
-};
-
-const renderContainerHeading = (userContextId, details) => {
-  const mode = details ? details.mode : '';
-  const container = StateManager.getUserContext(userContextId);
-  const containerElement = document.createElement('li');
-  containerElement.dataset.name = container.name;
-  containerElement.classList.add('container');
-  if (!userContextId) {
-    containerElement.classList.add('container-default');
-  }
-  const visibilityToggleButton = document.createElement('button');
-  visibilityToggleButton.classList.add('container-visibility-toggle');
-  containerElement.append(visibilityToggleButton);
-  visibilityToggleButton.disabled = true;
-  const containerIcon = document.createElement('div');
-  const iconUrl = container.iconUrl || '/img/category_black_24dp.svg';
-  containerIcon.style.mask = `url(${iconUrl}) center center/contain no-repeat`;
-  containerIcon.style.backgroundColor = container.colorCode || '#000';
-  containerIcon.classList.add('container-icon');
-  containerElement.append(containerIcon);
-  const containerLabel = document.createElement('div');
-  containerElement.append(containerLabel);
-  containerLabel.classList.add('container-label');
-  containerLabel.textContent = container.name;
-  const closeContainerButton = document.createElement('button');
-  containerElement.append(closeContainerButton);
-  closeContainerButton.classList.add('close-container-button');
-  closeContainerButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
-  switch (mode) {
-    case 'window': {
-      const {windowId} = details;
-      closeContainerButton.addEventListener('click', (ev) => {
-        containers.closeAllTabsOnWindow(userContextId, windowId).catch((e) => {
-          console.error(e);
-        });
-      });
-      break;
-    }
-    case 'site': {
-      const {site} = details;
-      closeContainerButton.addEventListener('click', (ev) => {
-        FirstpartyManager.closeAllByContainer(site, userContextId).catch((e) => {
-          console.error(e);
-        });
-      });
-      break;
-    }
-    default: {
-      closeContainerButton.disabled = true;
-    }
-  }
-  
-  return containerElement;
-};
-
-const renderContainer = (userContextId) => {
+const renderContainer = (userContextId, currentWindowId) => {
   const container = StateManager.getUserContext(userContextId);
   const tabs = StateManager.getBrowserWindow(currentWindowId).getTabs();
   const windowId = currentWindowId;
@@ -397,7 +264,7 @@ globalThis.render = () => {
     const openUserContextIds = userContextIds.filter(userContextId => openUserContextIdSet.has(userContextId));
     const availableUserContextIds = userContextIds.filter(userContextId => !openUserContextIdSet.has(userContextId));
     for (const userContextId of openUserContextIds) {
-      const containerElement = renderContainer(userContextId);
+      const containerElement = renderContainer(userContextId, currentWindowId);
       menuListElement.append(containerElement);
     }
 
@@ -410,7 +277,7 @@ globalThis.render = () => {
     moreContainersLabelContent.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
 
     for (const userContextId of availableUserContextIds) {
-      const containerElement = renderContainer(userContextId);
+      const containerElement = renderContainer(userContextId, currentWindowId);
       menuListElement.append(containerElement);
     }
 
