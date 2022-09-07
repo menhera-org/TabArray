@@ -33,34 +33,6 @@ config['tab.groups.indexOption'].observe((value) => {
   configGroupIndexOption = value;
 });
 
-const COLORS = [
-  "blue",
-  "turquoise",
-  "green",
-  "yellow",
-  "orange",
-  "red",
-  "pink",
-  "purple",
-  "toolbar",
-];
-
-const ICONS = [
-  "fingerprint",
-  "briefcase",
-  "dollar",
-  "cart",
-  "circle",
-  "gift",
-  "vacation",
-  "food",
-  "fruit",
-  "pet",
-  "tree",
-  "chill",
-  "fence",
-];
-
 const PRIVILEGED_SCHEMES = new Set([
   'about',
   'chrome',
@@ -76,17 +48,6 @@ export const getIds = async () => {
     console.error('userContext disabled?');
     return [];
   }
-};
-
-export const getTabIds = async (aUserContextId, aExcludePinned) => {
-  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
-  const tabs = await browser.tabs.query({
-    cookieStoreId,
-  });
-  if (!tabs) {
-    throw new TypeError('Failed to query tabs');
-  }
-  return [... tabs].filter((tab) => !aExcludePinned || !tab.pinned).map((tab) => 0 | tab.id);
 };
 
 /**
@@ -119,59 +80,6 @@ export const remove = async (aUserContextId) => {
   } catch (e) {
     console.error(e);
   }
-};
-
-export const create = async (aName, aColor, aIcon) => {
-  let name = String(aName).trim();
-  let color = String(aColor).toLowerCase();
-  if (!COLORS.includes(color)) {
-    color = COLORS[0];
-  }
-  let icon = String(aIcon).toLowerCase();
-  if (!ICONS.includes(icon)) {
-    icon = ICONS[0];
-  }
-
-  const isUnnamed = '' === name;
-  if (isUnnamed) {
-    name = '_unnamed_container_';
-  }
-  const contextualIdentity = await browser.contextualIdentities.create({
-    name,
-    color,
-    icon,
-  });
-  const userContextId = UserContext.fromCookieStoreId(contextualIdentity.cookieStoreId);
-  console.log('userContext %d created', userContextId);
-  if (isUnnamed) {
-    await browser.contextualIdentities.update(contextualIdentity.cookieStoreId, {
-      name: browser.i18n.getMessage('defaultContainerName', userContextId),
-    });
-  }
-};
-
-export const updateProperties = async (aUserContextId, aName, aColor, aIcon) => {
-  let name = String(aName).trim();
-  let color = String(aColor).toLowerCase();
-  if (!COLORS.includes(color)) {
-    color = COLORS[0];
-  }
-  let icon = String(aIcon).toLowerCase();
-  if (!ICONS.includes(icon)) {
-    icon = ICONS[0];
-  }
-
-  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
-  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
-  const isUnnamed = '' === name;
-  if (isUnnamed) {
-    name = browser.i18n.getMessage('defaultContainerName', userContextId);
-  }
-  await browser.contextualIdentities.update(cookieStoreId, {
-    name,
-    color,
-    icon,
-  });
 };
 
 export const createIndexTab = async (aUserContextId, aWindowId) => {

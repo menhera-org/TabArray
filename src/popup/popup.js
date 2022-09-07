@@ -30,8 +30,10 @@ import { IndexTab } from '../modules/IndexTab.js';
 import { TEMPLATE } from './PopupTemplate';
 import { config } from '../config/config';
 import { renderTab, renderContainerHeading } from './PopupUtils';
-import { UserContext } from '../frameworks/tabGroups'
+import { UserContext } from '../frameworks/tabGroups';
+import { UserContextService } from '../userContexts/UserContextService';
 
+const userContextService = UserContextService.getInstance();
 document.body.innerHTML = TEMPLATE;
 
 const STATE_NO_TABS = 0;
@@ -487,7 +489,7 @@ globalThis.showNewContainerPane = async () => {
   })) {
     return;
   }
-  await containers.create(name, color, icon);
+  await userContextService.create(name, color, icon);
   render();
 };
 
@@ -541,7 +543,7 @@ globalThis.showEditContainerPane = async (userContextId) => {
   })) {
     return;
   }
-  await containers.updateProperties(userContextId, name, color, icon);
+  await userContextService.updateProperties(userContext, name, color, icon);
   render();
 };
 

@@ -154,6 +154,16 @@ export class UserContext {
     return Array.from(userContextIds);
   }
 
+  public static async define(name: string, color: string, icon: string): Promise<UserContext> {
+    const identity = await browser.contextualIdentities.create({
+      name,
+      color,
+      icon,
+    });
+    const userContext = UserContext.fromContextualIdentity(identity);
+    return userContext;
+  }
+
   /**
    * The user context ID for the identity.
    */
@@ -248,6 +258,15 @@ export class UserContext {
       localStorage: true, // not supported on old Firefox
       indexedDB: true,
     });
+  }
+
+  public async updateProperties(name: string, color: string, icon: string): Promise<UserContext> {
+    const identity = await browser.contextualIdentities.update(this.cookieStoreId, {
+      name,
+      color,
+      icon,
+    });
+    return UserContext.fromContextualIdentity(identity);
   }
 
   public toOriginAttributes(): OriginAttributes {
