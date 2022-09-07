@@ -67,10 +67,40 @@ export class UserContextService {
     // nothing to do.
   }
 
+  private validateColor(aColor: string): string {
+    let color = String(aColor).toLowerCase();
+    if (!UserContextService.COLORS[0]) {
+      throw new Error('color is not defined'); // this should not happen
+    }
+    if (!UserContextService.COLORS.includes(color)) {
+      color = UserContextService.COLORS[0];
+    }
+    return color;
+  }
+
+  private validateIcon(aIcon: string): string {
+    let icon = String(aIcon).toLowerCase();
+    if (!UserContextService.ICONS[0]) {
+      throw new Error('icon is not defined'); // this should not happen
+    }
+    if (!UserContextService.ICONS.includes(icon)) {
+      icon = UserContextService.ICONS[0];
+    }
+    return icon;
+  }
+
+  private validateName(aName: string): string {
+    return String(aName).trim();
+  }
+
+  private getDefaultName(aId: number): string {
+    return aId == 0 ? browser.i18n.getMessage('noContainer') : browser.i18n.getMessage('invalidContainerName', String(aId));
+  }
+
   public fillDefaultValues(userContext: UserContext): UserContext {
     const attrs = {... userContext};
     if (attrs.name === '') {
-      attrs.name = attrs.id == 0 ? browser.i18n.getMessage('noContainer') : browser.i18n.getMessage('invalidContainerName', String(attrs.id));
+      attrs.name = this.getDefaultName(attrs.id);
     }
     if (attrs.iconUrl === '') {
       attrs.iconUrl = UserContextService.DEFAULT_ICON_URL;
@@ -88,19 +118,9 @@ export class UserContextService {
   }
 
   public async create(aName: string, aColor: string, aIcon: string): Promise<UserContext> {
-    let name = String(aName).trim();
-    let color = String(aColor).toLowerCase();
-    if (!COLORS[0] || !ICONS[0]) {
-      throw new Error('color or icon is not defined'); // this should not happen
-    }
-    if (!COLORS.includes(color)) {
-      color = COLORS[0];
-    }
-    let icon = String(aIcon).toLowerCase();
-    if (!ICONS.includes(icon)) {
-      icon = ICONS[0];
-    }
-  
+    const color = this.validateColor(aColor);
+    const icon = this.validateIcon(aIcon);
+    let name = this.validateName(aName);
     const isUnnamed = '' === name;
     if (isUnnamed) {
       name = '_unnamed_container_';
@@ -118,18 +138,9 @@ export class UserContextService {
   }
 
   public async updateProperties(aUserContext: UserContext, aName: string, aColor: string, aIcon: string): Promise<UserContext> {
-    let name = String(aName).trim();
-    let color = String(aColor).toLowerCase();
-    if (!COLORS[0] || !ICONS[0]) {
-      throw new Error('color or icon is not defined'); // this should not happen
-    }
-    if (!COLORS.includes(color)) {
-      color = COLORS[0];
-    }
-    let icon = String(aIcon).toLowerCase();
-    if (!ICONS.includes(icon)) {
-      icon = ICONS[0];
-    }
+    const color = this.validateColor(aColor);
+    const icon = this.validateIcon(aIcon);
+    let name = this.validateName(aName);
     const isUnnamed = '' === name;
     if (isUnnamed) {
       name = browser.i18n.getMessage('defaultContainerName', String(aUserContext.id));
