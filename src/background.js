@@ -32,6 +32,7 @@ import './state-manager/StateManager.js';
 import {IndexTab} from './modules/IndexTab.js';
 import './firstparty/firstparty.js';
 import { config } from 'process';
+import { UserContext } from './frameworks/tabGroups';
 
 // watchdog
 let scriptCompleted = false;
@@ -80,12 +81,12 @@ globalThis.sortTabsByWindow = async (windowId) => {
     const pinnedTabs = tabs.filter(tab => tab.pinned);
     let sortedTabs = tabs.filter(tab => !tab.pinned);
 
-    const userContextIds = new Set(tabs.map(tabObj => containers.toUserContextId(tabObj.cookieStoreId)));
-    const hiddenUserContextIds = new Set(tabs.filter(tabObj => tabObj.hidden).map(tabObj => containers.toUserContextId(tabObj.cookieStoreId)));
+    const userContextIds = new Set(tabs.map(tabObj => UserContext.fromCookieStoreId(tabObj.cookieStoreId)));
+    const hiddenUserContextIds = new Set(tabs.filter(tabObj => tabObj.hidden).map(tabObj => UserContext.fromCookieStoreId(tabObj.cookieStoreId)));
     const indexedUserContextIds = new Set;
     const indexTabs = new Map;
     for (const tabObj of tabs) {
-      const userContextId = containers.toUserContextId(tabObj.cookieStoreId);
+      const userContextId = UserContext.fromCookieStoreId(tabObj.cookieStoreId);
       try {
         new IndexTab(tabObj.url);
         indexedUserContextIds.add(userContextId);
@@ -118,8 +119,8 @@ globalThis.sortTabsByWindow = async (windowId) => {
       tabObj.indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
     }
     sortedTabs.sort((tab1, tab2) => {
-      const userContextId1 = containers.toUserContextId(tab1.cookieStoreId);
-      const userContextId2 = containers.toUserContextId(tab2.cookieStoreId);
+      const userContextId1 = UserContext.fromCookieStoreId(tab1.cookieStoreId);
+      const userContextId2 = UserContext.fromCookieStoreId(tab2.cookieStoreId);
       if (userContextId1 == userContextId2) {
         if (tab1.indexTabUrl) {
           return -1;
@@ -164,7 +165,7 @@ browser.tabs.onAttached.addListener(async () => {
 });
 
 browser.tabs.onCreated.addListener((tab) => {
-  const userContextId = containers.toUserContextId(tab.cookieStoreId);
+  const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
   const activeUserContextId = getActiveUserContext(tab.windowId);
   const windowId = tab.windowId;
   if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
@@ -221,7 +222,7 @@ StateManager.addEventListener('tabClose', async ({detail}) => {
 
   browser.tabs.query({
     windowId,
-    cookieStoreId: containers.toCookieStoreId(userContextId),
+    cookieStoreId: UserContext.toCookieStoreId(userContextId),
   }).then(async (tabs) => {
     const indexTabs = new Set;
     let tabCount = 0;
@@ -281,7 +282,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
-  const userContextId = containers.toUserContextId(tabObj.cookieStoreId);
+  const userContextId = UserContext.fromCookieStoreId(tabObj.cookieStoreId);
   const windowId = tabObj.windowId;
   const activeUserContextId = getActiveUserContext(tabObj.windowId);
   if (configNewTabInContainerEnabled && isNewTabPage(tabObj.url) && 0 == userContextId && 0 != activeUserContextId) {
@@ -313,7 +314,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   const tab = await browser.tabs.get(tabId);
-  const userContextId = containers.toUserContextId(tab.cookieStoreId);
+  const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
   const contextualIdentity = await containers.get(userContextId);
   const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', contextualIdentity.name);
   try {
@@ -347,7 +348,7 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
 });
 
 browser.contextualIdentities.onRemoved.addListener(({contextualIdentity}) => {
-  const userContextId = containers.toUserContextId(contextualIdentity.cookieStoreId);
+  const userContextId = UserContext.fromCookieStoreId(contextualIdentity.cookieStoreId);
   console.log('userContext %d removed', userContextId);
   containers.closeAllTabs(userContextId).then(() => {
     console.log('Closed all tabs for userContext %d', userContextId);
@@ -366,7 +367,7 @@ browser.menus.create({
 
 browser.menus.onClicked.addListener((info, tab) => {
   if (info.menuItemId == 'tab-hide-container') {
-    const userContextId = containers.toUserContextId(tab.cookieStoreId);
+    const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
     containers.hide(userContextId, tab.windowId).catch(e => console.error(e));
   }
 });
@@ -380,7 +381,7 @@ browser.windows.getAll({
       active: true,
     });
     for (const activeTab of activeTabs) {
-      const userContextId = containers.toUserContextId(activeTab.cookieStoreId);
+      const userContextId = UserContext.fromCookieStoreId(activeTab.cookieStoreId);
       const contextualIdentity = await containers.get(userContextId);
       const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', contextualIdentity.name);
       await browser.windows.update(window.id, {
@@ -394,7 +395,7 @@ browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
 
 setTimeout(() => {
   browser.webRequest.onBeforeRequest.addListener((details) => {
-    const userContextId = containers.toUserContextId(details.cookieStoreId);
+    const userContextId = UserContext.fromCookieStoreId(details.cookieStoreId);
     const result = {};
     do {
       if (details.frameId != 0) break;
@@ -427,7 +428,7 @@ setTimeout(() => {
               browser.tabs.create({
                 active: true,
                 url,
-                cookieStoreId: containers.toCookieStoreId(activeUserContextId),
+                cookieStoreId: UserContext.toCookieStoreId(activeUserContextId),
                 windowId,
               }).then(() => {
                 console.log('Reopened %s in container id %d', url, activeUserContextId);

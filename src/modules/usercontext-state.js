@@ -19,7 +19,7 @@
 
 import browser from 'webextension-polyfill';
 import { WebExtensionsBroadcastChannel } from './broadcasting.js';
-import * as containers from './containers.js';
+import { UserContext } from '../frameworks/tabGroups';
 
 const syncActiveUserContextChannel = new WebExtensionsBroadcastChannel('sync_active_user_context');
 
@@ -28,7 +28,7 @@ const activeUserContextIdByWindow = new Map;
 const forceUpdate = () => {
   browser.tabs.query({active: true}).then((tabs) => {
     for (const tab of tabs) {
-      const userContextId = containers.toUserContextId(tab.cookieStoreId);
+      const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
       if (tab.url == 'about:blank' && tab.status == 'loading' && activeUserContextIdByWindow.has(tab.windowId)) {
         continue;
       }
@@ -45,7 +45,7 @@ browser.windows.onRemoved.addListener((windowId) => {
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   const tab = await browser.tabs.get(tabId);
-  const userContextId = containers.toUserContextId(tab.cookieStoreId);
+  const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
   if (tab.status == 'loading' || tab.url == 'about:blank') {
     return;
   }

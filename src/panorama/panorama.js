@@ -26,6 +26,7 @@ import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.js';
 import { getStateManager } from '../modules/global-state.js';
 import * as i18n from '../modules/i18n.js';
 import { IndexTab } from '../modules/IndexTab.js';
+import { UserContext } from '../frameworks/tabGroups';
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -50,7 +51,7 @@ const renderTab = (tab) => {
 };
 
 const renderContainer = (userContextId, containerElement) => {
-	const cookieStoreId = containers.toCookieStoreId(userContextId);
+	const cookieStoreId = UserContext.toCookieStoreId(userContextId);
   const userContext = StateManager.getUserContext(userContextId);
   const container = userContext;
   const tabs = userContext.getBrowserTabs();

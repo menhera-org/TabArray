@@ -18,9 +18,9 @@
 */
 
 import browser from 'webextension-polyfill';
-import { toCookieStoreId } from "../modules/containers.js";
 import { FirstPartyService } from '../frameworks/tabGroups/FirstPartyService';
 import { dns } from '../frameworks/index';
+import { UserContext } from '../frameworks/tabGroups';
 
 // This file is to be loaded only by background.js.
 
@@ -81,7 +81,7 @@ FirstpartyManager.getAll = async () => {
 
 FirstpartyManager.closeAllByContainer = async (aRegistrableDomain, aUserContextId) => {
   const registrableDomain = aRegistrableDomain || '';
-  const cookieStoreId = toCookieStoreId(aUserContextId);
+  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
   const tabs = await browser.tabs.query({
     cookieStoreId,
     windowType: 'normal',

@@ -22,6 +22,7 @@ import { config } from '../config/config';
 import { IndexTab } from './IndexTab.js';
 import * as newtab from './newtab.js';
 import { setActiveUserContext } from './usercontext-state.js';
+import { UserContext } from '../frameworks/tabGroups';
 
 // 'never' -- do not show indeces
 // 'collapsed' -- show indeces for collapsed containers
@@ -67,31 +68,10 @@ const PRIVILEGED_SCHEMES = new Set([
   'file',
 ]);
 
-export const toCookieStoreId = (aUserContextId) => {
-  const userContextId = Math.max(0, 0 | aUserContextId);
-  if (userContextId) {
-    return 'firefox-container-' + userContextId;
-  } else {
-    return 'firefox-default';
-  }
-};
-
-export const toUserContextId = (aCookieStoreId) => {
-  if ('number' == typeof aCookieStoreId) {
-    return Math.max(0, 0 | aCookieStoreId);
-  }
-  const matches = String(aCookieStoreId || '').match(/^firefox-container-([0-9]+)$/);
-  if (!matches) {
-    return 0;
-  } else {
-    return 0 | matches[1];
-  }
-};
-
 export const getIds = async () => {
   try {
     const containers = await browser.contextualIdentities.query({});
-    return [... new Set([... containers].map(container => toUserContextId(container.cookieStoreId)))];
+    return [... new Set([... containers].map(container => UserContext.fromCookieStoreId(container.cookieStoreId)))];
   } catch (e) {
     console.error('userContext disabled?');
     return [];
@@ -100,14 +80,14 @@ export const getIds = async () => {
 
 export const getActiveIds = async () => {
   const tabs = await browser.tabs.query({});
-  const ids = [... tabs].map(tab => toUserContextId(tab.cookieStoreId));
+  const ids = [... tabs].map(tab => UserContext.fromCookieStoreId(tab.cookieStoreId));
   ids.sort((a, b) => a - b);
   return [... new Set(ids)];
 };
 
 export const get = async (aUserContextId) => {
-  const cookieStoreId = toCookieStoreId(aUserContextId);
-  const userContextId = toUserContextId(cookieStoreId);
+  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
+  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
   if (!userContextId) {
     return {
       cookieStoreId,
@@ -135,7 +115,7 @@ export const getIndex = async (aId) => {
 };
 
 export const getTabIds = async (aUserContextId, aExcludePinned) => {
-  const cookieStoreId = toCookieStoreId(aUserContextId);
+  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
   const tabs = await browser.tabs.query({
     cookieStoreId,
   });
@@ -154,8 +134,8 @@ export const closeAllTabs = async (aUserContextId, aExcludePinned) => {
 };
 
 export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
-  const cookieStoreId = toCookieStoreId(aUserContextId);
-  const userContextId = toUserContextId(cookieStoreId);
+  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
+  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
   const tabIds = (await browser.tabs.query({
     windowId: aWindowId,
     pinned: false,
@@ -172,7 +152,7 @@ export const remove = async (aUserContextId) => {
     await closeAllTabs(aUserContextId);
     const userContextIds = await getIds();
     if (!userContextIds.includes(aUserContextId)) return;
-    const cookieStoreId = toCookieStoreId(aUserContextId);
+    const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
     await browser.contextualIdentities.remove(cookieStoreId);
   } catch (e) {
     console.error(e);
@@ -199,7 +179,7 @@ export const create = async (aName, aColor, aIcon) => {
     color,
     icon,
   });
-  const userContextId = toUserContextId(contextualIdentity.cookieStoreId);
+  const userContextId = UserContext.fromCookieStoreId(contextualIdentity.cookieStoreId);
   console.log('userContext %d created', userContextId);
   if (isUnnamed) {
     await browser.contextualIdentities.update(contextualIdentity.cookieStoreId, {
@@ -219,8 +199,8 @@ export const updateProperties = async (aUserContextId, aName, aColor, aIcon) => 
     icon = ICONS[0];
   }
 
-  const cookieStoreId = toCookieStoreId(aUserContextId);
-  const userContextId = toUserContextId(cookieStoreId);
+  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
+  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
   const isUnnamed = '' === name;
   if (isUnnamed) {
     name = browser.i18n.getMessage('defaultContainerName', userContextId);
@@ -237,7 +217,7 @@ export const createIndexTab = async (aUserContextId, aWindowId) => {
   const url = IndexTab.getUrl(userContext.name, userContext.icon, userContext.colorCode).url;
   const tabObj = await browser.tabs.create({
     url,
-    cookieStoreId: toCookieStoreId(aUserContextId),
+    cookieStoreId: UserContext.toCookieStoreId(aUserContextId),
     windowId: aWindowId,
     active: false,
   });
@@ -249,8 +229,8 @@ export const hide = async (aUserContextId, aWindowId) => {
   if (!aWindowId) {
     throw new TypeError('Unimplemented');
   }
-  const cookieStoreId = toCookieStoreId(aUserContextId);
-  const userContextId = toUserContextId(cookieStoreId);
+  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
+  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
   const tabs = await browser.tabs.query({
     windowId: aWindowId,
   });
@@ -263,7 +243,7 @@ export const hide = async (aUserContextId, aWindowId) => {
   for (const tab of tabs) {
     if (tab.cookieStoreId != cookieStoreId || tab.pinned) {
       if (!tab.hidden) {
-        userContexts.set(toUserContextId(tab.cookieStoreId), tab.id);
+        userContexts.set(UserContext.fromCookieStoreId(tab.cookieStoreId), tab.id);
       }
       continue;
     }
@@ -311,8 +291,8 @@ export const show = async (aUserContextId, aWindowId) => {
   if (!aWindowId) {
     throw new TypeError('Unimplemented');
   }
-  const cookieStoreId = toCookieStoreId(aUserContextId);
-  const userContextId = toUserContextId(cookieStoreId);
+  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
+  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
   const tabs = await browser.tabs.query({
     windowId: aWindowId,
     cookieStoreId,
@@ -344,9 +324,9 @@ export const getInactiveIds = async (aWindowId) => {
     windowId: aWindowId,
     pinned: false,
   });
-  const userContextIds = new Set([... tabs].map((tab) => toUserContextId(tab.cookieStoreId)));
+  const userContextIds = new Set([... tabs].map((tab) => UserContext.fromCookieStoreId(tab.cookieStoreId)));
   for (const tab of tabs) {
-    const userContextId = toUserContextId(tab.cookieStoreId);
+    const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
     if (tab.active) {
       userContextIds.delete(userContextId);
     }
@@ -374,8 +354,8 @@ export const reopenInContainer = async (aUserContextId, aTabId) => {
     console.error('Tab mismatch');
     throw new Error('Tab mismatch');
   }
-  const cookieStoreId = toCookieStoreId(aUserContextId);
-  const userContextId = toUserContextId(cookieStoreId);
+  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
+  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
   if (tab.cookieStoreId == cookieStoreId) return;
   const windowId = tab.windowId;
   const url = newtab.isPrivilegedNewTabPage(tab.url) ? undefined : tab.url;
@@ -422,8 +402,8 @@ export const reopenInContainer = async (aUserContextId, aTabId) => {
 
 export const openNewTabInContainer = async (aUserContextId, aWindowId) => {
   const windowId = aWindowId;
-  const cookieStoreId = toCookieStoreId(aUserContextId);
-  const userContextId = toUserContextId(cookieStoreId);
+  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
+  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
   setActiveUserContext(windowId, userContextId);
   const containerTabs = await browser.tabs.query({
     pinned: false,

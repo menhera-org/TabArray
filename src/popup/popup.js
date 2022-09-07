@@ -30,6 +30,7 @@ import { IndexTab } from '../modules/IndexTab.js';
 import { TEMPLATE } from './PopupTemplate';
 import { config } from '../config/config';
 import { renderTab, renderContainerHeading } from './PopupUtils';
+import { UserContext } from '../frameworks/tabGroups'
 
 document.body.innerHTML = TEMPLATE;
 
@@ -576,7 +577,7 @@ globalThis.renderSiteDetails = async (aSite) => {
       if (registrableDomain != aSite) {
         continue;
       }
-      const userContextId = containers.toUserContextId(tabObj.cookieStoreId);
+      const userContextId = UserContext.fromCookieStoreId(tabObj.cookieStoreId);
       if (!tabsByUserContextId.has(userContextId)) {
         tabsByUserContextId.set(userContextId, []);
       }
