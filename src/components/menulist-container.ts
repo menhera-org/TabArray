@@ -66,6 +66,10 @@ export class MenulistContainerElement extends HTMLElement {
     this.containerEditButton.title = browser.i18n.getMessage('tooltipEditContainerButton');
     this.containerVisibilityToggleButton.title = browser.i18n.getMessage('tooltipHideContainerButton');
     this.tabCount = 0;
+    this.registerEventListeners();
+  }
+
+  private registerEventListeners() {
     this.containerVisibilityToggleButton.onclick = () => {
       if (!this.containerHidden) {
         this.onContainerHide.dispatch();
