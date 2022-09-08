@@ -24,7 +24,7 @@ import '../modules/background-console.js';
 import * as containers from '../modules/containers.js';
 import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.js';
 import { getStateManager } from '../modules/global-state.js';
-import * as i18n from '../modules/i18n.js';
+import * as i18n from '../modules/i18n';
 import { IndexTab } from '../modules/IndexTab.js';
 import { UserContext } from '../frameworks/tabGroups';
 

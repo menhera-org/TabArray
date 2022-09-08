@@ -21,7 +21,7 @@ import browser from 'webextension-polyfill';
 import { BrowserWindow } from "./lib/BrowserWindow.js";
 import { BrowserTab } from "./lib/BrowserTab.js";
 import { UserContext } from "./lib/UserContext.js";
-import * as i18n from '../modules/i18n.js';
+import * as i18n from '../modules/i18n';
 import { LifecycleEventTarget } from "./lib/LifecycleEventTarget.js";
 
 const ICON_EXTENSION = browser.runtime.getURL('/img/extension.svg');

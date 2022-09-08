@@ -38,4 +38,15 @@ export class PromiseUtils {
       reject,
     };
   }
+
+  /**
+   * Sleeps for the specified number of milliseconds.
+   * @param ms sleep time in milliseconds.
+   * @returns Promise.
+   */
+  public static sleep(ms: number) {
+    const { promise, resolve } = PromiseUtils.createPromise<void>();
+    setTimeout(resolve, ms);
+    return promise;
+  }
 }

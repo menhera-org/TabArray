@@ -17,13 +17,16 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export const sleep = (secs) => new Promise((res) => {
-  setTimeout(() => res(), secs * 1000);
-});
+import browser from 'webextension-polyfill';
 
-export const callIgnoringErrors = (callback, ... args) => {
-  try {
-    const promise = Promise.resolve(callback(... args));
-    promise.catch(() => void 0);
-  } catch (e) {}
+export const getMessage = (messageName: string, ... substitutions: string[]) => {
+    return '' + (browser.i18n.getMessage(messageName, ... substitutions) || '');
+};
+
+export const getEffectiveLocale = () => {
+    return getMessage('effectiveLocale');
+};
+
+export const getBrowserLocale = () => {
+  return browser.i18n.getUILanguage();
 };

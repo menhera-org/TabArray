@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import * as i18n from '../modules/i18n.js';
+import * as i18n from '../modules/i18n';
 import { Tab } from '../frameworks/tabs';
 import { config } from '../config/config';
 import { UserContext } from '../frameworks/tabGroups';
