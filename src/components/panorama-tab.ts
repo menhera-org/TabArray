@@ -19,10 +19,17 @@
 
 import browser from 'webextension-polyfill';
 
-customElements.define('panorama-tab', class PanoramaTabElement extends HTMLElement {
+export class PanoramaTabElement extends HTMLElement {
+  private _tabIconElement: HTMLImageElement;
+  private _tabTitleElement: HTMLDivElement;
+  private _tabPreviewImg: HTMLImageElement;
+
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
+    if (!this.shadowRoot) {
+      throw new Error('shadowRoot is null');
+    }
     const css = document.createElement('link');
     css.rel = 'stylesheet';
     css.href = '/components/panorama-tab.css';
@@ -37,6 +44,7 @@ customElements.define('panorama-tab', class PanoramaTabElement extends HTMLEleme
     const tabPreviewImg = document.createElement('img');
     tabPreviewImg.id = 'tab-preview-img';
     tabPreview.append(tabPreviewImg);
+    this._tabPreviewImg = tabPreviewImg;
     const controls = document.createElement('div');
     controls.id = 'controls';
     this.shadowRoot.append(controls);
@@ -60,37 +68,41 @@ customElements.define('panorama-tab', class PanoramaTabElement extends HTMLEleme
     const tabIconElement = document.createElement('img');
     tabIconElement.id = 'tab-icon';
     tabIconElement.src = '/img/transparent.png';
-    tabIconElement.addEventListener('error', ev => {
-      ev.target.classList.add('img-error');
-      ev.target.src = '/img/transparent.png';
+    tabIconElement.addEventListener('error', () => {
+      tabIconElement.classList.add('img-error');
+      tabIconElement.src = '/img/transparent.png';
     });
+    this._tabIconElement = tabIconElement;
     tabInfo.append(tabIconElement);
     const tabTitleElement = document.createElement('div');
     tabTitleElement.id = 'tab-title';
+    this._tabTitleElement = tabTitleElement;
     tabInfo.append(tabTitleElement);
   }
 
   get tabTitle() {
-    return this.shadowRoot.querySelector('#tab-title').textContent;
+    return this._tabTitleElement.textContent;
   }
 
   set tabTitle(value) {
-    this.shadowRoot.querySelector('#tab-title').textContent = value;
+    this._tabTitleElement.textContent = value;
   }
 
   get iconUrl() {
-    return this.shadowRoot.querySelector('#tab-icon').src;
+    return this._tabIconElement.src;
   }
 
   set iconUrl(value) {
-    this.shadowRoot.querySelector('#tab-icon').src = value;
+    this._tabIconElement.src = value;
   }
 
   get previewUrl() {
-    return this.shadowRoot.querySelector('#tab-preview-img').src;
+    return this._tabPreviewImg.src;
   }
 
   set previewUrl(value) {
-    this.shadowRoot.querySelector('#tab-preview-img').src = value;
+    this._tabPreviewImg.src = value;
   }
-});
+}
+
+customElements.define('panorama-tab', PanoramaTabElement);
