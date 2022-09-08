@@ -26,7 +26,7 @@ import {WebExtensionsBroadcastChannel} from './modules/broadcasting.js';
 import { getActiveUserContext } from './modules/usercontext-state.js';
 import { config } from './config/config';
 import { setActiveUserContext } from './modules/usercontext-state.js';
-import { ADDON_PAGE, CONFIRM_PAGE } from './defs.js';
+import { ADDON_PAGE, CONFIRM_PAGE } from './defs';
 import { getWindowIds } from './modules/windows';
 import './state-manager/StateManager.js';
 import {IndexTab} from './modules/IndexTab';

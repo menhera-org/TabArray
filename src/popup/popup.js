@@ -24,7 +24,7 @@ import '../modules/background-console.js';
 import * as containers from '../modules/containers.js';
 import '../components/usercontext-colorpicker.js';
 import '../components/usercontext-iconpicker.js';
-import {PANORAMA_PAGE} from '../defs.js';
+import {PANORAMA_PAGE} from '../defs';
 import { getStateManager, getFirstpartyManager } from '../modules/global-state.js';
 import { IndexTab } from '../modules/IndexTab';
 import { TEMPLATE } from './PopupTemplate';
