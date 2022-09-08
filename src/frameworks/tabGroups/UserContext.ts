@@ -137,7 +137,6 @@ export class UserContext {
   public static async getAll(): Promise<UserContext[]> {
     const identities = await browser.contextualIdentities.query({});
     const userContexts = identities.map(identity => {
-      const userContextId = UserContext.fromCookieStoreId(identity.cookieStoreId);
       return UserContext.fromContextualIdentity(identity);
     });
     userContexts.push(UserContext.DEFAULT);

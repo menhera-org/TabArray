@@ -27,11 +27,10 @@ import { getActiveUserContext } from './modules/usercontext-state.js';
 import { config } from './config/config';
 import { setActiveUserContext } from './modules/usercontext-state.js';
 import { ADDON_PAGE, CONFIRM_PAGE } from './defs.js';
-import { getWindowIds } from './modules/windows.js';
+import { getWindowIds } from './modules/windows';
 import './state-manager/StateManager.js';
 import {IndexTab} from './modules/IndexTab.js';
 import './firstparty/firstparty.js';
-import { config } from 'process';
 import { UserContext } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
 
@@ -78,7 +77,7 @@ config['tab.external.containerOption'].observe((value) => {
   }
 });
 
-globalThis.sortTabsByWindow = async (windowId) => {
+const sortTabsByWindow = globalThis.sortTabsByWindow = async (windowId) => {
   try {
     const tabs = await browser.tabs.query({windowId: windowId});
     const pinnedTabs = tabs.filter(tab => tab.pinned);
@@ -94,7 +93,9 @@ globalThis.sortTabsByWindow = async (windowId) => {
         new IndexTab(tabObj.url);
         indexedUserContextIds.add(userContextId);
         indexTabs.set(userContextId, tabObj.id);
-      } catch (e) {}
+      } catch (e) {
+        // nothing.
+      }
     }
     for (const userContextId of userContextIds) {
       if (configGroupIndexOption == 'collapsed' && !hiddenUserContextIds.has(userContextId)) {
@@ -115,7 +116,7 @@ globalThis.sortTabsByWindow = async (windowId) => {
       }
     }
     if ('collapsed' == configGroupIndexOption) {
-      
+      // TODO
     }
     for (const tabObj of sortedTabs) {
       tabObj.indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
@@ -147,7 +148,7 @@ globalThis.sortTabsByWindow = async (windowId) => {
   }
 };
 
-globalThis.sortTabs = async () => {
+const sortTabs = globalThis.sortTabs = async () => {
   if (tabSorting) return;
   tabSorting = true;
   try {
@@ -213,14 +214,16 @@ browser.tabs.onRemoved.addListener((tabId, {windowId}) => {
 StateManager.addEventListener('tabClose', async ({detail}) => {
   const {userContextId, windowId, browserTab} = detail;
   try {
-    const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
+    const indexTabUrl = await browser.sessions.getTabValue(browserTab.id, 'indexTabUrl');
     if (!indexTabUrl) {
       throw void 0;
     }
     // index closed, close all tabs of that group
     await containers.closeAllTabsOnWindow(userContextId, windowId);
     return;
-  } catch (e) {}
+  } catch (e) {
+    // nothing.
+  }
 
   browser.tabs.query({
     windowId,
@@ -265,7 +268,9 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tabObj) => {
     await browser.tabs.update(tabId, {
       pinned: false,
     });
-  } catch (e) {}
+  } catch (e) {
+    // nothing.
+  }
   await sortTabs();
   tabChangeChannel.postMessage(true);
 }, {
@@ -324,7 +329,7 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
     const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
     if (!indexTabUrl) {
       throw void 0;
-    };
+    }
     const nextTabs = await browser.tabs.query({
       windowId: tabObj.windowId,
       index: tabObj.index + 1,
@@ -335,7 +340,9 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
       });
       break;
     }
-  } catch (e) {}
+  } catch (e) {
+    // nothing.
+  }
   
   try {
     await browser.windows.update(windowId, {
@@ -399,7 +406,7 @@ setTimeout(() => {
   browser.webRequest.onBeforeRequest.addListener((details) => {
     const userContextId = UserContext.fromCookieStoreId(details.cookieStoreId);
     const result = {};
-    do {
+    for (;;) { // just a block.
       if (details.frameId != 0) break;
       if (details.incognito) break;
       if (details.originUrl) break;
@@ -447,7 +454,8 @@ setTimeout(() => {
       result.redirectUrl = confirmPage + '?' + (new URLSearchParams({
         url,
       }));
-    } while (false);
+      break;
+    }
     return result;
   }, {
     incognito: false,
