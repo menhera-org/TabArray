@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import '../modules/background-console.js';
 import * as containers from '../modules/containers.js';
-import '../components/usercontext-colorpicker.js';
+import '../components/usercontext-colorpicker';
 import '../components/usercontext-iconpicker.js';
 import {PANORAMA_PAGE} from '../defs';
 import { getStateManager, getFirstpartyManager } from '../modules/global-state.js';

@@ -29,15 +29,21 @@ const COLORS = [
   "toolbar",
 ];
 
-customElements.define('usercontext-colorpicker', class ColorPickerElement extends HTMLElement {
+export class ColorPickerElement extends HTMLElement {
+  private _radios: HTMLFormElement;
+
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
     const css = document.createElement('link');
     css.rel = 'stylesheet';
     css.href = '/components/usercontext.css';
+    if (null == this.shadowRoot) {
+      throw new Error('shadowRoot is null');
+    }
     this.shadowRoot.append(css);
     const radios = document.createElement('form');
+    this._radios = radios;
     this.shadowRoot.append(radios);
     radios.id = 'radios';
     let count = 0;
@@ -62,11 +68,16 @@ customElements.define('usercontext-colorpicker', class ColorPickerElement extend
     }
   }
 
-  get value() {
-    return this.shadowRoot.querySelector('#radios').color.value;
+  get value(): string {
+    return this._radios.color.value;
   }
 
-  set value(value) {
-    this.shadowRoot.querySelector('#radios').color.value = value;
+  set value(value: string) {
+    if (!COLORS.includes(value)) {
+      throw new Error(`Invalid color: ${value}`);
+    }
+    this._radios.color.value = value;
   }
-});
+}
+
+customElements.define('usercontext-colorpicker', ColorPickerElement);
