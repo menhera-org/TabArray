@@ -64,14 +64,18 @@ export class Tab {
     this.active = browserTab.active;
     this.pinned = browserTab.pinned;
     if (browserTab.sharingState !== undefined) {
-      this.isSharing = (browserTab.sharingState.screen != undefined)
-        || (browserTab.sharingState.microphone ?? false)
-        || (browserTab.sharingState.camera ?? false);
+      this.isSharing = this.checkSharingState(browserTab.sharingState);
     } else {
       this.isSharing = false;
     }
     const cookieStoreId = browserTab.cookieStoreId ?? Tab.getDefaultCookieStoreId(browserTab.incognito);
     this.originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId, this.url);
+  }
+
+  private checkSharingState(sharingState: browser.Tabs.SharingState): boolean {
+    return (sharingState.screen != undefined)
+      || (sharingState.microphone ?? false)
+      || (sharingState.camera ?? false);
   }
 
   public get cookieStoreId(): string {
