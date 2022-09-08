@@ -26,6 +26,7 @@
 #tab-menu {
   display: block grid;
   grid-template-columns: 2em 1fr;
+  padding-inline-end: 1em;
 }
 
 #tab-main {
