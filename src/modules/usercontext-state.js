@@ -18,7 +18,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { WebExtensionsBroadcastChannel } from './broadcasting.js';
+import { WebExtensionsBroadcastChannel } from './broadcasting';
 import { UserContext } from '../frameworks/tabGroups';
 
 const syncActiveUserContextChannel = new WebExtensionsBroadcastChannel('sync_active_user_context');
