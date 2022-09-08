@@ -17,7 +17,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import './install.js';
+import './install';
 import browser from 'webextension-polyfill';
 import * as containers from './modules/containers.js';
 import { isNewTabPage } from './modules/newtab';
