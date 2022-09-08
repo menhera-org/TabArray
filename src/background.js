@@ -20,7 +20,7 @@
 import './install.js';
 import browser from 'webextension-polyfill';
 import * as containers from './modules/containers.js';
-import { isNewTabPage } from './modules/newtab.js';
+import { isNewTabPage } from './modules/newtab';
 
 import {WebExtensionsBroadcastChannel} from './modules/broadcasting.js';
 import { getActiveUserContext } from './modules/usercontext-state.js';

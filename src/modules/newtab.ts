@@ -20,7 +20,7 @@
 import browser from 'webextension-polyfill';
 
 let newTabPage = 'about:newtab';
-const privilegedNewTabPages = new Set([
+const privilegedNewTabPages: ReadonlySet<string> = new Set([
   'about:newtab',
   'about:home',
   'about:blank',
@@ -38,5 +38,5 @@ browser.browserSettings.newTabPageOverride.onChange.addListener((details) => {
   newTabPage = details.value;
 });
 
-export const isNewTabPage = (url) => url == newTabPage;
-export const isPrivilegedNewTabPage = (url) => privilegedNewTabPages.has(url);
+export const isNewTabPage = (url: string) => url == newTabPage;
+export const isPrivilegedNewTabPage = (url: string) => privilegedNewTabPages.has(url);
