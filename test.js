@@ -19,6 +19,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* eslint-env es2020, node */
+
 console.log('Running tests...');
 
 // TODO.
