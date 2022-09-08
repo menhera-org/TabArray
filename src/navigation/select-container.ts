@@ -24,7 +24,6 @@ import * as i18n from '../modules/i18n';
 import { Tab } from '../frameworks/tabs';
 import { config } from '../config/config';
 import { UserContext } from '../frameworks/tabGroups';
-import { Uint32 } from '../frameworks/types';
 import * as containers from '../modules/containers';
 import { UserContextService } from '../userContexts/UserContextService';
 
@@ -56,7 +55,7 @@ descriptionElement.textContent = i18n.getMessage('descriptionSelectContainer', u
 promptElement.textContent = i18n.getMessage('promptSelectContainer');
 settingsButton.textContent = i18n.getMessage('buttonSettings');
 
-settingsButton.addEventListener('click', (ev) => {
+settingsButton.addEventListener('click', () => {
   browser.runtime.openOptionsPage().then(() => {
     console.log('Opened options page');
   }).catch((e) => {
@@ -89,7 +88,7 @@ const createUserContextElement = (userContext: UserContext) => {
   const userContextElement = renderUserContext(userContext);
   const cookieStoreId = userContext.cookieStoreId;
   containersElement.append(userContextElement);
-  userContextElement.addEventListener('click', (ev) => {
+  userContextElement.addEventListener('click', () => {
     Promise.all([
       browser.tabs.getCurrent(),
       browser.tabs.create({
@@ -98,7 +97,8 @@ const createUserContextElement = (userContext: UserContext) => {
         cookieStoreId,
         url,
       }),
-    ]).then(([currentTabObj, _createdTabObj]) => {
+    ]).then(([currentTabObj, createdTabObj]) => {
+      console.debug('Created tab', createdTabObj);
       if (undefined == currentTabObj.id) {
         throw new Error('Current tab has no ID');
       }
