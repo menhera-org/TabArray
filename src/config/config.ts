@@ -34,7 +34,7 @@ export const config = {
 };
 
 
-class BrowserBooleanSetting implements ConfigurationOption<boolean> {
+export class BrowserBooleanSetting implements ConfigurationOption<boolean> {
   private readonly setting: browser.Types.Setting;
 
   public constructor(setting: browser.Types.Setting) {

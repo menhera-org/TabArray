@@ -22,7 +22,7 @@ module.exports = {
       filename: 'popup/popup.js',
     },
     'options': {
-      import: './src/options/options.js',
+      import: './src/options/options.ts',
       filename: 'options/options.js',
     },
     'panorama': {
