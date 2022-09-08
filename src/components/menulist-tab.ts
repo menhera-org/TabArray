@@ -100,7 +100,7 @@ export class MenulistTabElement extends HTMLElement {
     }
   }
 
-  private setUserContext(userContext: UserContext) {
+  public setUserContext(userContext: UserContext) {
     if (0 == userContext.id) {
       return;
     }
