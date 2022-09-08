@@ -51,7 +51,7 @@ const renderTab = (tab) => {
 };
 
 const renderContainer = (userContextId, containerElement) => {
-	const cookieStoreId = UserContext.toCookieStoreId(userContextId);
+  const cookieStoreId = UserContext.toCookieStoreId(userContextId);
   const userContext = StateManager.getUserContext(userContextId);
   const container = userContext;
   const tabs = userContext.getBrowserTabs();
@@ -70,11 +70,11 @@ const renderContainer = (userContextId, containerElement) => {
   }
 
   const containerIcon = document.createElement('div');
-	const iconUrl = container.iconUrl || '/img/category_black_24dp.svg';
-	containerIcon.style.mask = `url(${iconUrl}) center center/75% no-repeat`;
-	containerIcon.style.backgroundColor = container.colorCode || '#000';
-	containerIcon.classList.add('container-icon');
-	containerHeading.append(containerIcon);
+  const iconUrl = container.iconUrl || '/img/category_black_24dp.svg';
+  containerIcon.style.mask = `url(${iconUrl}) center center/75% no-repeat`;
+  containerIcon.style.backgroundColor = container.colorCode || '#000';
+  containerIcon.classList.add('container-icon');
+  containerHeading.append(containerIcon);
   
   const containerLabel = document.createElement('div');
   containerLabel.classList.add('container-label');
@@ -115,7 +115,7 @@ const renderContainer = (userContextId, containerElement) => {
     });
     tabElement.addEventListener('button-tab-close', async (ev) => {
       await browser.tabs.remove(browserTab.id);
-		  await render();
+      await render();
     });
   }
 
@@ -145,5 +145,5 @@ getStateManager().then((StateManager) => {
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 tabChangeChannel.addEventListener('message', ev => {
-	render();
+  render();
 });
