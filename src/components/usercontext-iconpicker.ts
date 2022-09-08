@@ -33,15 +33,21 @@ const ICONS = [
   "fence",
 ];
 
-customElements.define('usercontext-iconpicker', class IconPickerElement extends HTMLElement {
+export class IconPickerElement extends HTMLElement {
+  private _radios: HTMLFormElement;
+
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
+    if (!this.shadowRoot) {
+      throw new Error('shadowRoot is null');
+    }
     const css = document.createElement('link');
     css.rel = 'stylesheet';
     css.href = '/components/usercontext.css';
     this.shadowRoot.append(css);
     const radios = document.createElement('form');
+    this._radios = radios;
     this.shadowRoot.append(radios);
     radios.id = 'radios';
     let count = 0;
@@ -65,11 +71,16 @@ customElements.define('usercontext-iconpicker', class IconPickerElement extends 
     }
   }
 
-  get value() {
-    return this.shadowRoot.querySelector('#radios').icon.value;
+  get value(): string {
+    return this._radios.icon.value;
   }
 
-  set value(value) {
-    this.shadowRoot.querySelector('#radios').icon.value = value;
+  set value(value: string) {
+    if (!ICONS.includes(value)) {
+      throw new Error(`Invalid icon: ${value}`);
+    }
+    this._radios.icon.value = value;
   }
-});
+}
+
+customElements.define('usercontext-iconpicker', IconPickerElement);
