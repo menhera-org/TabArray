@@ -20,7 +20,7 @@
 import browser from 'webextension-polyfill';
 import '../modules/background-console.js';
 import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig, BrowserBooleanSetting } from '../config/config';
-import { StorageConfigurationOption, ConfigurationOption } from '../frameworks/config';
+import { ConfigurationOption } from '../frameworks/config';
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
