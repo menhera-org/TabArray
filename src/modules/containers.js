@@ -142,7 +142,7 @@ export const hide = async (aUserContextId, aWindowId) => {
   }
   if (active) {
     let success = false;
-    for (const [otherUserContextId, tabId] of userContexts) {
+    for (const [, tabId] of userContexts) {
       await browser.tabs.update(tabId, {
         active: true,
       });

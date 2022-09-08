@@ -34,7 +34,7 @@ import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
 
 const userContextService = UserContextService.getInstance();
-document.body.innerHTML = TEMPLATE;
+document.body.innerHTML = TEMPLATE; // static string.
 
 const STATE_NO_TABS = 0;
 const STATE_HIDDEN_TABS = 1;
