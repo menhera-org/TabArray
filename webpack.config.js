@@ -1,6 +1,9 @@
 // -*- indent-tabs-mode: nil; tab-width: 2; -*-
 // vim: set ts=2 sw=2 et ai :
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-env es2020, node */
+
 const path = require('path');
 
 module.exports = {
@@ -26,7 +29,7 @@ module.exports = {
       filename: 'options/options.js',
     },
     'panorama': {
-      import: './src/panorama/panorama.js',
+      import: './src/panorama/panorama.ts',
       filename: 'panorama/panorama.js',
     },
   },

@@ -44,7 +44,7 @@ export class TabPreviewService {
   }
 
   private async _getTabPreview(tabId: number): Promise<string> {
-    return browser.tabs.captureTab(tabId, {
+    return await browser.tabs.captureTab(tabId, {
       format: 'jpeg',
       quality: 50,
       scale: .25,
