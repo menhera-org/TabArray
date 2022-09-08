@@ -87,6 +87,10 @@
   opacity: .25;
 }
 
+#tab-close-button:hover, #tab-close-button:focus {
+  opacity: .5;
+}
+
 #tab-title {
   padding-inline: .5em;
   padding-block: .5em;
