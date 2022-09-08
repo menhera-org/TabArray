@@ -25,7 +25,7 @@ import * as containers from '../modules/containers.js';
 import {WebExtensionsBroadcastChannel} from '../modules/broadcasting.js';
 import { getStateManager } from '../modules/global-state.js';
 import * as i18n from '../modules/i18n';
-import { IndexTab } from '../modules/IndexTab.js';
+import { IndexTab } from '../modules/IndexTab';
 import { UserContext } from '../frameworks/tabGroups';
 
 document.title = i18n.getMessage('panoramaGrid');

@@ -21,10 +21,15 @@ import browser from 'webextension-polyfill';
 
 const indexPageUrl = browser.runtime.getURL('/index/index.html');
 const defaultIconUrl = browser.runtime.getURL('/img/category_black_24dp.svg')
-const iconUrl = browser.runtime.getURL('/img/usercontext.svg');;
+const iconUrl = browser.runtime.getURL('/img/usercontext.svg');
 
 export class IndexTab {
-  constructor(aUrl) {
+  public url: string;
+  public iconUrl: string;
+  public title: string;
+  public colorCode: string;
+
+  constructor(aUrl: string) {
     const url = new URL(aUrl);
     this.url = url.href;
     const hash = url.hash.slice(1);
@@ -43,7 +48,7 @@ export class IndexTab {
     this.colorCode = params.get('c') || '#000000';
   }
 
-  static getUrl(title, icon, colorCode) {
+  static getUrl(title: string, icon: string, colorCode: string) {
     const url = new URL(indexPageUrl);
     const params = new URLSearchParams();
     params.set('i', icon || '');

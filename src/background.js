@@ -29,7 +29,7 @@ import { setActiveUserContext } from './modules/usercontext-state.js';
 import { ADDON_PAGE, CONFIRM_PAGE } from './defs.js';
 import { getWindowIds } from './modules/windows';
 import './state-manager/StateManager.js';
-import {IndexTab} from './modules/IndexTab.js';
+import {IndexTab} from './modules/IndexTab';
 import './firstparty/firstparty.js';
 import { UserContext } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';

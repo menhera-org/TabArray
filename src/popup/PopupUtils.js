@@ -24,7 +24,6 @@
 // it is necessary for now.
 
 import browser from 'webextension-polyfill';
-import { IndexTab } from '../modules/IndexTab.js';
 
 export const renderTab = (tab) => {
   const tabElement = document.createElement('li');

@@ -26,7 +26,7 @@ import '../components/usercontext-colorpicker.js';
 import '../components/usercontext-iconpicker.js';
 import {PANORAMA_PAGE} from '../defs.js';
 import { getStateManager, getFirstpartyManager } from '../modules/global-state.js';
-import { IndexTab } from '../modules/IndexTab.js';
+import { IndexTab } from '../modules/IndexTab';
 import { TEMPLATE } from './PopupTemplate';
 import { config } from '../config/config';
 import { renderTab, renderContainerHeading } from './PopupUtils';

@@ -18,7 +18,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { IndexTab } from "../modules/IndexTab.js";
+import { IndexTab } from "../modules/IndexTab";
 
 const indexTab = new IndexTab(location.href);
 document.title = indexTab.title;
