@@ -1,7 +1,9 @@
-// vim: ts=2 sw=2 et ai
+// -*- indent-tabs-mode: nil; tab-width: 2; -*-
+// vim: set ts=2 sw=2 et ai :
+
 /*
   Container Tab Groups
-  Copyright (C) 2021 Menhera.org
+  Copyright (C) 2022 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,7 +27,9 @@ export const getWindowIds = async () => {
       populate: false,
       windowTypes: ['normal'],
     });
-    return windows.map((window) => window.id);
+    return windows
+    .filter((window) => window.id !== undefined)
+    .map((window) => window.id ?? browser.windows.WINDOW_ID_NONE);
   } catch (e) {
     return [];
   }
