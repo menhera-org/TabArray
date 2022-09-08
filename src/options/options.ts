@@ -80,7 +80,7 @@ config['newtab.keepContainer'].observe((value) => {
   inputNewTabKeepContainer!.checked = value;
 });
 
-inputNewTabKeepContainer?.addEventListener('change', (ev) => {
+inputNewTabKeepContainer?.addEventListener('change', () => {
   setConfigValue(config['newtab.keepContainer'], inputNewTabKeepContainer.checked);
 });
 
@@ -89,7 +89,7 @@ config['tab.external.containerOption'].observe((value) => {
   selectExternalTabContainerOption!.value = value;
 });
 
-selectExternalTabContainerOption?.addEventListener('change', (ev) => {
+selectExternalTabContainerOption?.addEventListener('change', () => {
   setConfigValue(config['tab.external.containerOption'], selectExternalTabContainerOption.value as ExternalContainerOption);
 });
 
@@ -98,7 +98,7 @@ config['tab.groups.indexOption'].observe((value) => {
   selectGroupIndexOption!.value = value;
 });
 
-selectGroupIndexOption?.addEventListener('change', (ev) => {
+selectGroupIndexOption?.addEventListener('change', () => {
   setConfigValue(config['tab.groups.indexOption'], selectGroupIndexOption.value as GroupIndexOption);
 });
 
@@ -107,7 +107,7 @@ config['appearance.popupSize'].observe((value) => {
   selectPopupSize!.value = value;
 });
 
-selectPopupSize?.addEventListener('change', (ev) => {
+selectPopupSize?.addEventListener('change', () => {
   setConfigValue(config['appearance.popupSize'], selectPopupSize.value as PopupSize);
 });
 
@@ -115,7 +115,7 @@ privacyConfig.firstPartyIsolate.observe((value) => {
   inputFirstPartyIsolate!.checked = value;
 });
 
-inputFirstPartyIsolate?.addEventListener('change', (ev) => {
+inputFirstPartyIsolate?.addEventListener('change', () => {
   setConfigValue(privacyConfig.firstPartyIsolate, inputFirstPartyIsolate.checked);
 });
 
@@ -123,6 +123,6 @@ privacyConfig.resistFingerprinting.observe((value) => {
   inputResistFingerprinting!.checked = value;
 });
 
-inputResistFingerprinting?.addEventListener('change', (ev) => {
+inputResistFingerprinting?.addEventListener('change', () => {
   setConfigValue(privacyConfig.resistFingerprinting, inputResistFingerprinting.checked);
 });
