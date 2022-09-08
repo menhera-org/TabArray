@@ -22,6 +22,8 @@
   },
   "include": [
     "src/**/*",
-    "webpack.config.js"
+    "webpack.config.js",
+    ".eslintrc.cjs",
+    "*.js"
 	]
 }

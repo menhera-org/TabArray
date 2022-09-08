@@ -19,11 +19,15 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* eslint-env es2020, node */
+
 /*
   Run with `make clean` and `npm run clean`
 */
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs');
 
 const findAndClear = function find(startPath, filter) {
@@ -41,8 +45,8 @@ const findAndClear = function find(startPath, filter) {
     } else if (filename.endsWith(filter)) {
       console.log('removing:', filename);
       fs.unlinkSync(filename);
-    };
-  };
+    }
+  }
 };
 
 const distDir = path.join(__dirname, 'dist');
