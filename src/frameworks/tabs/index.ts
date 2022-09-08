@@ -20,3 +20,4 @@
 */
 
 export { Tab } from './Tab';
+export { TabPreviewService } from './TabPreviewService';
