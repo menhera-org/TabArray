@@ -19,7 +19,6 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { InetAddressFactory } from "./InetAddressFactory";
 import { Ipv4Address } from "./Ipv4Address";
 
 export class HostnameService {
@@ -30,7 +29,9 @@ export class HostnameService {
     return this.INSTANCE;
   }
 
-  private constructor() {}
+  private constructor() {
+    // do nothing.
+  }
 
   public getEncodedDomain(domain: string): string {
     return new URL(`http://${domain}`).hostname;

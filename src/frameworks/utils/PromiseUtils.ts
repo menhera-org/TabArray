@@ -21,8 +21,13 @@
 
 export class PromiseUtils {
   public static createPromise<T>() {
-    let resolve: (value: T) => void = () => {};
-    let reject: (reason: any) => void = () => {};
+    let resolve: (value: T) => void = () => {
+      // this is never called.
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let reject: (reason: any) => void = () => {
+      // this is never called.
+    };
     const promise = new Promise<T>((res, rej) => {
       resolve = res;
       reject = rej;
