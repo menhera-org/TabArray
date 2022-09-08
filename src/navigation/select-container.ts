@@ -70,7 +70,7 @@ const renderUserContext = (origUserContext: UserContext, aUserContextElement: HT
   const userContextElement = aUserContextElement ?? document.createElement('button');
   userContextElement.classList.add('userContext-button');
   userContextElement.textContent = '';
-  userContextElement.title = i18n.getMessage('defaultContainerName', userContext.id);
+  userContextElement.title = i18n.getMessage('defaultContainerName', String(userContext.id));
 
   const userContextIconElement = document.createElement('span');
   userContextIconElement.classList.add('userContext-button-icon');
