@@ -20,8 +20,6 @@
 import browser from 'webextension-polyfill';
 import { LifecycleEventTarget } from "./LifecycleEventTarget.js";
 
-// BrowserTab
-const CLASS_ID = 'ac14db90-8a54-41f5-b080-0cc73dd5a937';
 
 export class BrowserTab extends LifecycleEventTarget {
   constructor(id) {
