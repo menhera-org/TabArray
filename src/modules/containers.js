@@ -28,9 +28,9 @@ import { TabGroupService } from '../frameworks/tabGroups';
 
 const tabGroupService = TabGroupService.getInstance();
 
-// 'never' -- do not show indeces
-// 'collapsed' -- show indeces for collapsed containers
-// 'always' -- always show indeces
+// 'never' -- do not show indices
+// 'collapsed' -- show indices for collapsed containers
+// 'always' -- always show indices
 let configGroupIndexOption = 'never';
 config['tab.groups.indexOption'].observe((value) => {
   configGroupIndexOption = value;
