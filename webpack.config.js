@@ -13,8 +13,8 @@ module.exports = {
   entry: {
     'background': './src/background.js',
     'index': {
-      import: './src/index/index.ts',
-      filename: 'index/index.js',
+      import: './src/index/index-tab.ts',
+      filename: 'index/index-tab.js',
     },
     'navigation': {
       import: './src/navigation/select-container.ts',
