@@ -38,6 +38,15 @@ export class UrlService {
     // nothing.
   }
 
+  public isStringValidUrl(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   public isPrivilegedScheme(url: URL): boolean {
     return UrlService.PRIVILEGED_SCHEMES.has(url.protocol.slice(0, -1));
   }

@@ -32,6 +32,7 @@ import { renderTab, renderContainerHeading } from './PopupUtils';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
 import { FirstPartyService } from '../frameworks/tabGroups';
+import { FirstPartyTabMap } from '../frameworks/tabGroups';
 
 const userContextService = UserContextService.getInstance();
 const firstPartyService = FirstPartyService.getInstance();
@@ -335,11 +336,10 @@ globalThis.render = () => {
       throw void 0;
     }
     sitesRendering = true;
-    FirstpartyManager.getAll().then((registrableDomainsData) => {
+    FirstPartyTabMap.create().then((registrableDomainsData) => {
       sitesPaneTop.textContent = '';
-      const registrableDomains = Reflect.ownKeys(registrableDomainsData);
-      for (const registrableDomain of registrableDomains) {
-        const data = registrableDomainsData[registrableDomain];
+      const registrableDomains = registrableDomainsData;
+      for (const [registrableDomain, data] of registrableDomains) {
         const button = document.createElement('button');
         const buttonText = document.createElement('span');
         buttonText.classList.add('button-text');
@@ -347,7 +347,7 @@ globalThis.render = () => {
         closeButton.classList.add('site-close');
         button.append(buttonText);
         button.append(closeButton);
-        buttonText.dataset.tabCount = data.tabCount;
+        buttonText.dataset.tabCount = data.length;
         buttonText.textContent = registrableDomain || '(null)';
         sitesPaneTop.append(button);
 
@@ -362,15 +362,12 @@ globalThis.render = () => {
         const site = document.createElement('span');
         site.classList.add('site');
         button.append(site);
-        let iconUrl = data.icon;
-        if (!iconUrl) {
-          iconUrl = '/img/transparent.png';
-        }
+        let iconUrl = data[0] ? data[0].favIconUrl : '/img/transparent.png';
         tabIconElement.src = iconUrl;
         site.append(tabIconElement);
         const siteTitle = document.createElement('span');
         siteTitle.classList.add('tab-label');
-        siteTitle.textContent = data.title;
+        siteTitle.textContent = data[0] ? data[0].title : '';
         site.append(siteTitle);
         button.addEventListener('click', (ev) => {
           renderSiteDetails(registrableDomain)

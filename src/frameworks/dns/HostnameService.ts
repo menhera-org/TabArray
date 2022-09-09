@@ -37,6 +37,9 @@ export class HostnameService {
     return new URL(`http://${domain}`).hostname;
   }
 
+  /**
+   * Note this accepts a url, not a hostname.
+   */
   public isHostnameIpAddress(url: string): boolean {
     try {
       const { hostname } = new URL(url);

@@ -19,60 +19,13 @@
 
 import browser from 'webextension-polyfill';
 import { FirstPartyService } from '../frameworks/tabGroups/FirstPartyService';
-import { dns } from '../frameworks/index';
 import { UserContext } from '../frameworks/tabGroups';
 
 // This file is to be loaded only by background.js.
 
-const { HostnameService } = dns;
-const hostnameService = HostnameService.getInstance();
 const firstPartyService = FirstPartyService.getInstance();
 
 globalThis.FirstpartyManager = {};
-
-FirstpartyManager.getAll = async () => {
-  const tabs = await browser.tabs.query({
-    windowType: 'normal',
-  });
-  const sites = new Map;
-  for (const tabObj of tabs) {
-    try {
-      const url = new URL(tabObj.url);
-      if (url.protocol != 'http:' && url.protocol != 'https:') {
-        continue;
-      }
-      const hostname = url.hostname;
-      if (hostnameService.isHostnameIpAddress(hostname)) {
-        continue;
-      }
-      const registrableDomain = firstPartyService.getRegistrableDomain(url);
-      if (!sites.has(registrableDomain)) {
-        sites.set(registrableDomain, {tabCount: 0});
-      }
-      const site = sites.get(registrableDomain);
-      site.tabCount += 1;
-      if (tabObj.title) {
-        site.title = tabObj.title;
-      }
-      if (tabObj.favIconUrl) {
-        site.icon = tabObj.favIconUrl;
-      }
-    } catch (e) {
-      continue;
-    }
-  }
-  const result = {};
-  const registrableDomains = [... sites.keys()];
-  registrableDomains.sort();
-  for (const registrableDomain of registrableDomains) {
-    if (!registrableDomain) {
-      result[''] = sites.get(registrableDomain);
-    } else {
-      result[registrableDomain] = sites.get(registrableDomain);
-    }
-  }
-  return result;
-};
 
 FirstpartyManager.closeAllByContainer = async (aRegistrableDomain, aUserContextId) => {
   const registrableDomain = aRegistrableDomain || '';

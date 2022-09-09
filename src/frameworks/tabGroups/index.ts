@@ -25,3 +25,4 @@ export { TabGroup } from './TabGroup';
 export { UserContext } from './UserContext';
 export { TabGroupService } from './TabGroupService';
 export { TabList } from './TabList';
+export { FirstPartyTabMap } from './FirstPartyTabMap';

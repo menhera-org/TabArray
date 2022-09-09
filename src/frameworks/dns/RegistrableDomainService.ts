@@ -106,7 +106,7 @@ export class RegistrableDomainService {
       return '';
     }
     const hostname = urlObj.hostname;
-    if (RegistrableDomainService.HOSTNAME_SERVICE.isHostnameIpAddress(hostname)) {
+    if (RegistrableDomainService.HOSTNAME_SERVICE.isHostnameIpAddress(url)) {
       return '';
     }
     return hostname;
