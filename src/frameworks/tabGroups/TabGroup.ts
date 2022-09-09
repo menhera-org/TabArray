@@ -44,7 +44,7 @@ export class TabGroup {
 
   private constructor(originAttributes: OriginAttributes) {
     this.originAttributes = originAttributes;
-    if (!this.originAttributes.hasFirstpartyDomain() && !this._hasCookieStoreId()) {
+    if (!this.originAttributes.hasFirstpartyDomain() && !this.originAttributes.hasCookieStoreId()) {
       throw new Error('TabGroup must have either a first-party domain or a cookie store ID');
     }
     this.refreshTabs().catch((e) => {
@@ -89,7 +89,7 @@ export class TabGroup {
           const url = new URL(tab.url);
           const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
           if (firstPartyDomain === this.originAttributes.firstpartyDomain) {
-            if (this._hasCookieStoreId()) {
+            if (this.originAttributes.hasCookieStoreId()) {
               if (tab.cookieStoreId === this.originAttributes.cookieStoreId) {
                 this._tabIds.add(tabId);
                 this._notifyObservers();
@@ -108,7 +108,7 @@ export class TabGroup {
 
   private _watchCreatedTabs(): void {
     // When there is a first-party domain, tabs are added at the time of url update.
-    if (this._hasCookieStoreId()) {
+    if (this.originAttributes.hasCookieStoreId()) {
       browser.tabs.onCreated.addListener((tab) => {
         if (tab.cookieStoreId === this.originAttributes.cookieStoreId && tab.id !== undefined) {
           if (this.originAttributes.hasFirstpartyDomain()) {
@@ -132,18 +132,6 @@ export class TabGroup {
     }
   }
 
-  private _hasCookieStoreId(): boolean {
-    return this.originAttributes.hasCookieStoreId();
-  }
-
-  private _getUrlPattern(): string {
-    if (this.originAttributes.hasFirstpartyDomain()) {
-      return `*://*.${this.originAttributes.firstpartyDomain}/*`;
-    } else {
-      return '<all_urls>';
-    }
-  }
-
   public get size(): number {
     return this._tabIds.size;
   }
@@ -162,11 +150,11 @@ export class TabGroup {
 
   public async refreshTabs(): Promise<void> {
     const query: browser.Tabs.QueryQueryInfoType = {};
-    if (this._hasCookieStoreId()) {
+    if (this.originAttributes.hasCookieStoreId()) {
       query.cookieStoreId = this.originAttributes.cookieStoreId;
     }
     if (this.originAttributes.hasFirstpartyDomain()) {
-      query.url = this._getUrlPattern();
+      query.url = this.originAttributes.getUrlPattern();
     }
     const tabs = await browser.tabs.query(query);
     this._tabIds.clear();

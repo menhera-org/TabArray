@@ -150,6 +150,14 @@ export class OriginAttributes {
     return this.equals(OriginAttributes.DEFAULT);
   }
 
+  public getUrlPattern(): string {
+    if (this.hasFirstpartyDomain()) {
+      return `*://*.${this.firstpartyDomain}/*`;
+    } else {
+      return '<all_urls>';
+    }
+  }
+
   public toString(): string {
     if (this.isDefault()) {
       return '';
