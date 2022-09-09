@@ -107,11 +107,11 @@ export class TabGroup {
   }
 
   private _watchCreatedTabs(): void {
-    // When there is a first-party domain, tabs are added at the time of url update.
     if (!this.originAttributes.hasCookieStoreId()) {
       return;
     }
 
+    // When there is a first-party domain, tabs are added at the time of url update.
     browser.tabs.onCreated.addListener((tab) => {
       if (tab.cookieStoreId === this.originAttributes.cookieStoreId && tab.id !== undefined) {
         if (this.originAttributes.hasFirstpartyDomain()) {
