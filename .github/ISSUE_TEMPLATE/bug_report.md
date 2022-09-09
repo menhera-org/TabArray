@@ -12,6 +12,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -29,6 +30,7 @@ If applicable, open `about:debugging` > This Firefox and select Inspect for this
 If you cannot find any errors there, try opening the browser console (hamburger menu > more tools > browser console).
 
 **Firefox (please complete the following information):**
+
  - OS: [e.g. iOS]
  - Browser edition and version [e.g. ESR, Developer Edition]
  - Extension version [e.g. 12]
