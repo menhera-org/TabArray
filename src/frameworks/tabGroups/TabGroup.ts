@@ -252,9 +252,10 @@ export class TabGroup {
     const cookieStoreId = this.originAttributes.hasCookieStoreId() ? this.originAttributes.cookieStoreId : undefined;
     const lastIndex = windowId ? await this.getLastIndex(windowId) : undefined;
     const index = lastIndex === undefined ? undefined : lastIndex + 1;
+    const urlString = url ? url.toString() : undefined;
     const browserTab = await browser.tabs.create({
       windowId,
-      url: url ? url.toString() : undefined,
+      url: urlString,
       cookieStoreId,
       index,
       active,
