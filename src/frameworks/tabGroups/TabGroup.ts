@@ -248,7 +248,7 @@ export class TabGroup {
     return lastIndex;
   }
 
-  public isUrlValidaInGroup(url: URL): boolean {
+  public isUrlValidInGroup(url: URL): boolean {
     if (!this.originAttributes.hasFirstpartyDomain()) {
       return true;
     }
@@ -261,7 +261,7 @@ export class TabGroup {
 
   public async openTabOnWindow(windowId: number | undefined, url: URL | null = null, active = true): Promise<Tab> {
     if (url) {
-      if (this.isUrlValidaInGroup(url)) {
+      if (this.isUrlValidInGroup(url)) {
         throw new Error('URL is not in the same first-party domain');
       }
     } else if (this.originAttributes.hasFirstpartyDomain()) {
