@@ -83,21 +83,22 @@ export class TabGroup {
             this._notifyObservers();
           }
         } else {
-          if (!this._urlService.isHttpScheme(new URL(tab.url))) {
+          const url = new URL(tab.url);
+          if (!this._urlService.isHttpScheme(url)) {
             return;
           }
-          const url = new URL(tab.url);
           const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
-          if (firstPartyDomain === this.originAttributes.firstpartyDomain) {
-            if (this.originAttributes.hasCookieStoreId()) {
-              if (tab.cookieStoreId === this.originAttributes.cookieStoreId) {
-                this._tabIds.add(tabId);
-                this._notifyObservers();
-              }
-            } else {
+          if (firstPartyDomain !== this.originAttributes.firstpartyDomain) {
+            return;
+          }
+          if (this.originAttributes.hasCookieStoreId()) {
+            if (tab.cookieStoreId === this.originAttributes.cookieStoreId) {
               this._tabIds.add(tabId);
               this._notifyObservers();
             }
+          } else {
+            this._tabIds.add(tabId);
+            this._notifyObservers();
           }
         }
       }, {
