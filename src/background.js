@@ -33,6 +33,7 @@ import {IndexTab} from './modules/IndexTab';
 import './firstparty/firstparty.js';
 import { UserContext } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
+import { TabGroupService } from './frameworks/tabGroups';
 
 // watchdog
 let scriptCompleted = false;
@@ -44,6 +45,7 @@ window.addEventListener('error', ev => {
 });
 
 const userContextService = UserContextService.getInstance();
+const tabGroupService = TabGroupService.getInstance();
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
@@ -356,13 +358,14 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   }
 });
 
-browser.contextualIdentities.onRemoved.addListener(({contextualIdentity}) => {
+browser.contextualIdentities.onRemoved.addListener(async ({contextualIdentity}) => {
   const userContextId = UserContext.fromCookieStoreId(contextualIdentity.cookieStoreId);
   console.log('userContext %d removed', userContextId);
-  containers.closeAllTabs(userContextId).then(() => {
+  const tabGroup = await tabGroupService.getTabGroupFromUserContextId(userContextId);
+  tabGroup.closeTabs().then(() => {
     console.log('Closed all tabs for userContext %d', userContextId);
-  }).catch(err => {
-    console.error('cleanup failed for userContext %d', userContextId);
+  }).catch((e) => {
+    console.error('cleanup failed for userContext %d', userContextId, e);
   });
 });
 

@@ -44,17 +44,6 @@ const PRIVILEGED_SCHEMES = new Set([
   'file',
 ]);
 
-/**
- * 
- * @param {number} aUserContextId 
- */
-export const closeAllTabs = async (aUserContextId) => {
-  const tabGroup = tabGroupService.getTabGroupFromUserContextId(aUserContextId);
-  const tabCount = tabGroup.size;
-  console.log('Closing %d tab(s)', tabCount);
-  await tabGroup.closeTabs();
-};
-
 export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
   const tabGroup = tabGroupService.getTabGroupFromUserContextId(aUserContextId);
   await tabGroup.closeUnpinnedTabsOnWindow(aWindowId);
