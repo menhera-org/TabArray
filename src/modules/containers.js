@@ -35,14 +35,6 @@ config['tab.groups.indexOption'].observe((value) => {
   configGroupIndexOption = value;
 });
 
-const PRIVILEGED_SCHEMES = new Set([
-  'about',
-  'chrome',
-  'javascript',
-  'data',
-  'file',
-]);
-
 export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
   const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
   await tabGroup.tabList.closeUnpinnedTabsOnWindow(aWindowId);
