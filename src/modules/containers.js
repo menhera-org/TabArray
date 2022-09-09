@@ -24,6 +24,9 @@ import * as newtab from './newtab';
 import { setActiveUserContext } from './usercontext-state.js';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
+import { TabGroupService } from '../frameworks/tabGroups';
+
+const tabGroupService = TabGroupService.getInstance();
 
 // 'never' -- do not show indeces
 // 'collapsed' -- show indeces for collapsed containers
@@ -41,32 +44,19 @@ const PRIVILEGED_SCHEMES = new Set([
   'file',
 ]);
 
-export const getIds = async () => {
-  try {
-    return (await UserContext.getAll()).map((userContext) => userContext.id);
-  } catch (e) {
-    console.error('userContext disabled?');
-    return [];
-  }
-};
-
 /**
  * 
  * @param {number} aUserContextId 
  */
 export const closeAllTabs = async (aUserContextId) => {
-  const userContext = new UserContext(aUserContextId);
-  const tabGroup = await userContext.getTabGroup();
+  const tabGroup = tabGroupService.getTabGroupFromUserContextId(aUserContextId);
   const tabCount = tabGroup.size;
   console.log('Closing %d tab(s)', tabCount);
   await tabGroup.closeTabs();
 };
 
 export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
-  const userContext = new UserContext(aUserContextId);
-  const tabGroup = await userContext.getTabGroup();
-  const tabCount = tabGroup.size;
-  console.log('Closing %d tab(s)', tabCount);
+  const tabGroup = tabGroupService.getTabGroupFromUserContextId(aUserContextId);
   await tabGroup.closeUnpinnedTabsOnWindow(aWindowId);
 };
 

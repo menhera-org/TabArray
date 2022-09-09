@@ -19,6 +19,11 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { UserContext } from "./UserContext";
+import { OriginAttributes } from "./OriginAttributes";
+import { Uint32 } from "../types";
+import { TabGroup } from "./TabGroup";
+
 export class TabGroupService {
   // static definitions.
   // This must be at the end of static definitions.
@@ -30,5 +35,17 @@ export class TabGroupService {
 
   private constructor() {
     // Do nothing.
+  }
+
+  public async getTabGroupFromUserContextId(aUserContextId: Uint32.Uint32): Promise<TabGroup> {
+    const userContext = UserContext.createIncompleteUserContext(aUserContextId);
+    const tabGroup = await userContext.getTabGroup();
+    return tabGroup;
+  }
+
+  public async getPrivateBrowsingTabGroup(): Promise<TabGroup> {
+    const originAttributes = new OriginAttributes(undefined, 0 as Uint32.Uint32, 1 as Uint32.Uint32);
+    const tabGroup = await TabGroup.createTabGroup(originAttributes);
+    return tabGroup;
   }
 }

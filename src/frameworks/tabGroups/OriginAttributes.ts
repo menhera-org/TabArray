@@ -30,6 +30,9 @@ import { FirstPartyService } from "./FirstPartyService";
  * For userContextId and privateBrowsingId, null is used as a wild card.
  */
 export class OriginAttributes {
+  /**
+   * OriginAttributes with no values.
+   */
   public static readonly DEFAULT = new OriginAttributes();
 
   private static readonly DEFAULT_STORE = 'firefox-default';
