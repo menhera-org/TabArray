@@ -42,7 +42,18 @@ checks:
     config:
       threshold: #language-specific defaults. overrides affect all languages.
 
-# plugins:
+plugins:
+  csslint:
+    enabled: true
+  editorconfig:
+    enabled: true
+  git-legal:
+    enabled: true
+    config:
+      allow_affero_copyleft: true
+      allow_strong_copyleft: true
+  markdownlint:
+    enabled: true
 #   eslint:
 #     enabled: true
 #     channel: "eslint-6"
