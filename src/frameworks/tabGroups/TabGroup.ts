@@ -85,12 +85,7 @@ export class TabGroup {
         if (!this._urlService.isHttpScheme(url) || firstPartyDomain !== this.originAttributes.firstpartyDomain) {
           return;
         }
-        if (this.originAttributes.hasCookieStoreId()) {
-          if (tab.cookieStoreId === this.originAttributes.cookieStoreId) {
-            this._tabIds.add(tabId);
-            this._notifyObservers();
-          }
-        } else {
+        if (!this.originAttributes.hasCookieStoreId() || tab.cookieStoreId === this.originAttributes.cookieStoreId) {
           this._tabIds.add(tabId);
           this._notifyObservers();
         }
