@@ -45,7 +45,7 @@ const PRIVILEGED_SCHEMES = new Set([
 ]);
 
 export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
-  const tabGroup = tabGroupService.getTabGroupFromUserContextId(aUserContextId);
+  const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
   await tabGroup.closeUnpinnedTabsOnWindow(aWindowId);
 };
 
