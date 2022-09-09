@@ -23,7 +23,11 @@ import { IndexTab } from "../modules/IndexTab";
 const indexTab = new IndexTab(location.href);
 document.title = indexTab.title;
 
-const rect = document.querySelector('#rect');
+const rect = document.querySelector<SVGRectElement>('#rect');
+const iconElement = document.querySelector<HTMLLinkElement>(`link[rel="icon"]`);
+if (!rect || !iconElement) {
+  throw new Error('Failed to find the elements');
+}
 
 rect.setAttribute('fill', indexTab.colorCode);
 rect.style.mask = `url(${indexTab.iconUrl}) center / contain no-repeat`;
@@ -39,6 +43,6 @@ browser.tabs.getCurrent().then(async (tabObj) => {
       height: 256,
     }
   });
-  document.querySelector(`link[rel="icon"]`).href = imageUrl;
+  iconElement.href = imageUrl;
 });
 
