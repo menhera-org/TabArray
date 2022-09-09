@@ -148,6 +148,9 @@ export class UserContext {
     const tabs = await browser.tabs.query({});
     const userContextIds = new Set<Uint32.Uint32>();
     for (const tab of tabs) {
+      if (tab.incognito) {
+        continue;
+      }
       userContextIds.add(UserContext.fromCookieStoreId(tab.cookieStoreId ?? UserContext.DEFAULT_STORE));
     }
     return Array.from(userContextIds);
