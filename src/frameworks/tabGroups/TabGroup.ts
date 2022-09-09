@@ -108,28 +108,28 @@ export class TabGroup {
 
   private _watchCreatedTabs(): void {
     // When there is a first-party domain, tabs are added at the time of url update.
-    if (this.originAttributes.hasCookieStoreId()) {
-      browser.tabs.onCreated.addListener((tab) => {
-        if (tab.cookieStoreId === this.originAttributes.cookieStoreId && tab.id !== undefined) {
-          if (this.originAttributes.hasFirstpartyDomain()) {
-            if (tab.url !== undefined) {
-              if (!this._urlService.isHttpScheme(new URL(tab.url))) {
-                return;
-              }
-              const url = new URL(tab.url);
-              const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
-              if (firstPartyDomain === this.originAttributes.firstpartyDomain) {
-                this._tabIds.add(tab.id);
-                this._notifyObservers();
-              }
-            }
-          } else {
+    if (!this.originAttributes.hasCookieStoreId()) {
+      return;
+    }
+
+    browser.tabs.onCreated.addListener((tab) => {
+      if (tab.cookieStoreId === this.originAttributes.cookieStoreId && tab.id !== undefined) {
+        if (this.originAttributes.hasFirstpartyDomain()) {
+          if (tab.url == undefined || !this._urlService.isHttpScheme(new URL(tab.url))) {
+            return;
+          }
+          const url = new URL(tab.url);
+          const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
+          if (firstPartyDomain === this.originAttributes.firstpartyDomain) {
             this._tabIds.add(tab.id);
             this._notifyObservers();
           }
+        } else {
+          this._tabIds.add(tab.id);
+          this._notifyObservers();
         }
-      });
-    }
+      }
+    }); 
   }
 
   public get size(): number {
