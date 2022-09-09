@@ -18,7 +18,6 @@
 */
 
 import browser from 'webextension-polyfill';
-import '../modules/background-console.js';
 import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
 
