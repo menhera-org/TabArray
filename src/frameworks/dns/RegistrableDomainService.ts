@@ -133,7 +133,6 @@ export class RegistrableDomainService {
     for (let i = 1; i < names.length; i++) {
       const domain = names.slice(i).join('.');
       const parentDomain = names.slice(i + 1).join('.');
-      const childDomain = names.slice(i - 1).join('.');
       const wildcardDomain = '*.' + parentDomain;
       if (this.rules.has(domain)) {
         return domain;

@@ -65,46 +65,39 @@ export class TabGroup {
   }
 
   private _watchFirstPartyDomain(): void {
-    if (this.originAttributes.hasFirstpartyDomain()) {
-      browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-        if (tab.url === undefined) {
+    if (!this.originAttributes.hasFirstpartyDomain()) {
+      return;
+    }
+
+    browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+      if (tab.url === undefined) {
+        return;
+      }
+      const url = new URL(tab.url);
+      const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
+      if (this._tabIds.has(tabId)) {
+        if (!this._urlService.isHttpScheme(url) || firstPartyDomain !== this.originAttributes.firstpartyDomain) {
+          this._tabIds.delete(tabId);
+          this._notifyObservers();
           return;
         }
-        if (this._tabIds.has(tabId)) {
-          if (!this._urlService.isHttpScheme(new URL(tab.url))) {
-            this._tabIds.delete(tabId);
-            this._notifyObservers();
-            return;
-          }
-          const url = new URL(tab.url);
-          const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
-          if (firstPartyDomain !== this.originAttributes.firstpartyDomain) {
-            this._tabIds.delete(tabId);
-            this._notifyObservers();
-          }
-        } else {
-          const url = new URL(tab.url);
-          if (!this._urlService.isHttpScheme(url)) {
-            return;
-          }
-          const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
-          if (firstPartyDomain !== this.originAttributes.firstpartyDomain) {
-            return;
-          }
-          if (this.originAttributes.hasCookieStoreId()) {
-            if (tab.cookieStoreId === this.originAttributes.cookieStoreId) {
-              this._tabIds.add(tabId);
-              this._notifyObservers();
-            }
-          } else {
+      } else {
+        if (!this._urlService.isHttpScheme(url) || firstPartyDomain !== this.originAttributes.firstpartyDomain) {
+          return;
+        }
+        if (this.originAttributes.hasCookieStoreId()) {
+          if (tab.cookieStoreId === this.originAttributes.cookieStoreId) {
             this._tabIds.add(tabId);
             this._notifyObservers();
           }
+        } else {
+          this._tabIds.add(tabId);
+          this._notifyObservers();
         }
-      }, {
-        properties: ['url'],
-      });
-    }
+      }
+    }, {
+      properties: ['url'],
+    });
   }
 
   private _watchCreatedTabs(): void {
