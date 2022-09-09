@@ -30,11 +30,6 @@ const firstPartyService = FirstPartyService.getInstance();
 
 globalThis.FirstpartyManager = {};
 
-FirstpartyManager.getRegistrableDomain = (aDomain) =>
-{
-  return firstPartyService.getRegistrableDomain(new URL(`http://${aDomain}/`));
-};
-
 FirstpartyManager.getAll = async () => {
   const tabs = await browser.tabs.query({
     windowType: 'normal',
@@ -50,16 +45,16 @@ FirstpartyManager.getAll = async () => {
       if (hostnameService.isHostnameIpAddress(hostname)) {
         continue;
       }
-      const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname);
+      const registrableDomain = firstPartyService.getRegistrableDomain(url);
       if (!sites.has(registrableDomain)) {
         sites.set(registrableDomain, {tabCount: 0});
       }
       const site = sites.get(registrableDomain);
       site.tabCount += 1;
-      if (!!tabObj.title) {
+      if (tabObj.title) {
         site.title = tabObj.title;
       }
-      if (!!tabObj.favIconUrl) {
+      if (tabObj.favIconUrl) {
         site.icon = tabObj.favIconUrl;
       }
     } catch (e) {
@@ -95,8 +90,7 @@ FirstpartyManager.closeAllByContainer = async (aRegistrableDomain, aUserContextI
         console.warn('This should not happen');
         continue;
       }
-      const {hostname} = url;
-      const tabRegistrableDomain = FirstpartyManager.getRegistrableDomain(hostname) || '';
+      const tabRegistrableDomain = firstPartyService.getRegistrableDomain(url);
       if (registrableDomain != tabRegistrableDomain) {
         continue;
       }
@@ -106,8 +100,4 @@ FirstpartyManager.closeAllByContainer = async (aRegistrableDomain, aUserContextI
     }
   }
   await browser.tabs.remove(tabIdsClosed);
-};
-
-FirstpartyManager.clearData = async () => {
-  // NOOP. This is for compatibility with the old implementation.
 };

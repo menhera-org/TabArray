@@ -31,8 +31,10 @@ import { config } from '../config/config';
 import { renderTab, renderContainerHeading } from './PopupUtils';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
+import { FirstPartyService } from '../frameworks/tabGroups';
 
 const userContextService = UserContextService.getInstance();
+const firstPartyService = FirstPartyService.getInstance();
 document.body.innerHTML = TEMPLATE; // static string.
 
 const STATE_NO_TABS = 0;
@@ -168,10 +170,9 @@ const renderContainer = (userContextId, currentWindowId) => {
   let containerState = STATE_NO_TABS;
   let tabCount = 0;
   for (const tab of tabs) {
-    try {
-      new IndexTab(tab.url);
+    if (IndexTab.isIndexTabUrl(tab.url)) {
       continue;
-    } catch (e) {}
+    }
     if (tab.pinned) continue;
     if (tab.userContextId != userContextId) continue;
     tabCount++;
@@ -574,8 +575,7 @@ globalThis.renderSiteDetails = async (aSite) => {
         console.warn('This should not happen');
         continue;
       }
-      const {hostname} = url;
-      const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname);
+      const registrableDomain = firstPartyService.getRegistrableDomain(new URL(url));
       if (registrableDomain != aSite) {
         continue;
       }
@@ -617,8 +617,7 @@ globalThis.closeSite = async (aRegistrableDomain) => {
       console.warn('This should not happen');
       continue;
     }
-    const {hostname} = url;
-    const registrableDomain = FirstpartyManager.getRegistrableDomain(hostname) || '';
+    const registrableDomain = firstPartyService.getRegistrableDomain(new URL(url));
     if (aRegistrableDomain != registrableDomain) {
       continue;
     }

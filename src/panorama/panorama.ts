@@ -67,20 +67,11 @@ const renderTab = (tab: Tab) => {
   return tabElement;
 };
 
-const isIndexTab = (url: string): boolean => {
-  try {
-    new IndexTab(url);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
 const renderContainer = async (userContext: UserContext) => {
   const userContextId = userContext.id;
   const containerElement = new PanoramaContainerElement(userContext);
   const tabGroup = await userContext.getTabGroup();
-  const tabs = (await tabGroup.tabList.getTabs()).filter((tab) => !isIndexTab(tab.url));
+  const tabs = (await tabGroup.tabList.getTabs()).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
   containerElement.tabCount = tabs.length;
   containerElement.containerTabsElement.append(...tabs.map((tab) => {
     const tabElement = renderTab(tab);

@@ -24,12 +24,31 @@ const defaultIconUrl = browser.runtime.getURL('/img/category_black_24dp.svg')
 const iconUrl = browser.runtime.getURL('/img/usercontext.svg');
 
 export class IndexTab {
-  public url: string;
-  public iconUrl: string;
-  public title: string;
-  public colorCode: string;
+  public readonly url: string;
+  public readonly iconUrl: string;
+  public readonly title: string;
+  public readonly colorCode: string;
 
-  constructor(aUrl: string) {
+  public static isIndexTabUrl(url: string) {
+    try {
+      new IndexTab(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  public static getUrl(title: string, icon: string, colorCode: string) {
+    const url = new URL(indexPageUrl);
+    const params = new URLSearchParams();
+    params.set('i', icon || '');
+    params.set('t', title || '');
+    params.set('c', colorCode || '#000000');
+    url.hash = '#' + params;
+    return new IndexTab(url.href);
+  }
+
+  public constructor(aUrl: string) {
     const url = new URL(aUrl);
     this.url = url.href;
     const hash = url.hash.slice(1);
@@ -46,15 +65,5 @@ export class IndexTab {
     }
     this.title = params.get('t') || '';
     this.colorCode = params.get('c') || '#000000';
-  }
-
-  static getUrl(title: string, icon: string, colorCode: string) {
-    const url = new URL(indexPageUrl);
-    const params = new URLSearchParams();
-    params.set('i', icon || '');
-    params.set('t', title || '');
-    params.set('c', colorCode || '#000000');
-    url.hash = '#' + params;
-    return new IndexTab(url.href);
   }
 }
