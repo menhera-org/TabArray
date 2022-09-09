@@ -30,7 +30,6 @@ import { ADDON_PAGE, CONFIRM_PAGE } from './defs';
 import { getWindowIds } from './modules/windows';
 import './state-manager/StateManager.js';
 import {IndexTab} from './modules/IndexTab';
-import './firstparty/firstparty.js';
 import { UserContext } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
 import { TabGroupService } from './frameworks/tabGroups';

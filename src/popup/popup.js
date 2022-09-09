@@ -24,7 +24,7 @@ import * as containers from '../modules/containers.js';
 import '../components/usercontext-colorpicker';
 import '../components/usercontext-iconpicker';
 import {PANORAMA_PAGE} from '../defs';
-import { getStateManager, getFirstpartyManager } from '../modules/global-state.js';
+import { getStateManager } from '../modules/global-state.js';
 import { IndexTab } from '../modules/IndexTab';
 import { TEMPLATE } from './PopupTemplate';
 import { config } from '../config/config';
@@ -640,10 +640,8 @@ Promise.all([
     return windowObj.id;
   }),
   getStateManager(),
-  getFirstpartyManager(),
-]).then(async ([windowId, aStateManager, aFirstpartyManager]) => {
+]).then(async ([windowId, aStateManager]) => {
   globalThis.StateManager = aStateManager;
-  globalThis.FirstpartyManager = aFirstpartyManager;
   currentWindowId = windowId;
   render();
   StateManager.addEventListenerWindow(window, 'tabOpen', (ev) => {

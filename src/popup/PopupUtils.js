@@ -19,10 +19,6 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// This file currently depends on FirstPartyManager and StateManager.
-// It is not a good idea to have a dependency on StateManager, but
-// it is necessary for now.
-
 import browser from 'webextension-polyfill';
 import { OriginAttributes } from '../frameworks/tabGroups';
 import { TabGroup } from '../frameworks/tabGroups';

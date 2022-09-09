@@ -35,15 +35,3 @@ export const getStateManager = async () => {
   }
   return StateManager;
 };
-
-export const getFirstpartyManager = async () => {
-  const background = await browser.runtime.getBackgroundPage();
-  if (!background) {
-    throw new Error('Invalid background page');
-  }
-  while (!background.FirstpartyManager) {
-    await new Promise((res) => setTimeout(() => res(), 100));
-  }
-  const {FirstpartyManager} = background;
-  return FirstpartyManager;
-};
