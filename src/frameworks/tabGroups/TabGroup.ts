@@ -241,10 +241,8 @@ export class TabGroup {
     const tabs = await this.getUnpinnedTabs();
     let lastIndex: number | undefined = undefined;
     for (const tab of tabs) {
-      if (tab.windowId === windowId) {
-        if (lastIndex === undefined || lastIndex < tab.index) {
-          lastIndex = tab.index;
-        }
+      if (tab.windowId === windowId && (lastIndex === undefined || lastIndex < tab.index)) {
+        lastIndex = tab.index;
       }
     }
     return lastIndex;
