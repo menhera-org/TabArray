@@ -21,6 +21,10 @@ import browser from 'webextension-polyfill';
 import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
 
+interface HTMLFormInput extends HTMLElement {
+  value: string;
+}
+
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
 const setTextContent = (query: string, message: string) => {
@@ -35,6 +39,20 @@ const setConfigValue = <T,>(option: ConfigurationOption<T>, value: T) => {
   option.setValue(value).catch((e) => {
     console.error(e);
   });
+};
+
+const setFormInputValue = (inputElement: HTMLFormInput | null | undefined, value: string) => {
+  if (!inputElement) {
+    throw new Error('Missing input element');
+  }
+  inputElement.value = value;
+};
+
+const setInputChecked = (inputElement: HTMLInputElement | null | undefined, value: boolean) => {
+  if (!inputElement) {
+    throw new Error('Missing input element');
+  }
+  inputElement.checked = value;
 };
 
 setTextContent('#optionsHeadingExperimental', 'optionsHeadingExperimental');
@@ -76,7 +94,7 @@ setTextContent('#select-popupSize > option[value="large"]', 'labelPopupSizeLarge
 
 // newtab.keepContainer setting
 config['newtab.keepContainer'].observe((value) => {
-  inputNewTabKeepContainer!.checked = value;
+  setInputChecked(inputNewTabKeepContainer, value);
 });
 
 inputNewTabKeepContainer?.addEventListener('change', () => {
@@ -85,7 +103,7 @@ inputNewTabKeepContainer?.addEventListener('change', () => {
 
 // tab.external.containerOption setting
 config['tab.external.containerOption'].observe((value) => {
-  selectExternalTabContainerOption!.value = value;
+  setFormInputValue(selectExternalTabContainerOption, value);
 });
 
 selectExternalTabContainerOption?.addEventListener('change', () => {
@@ -94,7 +112,7 @@ selectExternalTabContainerOption?.addEventListener('change', () => {
 
 // tab.groups.indexOption setting
 config['tab.groups.indexOption'].observe((value) => {
-  selectGroupIndexOption!.value = value;
+  setFormInputValue(selectGroupIndexOption, value);
 });
 
 selectGroupIndexOption?.addEventListener('change', () => {
@@ -103,7 +121,7 @@ selectGroupIndexOption?.addEventListener('change', () => {
 
 // appearance.popupSize setting
 config['appearance.popupSize'].observe((value) => {
-  selectPopupSize!.value = value;
+  setFormInputValue(selectPopupSize, value);
 });
 
 selectPopupSize?.addEventListener('change', () => {
@@ -111,7 +129,7 @@ selectPopupSize?.addEventListener('change', () => {
 });
 
 privacyConfig.firstPartyIsolate.observe((value) => {
-  inputFirstPartyIsolate!.checked = value;
+  setInputChecked(inputFirstPartyIsolate, value);
 });
 
 inputFirstPartyIsolate?.addEventListener('change', () => {
@@ -119,7 +137,7 @@ inputFirstPartyIsolate?.addEventListener('change', () => {
 });
 
 privacyConfig.resistFingerprinting.observe((value) => {
-  inputResistFingerprinting!.checked = value;
+  setInputChecked(inputResistFingerprinting, value);
 });
 
 inputResistFingerprinting?.addEventListener('change', () => {
