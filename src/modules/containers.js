@@ -70,18 +70,6 @@ export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
   await tabGroup.closeUnpinnedTabsOnWindow(aWindowId);
 };
 
-export const remove = async (aUserContextId) => {
-  try {
-    await closeAllTabs(aUserContextId);
-    const userContextIds = await getIds();
-    if (!userContextIds.includes(aUserContextId)) return;
-    const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
-    await browser.contextualIdentities.remove(cookieStoreId);
-  } catch (e) {
-    console.error(e);
-  }
-};
-
 export const createIndexTab = async (aUserContextId, aWindowId) => {
   const rawUserContext = await UserContext.get(aUserContextId);
   const userContext = UserContextService.getInstance().fillDefaultValues(rawUserContext);

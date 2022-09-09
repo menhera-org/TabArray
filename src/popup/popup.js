@@ -154,9 +154,10 @@ const renderContainer = (userContextId, currentWindowId) => {
     deleteContainerButton.title = browser.i18n.getMessage('tooltipContainerDelete');
     deleteContainerButton.classList.add('delete-container-button');
     deleteContainerButton.addEventListener('click', (ev) => {
-      confirmAsync(browser.i18n.getMessage('confirmContainerDelete', container.name)).then((result) => {
+      confirmAsync(browser.i18n.getMessage('confirmContainerDelete', container.name)).then(async (result) => {
         if (!result) return;
-        return containers.remove(userContextId);
+        const userContext = await UserContext.get(userContextId);
+        await userContext.remove();
       }).catch((e) => {
         console.error(e);
       });
