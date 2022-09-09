@@ -36,10 +36,6 @@ export class TabGroup {
   private readonly _initializationPromise = PromiseUtils.createPromise<void>();
   private readonly _urlService = UrlService.getInstance();
 
-  private static _urlIsHttpOrHttps(url: string): boolean {
-    return url.startsWith('http://') || url.startsWith('https://');
-  }
-
   public static async createTabGroup(originAttributes: OriginAttributes): Promise<TabGroup> {
     const tabGroup = new TabGroup(originAttributes);
     await tabGroup.initialized;
@@ -75,7 +71,7 @@ export class TabGroup {
           return;
         }
         if (this._tabIds.has(tabId)) {
-          if (!TabGroup._urlIsHttpOrHttps(tab.url)) {
+          if (!this._urlService.isHttpScheme(new URL(tab.url))) {
             this._tabIds.delete(tabId);
             this._notifyObservers();
             return;
@@ -87,7 +83,7 @@ export class TabGroup {
             this._notifyObservers();
           }
         } else {
-          if (!TabGroup._urlIsHttpOrHttps(tab.url)) {
+          if (!this._urlService.isHttpScheme(new URL(tab.url))) {
             return;
           }
           const url = new URL(tab.url);
@@ -117,7 +113,7 @@ export class TabGroup {
         if (tab.cookieStoreId === this.originAttributes.cookieStoreId && tab.id !== undefined) {
           if (this.originAttributes.hasFirstpartyDomain()) {
             if (tab.url !== undefined) {
-              if (!TabGroup._urlIsHttpOrHttps(tab.url)) {
+              if (!this._urlService.isHttpScheme(new URL(tab.url))) {
                 return;
               }
               const url = new URL(tab.url);
@@ -258,7 +254,7 @@ export class TabGroup {
     if (!this.originAttributes.hasFirstpartyDomain()) {
       return true;
     }
-    if (!TabGroup._urlIsHttpOrHttps(url.href)) {
+    if (!this._urlService.isHttpScheme(url)) {
       return false;
     }
     const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);

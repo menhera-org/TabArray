@@ -41,4 +41,8 @@ export class UrlService {
   public isPrivilegedScheme(url: URL): boolean {
     return UrlService.PRIVILEGED_SCHEMES.has(url.protocol.slice(0, -1));
   }
+
+  public isHttpScheme(url: URL): boolean {
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  }
 }
