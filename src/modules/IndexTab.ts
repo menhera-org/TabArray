@@ -19,7 +19,7 @@
 
 import browser from 'webextension-polyfill';
 
-const indexPageUrl = browser.runtime.getURL('/index/index.html');
+const indexPageUrl = browser.runtime.getURL('/index/index-tab.html');
 const defaultIconUrl = browser.runtime.getURL('/img/category_black_24dp.svg')
 const iconUrl = browser.runtime.getURL('/img/usercontext.svg');
 
