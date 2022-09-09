@@ -50,7 +50,7 @@ plugins:
   git-legal:
     enabled: true
     config:
-      allow_affero_copyleft: true
+      allow_affero_copyleft: false
       allow_strong_copyleft: true
   markdownlint:
     enabled: true
