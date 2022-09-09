@@ -250,7 +250,7 @@ export class UserContext {
     }
     if (closeTabs) {
       const tabGroup = await this.getTabGroup();
-      await tabGroup.closeTabs();
+      await tabGroup.tabList.closeTabs();
     }
     if (removeBrowsingData) await this.removeBrowsingData();
     await browser.contextualIdentities.remove(this.cookieStoreId);

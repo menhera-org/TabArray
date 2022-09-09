@@ -362,7 +362,7 @@ browser.contextualIdentities.onRemoved.addListener(async ({contextualIdentity}) 
   const userContextId = UserContext.fromCookieStoreId(contextualIdentity.cookieStoreId);
   console.log('userContext %d removed', userContextId);
   const tabGroup = await tabGroupService.getTabGroupFromUserContextId(userContextId);
-  tabGroup.closeTabs().then(() => {
+  tabGroup.tabList.closeTabs().then(() => {
     console.log('Closed all tabs for userContext %d', userContextId);
   }).catch((e) => {
     console.error('cleanup failed for userContext %d', userContextId, e);

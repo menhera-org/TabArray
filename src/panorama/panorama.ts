@@ -80,7 +80,7 @@ const renderContainer = async (userContext: UserContext) => {
   const userContextId = userContext.id;
   const containerElement = new PanoramaContainerElement(userContext);
   const tabGroup = await userContext.getTabGroup();
-  const tabs = (await tabGroup.getTabs()).filter((tab) => !isIndexTab(tab.url));
+  const tabs = (await tabGroup.tabList.getTabs()).filter((tab) => !isIndexTab(tab.url));
   containerElement.tabCount = tabs.length;
   containerElement.containerTabsElement.append(...tabs.map((tab) => {
     const tabElement = renderTab(tab);

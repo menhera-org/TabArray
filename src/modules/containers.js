@@ -45,7 +45,7 @@ const PRIVILEGED_SCHEMES = new Set([
 
 export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
   const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
-  await tabGroup.closeUnpinnedTabsOnWindow(aWindowId);
+  await tabGroup.tabList.closeUnpinnedTabsOnWindow(aWindowId);
 };
 
 export const createIndexTab = async (aUserContextId, aWindowId) => {

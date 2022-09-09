@@ -25,6 +25,7 @@ import { Tab } from "../tabs";
 import { FirstPartyService } from './FirstPartyService';
 import { PromiseUtils } from '../utils';
 import { UrlService } from '../dns';
+import { TabList } from './TabList';
 
 type TabGroupObserver = (tabGroup: TabGroup) => void;
 
@@ -121,16 +122,11 @@ export class TabGroup {
     }); 
   }
 
-  public get size(): number {
-    return this._tabIds.size;
-  }
-
-  public get tabIds(): IterableIterator<number> {
-    return this._tabIds.values();
-  }
-
-  public hasTabId(tabId: number): boolean {
-    return this._tabIds.has(tabId);
+  /**
+   * Returns a snapshot of tab list.
+   */
+  public get tabList(): TabList {
+    return new TabList(this._tabIds);
   }
 
   public get initialized(): Promise<void> {
@@ -158,22 +154,6 @@ export class TabGroup {
     this._notifyObservers();
   }
 
-  public async getTabs(): Promise<Tab[]> {
-    const tabs = [];
-    for (const tabId of this._tabIds) {
-      const tab = await Tab.get(tabId);
-      if (tab !== null) {
-        tabs.push(tab);
-      }
-    }
-    return tabs;
-  }
-
-  public async getUnpinnedTabs(): Promise<Tab[]> {
-    const tabs = await this.getTabs();
-    return tabs.filter((tab) => !tab.pinned);
-  }
-
   private _notifyObservers(): void {
     for (const observer of this._observers) {
       observer(this);
@@ -186,43 +166,6 @@ export class TabGroup {
 
   public unobserve(observer: TabGroupObserver): void {
     this._observers.delete(observer);
-  }
-
-  public async closeTabs(): Promise<void> {
-    await browser.tabs.remove(Array.from(this._tabIds));
-  }
-
-  public async closeUnpinnedTabs(): Promise<void> {
-    const tabs = await this.getTabs();
-    const tabIds = [];
-    for (const tab of tabs) {
-      if (!tab.pinned) {
-        tabIds.push(tab.id);
-      }
-    }
-    await browser.tabs.remove(tabIds);
-  }
-
-  public async closeUnpinnedTabsOnWindow(windowId: number): Promise<void> {
-    const tabs = await this.getTabs();
-    const tabIds = [];
-    for (const tab of tabs) {
-      if (!tab.pinned && tab.windowId === windowId) {
-        tabIds.push(tab.id);
-      }
-    }
-    await browser.tabs.remove(tabIds);
-  }
-
-  public async getLastIndex(windowId: number): Promise<number | undefined> {
-    const tabs = await this.getUnpinnedTabs();
-    let lastIndex: number | undefined = undefined;
-    for (const tab of tabs) {
-      if (tab.windowId === windowId && (lastIndex === undefined || lastIndex < tab.index)) {
-        lastIndex = tab.index;
-      }
-    }
-    return lastIndex;
   }
 
   public isUrlValidInGroup(url: URL): boolean {
@@ -245,7 +188,7 @@ export class TabGroup {
       throw new Error('URL is not specified');
     }
     const cookieStoreId = this.originAttributes.hasCookieStoreId() ? this.originAttributes.cookieStoreId : undefined;
-    const lastIndex = windowId ? await this.getLastIndex(windowId) : undefined;
+    const lastIndex = windowId ? await this.tabList.getLastIndexOnWindow(windowId) : undefined;
     const index = lastIndex === undefined ? undefined : lastIndex + 1;
     const urlString = url ? url.toString() : undefined;
     const browserTab = await browser.tabs.create({
@@ -261,7 +204,7 @@ export class TabGroup {
 
   public async reopenTabInGroup(tabId: number, active = true): Promise<Tab> {
     const tab = await Tab.get(tabId);
-    if (this.hasTabId(tabId)) {
+    if (this.tabList.hasTabId(tabId)) {
       return tab;
     }
     let url: URL | null = new URL(tab.url);
