@@ -24,6 +24,8 @@
 // it is necessary for now.
 
 import browser from 'webextension-polyfill';
+import { OriginAttributes } from '../frameworks/tabGroups';
+import { TabGroup } from '../frameworks/tabGroups';
 
 export const renderTab = (tab) => {
   const tabElement = document.createElement('li');
@@ -140,7 +142,7 @@ export const renderContainerHeading = (userContextId, details) => {
   switch (details.mode) {
     case 'window': {
       const {windowId} = details;
-      closeContainerButton.addEventListener('click', (ev) => {
+      closeContainerButton.addEventListener('click', () => {
         containers.closeAllTabsOnWindow(userContextId, windowId).catch((e) => {
           console.error(e);
         });
@@ -149,8 +151,11 @@ export const renderContainerHeading = (userContextId, details) => {
     }
     case 'site': {
       const {site} = details;
-      closeContainerButton.addEventListener('click', (ev) => {
-        FirstpartyManager.closeAllByContainer(site, userContextId).catch((e) => {
+      closeContainerButton.addEventListener('click', () => {
+        const originAttributes = new OriginAttributes(site, userContextId);
+        TabGroup.createTabGroup(originAttributes).then((tabGroup) => {
+          return tabGroup.tabList.closeTabs();
+        }).catch((e) => {
           console.error(e);
         });
       });

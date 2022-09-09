@@ -81,12 +81,20 @@ export class FirstPartyTabMap implements ImplementedMap {
     return this.tabMap.size;
   }
 
-  public entries(): IterableIterator<[string, readonly Tab[]]> {
-    return this.tabMap.entries();
+  public * entries(): IterableIterator<[string, readonly Tab[]]> {
+    const keys = this.keys();
+    for (const key of keys) {
+      const value = this.tabMap.get(key);
+      if (!value) {
+        // this should never happen
+        continue;
+      }
+      yield [key, value];
+    }
   }
 
   public keys(): IterableIterator<string> {
-    return this.tabMap.keys();
+    return [... this.tabMap.keys()].sort().values();
   }
 
   public values(): IterableIterator<readonly Tab[]> {
