@@ -21,9 +21,6 @@
 
 import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
-import { TabGroup } from '../frameworks/tabGroups';
-import { Uint32 } from '../frameworks/types';
-import { OriginAttributes } from '../frameworks/tabGroups';
 
 export class UserContextService {
   private static readonly DEFAULT_ICON_URL = browser.runtime.getURL('/img/category_black_24dp.svg');

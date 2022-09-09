@@ -20,7 +20,6 @@
 import browser from 'webextension-polyfill';
 import { config } from '../config/config';
 import { IndexTab } from './IndexTab';
-import * as newtab from './newtab';
 import { setActiveUserContext } from './usercontext-state.js';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
@@ -186,55 +185,8 @@ export const showAll = async (aWindowId) => {
 };
 
 export const reopenInContainer = async (aUserContextId, aTabId) => {
-  const tab = await browser.tabs.get(aTabId);
-  if (tab.id != aTabId) {
-    console.error('Tab mismatch');
-    throw new Error('Tab mismatch');
-  }
-  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
-  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
-  if (tab.cookieStoreId == cookieStoreId) return;
-  const windowId = tab.windowId;
-  const url = newtab.isPrivilegedNewTabPage(tab.url) ? undefined : tab.url;
-  if (url) {
-    const scheme = String(url).split(':')[0].toLowerCase();
-    if (PRIVILEGED_SCHEMES.has(scheme)) {
-      console.log('Ignoring privileged tab: %s', url);
-      return;
-    }
-  }
-  const containerTabs = await browser.tabs.query({
-    pinned: false,
-    cookieStoreId: cookieStoreId,
-    windowId,
-  });
-  let lastIndex = undefined;
-  for (const containerTab of containerTabs) {
-    const index = containerTab.index;
-    if (undefined === lastIndex) {
-      lastIndex = index;
-    } else {
-      lastIndex = Math.max(lastIndex, index);
-    }
-  }
-  console.log('reopenInContainer: userContext=%d, windowId=%d, tabId=%d, url=%s', userContextId, windowId, tab.id, url);
-  await browser.tabs.remove(tab.id);
-  if (undefined === lastIndex) {
-    await browser.tabs.create({
-      active: true,
-      windowId,
-      cookieStoreId,
-      url,
-    });
-  } else {
-    await browser.tabs.create({
-      active: true,
-      windowId,
-      cookieStoreId,
-      url,
-      index: lastIndex + 1,
-    });
-  }
+  const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
+  await tabGroup.reopenTabInGroup(aTabId);
 };
 
 export const openNewTabInContainer = async (aUserContextId, aWindowId) => {
@@ -242,34 +194,7 @@ export const openNewTabInContainer = async (aUserContextId, aWindowId) => {
   const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
   const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
   setActiveUserContext(windowId, userContextId);
-  const containerTabs = await browser.tabs.query({
-    pinned: false,
-    cookieStoreId: cookieStoreId,
-    windowId,
-  });
-  let lastIndex = undefined;
-  for (const containerTab of containerTabs) {
-    const index = containerTab.index;
-    if (undefined === lastIndex) {
-      lastIndex = index;
-    } else {
-      lastIndex = Math.max(lastIndex, index);
-    }
-  }
+  const tabGroup = await tabGroupService.getTabGroupFromUserContextId(userContextId);
   console.log('openNewTabInContainer: userContext=%d, windowId=%d', userContextId, windowId);
-  if (undefined === lastIndex) {
-    await browser.tabs.create({
-      active: true,
-      windowId,
-      cookieStoreId,
-    });
-  } else {
-    console.log('Inserting a new tab at index %d', lastIndex + 1);
-    await browser.tabs.create({
-      active: true,
-      windowId,
-      cookieStoreId,
-      index: lastIndex + 1,
-    });
-  }
+  await tabGroup.openTabOnWindow(windowId);
 };

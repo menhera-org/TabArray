@@ -19,12 +19,26 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export { HostnameService } from './HostnameService';
-export { InetAddress } from './InetAddress';
-export { InetAddressConstructor } from './InetAddressConstructor';
-export { InetAddressFactory } from './InetAddressFactory';
-export { InetVersion } from './InetVersion';
-export { Ipv4Address } from './Ipv4Address';
-export { Ipv6Address } from './Ipv6Address';
-export { RegistrableDomainService } from './RegistrableDomainService';
-export { UrlService } from './UrlService';
+export class UrlService {
+  private static readonly PRIVILEGED_SCHEMES = new Set([
+    'about',
+    'chrome',
+    'javascript',
+    'data',
+    'file',
+  ]);
+
+  private static readonly INSTANCE = new UrlService();
+
+  public static getInstance(): UrlService {
+    return UrlService.INSTANCE;
+  }
+
+  private constructor() {
+    // nothing.
+  }
+
+  public isPrivilegedScheme(url: URL): boolean {
+    return UrlService.PRIVILEGED_SCHEMES.has(url.protocol.slice(0, -1));
+  }
+}

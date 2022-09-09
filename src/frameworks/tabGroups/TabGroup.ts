@@ -24,6 +24,7 @@ import { OriginAttributes } from "./OriginAttributes";
 import { Tab } from "../tabs";
 import { FirstPartyService } from './FirstPartyService';
 import { PromiseUtils } from '../utils';
+import { UrlService } from '../dns';
 
 type TabGroupObserver = (tabGroup: TabGroup) => void;
 
@@ -33,6 +34,7 @@ export class TabGroup {
   private readonly _firstPartyService = FirstPartyService.getInstance();
   private readonly _observers = new Set<TabGroupObserver>();
   private readonly _initializationPromise = PromiseUtils.createPromise<void>();
+  private readonly _urlService = UrlService.getInstance();
 
   private static _urlIsHttpOrHttps(url: string): boolean {
     return url.startsWith('http://') || url.startsWith('https://');
@@ -58,7 +60,7 @@ export class TabGroup {
   }
 
   private _watchRemovedTabs(): void {
-    browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
+    browser.tabs.onRemoved.addListener((tabId, /*removeInfo*/) => {
       if (this._tabIds.has(tabId)) {
         this._tabIds.delete(tabId);
         this._notifyObservers();
@@ -154,6 +156,10 @@ export class TabGroup {
     return this._tabIds.values();
   }
 
+  public hasTabId(tabId: number): boolean {
+    return this._tabIds.has(tabId);
+  }
+
   public get initialized(): Promise<void> {
     return this._initializationPromise.promise;
   }
@@ -188,6 +194,11 @@ export class TabGroup {
       }
     }
     return tabs;
+  }
+
+  public async getUnpinnedTabs(): Promise<Tab[]> {
+    const tabs = await this.getTabs();
+    return tabs.filter((tab) => !tab.pinned);
   }
 
   private _notifyObservers(): void {
@@ -228,5 +239,69 @@ export class TabGroup {
       }
     }
     await browser.tabs.remove(tabIds);
+  }
+
+  public async getLastIndex(windowId: number): Promise<number | undefined> {
+    const tabs = await this.getUnpinnedTabs();
+    let lastIndex: number | undefined = undefined;
+    for (const tab of tabs) {
+      if (tab.windowId === windowId) {
+        if (lastIndex === undefined || lastIndex < tab.index) {
+          lastIndex = tab.index;
+        }
+      }
+    }
+    return lastIndex;
+  }
+
+  public isUrlValidaInGroup(url: URL): boolean {
+    if (!this.originAttributes.hasFirstpartyDomain()) {
+      return true;
+    }
+    if (!TabGroup._urlIsHttpOrHttps(url.href)) {
+      return false;
+    }
+    const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
+    return firstPartyDomain === this.originAttributes.firstpartyDomain;
+  }
+
+  public async openTabOnWindow(windowId: number | undefined, url: URL | null = null, active = true): Promise<Tab> {
+    if (url) {
+      if (this.isUrlValidaInGroup(url)) {
+        throw new Error('URL is not in the same first-party domain');
+      }
+    } else if (this.originAttributes.hasFirstpartyDomain()) {
+      throw new Error('URL is not specified');
+    }
+    const cookieStoreId = this.originAttributes.hasCookieStoreId() ? this.originAttributes.cookieStoreId : undefined;
+    const lastIndex = windowId ? await this.getLastIndex(windowId) : undefined;
+    const index = lastIndex === undefined ? undefined : lastIndex + 1;
+    const browserTab = await browser.tabs.create({
+      windowId,
+      url: url ? url.toString() : undefined,
+      cookieStoreId,
+      index,
+      active,
+    });
+    const tab = new Tab(browserTab);
+    return tab;
+  }
+
+  public async reopenTabInGroup(tabId: number, active = true): Promise<Tab> {
+    const tab = await Tab.get(tabId);
+    if (this.hasTabId(tabId)) {
+      return tab;
+    }
+    let url: URL | null = new URL(tab.url);
+    if (this._urlService.isPrivilegedScheme(url)) {
+      url = null;
+    }
+    let windowId: number | undefined = tab.windowId;
+    if (tab.isPrivate() != this.originAttributes.isPrivateBrowsing()) {
+      windowId = undefined;
+    }
+    const newTab = await this.openTabOnWindow(windowId, url, active);
+    await tab.close();
+    return newTab;
   }
 }
