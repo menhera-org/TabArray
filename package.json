@@ -8,7 +8,7 @@
     "watch": "webpack -w",
     "clean": "node script/clean.js",
     "typedoc": "typedoc --out ./docs/typedoc-frameworks ./src/frameworks/index.ts",
-    "test": "node test.js"
+    "test": "node script/test.js"
   },
   "author": "Menhera.org",
   "license": "GPL-3.0-or-later",
