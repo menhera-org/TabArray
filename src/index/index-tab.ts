@@ -45,4 +45,3 @@ browser.tabs.getCurrent().then(async (tabObj) => {
   });
   iconElement.href = imageUrl;
 });
-
