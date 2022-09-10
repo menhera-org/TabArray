@@ -22,6 +22,7 @@
 import browser from 'webextension-polyfill';
 import { OriginAttributes } from '../frameworks/tabGroups';
 import { TabGroup } from '../frameworks/tabGroups';
+import * as containers from '../modules/containers.js';
 
 export const renderTab = (tab) => {
   const tabElement = document.createElement('li');
