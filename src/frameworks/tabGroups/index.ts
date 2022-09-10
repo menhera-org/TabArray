@@ -26,3 +26,4 @@ export { UserContext } from './UserContext';
 export { TabGroupService } from './TabGroupService';
 export { TabList } from './TabList';
 export { FirstPartyTabMap } from './FirstPartyTabMap';
+export { WindowUserContextList } from './WindowUserContextList';
