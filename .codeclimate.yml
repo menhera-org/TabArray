@@ -75,4 +75,4 @@ exclude_patterns:
 - "**/*.d.ts"
 - "**/LICENSE"
 - "**/*.png"
-- "github/**/*"
+- ".github/**/*"
