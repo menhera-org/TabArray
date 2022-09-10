@@ -265,26 +265,17 @@ const renderWindows = () => {
   const windows = StateManager.getBrowserWindows()
   .filter((browserWindow) => browserWindow.isNormal);
   for (const window of windows) {
-    const windowLabel = document.createElement('li');
+    const windowLabel = new MenulistWindowElement(window.id);
     windowMenuListElement.append(windowLabel);
-    windowLabel.classList.add('window-label');
-    const windowLabelContent = document.createElement('div');
-    windowLabelContent.classList.add('window-label-name');
-    windowLabel.append(windowLabelContent);
-    windowLabelContent.textContent = browser.i18n.getMessage('windowLabel', window.id);
-    windowLabelContent.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
-    windowLabelContent.addEventListener('click', (ev) => {
+    windowLabel.onNameClicked.addListener(() => {
       window.focus().catch(e => console.error(e));
     });
-    const windowLabelCloseButton = document.createElement('button');
-    windowLabel.append(windowLabelCloseButton);
-    windowLabelCloseButton.classList.add('window-close-button');
-    windowLabelCloseButton.title = browser.i18n.getMessage('tooltipCloseWindow');
-    windowLabelCloseButton.addEventListener('click', (ev) => {
+    windowLabel.onCloseButtonClicked.addListener(() => {
       window.close().catch(e => console.error(e));
     });
+
     const tabs = window.getTabs();
-    windowLabelContent.dataset.tabCount = tabs.length;
+    windowLabel.tabCountString = String(tabs.length);
     for (const tab of tabs) {
       if (!tab.active) continue;
       const containerElement = renderContainerHeading(tab.userContextId, {
