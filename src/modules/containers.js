@@ -56,38 +56,6 @@ export const createIndexTab = async (aUserContextId, aWindowId) => {
   return tabObj;
 };
 
-export const show = async (aUserContextId, aWindowId) => {
-  if (!aWindowId) {
-    throw new TypeError('Unimplemented');
-  }
-  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
-  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
-  const tabs = await browser.tabs.query({
-    windowId: aWindowId,
-    cookieStoreId,
-  });
-  if (1 > tabs.length) {
-    console.log('No tabs to show on window %d for userContext %d', aWindowId, userContextId);
-    return;
-  }
-  const tabsToShow = [];
-  for (const tabObj of tabs) {
-    try {
-      const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
-      if (!indexTabUrl) {
-        throw void 0;
-      }
-      if ('collapsed' == configGroupIndexOption) {
-        await browser.sessions.removeTabValue(tabObj.id, 'indexTabUrl');
-        await browser.tabs.remove(tabObj.id);
-      }
-    } catch (e) {
-      tabsToShow.push(tabObj.id);
-    }
-  }
-  await browser.tabs.show(tabsToShow);
-};
-
 export const getInactiveIds = async (aWindowId) => {
   const tabs = await browser.tabs.query({
     windowId: aWindowId,

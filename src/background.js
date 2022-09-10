@@ -355,7 +355,7 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
     console.error(e);
   }
   if (!tab.pinned) {
-    await containers.show(userContextId, windowId);
+    await userContextVisibilityService.showContainerOnWindow(windowId, userContextId);
   }
 });
 
