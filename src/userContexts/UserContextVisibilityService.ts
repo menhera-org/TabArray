@@ -19,3 +19,41 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { config } from '../config/config';
+import { Uint32 } from '../frameworks/types';
+//import { OriginAttributes } from '../frameworks/tabGroups';
+//import { TabGroup } from '../frameworks/tabGroups';
+
+// 'never' -- do not show indices
+// 'collapsed' -- show indices for collapsed containers
+// 'always' -- always show indices
+let configGroupIndexOption = 'never';
+config['tab.groups.indexOption'].observe((value) => {
+  configGroupIndexOption = value;
+});
+
+/**
+ * This does not support private windows.
+ */
+export class UserContextVisibilityService {
+  private static readonly INSTANCE = new UserContextVisibilityService();
+
+  public static getInstance(): UserContextVisibilityService {
+    return UserContextVisibilityService.INSTANCE;
+  }
+
+  private constructor() {
+    // nothing.
+    console.log('tab.groups.indexOption: ', configGroupIndexOption);
+  }
+
+  public async hideContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
+    // nothing.
+    console.log('hideContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
+  }
+
+  public async showContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
+    // nothing.
+    console.log('showContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
+  }
+}

@@ -80,13 +80,9 @@ export const hide = async (aUserContextId, aWindowId) => {
       active = true;
     }
     if (!tab.hidden) {
-      try {
-        const indexTabUrl = await browser.sessions.getTabValue(tab.id, 'indexTabUrl');
-        if (!indexTabUrl) {
-          throw void 0;
-        }
+      if (IndexTab.isIndexTabUrl(tab.url)) {
         indexExists = true;
-      } catch (e) {
+      } else {
         tabsToHide.push(tab.id);
       }
     }
