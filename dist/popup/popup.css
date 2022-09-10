@@ -503,6 +503,10 @@ button {
   opacity: .5;
 }
 
+.window-label > button:disabled {
+  visibility: hidden;
+}
+
 .window-label > button:focus, .window-label > button:hover {
   opacity: 1;
 }
