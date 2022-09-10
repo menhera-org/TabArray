@@ -25,8 +25,8 @@ import { Tab } from '../frameworks/tabs';
 import { IndexTab } from '../modules/IndexTab';
 
 export class WindowUserContextVisibilityHelper {
-  private _tabsToHide: Tab[];
-  private _tabsToShow: Tab[];
+  private _tabsToHide: Tab[] = [];
+  private _tabsToShow: Tab[] = [];
   private _hasIndexTab = false;
   private _isActive = false;
 
@@ -41,19 +41,18 @@ export class WindowUserContextVisibilityHelper {
       throw new Error('browserWindow.tabs is undefined');
     }
     const tabs = browserWindow.tabs.map((browserTab) => new Tab(browserTab));
-    this._tabsToHide = [];
-    this._tabsToShow = [];
     for (const tab of tabs) {
-      if (tab.originAttributes.userContextId === userContextId && tab.active) {
+      const userContextMatches = tab.originAttributes.userContextId === userContextId;
+      if (userContextMatches && tab.active) {
         this._isActive = true;
       }
       if (IndexTab.isIndexTabUrl(tab.url)) {
-        if (tab.originAttributes.userContextId == userContextId) {
+        if (userContextMatches) {
           this._hasIndexTab = true;
         }
         continue;
       }
-      if (tab.pinned || tab.originAttributes.userContextId != userContextId) {
+      if (tab.pinned ||!userContextMatches) {
         this._tabsToShow.push(tab);
       }
     }
