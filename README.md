@@ -55,6 +55,19 @@ This extension is intended to replace the following features/extensions:
 - _TabArray_ is the code name, and _Container Tab Groups_ is the user-facing name.
 - The official extension ID is `tab-array@menhera.org`. (Not an email address.)
 
+## FAQs
+
+### Will this be available for Chrome?
+
+This extension depends on many technologies not available in Chrome (only in Firefox),
+where the most important is Firefox's isolated containers feature.
+So it would not be possible.
+
+### When will (feature) be released?
+
+See the [issues](https://github.com/menhera-org/TabArray/issues).
+Something missing you need? Please file a new feature request there.
+
 ## License
 
 Copyright &copy; 2022 Menhera.org contributors.
