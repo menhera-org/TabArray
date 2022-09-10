@@ -50,13 +50,17 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderContainerForWindow(windowId: number, userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
-    const element = this.renderPartialContainerElement(userContext);
+  private defineContainerCloseListenerForWindow(element: MenulistContainerElement, windowId: number, userContext: UserContext): void {
     element.onContainerClose.addListener(() => {
       containers.closeAllTabsOnWindow(userContext.id, windowId).catch((e) => {
         console.error(e);
       });
     });
+  }
+
+  public renderContainerForWindow(windowId: number, userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
+    const element = this.renderPartialContainerElement(userContext);
+    this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     return element;
   }
 
@@ -75,6 +79,7 @@ export class PopupRenderer {
 
   private renderContainer(windowId: number, userContext: UserContext): MenulistContainerElement {
     const element = new MenulistContainerElement(userContext);
+    this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     element.onContainerHide.addListener(async () => {
       await this._userContextVisibilityService.hideContainerOnWindow(windowId, userContext.id);
       // render here.
@@ -89,11 +94,6 @@ export class PopupRenderer {
     });
     element.onContainerEdit.addListener(async () => {
       // render container edit pane.
-    });
-    element.onContainerClose.addListener(() => {
-      containers.closeAllTabsOnWindow(userContext.id, windowId).catch((e) => {
-        console.error(e);
-      });
     });
     element.onContainerDelete.addListener(async () => {
       // confirmAsync
@@ -112,10 +112,11 @@ export class PopupRenderer {
       tabCount++;
       if (tab.hidden) {
         state = ContainerTabsState.HIDDEN_TABS;
-      } else {
-        element.appendChild(this.renderTab(tab, userContext));
-        state = ContainerTabsState.VISIBLE_TABS;
+        continue;
       }
+
+      element.appendChild(this.renderTab(tab, userContext));
+      state = ContainerTabsState.VISIBLE_TABS;
     }
     if (state === ContainerTabsState.HIDDEN_TABS) {
       element.containerHidden = true;
