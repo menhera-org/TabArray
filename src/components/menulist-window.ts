@@ -44,13 +44,13 @@ export class MenulistWindowElement extends HTMLElement {
     this._nameElement = this.createNameElement();
     this.appendChild(this._nameElement);
 
-    this._collapseButtonElement = this.createCollapseButtonElement();
+    this._collapseButtonElement = this.createButtonElement('window-collapse-button', 'tooltipCollapseContainers', this.onCollapseButtonClicked);
     this.appendChild(this._collapseButtonElement);
 
-    this._expandButtonElement = this.createExpandButtonElement();
+    this._expandButtonElement = this.createButtonElement('window-expand-button', 'tooltipExpandContainers', this.onExpandButtonClicked);
     this.appendChild(this._expandButtonElement);
 
-    this._closeButtonElement = this.createCloseButtonElement();
+    this._closeButtonElement = this.createButtonElement('window-close-button', 'tooltipCloseWindow', this.onCloseButtonClicked);
     this.appendChild(this._closeButtonElement);
 
     if (windowId < 0) {
@@ -69,34 +69,14 @@ export class MenulistWindowElement extends HTMLElement {
     return nameElement;
   }
 
-  private createCollapseButtonElement(): HTMLButtonElement {
-    const collapseButtonElement = document.createElement('button');
-    collapseButtonElement.classList.add('window-collapse-button');
-    collapseButtonElement.title = browser.i18n.getMessage('tooltipCollapseContainers');
-    collapseButtonElement.onclick = () => {
-      this.onCollapseButtonClicked.dispatch();
+  private createButtonElement(className: string, messageName: string, eventSink: EventSink<void>): HTMLButtonElement {
+    const buttonElement = document.createElement('button');
+    buttonElement.classList.add(className);
+    buttonElement.title = browser.i18n.getMessage(messageName);
+    buttonElement.onclick = () => {
+      eventSink.dispatch();
     };
-    return collapseButtonElement;
-  }
-
-  private createExpandButtonElement(): HTMLButtonElement {
-    const expandButtonElement = document.createElement('button');
-    expandButtonElement.classList.add('window-expand-button');
-    expandButtonElement.title = browser.i18n.getMessage('tooltipExpandContainers');
-    expandButtonElement.onclick = () => {
-      this.onExpandButtonClicked.dispatch();
-    };
-    return expandButtonElement;
-  }
-
-  private createCloseButtonElement(): HTMLButtonElement {
-    const closeButtonElement = document.createElement('button');
-    closeButtonElement.classList.add('window-close-button');
-    closeButtonElement.title = browser.i18n.getMessage('tooltipCloseWindow');
-    closeButtonElement.onclick = () => {
-      this.onCloseButtonClicked.dispatch();
-    };
-    return closeButtonElement;
+    return buttonElement;
   }
 
   get windowName(): string {
