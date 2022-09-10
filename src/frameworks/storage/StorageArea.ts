@@ -22,20 +22,19 @@
 /**
  * Enum of storage areas.
  */
- export enum StorageArea {
-    /**
-     * Local storage area.
-     */
-    LOCAL,
-   
-    /**
-     * Browser-synced storage area.
-     */ 
-    SYNC,
-  
-    /**
-     * Profile-managed storage area (readonly).
-     */
-    MANAGED,
-  }
-  
+export enum StorageArea {
+  /**
+   * Local storage area.
+   */
+  LOCAL,
+
+  /**
+   * Browser-synced storage area.
+   */
+  SYNC,
+
+  /**
+   * Profile-managed storage area (readonly).
+   */
+  MANAGED,
+}
