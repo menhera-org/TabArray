@@ -36,7 +36,6 @@ export class WindowUserContextVisibilityHelper {
   }
 
   private constructor(browserWindow: browser.Windows.Window, userContextId: Uint32.Uint32) {
-    // nothing
     if (!browserWindow.tabs) {
       throw new Error('browserWindow.tabs is undefined');
     }
