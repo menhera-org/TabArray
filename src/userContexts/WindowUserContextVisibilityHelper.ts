@@ -40,6 +40,9 @@ export class WindowUserContextVisibilityHelper {
     if (!browserWindow.tabs) {
       throw new Error('browserWindow.tabs is undefined');
     }
+    if (browserWindow.incognito) {
+      throw new Error('browserWindow is incognito');
+    }
     const tabs = browserWindow.tabs.map((browserTab) => new Tab(browserTab));
     for (const tab of tabs) {
       const userContextMatches = tab.originAttributes.userContextId === userContextId;
