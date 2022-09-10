@@ -29,14 +29,6 @@ import { UserContextVisibilityService } from '../userContexts/UserContextVisibil
 const tabGroupService = TabGroupService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 
-// 'never' -- do not show indices
-// 'collapsed' -- show indices for collapsed containers
-// 'always' -- always show indices
-let configGroupIndexOption = 'never';
-config['tab.groups.indexOption'].observe((value) => {
-  configGroupIndexOption = value;
-});
-
 export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
   const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
   await tabGroup.tabList.closeUnpinnedTabsOnWindow(aWindowId);
