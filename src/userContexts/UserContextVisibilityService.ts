@@ -80,12 +80,13 @@ export class UserContextVisibilityService {
       await this.createIndexTab(windowId, userContextId);
     }
     if (helper.active) {
-      if (!helper.tabToActivate) {
+      const tabToActivate = helper.tabToActivate;
+      if (!tabToActivate) {
         // TODO: create a new tab if there is no one to activate.
         console.log('No tab to activate on window %d for userContext %d', windowId, userContextId);
         return;
       }
-      await helper.tabToActivate.focus();
+      await tabToActivate.focus();
     }
     await browser.tabs.hide(helper.tabsToHide.map((tab) => tab.id));
   }
