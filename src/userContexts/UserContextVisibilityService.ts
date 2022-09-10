@@ -68,6 +68,13 @@ export class UserContextVisibilityService {
     return tab;
   }
 
+  private async getContainerTabsOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<Tab[]> {
+    const cookieStoreId = UserContext.toCookieStoreId(userContextId);
+    const brwoserTabs = await browser.tabs.query({ windowId, cookieStoreId });
+    const tabs = brwoserTabs.map((browserTab) => new Tab(browserTab));
+    return tabs;
+  }
+
   public async hideContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
     console.log('hideContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
     const helper = await WindowUserContextVisibilityHelper.create(windowId, userContextId);
@@ -91,7 +98,27 @@ export class UserContextVisibilityService {
   }
 
   public async showContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
-    // nothing.
     console.log('showContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
+    const tabs = await this.getContainerTabsOnWindow(windowId, userContextId);
+    if (tabs.length < 1) {
+      console.log('No tabs to show on window %d for userContext %d', windowId, userContextId);
+      return;
+    }
+    const tabIdsToShow: number[] = [];
+    for (const tab of tabs) {
+      if (IndexTab.isIndexTabUrl(tab.url)) {
+        if ('collapsed' == configGroupIndexOption) {
+          await tab.close();
+        }
+        continue;
+      }
+      if (tab.hidden) {
+        tabIdsToShow.push(tab.id);
+      }
+    }
+    if (tabIdsToShow.length < 1) {
+      return;
+    }
+    await browser.tabs.show(tabIdsToShow);
   }
 }
