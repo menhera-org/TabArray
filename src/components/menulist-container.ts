@@ -21,7 +21,6 @@
 
 import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
-import { Tab } from "../frameworks/tabs";
 import { EventSink } from '../frameworks/utils';
 
 export class MenulistContainerElement extends HTMLElement {
@@ -99,6 +98,10 @@ export class MenulistContainerElement extends HTMLElement {
     if (!iconUrl.includes(')')) {
       this.containerIconElement.style.mask = `url(${iconUrl}) center center / contain no-repeat`;
     }
+    if (userContext.id == 0) {
+      this.containerEditButton.disabled = true;
+      this.containerDeleteButton.disabled = true;
+    }
   }
 
   private get containerNameElement(): HTMLSpanElement {
@@ -129,7 +132,7 @@ export class MenulistContainerElement extends HTMLElement {
     return this.shadowRoot?.querySelector('#container-delete-button') as HTMLButtonElement;
   }
 
-  private get containerVisibilityToggleButton(): HTMLButtonElement {
+  public get containerVisibilityToggleButton(): HTMLButtonElement {
     return this.shadowRoot?.querySelector('#container-visibility-toggle') as HTMLButtonElement;
   }
 

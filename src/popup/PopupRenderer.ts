@@ -22,10 +22,105 @@
 import { Tab } from "../frameworks/tabs";
 import { UserContext } from "../frameworks/tabGroups";
 import { MenulistTabElement } from "../components/menulist-tab";
+import { MenulistContainerElement } from "../components/menulist-container";
+import * as containers from '../modules/containers.js';
+import { OriginAttributes } from "../frameworks/tabGroups";
+import { TabGroup } from "../frameworks/tabGroups";
+import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
+import { IndexTab } from "../modules/IndexTab";
 
+enum ContainerTabsState {
+  NO_TABS,
+  HIDDEN_TABS,
+  VISIBLE_TABS,
+}
+
+// This needs some refactoring.
 export class PopupRenderer {
+  private _userContextVisibilityService = UserContextVisibilityService.getInstance();
+
   public renderTab(tab: Tab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
     const element = new MenulistTabElement(tab, userContext);
+    return element;
+  }
+
+  private renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
+    const element = new MenulistContainerElement(userContext);
+    element.containerVisibilityToggleButton.disabled = true;
+    return element;
+  }
+
+  public renderContainerForWindow(windowId: number, userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
+    const element = this.renderPartialContainerElement(userContext);
+    element.onContainerClose.addListener(() => {
+      containers.closeAllTabsOnWindow(userContext.id, windowId).catch((e) => {
+        console.error(e);
+      });
+    });
+    return element;
+  }
+
+  public renderContainerForFirstPartyDomain(domain: string, userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
+    const element = this.renderPartialContainerElement(userContext);
+    element.onContainerClose.addListener(() => {
+      const originAttributes = new OriginAttributes(domain, userContext.id);
+      TabGroup.createTabGroup(originAttributes).then((tabGroup) => {
+        return tabGroup.tabList.closeTabs();
+      }).catch((e) => {
+        console.error(e);
+      });
+    });
+    return element;
+  }
+
+  private renderContainer(windowId: number, userContext: UserContext): MenulistContainerElement {
+    const element = new MenulistContainerElement(userContext);
+    element.onContainerHide.addListener(async () => {
+      await this._userContextVisibilityService.hideContainerOnWindow(windowId, userContext.id);
+      // render here.
+    });
+    element.onContainerUnhide.addListener(async () => {
+      await this._userContextVisibilityService.showContainerOnWindow(windowId, userContext.id);
+      // render here.
+    });
+    element.onContainerClick.addListener(async () => {
+      await containers.openNewTabInContainer(userContext.id, windowId);
+      window.close();
+    });
+    element.onContainerEdit.addListener(async () => {
+      // render container edit pane.
+    });
+    element.onContainerClose.addListener(() => {
+      containers.closeAllTabsOnWindow(userContext.id, windowId).catch((e) => {
+        console.error(e);
+      });
+    });
+    element.onContainerDelete.addListener(async () => {
+      // confirmAsync
+    });
+    return element;
+  }
+
+  public renderContainerWithTabs(windowId: number, userContext: UserContext, tabs: Tab[]): MenulistContainerElement {
+    const element = this.renderContainer(windowId, userContext);
+    let tabCount = 0;
+    let state = ContainerTabsState.NO_TABS;
+    for (const tab of tabs) {
+      if (IndexTab.isIndexTabUrl(tab.url)) {
+        continue;
+      }
+      tabCount++;
+      if (tab.hidden) {
+        state = ContainerTabsState.HIDDEN_TABS;
+      } else {
+        element.appendChild(this.renderTab(tab, userContext));
+        state = ContainerTabsState.VISIBLE_TABS;
+      }
+    }
+    if (state === ContainerTabsState.HIDDEN_TABS) {
+      element.containerHidden = true;
+    }
+    element.tabCount = tabCount;
     return element;
   }
 }

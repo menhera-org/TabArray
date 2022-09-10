@@ -209,7 +209,7 @@ const renderContainer = (userContextId, currentWindowId) => {
 let rendering = false;
 let shouldRerender = false;
 let sitesRendering = false;
-globalThis.render = () => {
+const render = globalThis.render = () => {
   if (rendering) {
     shouldRerender = true;
     return;
@@ -391,7 +391,7 @@ globalThis.render = () => {
   }
 };
 
-globalThis.renderDelay = () => {
+const renderDelay = globalThis.renderDelay = () => {
   if (rendering) {
     shouldRerender = true;
     return;
@@ -406,7 +406,7 @@ globalThis.renderDelay = () => {
   }, 100);
 };
 
-globalThis.confirmAsync = (msg) => {
+const confirmAsync = globalThis.confirmAsync = (msg) => {
   const confirmMessageElement = document.querySelector('#confirm-message');
   confirmMessageElement.textContent = msg ? String(msg) : '';
   const cancelButton = document.querySelector('#confirm-cancel-button');
@@ -443,7 +443,7 @@ globalThis.confirmAsync = (msg) => {
   });
 };
 
-globalThis.showNewContainerPane = async () => {
+const showNewContainerPane = globalThis.showNewContainerPane = async () => {
   const cancelButton = document.querySelector('#new-container-cancel-button');
   const okButton = document.querySelector('#new-container-ok-button');
   const nameElement = document.querySelector('#new-container-name');
@@ -493,7 +493,7 @@ globalThis.showNewContainerPane = async () => {
   render();
 };
 
-globalThis.showEditContainerPane = async (userContextId) => {
+const showEditContainerPane = globalThis.showEditContainerPane = async (userContextId) => {
   const cancelButton = document.querySelector('#new-container-cancel-button');
   const okButton = document.querySelector('#new-container-ok-button');
   const nameElement = document.querySelector('#new-container-name');
@@ -550,7 +550,7 @@ globalThis.showEditContainerPane = async (userContextId) => {
 const sitesElement = document.querySelector('#sites');
 
 let renderedSite = '';
-globalThis.renderSiteDetails = async (aSite) => {
+const renderSiteDetails = globalThis.renderSiteDetails = async (aSite) => {
   const menuListElement = document.querySelector('#siteMenuList');
   menuListElement.textContent = '';
   if (aSite) {
@@ -603,7 +603,7 @@ globalThis.renderSiteDetails = async (aSite) => {
   }
 };
 
-globalThis.closeSite = async (aRegistrableDomain) => {
+const closeSite = globalThis.closeSite = async (aRegistrableDomain) => {
   //
   const tabs = await browser.tabs.query({
     windowType: 'normal',
