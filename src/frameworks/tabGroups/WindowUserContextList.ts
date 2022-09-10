@@ -43,6 +43,9 @@ export class WindowUserContextList {
     if (!browserWindow.tabs) {
       throw new Error('browserWindow.tabs is undefined');
     }
+    if (browserWindow.incognito) {
+      userContexts = [UserContext.DEFAULT]; // no containers are available in private windows
+    }
     const definedUserContextIds = new Map(userContexts.map((userContext) => [userContext.id, userContext]));
     const tabs = browserWindow.tabs.map((browserTab) => new Tab(browserTab));
     for (const tab of tabs) {
