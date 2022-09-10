@@ -70,13 +70,6 @@ export const hideAll = async (aWindowId) => {
   }
 };
 
-export const showAll = async (aWindowId) => {
-  const tabIds = (await browser.tabs.query({
-    windowId: aWindowId,
-  })).map((tabObj) => tabObj.id);
-  await browser.tabs.show(tabIds);
-};
-
 export const reopenInContainer = async (aUserContextId, aTabId) => {
   const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
   await tabGroup.reopenTabInGroup(aTabId);

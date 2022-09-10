@@ -248,7 +248,7 @@ globalThis.render = () => {
     currentWindowLabelExpandButton.classList.add('window-expand-button');
     currentWindowLabelExpandButton.title = browser.i18n.getMessage('tooltipExpandContainers');
     currentWindowLabelExpandButton.addEventListener('click', (ev) => {
-      containers.showAll(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
+      userContextVisibilityService.showAllOnWindow(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
         console.error(e);
       });
     });

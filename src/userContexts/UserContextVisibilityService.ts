@@ -121,4 +121,14 @@ export class UserContextVisibilityService {
     }
     await browser.tabs.show(tabIdsToShow);
   }
+
+  public async showAllOnWindow(windowId: number): Promise<void> {
+    console.log('showAllOnWindow(): windowId=%d', windowId);
+    const browserTabs = await browser.tabs.query({ windowId, hidden: true });
+    const tabs = browserTabs.map((browserTab) => new Tab(browserTab));
+    if (tabs.length < 1) {
+      return;
+    }
+    await browser.tabs.show(tabs.map((tab) => tab.id));
+  }
 }
