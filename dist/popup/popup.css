@@ -210,7 +210,7 @@ button {
 	inline-size: 2.5em;
 	color: inherit;
 	mask: url(/img/add_black_24dp.svg) center center/75% no-repeat;
-	background-color: var(--text-color);	
+	background-color: var(--text-color);
 }
 
 #button-panorama > .button-text, #button-new-container > .button-text, #button-sidebar > .button-text {

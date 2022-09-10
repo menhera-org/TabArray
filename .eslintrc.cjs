@@ -32,7 +32,7 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   parserOptions: {
     "sourceType": "module",
-    "project": "./tsconfig.json" 
+    "project": "./tsconfig.json"
   },
   root: true,
   rules: {},

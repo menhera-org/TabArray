@@ -25,7 +25,7 @@ import { InetVersion } from "./InetVersion";
 
 export const Ipv4Address: InetAddressConstructor = class Ipv4Address implements InetAddress {
   public readonly version = InetVersion.V4;
-  
+
   private readonly byteArray: Uint8Array;
 
   public constructor(str: string) {

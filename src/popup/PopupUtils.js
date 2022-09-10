@@ -104,9 +104,9 @@ export const renderTab = (tab) => {
 };
 
 /**
- * 
- * @param {number} userContextId 
- * @param {{mode: 'window', windowId: number} | {mode: 'site', site: string}} details 
+ *
+ * @param {number} userContextId
+ * @param {{mode: 'window', windowId: number} | {mode: 'site', site: string}} details
  * @returns {HTMLLIElement}
  */
 export const renderContainerHeading = (userContextId, details) => {
@@ -161,6 +161,6 @@ export const renderContainerHeading = (userContextId, details) => {
       closeContainerButton.disabled = true;
     }
   }
-  
+
   return containerElement;
 };

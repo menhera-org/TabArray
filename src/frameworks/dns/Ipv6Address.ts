@@ -25,7 +25,7 @@ import { InetVersion } from "./InetVersion";
 
 /**
  * This class represents an IPv6 address.
- * This does not support interface identifiers. 
+ * This does not support interface identifiers.
  */
 export const Ipv6Address: InetAddressConstructor = class Ipv6Address implements InetAddress {
   public readonly version = InetVersion.V6;

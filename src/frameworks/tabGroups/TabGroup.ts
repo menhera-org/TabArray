@@ -119,7 +119,7 @@ export class TabGroup {
           this._notifyObservers();
         }
       }
-    }); 
+    });
   }
 
   /**

@@ -49,7 +49,7 @@ export class StorageItem<T> {
         this.areaName = 'managed';
         break;
       }
-      
+
       default: {
         throw new Error(`Unknown storage area: ${area}`);
       }

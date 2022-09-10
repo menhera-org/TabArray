@@ -39,7 +39,7 @@ export class Tab {
   public readonly pinned: boolean;
   public readonly index: number;
   public readonly isSharing: boolean;
-  
+
   public static async get(id: number): Promise<Tab> {
     const tab = await browser.tabs.get(id);
     return new Tab(tab);

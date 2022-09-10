@@ -50,7 +50,7 @@ export class UserContext {
    * Fired when the identity is created.
    */
   public static readonly onCreated = new EventSink<UserContext>();
-  
+
   /**
    * Fired when the identity is removed.
    */
@@ -133,7 +133,7 @@ export class UserContext {
       return UserContext.createIncompleteUserContext(userContextId);
     }
   }
-  
+
   public static async getAll(): Promise<UserContext[]> {
     const identities = await browser.contextualIdentities.query({});
     const userContexts = identities.map(identity => {
@@ -175,32 +175,32 @@ export class UserContext {
     * Name of the identity.
     */
   public readonly name: string;
- 
+
   /**
     * The color for the identity.
     */
   public readonly color: string;
- 
+
   /**
     * A hex code representing the exact color used for the identity.
     */
   public readonly colorCode: string;
- 
+
   /**
     * The name of an icon for the identity.
     */
   public readonly icon: string;
- 
+
   /**
     * A full resource:// URL pointing to the identity's icon.
     */
   public readonly iconUrl: string;
- 
+
   /**
     * Whether this identity is defined and stored in the browser or not.
     */
   public readonly defined: boolean;
- 
+
   /**
    * This is not intended to be called directly.
    */

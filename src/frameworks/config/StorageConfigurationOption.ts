@@ -117,7 +117,7 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
       const currentValue = await this.getValue();
       observer(currentValue);
     })();
-    
+
     this.observeManaged(observer);
     this.observeLocal(observer);
     this.observeSync(observer);

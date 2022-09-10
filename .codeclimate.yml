@@ -74,3 +74,4 @@ exclude_patterns:
 - "**/*_test.go"
 - "**/*.d.ts"
 - "**/LICENSE"
+- "**/*.png"

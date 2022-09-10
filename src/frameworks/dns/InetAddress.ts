@@ -23,7 +23,7 @@ import { InetVersion } from "./InetVersion";
 
 export interface InetAddress {
   readonly version: InetVersion;
-  
+
   /**
    * Converts this InetAddress to a Uint8Array.
    */

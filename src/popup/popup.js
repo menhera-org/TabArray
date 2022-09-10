@@ -264,7 +264,7 @@ globalThis.render = () => {
       const tabElement = renderTab(tab);
       menuListElement.append(tabElement);
     }
-    
+
     const userContextIds = StateManager.getUserContexts().map((userContext) => userContext.id);
     const openUserContextIds = userContextIds.filter(userContextId => openUserContextIdSet.has(userContextId));
     const availableUserContextIds = userContextIds.filter(userContextId => !openUserContextIdSet.has(userContextId));
@@ -326,7 +326,7 @@ globalThis.render = () => {
 
     const sitesPaneTop = document.querySelector('#sites-pane-top');
     const sitePaneDetails = document.querySelector('#site-pane-details');
-    
+
     // refresh content of site details view
     renderSiteDetails(null).catch((e) => {
       console.error(e);

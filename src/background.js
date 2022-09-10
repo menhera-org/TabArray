@@ -344,7 +344,7 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   } catch (e) {
     // nothing.
   }
-  
+
   try {
     await browser.windows.update(windowId, {
       titlePreface: windowTitlePreface,
