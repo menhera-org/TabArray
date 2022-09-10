@@ -206,9 +206,171 @@ const renderContainer = (userContextId, currentWindowId) => {
   return containerElement;
 };
 
+const renderMain = () => {
+  const windowId = currentWindowId;
+  const currentWindowLabel = document.createElement('li');
+  menuListElement.append(currentWindowLabel);
+  currentWindowLabel.classList.add('window-label');
+  const currentWindowLabelContent = document.createElement('div');
+  currentWindowLabel.append(currentWindowLabelContent);
+  currentWindowLabelContent.classList.add('window-label-name');
+  currentWindowLabelContent.textContent = browser.i18n.getMessage('currentWindow', windowId);
+
+  const currentWindowLabelCollapseButton = document.createElement('button');
+  currentWindowLabel.append(currentWindowLabelCollapseButton);
+  currentWindowLabelCollapseButton.classList.add('window-collapse-button');
+  currentWindowLabelCollapseButton.title = browser.i18n.getMessage('tooltipCollapseContainers');
+  currentWindowLabelCollapseButton.addEventListener('click', (ev) => {
+    containers.hideAll(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
+      console.error(e);
+    });
+  });
+
+  const currentWindowLabelExpandButton = document.createElement('button');
+  currentWindowLabel.append(currentWindowLabelExpandButton);
+  currentWindowLabelExpandButton.classList.add('window-expand-button');
+  currentWindowLabelExpandButton.title = browser.i18n.getMessage('tooltipExpandContainers');
+  currentWindowLabelExpandButton.addEventListener('click', (ev) => {
+    userContextVisibilityService.showAllOnWindow(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
+      console.error(e);
+    });
+  });
+
+  const tabs = StateManager.getBrowserWindow(currentWindowId).getTabs();
+  const windowTabCount = tabs.length;
+  currentWindowLabelContent.dataset.tabCount = windowTabCount;
+
+  const openUserContextIdSet = new Set;
+  for (const tab of tabs) {
+    if (!tab.pinned) {
+      openUserContextIdSet.add(tab.userContextId);
+      continue;
+    }
+    const tabElement = renderTab(tab);
+    menuListElement.append(tabElement);
+  }
+
+  const userContextIds = StateManager.getUserContexts().map((userContext) => userContext.id);
+  const openUserContextIds = userContextIds.filter(userContextId => openUserContextIdSet.has(userContextId));
+  const availableUserContextIds = userContextIds.filter(userContextId => !openUserContextIdSet.has(userContextId));
+  for (const userContextId of openUserContextIds) {
+    const containerElement = renderContainer(userContextId, currentWindowId);
+    menuListElement.append(containerElement);
+  }
+
+  const moreContainersLabel = document.createElement('li');
+  menuListElement.append(moreContainersLabel);
+  moreContainersLabel.classList.add('window-label');
+  const moreContainersLabelContent = document.createElement('div');
+  moreContainersLabelContent.classList.add('window-label-name');
+  moreContainersLabel.append(moreContainersLabelContent);
+  moreContainersLabelContent.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
+
+  for (const userContextId of availableUserContextIds) {
+    const containerElement = renderContainer(userContextId, currentWindowId);
+    menuListElement.append(containerElement);
+  }
+};
+
+const renderWindows = () => {
+  const windowMenuListElement = document.querySelector('#windowMenuList');
+  windowMenuListElement.textContent = '';
+  const windows = StateManager.getBrowserWindows()
+  .filter((browserWindow) => browserWindow.isNormal);
+  for (const window of windows) {
+    const windowLabel = document.createElement('li');
+    windowMenuListElement.append(windowLabel);
+    windowLabel.classList.add('window-label');
+    const windowLabelContent = document.createElement('div');
+    windowLabelContent.classList.add('window-label-name');
+    windowLabel.append(windowLabelContent);
+    windowLabelContent.textContent = browser.i18n.getMessage('windowLabel', window.id);
+    windowLabelContent.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
+    windowLabelContent.addEventListener('click', (ev) => {
+      window.focus().catch(e => console.error(e));
+    });
+    const windowLabelCloseButton = document.createElement('button');
+    windowLabel.append(windowLabelCloseButton);
+    windowLabelCloseButton.classList.add('window-close-button');
+    windowLabelCloseButton.title = browser.i18n.getMessage('tooltipCloseWindow');
+    windowLabelCloseButton.addEventListener('click', (ev) => {
+      window.close().catch(e => console.error(e));
+    });
+    const tabs = window.getTabs();
+    windowLabelContent.dataset.tabCount = tabs.length;
+    for (const tab of tabs) {
+      if (!tab.active) continue;
+      const containerElement = renderContainerHeading(tab.userContextId, {
+        mode: 'window',
+        windowId: tab.windowId
+      });
+      windowMenuListElement.append(containerElement);
+      const tabElement = renderTab(tab);
+      windowMenuListElement.append(tabElement);
+    }
+  }
+};
+
 let rendering = false;
 let shouldRerender = false;
 let sitesRendering = false;
+
+const renderSites = () => {
+  const sitesPaneTop = document.querySelector('#sites-pane-top');
+
+  // refresh content of site details view
+  renderSiteDetails(null).catch((e) => {
+    console.error(e);
+  });
+
+  if (sitesRendering) {
+    throw void 0;
+  }
+  sitesRendering = true;
+  FirstPartyTabMap.create().then((registrableDomainsData) => {
+    sitesPaneTop.textContent = '';
+    const registrableDomains = registrableDomainsData;
+    for (const [registrableDomain, data] of registrableDomains) {
+      const button = document.createElement('button');
+      const buttonText = document.createElement('span');
+      buttonText.classList.add('button-text');
+      const closeButton = document.createElement('button');
+      closeButton.classList.add('site-close');
+      button.append(buttonText);
+      button.append(closeButton);
+      buttonText.dataset.tabCount = data.length;
+      buttonText.textContent = registrableDomain || '(null)';
+      sitesPaneTop.append(button);
+
+      closeButton.addEventListener('click', (ev) => {
+        ev.stopImmediatePropagation();
+        closeSite(registrableDomain).catch((e) => {
+          console.error(e);
+        });
+      });
+      const tabIconElement = document.createElement('img');
+      tabIconElement.classList.add('tab-icon');
+      const site = document.createElement('span');
+      site.classList.add('site');
+      button.append(site);
+      let iconUrl = data[0] ? data[0].favIconUrl : '/img/transparent.png';
+      tabIconElement.src = iconUrl;
+      site.append(tabIconElement);
+      const siteTitle = document.createElement('span');
+      siteTitle.classList.add('tab-label');
+      siteTitle.textContent = data[0] ? data[0].title : '';
+      site.append(siteTitle);
+      button.addEventListener('click', (ev) => {
+        renderSiteDetails(registrableDomain)
+        .catch((e) => {
+          console.error(e);
+        });
+      });
+    }
+    sitesRendering = false;
+  });
+}
+
 const render = globalThis.render = () => {
   if (rendering) {
     shouldRerender = true;
@@ -223,163 +385,12 @@ const render = globalThis.render = () => {
     const menuListElement = document.querySelector('#menuList');
     menuListElement.textContent = '';
 
-    const windowId = currentWindowId;
+    renderMain();
+    renderWindows();
 
-    const currentWindowLabel = document.createElement('li');
-    menuListElement.append(currentWindowLabel);
-    currentWindowLabel.classList.add('window-label');
-    const currentWindowLabelContent = document.createElement('div');
-    currentWindowLabel.append(currentWindowLabelContent);
-    currentWindowLabelContent.classList.add('window-label-name');
-    currentWindowLabelContent.textContent = browser.i18n.getMessage('currentWindow', windowId);
-
-    const currentWindowLabelCollapseButton = document.createElement('button');
-    currentWindowLabel.append(currentWindowLabelCollapseButton);
-    currentWindowLabelCollapseButton.classList.add('window-collapse-button');
-    currentWindowLabelCollapseButton.title = browser.i18n.getMessage('tooltipCollapseContainers');
-    currentWindowLabelCollapseButton.addEventListener('click', (ev) => {
-      containers.hideAll(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
-        console.error(e);
-      });
-    });
-
-    const currentWindowLabelExpandButton = document.createElement('button');
-    currentWindowLabel.append(currentWindowLabelExpandButton);
-    currentWindowLabelExpandButton.classList.add('window-expand-button');
-    currentWindowLabelExpandButton.title = browser.i18n.getMessage('tooltipExpandContainers');
-    currentWindowLabelExpandButton.addEventListener('click', (ev) => {
-      userContextVisibilityService.showAllOnWindow(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
-        console.error(e);
-      });
-    });
-
-    const tabs = StateManager.getBrowserWindow(currentWindowId).getTabs();
-    const windowTabCount = tabs.length;
-    currentWindowLabelContent.dataset.tabCount = windowTabCount;
-
-    const openUserContextIdSet = new Set;
-    for (const tab of tabs) {
-      if (!tab.pinned) {
-        openUserContextIdSet.add(tab.userContextId);
-        continue;
-      }
-      const tabElement = renderTab(tab);
-      menuListElement.append(tabElement);
-    }
-
-    const userContextIds = StateManager.getUserContexts().map((userContext) => userContext.id);
-    const openUserContextIds = userContextIds.filter(userContextId => openUserContextIdSet.has(userContextId));
-    const availableUserContextIds = userContextIds.filter(userContextId => !openUserContextIdSet.has(userContextId));
-    for (const userContextId of openUserContextIds) {
-      const containerElement = renderContainer(userContextId, currentWindowId);
-      menuListElement.append(containerElement);
-    }
-
-    const moreContainersLabel = document.createElement('li');
-    menuListElement.append(moreContainersLabel);
-    moreContainersLabel.classList.add('window-label');
-    const moreContainersLabelContent = document.createElement('div');
-    moreContainersLabelContent.classList.add('window-label-name');
-    moreContainersLabel.append(moreContainersLabelContent);
-    moreContainersLabelContent.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
-
-    for (const userContextId of availableUserContextIds) {
-      const containerElement = renderContainer(userContextId, currentWindowId);
-      menuListElement.append(containerElement);
-    }
-
-    const windowMenuListElement = document.querySelector('#windowMenuList');
-    windowMenuListElement.textContent = '';
-    const windows = StateManager.getBrowserWindows()
-    .filter((browserWindow) => browserWindow.isNormal);
-    for (const window of windows) {
-      const windowLabel = document.createElement('li');
-      windowMenuListElement.append(windowLabel);
-      windowLabel.classList.add('window-label');
-      const windowLabelContent = document.createElement('div');
-      windowLabelContent.classList.add('window-label-name');
-      windowLabel.append(windowLabelContent);
-      windowLabelContent.textContent = browser.i18n.getMessage('windowLabel', window.id);
-      windowLabelContent.title = browser.i18n.getMessage('tooltipWindowLabel', window.id);
-      windowLabelContent.addEventListener('click', (ev) => {
-        window.focus().catch(e => console.error(e));
-      });
-      const windowLabelCloseButton = document.createElement('button');
-      windowLabel.append(windowLabelCloseButton);
-      windowLabelCloseButton.classList.add('window-close-button');
-      windowLabelCloseButton.title = browser.i18n.getMessage('tooltipCloseWindow');
-      windowLabelCloseButton.addEventListener('click', (ev) => {
-        window.close().catch(e => console.error(e));
-      });
-      const tabs = window.getTabs();
-      windowLabelContent.dataset.tabCount = tabs.length;
-      for (const tab of tabs) {
-        if (!tab.active) continue;
-        const containerElement = renderContainerHeading(tab.userContextId, {
-          mode: 'window',
-          windowId: tab.windowId
-        });
-        windowMenuListElement.append(containerElement);
-        const tabElement = renderTab(tab);
-        windowMenuListElement.append(tabElement);
-      }
-    }
     mainElement.scrollTop = initScrollY;
 
-    const sitesPaneTop = document.querySelector('#sites-pane-top');
-    const sitePaneDetails = document.querySelector('#site-pane-details');
-
-    // refresh content of site details view
-    renderSiteDetails(null).catch((e) => {
-      console.error(e);
-    });
-
-    if (sitesRendering) {
-      throw void 0;
-    }
-    sitesRendering = true;
-    FirstPartyTabMap.create().then((registrableDomainsData) => {
-      sitesPaneTop.textContent = '';
-      const registrableDomains = registrableDomainsData;
-      for (const [registrableDomain, data] of registrableDomains) {
-        const button = document.createElement('button');
-        const buttonText = document.createElement('span');
-        buttonText.classList.add('button-text');
-        const closeButton = document.createElement('button');
-        closeButton.classList.add('site-close');
-        button.append(buttonText);
-        button.append(closeButton);
-        buttonText.dataset.tabCount = data.length;
-        buttonText.textContent = registrableDomain || '(null)';
-        sitesPaneTop.append(button);
-
-        closeButton.addEventListener('click', (ev) => {
-          ev.stopImmediatePropagation();
-          closeSite(registrableDomain).catch((e) => {
-            console.error(e);
-          });
-        });
-        const tabIconElement = document.createElement('img');
-        tabIconElement.classList.add('tab-icon');
-        const site = document.createElement('span');
-        site.classList.add('site');
-        button.append(site);
-        let iconUrl = data[0] ? data[0].favIconUrl : '/img/transparent.png';
-        tabIconElement.src = iconUrl;
-        site.append(tabIconElement);
-        const siteTitle = document.createElement('span');
-        siteTitle.classList.add('tab-label');
-        siteTitle.textContent = data[0] ? data[0].title : '';
-        site.append(siteTitle);
-        button.addEventListener('click', (ev) => {
-          renderSiteDetails(registrableDomain)
-          .catch((e) => {
-            console.error(e);
-          });
-        });
-      }
-      sitesRendering = false;
-    });
+    renderSites();
   } finally {
     mainElement.classList.remove('rendering');
     setTimeout(() => {
