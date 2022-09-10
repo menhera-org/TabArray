@@ -33,9 +33,11 @@ import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
 import { FirstPartyService } from '../frameworks/tabGroups';
 import { FirstPartyTabMap } from '../frameworks/tabGroups';
+import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 
 const userContextService = UserContextService.getInstance();
 const firstPartyService = FirstPartyService.getInstance();
+const userContextVisibilityService = UserContextVisibilityService.getInstance();
 document.body.innerHTML = TEMPLATE; // static string.
 
 const STATE_NO_TABS = 0;
@@ -112,7 +114,7 @@ const renderContainer = (userContextId, currentWindowId) => {
     if (containerElement.classList.contains('container-hidden')) {
       await containers.show(userContextId, windowId);
     } else if (containerElement.classList.contains('container-visible')) {
-      await containers.hide(userContextId, windowId);
+      await userContextVisibilityService.hideContainerOnWindow(windowId, userContextId);
     }
     render();
   });

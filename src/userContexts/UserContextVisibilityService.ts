@@ -19,8 +19,14 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { config } from '../config/config';
 import { Uint32 } from '../frameworks/types';
+import { WindowUserContextVisibilityHelper } from './WindowUserContextVisibilityHelper';
+import { IndexTab } from '../modules/IndexTab';
+import { UserContext } from '../frameworks/tabGroups';
+import { UserContextService } from '../userContexts/UserContextService';
+import { Tab } from '../frameworks/tabs';
 //import { OriginAttributes } from '../frameworks/tabGroups';
 //import { TabGroup } from '../frameworks/tabGroups';
 
@@ -47,9 +53,41 @@ export class UserContextVisibilityService {
     console.log('tab.groups.indexOption: ', configGroupIndexOption);
   }
 
+  public async createIndexTab (windowId: number, userContextId: Uint32.Uint32): Promise<Tab> {
+    const rawUserContext = await UserContext.get(userContextId);
+    const userContext = UserContextService.getInstance().fillDefaultValues(rawUserContext);
+    const url = IndexTab.getUrl(userContext.name, userContext.icon, userContext.colorCode).url;
+    const browserTab = await browser.tabs.create({
+      url,
+      cookieStoreId: UserContext.toCookieStoreId(userContextId),
+      windowId,
+      active: false,
+    });
+    const tab = new Tab(browserTab);
+    await browser.sessions.setTabValue(tab.id, 'indexTabUrl', url);
+    return tab;
+  }
+
   public async hideContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
     // nothing.
     console.log('hideContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
+    const helper = await WindowUserContextVisibilityHelper.create(windowId, userContextId);
+    if (helper.tabsToHide.length < 1) {
+      console.log('No tabs to hide on window %d for userContext %d', windowId, userContextId);
+      return;
+    }
+    if ('collapsed' == configGroupIndexOption && helper.hasIndexTab) {
+      await this.createIndexTab(windowId, userContextId);
+    }
+    if (helper.active) {
+      if (!helper.tabToActivate) {
+        // TODO: create a new tab if there is no one to activate.
+        console.log('No tab to activate on window %d for userContext %d', windowId, userContextId);
+        return;
+      }
+      await helper.tabToActivate.focus();
+    }
+    await browser.tabs.hide(helper.tabsToHide.map((tab) => tab.id));
   }
 
   public async showContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {

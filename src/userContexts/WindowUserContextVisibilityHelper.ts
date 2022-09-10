@@ -54,6 +54,8 @@ export class WindowUserContextVisibilityHelper {
       }
       if (tab.pinned ||!userContextMatches) {
         this._tabsToShow.push(tab);
+      } else {
+        this._tabsToHide.push(tab);
       }
     }
   }

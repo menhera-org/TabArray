@@ -24,8 +24,10 @@ import { setActiveUserContext } from './usercontext-state.js';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
 import { TabGroupService } from '../frameworks/tabGroups';
+import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 
 const tabGroupService = TabGroupService.getInstance();
+const userContextVisibilityService = UserContextVisibilityService.getInstance();
 
 // 'never' -- do not show indices
 // 'collapsed' -- show indices for collapsed containers
@@ -52,63 +54,6 @@ export const createIndexTab = async (aUserContextId, aWindowId) => {
   });
   await browser.sessions.setTabValue(tabObj.id, 'indexTabUrl', url);
   return tabObj;
-};
-
-export const hide = async (aUserContextId, aWindowId) => {
-  if (!aWindowId) {
-    throw new TypeError('Unimplemented');
-  }
-  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
-  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
-  const tabs = await browser.tabs.query({
-    windowId: aWindowId,
-  });
-  const userContexts = new Map;
-  let active = false;
-  const tabsToHide = [];
-  let minIndex = Infinity;
-  let indexExists = false;
-  for (const tab of tabs) {
-    if (tab.cookieStoreId != cookieStoreId || tab.pinned) {
-      if (!tab.hidden) {
-        userContexts.set(UserContext.fromCookieStoreId(tab.cookieStoreId), tab.id);
-      }
-      continue;
-    }
-    minIndex = Math.min(minIndex, tab.index);
-    if (tab.active) {
-      active = true;
-    }
-    if (!tab.hidden) {
-      if (IndexTab.isIndexTabUrl(tab.url)) {
-        indexExists = true;
-      } else {
-        tabsToHide.push(tab.id);
-      }
-    }
-  }
-  if (!indexExists && isFinite(minIndex) && 'collapsed' == configGroupIndexOption) {
-    await createIndexTab(userContextId, aWindowId);
-  }
-  if (1 > tabsToHide.length) {
-    console.log('No tabs to hide on window %d for userContext %d', aWindowId, userContextId);
-    return;
-  }
-  if (active) {
-    let success = false;
-    for (const [, tabId] of userContexts) {
-      await browser.tabs.update(tabId, {
-        active: true,
-      });
-      success = true;
-      break;
-    }
-    if (!success) {
-      console.warn('Unable to hide this container %d because it is active and there is no other tab', userContextId);
-      return;
-    }
-  }
-  await browser.tabs.hide(tabsToHide);
 };
 
 export const show = async (aUserContextId, aWindowId) => {
@@ -161,7 +106,7 @@ export const getInactiveIds = async (aWindowId) => {
 export const hideAll = async (aWindowId) => {
   const userContextIds = await getInactiveIds(aWindowId);
   for (const userContextId of userContextIds) {
-    await hide(userContextId, aWindowId);
+    await userContextVisibilityService.hideContainerOnWindow(aWindowId, userContextId);
   }
 };
 

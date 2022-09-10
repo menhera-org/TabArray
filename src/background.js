@@ -33,6 +33,7 @@ import {IndexTab} from './modules/IndexTab';
 import { UserContext } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
 import { TabGroupService } from './frameworks/tabGroups';
+import { UserContextVisibilityService } from './userContexts/UserContextVisibilityService';
 
 // watchdog
 let scriptCompleted = false;
@@ -45,6 +46,7 @@ window.addEventListener('error', ev => {
 
 const userContextService = UserContextService.getInstance();
 const tabGroupService = TabGroupService.getInstance();
+const userContextVisibilityService = UserContextVisibilityService.getInstance();
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
@@ -379,7 +381,10 @@ browser.menus.create({
 browser.menus.onClicked.addListener((info, tab) => {
   if (info.menuItemId == 'tab-hide-container') {
     const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
-    containers.hide(userContextId, tab.windowId).catch(e => console.error(e));
+    if (!tab.windowId) {
+      return;
+    }
+    userContextVisibilityService.hideContainerOnWindow(tab.windowId, userContextId).catch(e => console.error(e));
   }
 });
 
