@@ -61,6 +61,10 @@ export class WindowUserContextList {
       userContextTabs.push(tab);
       this._userContextTabMap.set(tab.originAttributes.userContextId, userContextTabs);
     }
+    this._addInactiveUserContexts(userContexts);
+  }
+
+  private _addInactiveUserContexts(userContexts: UserContext[]): void {
     for (const userContext of userContexts) {
       if (this._openUserContexts.includes(userContext)) {
         continue;
