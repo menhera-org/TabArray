@@ -480,7 +480,7 @@ button {
   z-index: 2;
   box-shadow: 0 0 .5em var(--background-color), 0 0 .5em var(--background-color);
   display: grid;
-  grid-template-columns: 1fr 2em 2em;
+  grid-template-columns: 1fr 2em 2em 2em;
   border-block-start: solid .125rem var(--border-color);
   padding-inline-end: 1em;
 }
