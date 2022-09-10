@@ -69,7 +69,6 @@ export class UserContextVisibilityService {
   }
 
   public async hideContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
-    // nothing.
     console.log('hideContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
     const helper = await WindowUserContextVisibilityHelper.create(windowId, userContextId);
     if (helper.tabsToHide.length < 1) {
