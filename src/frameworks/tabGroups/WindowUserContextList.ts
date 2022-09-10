@@ -38,6 +38,7 @@ export class WindowUserContextList {
   private _inactiveUserContexts: UserContext[] = [];
   private _pinnedTabs: Tab[] = [];
   private _userContextTabMap: Map<Uint32.Uint32, Tab[]> = new Map();
+  private _isPrivate = false;
 
   private constructor(browserWindow: browser.Windows.Window, userContexts: UserContext[]) {
     if (!browserWindow.tabs) {
@@ -45,6 +46,7 @@ export class WindowUserContextList {
     }
     if (browserWindow.incognito) {
       userContexts = [UserContext.DEFAULT]; // no containers are available in private windows
+      this._isPrivate = true;
     }
     const definedUserContextIds = new Map(userContexts.map((userContext) => [userContext.id, userContext]));
     const tabs = browserWindow.tabs.map((browserTab) => new Tab(browserTab));
@@ -96,5 +98,13 @@ export class WindowUserContextList {
 
   public getUserContextTabs(userContextId: Uint32.Uint32): Iterable<Tab> {
     return (this._userContextTabMap.get(userContextId) ?? []).values();
+  }
+
+  public getPinnedTabs(): Iterable<Tab> {
+    return this._pinnedTabs.values();
+  }
+
+  public get isPrivate(): boolean {
+    return this._isPrivate;
   }
 }
