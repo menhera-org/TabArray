@@ -34,6 +34,7 @@ import { UserContextService } from '../userContexts/UserContextService';
 import { FirstPartyService } from '../frameworks/tabGroups';
 import { FirstPartyTabMap } from '../frameworks/tabGroups';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
+import { MenulistWindowElement } from '../components/menulist-window';
 
 const userContextService = UserContextService.getInstance();
 const firstPartyService = FirstPartyService.getInstance();
@@ -208,37 +209,27 @@ const renderContainer = (userContextId, currentWindowId) => {
 
 const renderMain = () => {
   const windowId = currentWindowId;
-  const currentWindowLabel = document.createElement('li');
-  menuListElement.append(currentWindowLabel);
-  currentWindowLabel.classList.add('window-label');
-  const currentWindowLabelContent = document.createElement('div');
-  currentWindowLabel.append(currentWindowLabelContent);
-  currentWindowLabelContent.classList.add('window-label-name');
-  currentWindowLabelContent.textContent = browser.i18n.getMessage('currentWindow', windowId);
-
-  const currentWindowLabelCollapseButton = document.createElement('button');
-  currentWindowLabel.append(currentWindowLabelCollapseButton);
-  currentWindowLabelCollapseButton.classList.add('window-collapse-button');
-  currentWindowLabelCollapseButton.title = browser.i18n.getMessage('tooltipCollapseContainers');
-  currentWindowLabelCollapseButton.addEventListener('click', (ev) => {
+  const windowLabel = new MenulistWindowElement(windowId, true);
+  menuListElement.append(windowLabel);
+  windowLabel.onCollapseButtonClicked.addListener(() => {
     containers.hideAll(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
       console.error(e);
     });
   });
-
-  const currentWindowLabelExpandButton = document.createElement('button');
-  currentWindowLabel.append(currentWindowLabelExpandButton);
-  currentWindowLabelExpandButton.classList.add('window-expand-button');
-  currentWindowLabelExpandButton.title = browser.i18n.getMessage('tooltipExpandContainers');
-  currentWindowLabelExpandButton.addEventListener('click', (ev) => {
+  windowLabel.onExpandButtonClicked.addListener(() => {
     userContextVisibilityService.showAllOnWindow(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
+      console.error(e);
+    });
+  });
+  windowLabel.onCloseButtonClicked.addListener(() => {
+    browser.windows.remove(browser.windows.WINDOW_ID_CURRENT).catch((e) => {
       console.error(e);
     });
   });
 
   const tabs = StateManager.getBrowserWindow(currentWindowId).getTabs();
   const windowTabCount = tabs.length;
-  currentWindowLabelContent.dataset.tabCount = windowTabCount;
+  windowLabel.tabCountString = String(windowTabCount);
 
   const openUserContextIdSet = new Set;
   for (const tab of tabs) {
@@ -258,13 +249,9 @@ const renderMain = () => {
     menuListElement.append(containerElement);
   }
 
-  const moreContainersLabel = document.createElement('li');
+  const moreContainersLabel = new MenulistWindowElement();
+  moreContainersLabel.windowName = browser.i18n.getMessage('currentWindowMoreContainers');
   menuListElement.append(moreContainersLabel);
-  moreContainersLabel.classList.add('window-label');
-  const moreContainersLabelContent = document.createElement('div');
-  moreContainersLabelContent.classList.add('window-label-name');
-  moreContainersLabel.append(moreContainersLabelContent);
-  moreContainersLabelContent.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
 
   for (const userContextId of availableUserContextIds) {
     const containerElement = renderContainer(userContextId, currentWindowId);

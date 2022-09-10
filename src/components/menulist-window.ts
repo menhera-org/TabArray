@@ -38,11 +38,12 @@ export class MenulistWindowElement extends HTMLElement {
   constructor(windowId = -1, isCurrentWindow = false) {
     super();
     this._isCurrentWindow = isCurrentWindow;
-    this.windowId = windowId;
-    this.classList.add('window-label');
 
     this._nameElement = this.createNameElement();
     this.appendChild(this._nameElement);
+
+    this.windowId = windowId;
+    this.classList.add('window-label');
 
     this._collapseButtonElement = this.createButtonElement('window-collapse-button', 'tooltipCollapseContainers', this.onCollapseButtonClicked);
     this.appendChild(this._collapseButtonElement);
@@ -113,6 +114,14 @@ export class MenulistWindowElement extends HTMLElement {
 
   get closeButtonElement(): HTMLButtonElement {
     return this._closeButtonElement;
+  }
+
+  get tabCountString(): string {
+    return this._nameElement.dataset.tabCount ?? '';
+  }
+
+  set tabCountString(tabCountString: string) {
+    this._nameElement.dataset.tabCount = tabCountString;
   }
 }
 
