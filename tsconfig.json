@@ -10,7 +10,7 @@
     "sourceMap": true,
     "declaration": false,
     "newLine": "lf",
-		"outDir": "./ts-dist/",
+    "outDir": "./ts-dist/",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -18,12 +18,12 @@
     "noImplicitOverride": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-		"allowJs": true
+    "allowJs": true
   },
   "include": [
     "src/**/*",
     "webpack.config.js",
     ".eslintrc.cjs",
     "script/*.js"
-	]
+  ]
 }
