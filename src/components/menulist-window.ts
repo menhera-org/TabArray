@@ -120,7 +120,7 @@ export class MenulistWindowElement extends HTMLElement {
     return this._nameElement.dataset.tabCount ?? '';
   }
 
-  set tabCountString(tabCountString: string) {
+  set tabCountString(tabCountString: string | undefined) {
     this._nameElement.dataset.tabCount = tabCountString;
   }
 }
