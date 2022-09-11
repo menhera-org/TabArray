@@ -88,6 +88,10 @@ export class PanoramaContainerElement extends HTMLElement {
   public get containerTabsElement(): HTMLDivElement {
     return this._containerTabsElement;
   }
+
+  public get containerName(): string {
+    return this._containerLabelElement.textContent ?? '';
+  }
 }
 
 customElements.define('panorama-container', PanoramaContainerElement);

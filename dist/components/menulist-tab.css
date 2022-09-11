@@ -23,6 +23,104 @@
 
 @namespace url(http://www.w3.org/1999/xhtml);
 
+a, button {
+  color: inherit;
+  background-color: transparent;
+  border: none;
+  appearance: none;
+}
+
+button {
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  padding: 0;
+  background-color: transparent;
+  display: block;
+}
+
+a:active, button:active {
+  opacity: .75;
+}
+
+input, button, select, textarea {
+  font: inherit;
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+  inline-size: 100%;
+}
+
+button {
+  padding-inline: 1em;
+  padding-block: .5em;
+  text-align: start;
+}
+
+.button-text {
+  padding-inline: .5em;
+  padding-block: .5em;
+}
+
+#tab-label, .container-label {
+  padding-inline: .5em;
+  padding-block: .5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab-discarded .tab-label {
+  opacity: .75;
+}
+
+.tab-active .tab-label {
+  font-weight: bold;
+}
+
+.tab-icon {
+  inline-size: 75%;
+  align-self: center;
+  justify-self: center;
+}
+
+.tab-icon.img-error {
+  visibility: hidden;
+}
+
+.tab > button, .container > button, .window-label > button {
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  opacity: 0;
+  padding: 0;
+  background-color: transparent;
+  display: block;
+}
+
+.tab > .tab-pin-button {
+  mask: url(/img/push_pin_black_24dp.svg) center center/75% no-repeat;
+  background-color: var(--text-color);
+}
+
+.tab > .tab-pin-button:hover, .tab > .tab-pin-button:focus {
+  opacity: .5 !important;
+}
+
+.tab.tab-pinned > .tab-pin-button {
+  opacity: 1;
+}
+
+.tab > .tab-close-button {
+  mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+  background-color: var(--text-color);
+  opacity: .25;
+}
+
+.tab > .tab-close-button:focus, .tab > .tab-close-button:hover {
+  opacity: .5;
+}
+
 #tab-menu {
   display: block grid;
   grid-template-columns: 2em 1fr;
@@ -36,9 +134,15 @@
   border-inline-start: solid .25rem transparent;
 }
 
+#tab-main:hover, #tab-main:focus-within {
+  background-color: var(--hover-color);
+}
+
 #tab-button {
   display: block grid;
   grid-template-columns: 2em 1fr;
+  background-color: transparent !important;
+  padding: 0;
 }
 
 #tab-button.discarded {
@@ -65,7 +169,6 @@
   background-repeat: no-repeat;
   background-position: center center;
   padding: 0;
-  background-color: transparent;
   display: block;
 }
 

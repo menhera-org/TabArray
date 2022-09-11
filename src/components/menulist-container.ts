@@ -25,6 +25,7 @@ import { EventSink } from '../frameworks/utils';
 
 export class MenulistContainerElement extends HTMLElement {
   private static readonly TEMPLATE= `
+    <link rel="stylesheet" href="/components/menulist-container.css"/>
     <div id='container'>
       <div id='container-header'>
         <button id='container-visibility-toggle'></button>
@@ -150,6 +151,9 @@ export class MenulistContainerElement extends HTMLElement {
     if (0 == tabCount) {
       this.containerVisibilityToggleButton.disabled = true;
       this.containerCloseButton.disabled = true;
+    } else {
+      this.containerVisibilityToggleButton.disabled = false;
+      this.containerCloseButton.disabled = false;
     }
   }
 

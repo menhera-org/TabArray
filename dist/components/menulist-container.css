@@ -23,6 +23,24 @@
 
 @namespace url(http://www.w3.org/1999/xhtml);
 
+a, button {
+  color: inherit;
+  background-color: transparent;
+  border: none;
+  appearance: none;
+  text-align: unset;
+  font: inherit;
+}
+
+button {
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  padding: 0;
+  background-color: transparent;
+  display: block;
+}
+
 #container {
   display: block;
 }
@@ -70,4 +88,33 @@ button[disabled] {
 
 #container-delete-button {
   mask: url(/img/delete_black_24dp.svg) center center/75% no-repeat;
+}
+
+#container-button {
+  display: block grid;
+  grid-template-columns: 2em 1fr;
+}
+
+#container-name {
+  padding-inline: .5em;
+  padding-block: .5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#container-icon {
+  inline-size: 75%;
+  block-size: 75%;
+  align-self: center;
+  justify-self: center;
+}
+
+#container-visibility-toggle {
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  inline-size: 100%;
+  block-size: 100%;
+  opacity: .5;
 }

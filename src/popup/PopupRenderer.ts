@@ -33,6 +33,7 @@ import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";
 import { PopupWindowListRenderer } from "./PopupWindowListRenderer";
 import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
 import { Uint32 } from "../frameworks/types";
+import { UserContextService } from '../userContexts/UserContextService';
 
 enum ContainerTabsState {
   NO_TABS,
@@ -43,16 +44,28 @@ enum ContainerTabsState {
 // This needs some refactoring.
 export class PopupRenderer {
   private _userContextVisibilityService = UserContextVisibilityService.getInstance();
+  private _userContextService = UserContextService.getInstance();
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly windowListRenderer = new PopupWindowListRenderer(this);
   public readonly siteListRenderer = new PopupSiteListRenderer(this);
 
   public renderTab(tab: Tab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
     const element = new MenulistTabElement(tab, userContext);
+    element.onTabClicked.addListener(() => {
+      tab.focus().then(() => {
+        window.close();
+      });
+    });
+    element.onClose.addListener(() => {
+      tab.close().then(() => {
+        this.render();
+      });
+    });
     return element;
   }
 
   private renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
+    userContext = this._userContextService.fillDefaultValues(userContext);
     const element = new MenulistContainerElement(userContext);
     element.containerVisibilityToggleButton.disabled = true;
     return element;
@@ -86,6 +99,7 @@ export class PopupRenderer {
   }
 
   private renderContainer(windowId: number, userContext: UserContext): MenulistContainerElement {
+    userContext = this._userContextService.fillDefaultValues(userContext);
     const element = new MenulistContainerElement(userContext);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     element.onContainerHide.addListener(async () => {

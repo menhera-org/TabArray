@@ -21,7 +21,7 @@ module.exports = {
       filename: 'navigation/confirm.js',
     },
     'popup': {
-      import: './src/popup/popup.js',
+      import: './src/popup/popup.ts',
       filename: 'popup/popup.js',
     },
     'options': {

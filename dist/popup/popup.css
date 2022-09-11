@@ -406,11 +406,11 @@ button {
   border-inline-start: solid .25rem transparent;
 }
 
-.menu-list.search-result .tab, .menu-list.search-result .window-label {
+.menu-list.search-result menulist-tab, .menu-list.search-result .window-label {
   display: none;
 }
 
-.menu-list.search-result .container:not(.search-matched) {
+.menu-list.search-result menulist-container:not(.search-matched) {
   display: none;
 }
 
