@@ -19,8 +19,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Tab } from "../frameworks/tabs";
-import { UserContext } from "../frameworks/tabGroups";
+import browser from 'webextension-polyfill';
+import { Tab, WindowService } from "../frameworks/tabs";
+import { FirstPartyTabMap, UserContext, WindowUserContextList } from "../frameworks/tabGroups";
 import { MenulistTabElement } from "../components/menulist-tab";
 import { MenulistContainerElement } from "../components/menulist-container";
 import * as containers from '../modules/containers.js';
@@ -134,5 +135,26 @@ export class PopupRenderer {
 
   public async render() {
     // unimplemented.
+    const browserWindow = await browser.windows.get(browser.windows.WINDOW_ID_CURRENT);
+    const windowId = browserWindow.id;
+    if (null == windowId) {
+      return;
+    }
+    const currentWindowMenuList = document.querySelector<HTMLElement>('#menuList');
+    const windowListMenuList = document.querySelector<HTMLElement>('#windowMenuList');
+    const sitesMenuList = document.querySelector<HTMLElement>('#sites-pane-top');
+    if (!currentWindowMenuList || !windowListMenuList || !sitesMenuList) {
+      console.warn('Elements not found');
+      return;
+    }
+    const windowService = WindowService.getInstance();
+    const [windowUserContextList, activeTabsByWindow, firstPartyTabMap] = await Promise.all([
+      WindowUserContextList.create(windowId),
+      windowService.getActiveTabsByWindow(),
+      FirstPartyTabMap.create(browserWindow.incognito),
+    ]);
+    this.currentWindowRenderer.renderCurrentWindowView(windowUserContextList, currentWindowMenuList);
+    this.windowListRenderer.renderWindowListView(activeTabsByWindow, windowListMenuList);
+    this.siteListRenderer.renderSiteListView(firstPartyTabMap, sitesMenuList);
   }
 }
