@@ -31,6 +31,7 @@ import { IndexTab } from "../modules/IndexTab";
 import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";
 import { PopupWindowListRenderer } from "./PopupWindowListRenderer";
 import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
+import { Uint32 } from "../frameworks/types";
 
 enum ContainerTabsState {
   NO_TABS,
@@ -70,10 +71,10 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderContainerForFirstPartyDomain(domain: string, userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
+  public renderContainerForFirstPartyDomain(domain: string, userContext: UserContext = UserContext.DEFAULT, isPrivateBrowsing = false): MenulistContainerElement {
     const element = this.renderPartialContainerElement(userContext);
     element.onContainerClose.addListener(() => {
-      const originAttributes = new OriginAttributes(domain, userContext.id);
+      const originAttributes = new OriginAttributes(domain, userContext.id, (isPrivateBrowsing ? 1 : 0) as Uint32.Uint32);
       TabGroup.createTabGroup(originAttributes).then((tabGroup) => {
         return tabGroup.tabList.closeTabs();
       }).catch((e) => {

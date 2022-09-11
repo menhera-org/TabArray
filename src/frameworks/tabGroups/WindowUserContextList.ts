@@ -23,34 +23,31 @@ import browser from 'webextension-polyfill';
 import { Uint32 } from '../types';
 import { Tab } from '../tabs';
 import { UserContext } from './UserContext';
+import { DefinedUserContextList } from './DefinedUserContextList';
 
 export class WindowUserContextList {
   public static async create(windowId: number): Promise<WindowUserContextList> {
-    const [browserWindow, userContexts] = await Promise.all([
-      browser.windows.get(windowId, { populate: true }),
-      UserContext.getAll(),
-    ]);
+    const browserWindow = await browser.windows.get(windowId, { populate: true });
+    const definedUserContexts = await DefinedUserContextList.create(browserWindow.incognito);
 
-    return new WindowUserContextList(browserWindow, userContexts);
+    return new WindowUserContextList(browserWindow, definedUserContexts);
   }
 
-  private _openUserContexts: UserContext[] = [];
+  private _openUserContexts = new Map<Uint32.Uint32, UserContext>();
   private _inactiveUserContexts: UserContext[] = [];
   private _pinnedTabs: Tab[] = [];
   private _userContextTabMap: Map<Uint32.Uint32, Tab[]> = new Map();
   private _isPrivate = false;
   private _windowId: number;
 
-  private constructor(browserWindow: browser.Windows.Window, userContexts: UserContext[]) {
+  private constructor(browserWindow: browser.Windows.Window, userContexts: DefinedUserContextList) {
     if (!browserWindow.tabs) {
       throw new Error('browserWindow.tabs is undefined');
     }
     if (browserWindow.incognito) {
-      userContexts = [UserContext.DEFAULT]; // no containers are available in private windows
       this._isPrivate = true;
     }
     this._windowId = browserWindow.id ?? browser.windows.WINDOW_ID_NONE;
-    const definedUserContextIds = new Map(userContexts.map((userContext) => [userContext.id, userContext]));
     const tabs = browserWindow.tabs.map((browserTab) => new Tab(browserTab));
     for (const tab of tabs) {
       if (tab.pinned) {
@@ -60,7 +57,7 @@ export class WindowUserContextList {
       if (tab.originAttributes.userContextId == null) {
         continue;
       }
-      this._openUserContexts.push(this._getUserContext(definedUserContextIds, tab.originAttributes.userContextId));
+      this._openUserContexts.set(tab.originAttributes.userContextId, userContexts.getUserContext(tab.originAttributes.userContextId));
       const userContextTabs = this._userContextTabMap.get(tab.originAttributes.userContextId) ?? [];
       userContextTabs.push(tab);
       this._userContextTabMap.set(tab.originAttributes.userContextId, userContextTabs);
@@ -68,25 +65,13 @@ export class WindowUserContextList {
     this._addInactiveUserContexts(userContexts);
   }
 
-  private _addInactiveUserContexts(userContexts: UserContext[]): void {
-    for (const userContext of userContexts) {
-      if (this._openUserContexts.includes(userContext)) {
+  private _addInactiveUserContexts(userContexts: DefinedUserContextList): void {
+    for (const userContextId of userContexts.getDefinedUserContextIds()) {
+      const userContext = userContexts.getUserContext(userContextId);
+      if (this._openUserContexts.has(userContext.id)) {
         continue;
       }
       this._inactiveUserContexts.push(userContext);
-    }
-  }
-
-  private _getUserContext(definedUserContextIds: Map<Uint32.Uint32, UserContext>, userContextId: Uint32.Uint32): UserContext {
-    if (definedUserContextIds.has(userContextId)) {
-      const userContext = definedUserContextIds.get(userContextId);
-      if (userContext == null) {
-        throw new Error('userContext is null'); // This should never happen
-      }
-      return userContext;
-    } else {
-      const userContext = UserContext.createIncompleteUserContext(userContextId);
-      return userContext;
     }
   }
 

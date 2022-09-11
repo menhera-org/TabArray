@@ -19,12 +19,93 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { MenulistSiteButtonElement } from '../components/menulist-site-button';
+import { Tab } from '../frameworks/tabs';
 import { PopupRenderer } from './PopupRenderer';
+import { FirstPartyService, FirstPartyTabMap, FirstPartyUserContextList, TabGroup, UserContext } from '../frameworks/tabGroups';
 
 export class PopupSiteListRenderer {
   private readonly _popupRenderer: PopupRenderer;
 
   public constructor(popupRenderer: PopupRenderer) {
     this._popupRenderer = popupRenderer;
+  }
+
+  public renderSiteSummary(siteDomain: string, tabs: ReadonlyArray<Tab>, isPrivateBrowsing = false): MenulistSiteButtonElement {
+    const siteButton = new MenulistSiteButtonElement();
+    siteButton.tabCountString = String(tabs.length);
+    siteButton.siteDomain = siteDomain || '(null)';
+    siteButton.onCloseClicked.addListener(() => {
+      FirstPartyService.getInstance().closeTabsByFirstPartyDomain(siteDomain).catch((e) => {
+        console.error(e);
+      });
+    });
+
+    const iconUrl = tabs[0] ? tabs[0].favIconUrl : '/img/transparent.png';
+    siteButton.tabIcon = iconUrl;
+    siteButton.tabLabel = tabs[0] ? tabs[0].title : '';
+    siteButton.addEventListener('click', () => {
+      // render site details.
+      this.updateSiteDetailsView(siteDomain, isPrivateBrowsing).then(() => {
+        this.switchToSiteDetailsView();
+      });
+    });
+    return siteButton;
+  }
+
+  public renderSiteListView(tabMap: FirstPartyTabMap, element: HTMLElement): void {
+    element.textContent = '';
+    for (const [domain, tabs] of tabMap) {
+      const siteButton = this.renderSiteSummary(domain, tabs);
+      element.appendChild(siteButton);
+    }
+  }
+
+  public renderSiteDetailsView(firstPartyUserContextList: FirstPartyUserContextList, element: HTMLElement): void {
+    // tempering with elements this way is not ideal, but it's the easiest way to
+    // get the desired result.
+    const domainElement = element.querySelector<HTMLDivElement>('#site-pane-details-domain');
+    const siteMenuListElement = element.querySelector<HTMLDivElement>('#siteMenuList');
+    if (!domainElement || !siteMenuListElement) {
+      return;
+    }
+    const firstPartyDomain = firstPartyUserContextList.firstPartyDomain;
+    domainElement.textContent = firstPartyDomain;
+    siteMenuListElement.textContent = '';
+    for (const userContext of firstPartyUserContextList.getOpenUserContexts()) {
+      const userContextElement = this._popupRenderer.renderContainerForFirstPartyDomain(firstPartyDomain, userContext, firstPartyUserContextList.isPrivate);
+      siteMenuListElement.appendChild(userContextElement);
+      for (const tab of firstPartyUserContextList.getUserContextTabs(userContext.id)) {
+        const tabElement = this._popupRenderer.renderTab(tab, userContext);
+        userContextElement.appendChild(tabElement);
+      }
+    }
+  }
+
+  public async updateSiteDetailsView(firstPartyDomain: string, isPrivateBrowsing: boolean): Promise<void> {
+    const firstPartyUserContextList = await FirstPartyUserContextList.create(firstPartyDomain, isPrivateBrowsing);
+    const element = document.querySelector<HTMLDivElement>('#sites-pane-details');
+    if (!element) {
+      return;
+    }
+    this.renderSiteDetailsView(firstPartyUserContextList, element);
+  }
+
+  public switchToSiteDetailsView(): void {
+    // TODO: move this code elsewhere.
+    const sitesElement = document.querySelector<HTMLDivElement>('#sites');
+    if (!sitesElement) {
+      return;
+    }
+    sitesElement.dataset.activeContent = 'sites-details';
+  }
+
+  public switchToSiteListView(): void {
+    // TODO: move this code elsewhere.
+    const sitesElement = document.querySelector<HTMLDivElement>('#sites');
+    if (!sitesElement) {
+      return;
+    }
+    sitesElement.dataset.activeContent = 'sites';
   }
 }
