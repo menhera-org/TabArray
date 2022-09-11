@@ -28,8 +28,11 @@ import { FirstPartyService } from './FirstPartyService';
 type ImplementedMap = ReadonlyMap<string, ReadonlyArray<Tab>>;
 
 export class FirstPartyTabMap implements ImplementedMap {
+  private static readonly firstPartyService = FirstPartyService.getInstance();
+
   public static async create(isPrivate = false): Promise<FirstPartyTabMap> {
     const browserTabs = await browser.tabs.query({});
+    await this.firstPartyService.initialized;
     const tabs = [];
     for (const browserTab of browserTabs) {
       if (browserTab.incognito != isPrivate) {
@@ -40,9 +43,8 @@ export class FirstPartyTabMap implements ImplementedMap {
     return new FirstPartyTabMap(tabs);
   }
 
-  private urlService = UrlService.getInstance();
-  private hostnameService = HostnameService.getInstance();
-  private firstPartyService = FirstPartyService.getInstance();
+  private readonly urlService = UrlService.getInstance();
+  private readonly hostnameService = HostnameService.getInstance();
   private tabMap = new Map<string, Tab[]>();
 
   private constructor(tabs: Tab[]) {
@@ -54,7 +56,7 @@ export class FirstPartyTabMap implements ImplementedMap {
       if (this.hostnameService.isHostnameIpAddress(url.href)) {
         continue;
       }
-      const registrableDomain = this.firstPartyService.getRegistrableDomain(url);
+      const registrableDomain = FirstPartyTabMap.firstPartyService.getRegistrableDomain(url);
       if (!registrableDomain) {
         continue;
       }
