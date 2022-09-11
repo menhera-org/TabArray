@@ -22,7 +22,7 @@
 import { MenulistSiteButtonElement } from '../components/menulist-site-button';
 import { Tab } from '../frameworks/tabs';
 import { PopupRenderer } from './PopupRenderer';
-import { FirstPartyService, FirstPartyTabMap, FirstPartyUserContextList, TabGroup, UserContext } from '../frameworks/tabGroups';
+import { FirstPartyService, FirstPartyTabMap, FirstPartyUserContextList } from '../frameworks/tabGroups';
 
 export class PopupSiteListRenderer {
   private readonly _popupRenderer: PopupRenderer;
