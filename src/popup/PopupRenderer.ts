@@ -28,6 +28,9 @@ import { OriginAttributes } from "../frameworks/tabGroups";
 import { TabGroup } from "../frameworks/tabGroups";
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { IndexTab } from "../modules/IndexTab";
+import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";
+import { PopupWindowListRenderer } from "./PopupWindowListRenderer";
+import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
 
 enum ContainerTabsState {
   NO_TABS,
@@ -38,6 +41,9 @@ enum ContainerTabsState {
 // This needs some refactoring.
 export class PopupRenderer {
   private _userContextVisibilityService = UserContextVisibilityService.getInstance();
+  public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
+  public readonly windowListRenderer = new PopupWindowListRenderer(this);
+  public readonly siteListRenderer = new PopupSiteListRenderer(this);
 
   public renderTab(tab: Tab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
     const element = new MenulistTabElement(tab, userContext);
@@ -82,11 +88,11 @@ export class PopupRenderer {
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     element.onContainerHide.addListener(async () => {
       await this._userContextVisibilityService.hideContainerOnWindow(windowId, userContext.id);
-      // render here.
+      await this.render();
     });
     element.onContainerUnhide.addListener(async () => {
       await this._userContextVisibilityService.showContainerOnWindow(windowId, userContext.id);
-      // render here.
+      await this.render();
     });
     element.onContainerClick.addListener(async () => {
       await containers.openNewTabInContainer(userContext.id, windowId);
@@ -123,5 +129,9 @@ export class PopupRenderer {
     }
     element.tabCount = tabCount;
     return element;
+  }
+
+  public async render() {
+    // unimplemented.
   }
 }
