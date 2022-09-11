@@ -35,6 +35,7 @@ import { FirstPartyService } from '../frameworks/tabGroups';
 import { FirstPartyTabMap } from '../frameworks/tabGroups';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { MenulistWindowElement } from '../components/menulist-window';
+import { MenulistSiteButtonElement } from '../components/menulist-site-button';
 
 const userContextService = UserContextService.getInstance();
 const firstPartyService = FirstPartyService.getInstance();
@@ -309,36 +310,20 @@ const renderSites = () => {
     sitesPaneTop.textContent = '';
     const registrableDomains = registrableDomainsData;
     for (const [registrableDomain, data] of registrableDomains) {
-      const button = document.createElement('button');
-      const buttonText = document.createElement('span');
-      buttonText.classList.add('button-text');
-      const closeButton = document.createElement('button');
-      closeButton.classList.add('site-close');
-      button.append(buttonText);
-      button.append(closeButton);
-      buttonText.dataset.tabCount = data.length;
-      buttonText.textContent = registrableDomain || '(null)';
-      sitesPaneTop.append(button);
-
-      closeButton.addEventListener('click', (ev) => {
-        ev.stopImmediatePropagation();
+      const siteButton = new MenulistSiteButtonElement();
+      siteButton.tabCountString = String(data.length);
+      siteButton.siteDomain = registrableDomain || '(null)';
+      sitesPaneTop.append(siteButton);
+      siteButton.onCloseClicked.addListener(() => {
         closeSite(registrableDomain).catch((e) => {
           console.error(e);
         });
       });
-      const tabIconElement = document.createElement('img');
-      tabIconElement.classList.add('tab-icon');
-      const site = document.createElement('span');
-      site.classList.add('site');
-      button.append(site);
+
       let iconUrl = data[0] ? data[0].favIconUrl : '/img/transparent.png';
-      tabIconElement.src = iconUrl;
-      site.append(tabIconElement);
-      const siteTitle = document.createElement('span');
-      siteTitle.classList.add('tab-label');
-      siteTitle.textContent = data[0] ? data[0].title : '';
-      site.append(siteTitle);
-      button.addEventListener('click', (ev) => {
+      siteButton.tabIcon = iconUrl;
+      siteButton.tabLabel = data[0] ? data[0].title : '';
+      siteButton.addEventListener('click', (ev) => {
         renderSiteDetails(registrableDomain)
         .catch((e) => {
           console.error(e);
