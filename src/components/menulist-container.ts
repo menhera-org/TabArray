@@ -168,3 +168,5 @@ export class MenulistContainerElement extends HTMLElement {
     }
   }
 }
+
+customElements.define('menulist-container', MenulistContainerElement);
