@@ -22,6 +22,8 @@
 import { dns } from "..";
 import { storage } from "..";
 import { utils } from "..";
+import { OriginAttributes } from "./OriginAttributes";
+import { TabGroup } from "./TabGroup";
 
 const { PromiseUtils } = utils;
 
@@ -96,5 +98,11 @@ export class FirstPartyService {
 
   public getRegistrableDomain(url: URL): string {
     return this.registrableDomainService.getRegistrableDomain(url.href);
+  }
+
+  public async closeTabsByFirstPartyDomain(domain: string): Promise<void> {
+    const originAttributes = new OriginAttributes(domain);
+    const tabGroup = await TabGroup.createTabGroup(originAttributes);
+    await tabGroup.tabList.closeTabs();
   }
 }
