@@ -97,11 +97,15 @@ export class WindowUserContextList {
   }
 
   public getUserContextTabs(userContextId: Uint32.Uint32): Iterable<Tab> {
-    return (this._userContextTabMap.get(userContextId) ?? []).values();
+    const tabs = [... (this._userContextTabMap.get(userContextId) ?? [])];
+    tabs.sort((a, b) => a.index - b.index);
+    return tabs.values();
   }
 
   public getPinnedTabs(): Iterable<Tab> {
-    return this._pinnedTabs.values();
+    const tabs = [... this._pinnedTabs];
+    tabs.sort((a, b) => a.index - b.index);
+    return tabs.values();
   }
 
   public get isPrivate(): boolean {
