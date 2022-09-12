@@ -91,7 +91,7 @@ utils.queryElementNonNull<HTMLButtonElement>('#button-sidebar').addEventListener
   utils.openSidebar();
 });
 
-utils.queryElementNonNull<HTMLButtonElement>('#button-new-container').addEventListener('click', (ev) => {
+utils.queryElementNonNull<HTMLButtonElement>('#button-new-container').addEventListener('click', () => {
   renderer.showNewContainerPanelAsync().then((result) => {
     if (!result) return;
     console.log('Created new container', result);
