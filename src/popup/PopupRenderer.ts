@@ -36,12 +36,20 @@ import { Uint32 } from "../frameworks/types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { PopupUtils } from './PopupUtils';
 import { PromiseUtils } from '../frameworks/utils';
+import { ColorPickerElement } from '../components/usercontext-colorpicker';
+import { IconPickerElement } from '../components/usercontext-iconpicker';
 
 enum ContainerTabsState {
   NO_TABS,
   HIDDEN_TABS,
   VISIBLE_TABS,
 }
+
+export type NewContainerPanelResult = {
+  name: string;
+  icon: string;
+  color: string;
+};
 
 // This needs some refactoring.
 export class PopupRenderer {
@@ -73,7 +81,10 @@ export class PopupRenderer {
     userContext = this._userContextService.fillDefaultValues(userContext);
     const element = new MenulistContainerElement(userContext);
     element.onContainerEdit.addListener(async () => {
-      // render container edit pane.
+      this.showEditContainerPanelAsync(userContext).then((result) => {
+        if (result == userContext) return;
+        console.log('Container edited', result);
+      });
     });
     element.onContainerDelete.addListener(async () => {
       this.confirmAsync(browser.i18n.getMessage('confirmContainerDelete', userContext.name)).then((result) => {
@@ -181,13 +192,8 @@ export class PopupRenderer {
     await this.siteListRenderer.rerenderSiteDetailsView();
   }
 
-  public async confirmAsync(message: string): Promise<boolean> {
-    const confirmMessageElement = this._utils.queryElementNonNull<HTMLElement>('#confirm-message');
-    confirmMessageElement.textContent = message;
-    const cancelButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-cancel-button');
-    const okButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-ok-button');
-    const previousHash = location.hash;
-    location.hash = '#confirm';
+  public async showPopup(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement): Promise<boolean> {
+    MessageElement.textContent = message;
     const promise = PromiseUtils.createPromise<boolean>();
     const handler = (result: boolean) => {
       cleanUp();
@@ -199,18 +205,21 @@ export class PopupRenderer {
     const okHandler = () => {
       handler(true);
     };
+    const catchEvent = (ev: Event) => {
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+    };
     const keyHandler = (ev: KeyboardEvent) => {
       if (ev.key == 'Enter') {
-        ev.preventDefault();
+        catchEvent(ev);
         okHandler();
       }
       if (ev.key == 'Escape') {
-        ev.preventDefault();
+        catchEvent(ev);
         cancelHandler();
       }
     };
     const cleanUp = () => {
-      location.hash = previousHash;
       cancelButton.removeEventListener('click', cancelHandler);
       okButton.removeEventListener('click', okHandler);
       document.removeEventListener('keydown', keyHandler);
@@ -219,5 +228,63 @@ export class PopupRenderer {
     okButton.addEventListener('click', okHandler);
     document.addEventListener('keydown', keyHandler, true);
     return await promise.promise;
+  }
+
+  public async confirmAsync(message: string): Promise<boolean> {
+    const confirmMessageElement = this._utils.queryElementNonNull<HTMLElement>('#confirm-message');
+    const cancelButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-cancel-button');
+    const okButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-ok-button');
+    const previousHash = location.hash;
+    location.hash = '#confirm';
+    const result = await this.showPopup(message, confirmMessageElement, okButton, cancelButton);
+    location.hash = previousHash;
+    return result;
+  }
+
+  public async showContainerManipulationPanelAsync(dialogTitle: string, userContext?: UserContext): Promise<NewContainerPanelResult> {
+    const message = dialogTitle;
+    const messageElement = this._utils.queryElementNonNull<HTMLElement>('#new-container .modal-title');
+    const cancelButton = this._utils.queryElementNonNull<HTMLButtonElement>('#new-container-cancel-button');
+    const okButton = this._utils.queryElementNonNull<HTMLButtonElement>('#new-container-ok-button');
+    const nameElement = this._utils.queryElementNonNull<HTMLInputElement>('#new-container-name');
+    const iconElement = this._utils.queryElementNonNull<IconPickerElement>('#new-container-icon');
+    const colorElement = this._utils.queryElementNonNull<ColorPickerElement>('#new-container-color');
+    const previousHash = location.hash;
+    nameElement.value = '';
+    iconElement.value = 'fingerprint';
+    colorElement.value = 'blue';
+    if (userContext) {
+      nameElement.value = userContext.name;
+      iconElement.value = userContext.icon;
+      colorElement.value = userContext.color;
+    }
+    location.hash = '#new-container';
+    const result = await this.showPopup(message, messageElement, okButton, cancelButton);
+    location.hash = previousHash;
+    if (!result) {
+      throw new Error('User cancelled');
+    }
+    const name = nameElement.value;
+    const icon = iconElement.value;
+    const color = colorElement.value;
+    return { name, icon, color };
+  }
+
+  public async showNewContainerPanelAsync(): Promise<UserContext | null> {
+    try {
+      const { name, icon, color } = await this.showContainerManipulationPanelAsync(browser.i18n.getMessage('newContainerDialogTitle'));
+      return await this._userContextService.create(name, color, icon);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  public async showEditContainerPanelAsync(userContext: UserContext): Promise<UserContext> {
+    try {
+      const { name, icon, color } = await this.showContainerManipulationPanelAsync(browser.i18n.getMessage('editContainerDialogTitle'), userContext);
+      return await this._userContextService.updateProperties(userContext, name, color, icon);
+    } catch (e) {
+      return userContext;
+    }
   }
 }

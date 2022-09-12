@@ -25,6 +25,8 @@ import { TEMPLATE } from './PopupTemplate';
 import { config } from '../config/config';
 import { MenulistContainerElement } from '../components/menulist-container';
 import { PopupUtils } from './PopupUtils';
+import '../components/usercontext-colorpicker';
+import '../components/usercontext-iconpicker';
 
 document.body.innerHTML = TEMPLATE; // static string.
 
@@ -87,6 +89,13 @@ utils.queryElementNonNull<HTMLButtonElement>('#button-panorama').addEventListene
 utils.queryElementNonNull<HTMLButtonElement>('#button-sidebar').addEventListener('click', (ev) => {
   ev.preventDefault();
   utils.openSidebar();
+});
+
+utils.queryElementNonNull<HTMLButtonElement>('#button-new-container').addEventListener('click', (ev) => {
+  renderer.showNewContainerPanelAsync().then((result) => {
+    if (!result) return;
+    console.log('Created new container', result);
+  });
 });
 
 utils.queryElementNonNull('#site-pane-details-back-button').addEventListener('click', () => {
