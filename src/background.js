@@ -35,6 +35,7 @@ import { UserContextService } from './userContexts/UserContextService';
 import { TabGroupService } from './frameworks/tabGroups';
 import { UserContextVisibilityService } from './userContexts/UserContextVisibilityService';
 import { BeforeRequestHandler } from './background/BeforeRequestHandler';
+import { Tab } from './frameworks/tabs';
 
 // watchdog
 let scriptCompleted = false;
@@ -425,7 +426,7 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   const {url} = details;
   console.log('Capturing request for tab %d: %s', tabId, url);
   if (-1 != tabId) {
-    const tabObj = StateManager.getBrowserTab(tabId);
+    const tabObj = await Tab.get(tabId);
     const {windowId} = tabObj;
     const activeUserContextId = getActiveUserContext(windowId);
     if ('sticky' == configExternalTabContainerOption) {
