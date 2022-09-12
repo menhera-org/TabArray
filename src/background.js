@@ -433,13 +433,7 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
       if (userContextId == activeUserContextId) {
         console.log('Tab %d in active user context %d', tabId, userContextId);
         openTabs.add(tabId);
-        browser.tabs.update(tabId, {
-          url,
-        }).then(() => {
-          console.log('Opened %s in tab %d', url, tabId);
-        }).catch((e) => {
-          console.error(e);
-        });
+        return false;
       } else {
         browser.tabs.remove(tabId).then(() => {
           browser.tabs.create({
