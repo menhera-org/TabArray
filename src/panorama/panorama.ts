@@ -23,7 +23,7 @@
 // Panorama pages should be separate for normal and private windows.
 
 import browser from 'webextension-polyfill';
-import * as containers from '../modules/containers.js';
+import * as containers from '../modules/containers';
 import { PanoramaStateStore } from "./PanoramaStateStore";
 import { PanoramaTabElement } from "../components/panorama-tab";
 import { Tab } from "../frameworks/tabs";

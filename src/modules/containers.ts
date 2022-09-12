@@ -24,16 +24,17 @@ import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
+import { Uint32 } from '../frameworks/types';
 
 const tabGroupService = TabGroupService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 
-export const closeAllTabsOnWindow = async (aUserContextId, aWindowId) => {
+export const closeAllTabsOnWindow = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
   const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
   await tabGroup.tabList.closeUnpinnedTabsOnWindow(aWindowId);
 };
 
-export const createIndexTab = async (aUserContextId, aWindowId) => {
+export const createIndexTab = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
   const rawUserContext = await UserContext.get(aUserContextId);
   const userContext = UserContextService.getInstance().fillDefaultValues(rawUserContext);
   const url = IndexTab.getUrl(userContext.name, userContext.icon, userContext.colorCode).url;
@@ -43,17 +44,20 @@ export const createIndexTab = async (aUserContextId, aWindowId) => {
     windowId: aWindowId,
     active: false,
   });
-  await browser.sessions.setTabValue(tabObj.id, 'indexTabUrl', url);
+  if (tabObj.id != null) {
+    await browser.sessions.setTabValue(tabObj.id, 'indexTabUrl', url);
+  }
   return tabObj;
 };
 
-export const getInactiveIds = async (aWindowId) => {
+export const getInactiveIds = async (aWindowId: number) => {
   const tabs = await browser.tabs.query({
     windowId: aWindowId,
     pinned: false,
   });
-  const userContextIds = new Set([... tabs].map((tab) => UserContext.fromCookieStoreId(tab.cookieStoreId)));
+  const userContextIds = new Set([... tabs].map((tab) => tab.cookieStoreId ? UserContext.fromCookieStoreId(tab.cookieStoreId) : UserContext.ID_DEFAULT));
   for (const tab of tabs) {
+    if (!tab.cookieStoreId) continue;
     const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
     if (tab.active) {
       userContextIds.delete(userContextId);
@@ -62,19 +66,19 @@ export const getInactiveIds = async (aWindowId) => {
   return [... userContextIds].sort((a, b) => a - b);
 };
 
-export const hideAll = async (aWindowId) => {
+export const hideAll = async (aWindowId: number) => {
   const userContextIds = await getInactiveIds(aWindowId);
   for (const userContextId of userContextIds) {
     await userContextVisibilityService.hideContainerOnWindow(aWindowId, userContextId);
   }
 };
 
-export const reopenInContainer = async (aUserContextId, aTabId) => {
+export const reopenInContainer = async (aUserContextId: Uint32.Uint32, aTabId: number) => {
   const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
   await tabGroup.reopenTabInGroup(aTabId);
 };
 
-export const openNewTabInContainer = async (aUserContextId, aWindowId) => {
+export const openNewTabInContainer = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
   const windowId = aWindowId;
   const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
   const userContextId = UserContext.fromCookieStoreId(cookieStoreId);

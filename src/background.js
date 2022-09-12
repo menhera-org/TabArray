@@ -19,7 +19,7 @@
 
 import './install';
 import browser from 'webextension-polyfill';
-import * as containers from './modules/containers.js';
+import * as containers from './modules/containers';
 import { isNewTabPage } from './modules/newtab';
 
 import {WebExtensionsBroadcastChannel} from './modules/broadcasting';

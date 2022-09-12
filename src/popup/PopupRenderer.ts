@@ -24,7 +24,7 @@ import { Tab, WindowService } from "../frameworks/tabs";
 import { FirstPartyTabMap, UserContext, WindowUserContextList } from "../frameworks/tabGroups";
 import { MenulistTabElement } from "../components/menulist-tab";
 import { MenulistContainerElement } from "../components/menulist-container";
-import * as containers from '../modules/containers.js';
+import * as containers from '../modules/containers';
 import { OriginAttributes } from "../frameworks/tabGroups";
 import { TabGroup } from "../frameworks/tabGroups";
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';

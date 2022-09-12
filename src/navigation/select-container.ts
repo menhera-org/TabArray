@@ -153,7 +153,7 @@ browser.tabs.getCurrent().then((browserTab) => {
         if (!activeTab.cookieStoreId) continue;
         const {cookieStoreId} = activeTab;
         const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
-        containers.reopenInContainer(userContextId, browserTab.id).catch((e) => {
+        containers.reopenInContainer(userContextId, tab.id).catch((e) => {
           console.error(e);
         });
         break;
