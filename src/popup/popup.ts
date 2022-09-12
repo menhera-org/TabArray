@@ -76,9 +76,12 @@ config['appearance.popupSize'].observe((value) => {
 
 utils.queryElementNonNull<HTMLButtonElement>('#menu-item-settings').addEventListener('click', (ev) => {
   ev.preventDefault();
-  browser.runtime.openOptionsPage().then(() => {
-    window.close();
-  }).catch((e) => console.error(e));
+  utils.openOptionsPage();
+});
+
+utils.queryElementNonNull<HTMLButtonElement>('#button-panorama').addEventListener('click', (ev) => {
+  ev.preventDefault();
+  utils.openPanoramaPage();
 });
 
 utils.queryElementNonNull('#site-pane-details-back-button').addEventListener('click', () => {
@@ -94,7 +97,7 @@ const menuListElement = utils.queryElementNonNull<HTMLElement>('#menuList');
 
 searchBox.focus();
 searchBox.placeholder = browser.i18n.getMessage('searchPlaceholder');
-searchBox.addEventListener('input', (ev) => {
+searchBox.addEventListener('input', () => {
   const rawValue = searchBox.value;
   const values = rawValue.trim().split(/\s+/u).map((value) => value.trim()).filter((value) => !!value);
   if (values.length) {

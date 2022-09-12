@@ -19,6 +19,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
+import {PANORAMA_PAGE} from '../defs';
+
 export class PopupUtils {
   public queryElementNonNull<T extends Element>(query: string): T {
     const element = document.querySelector(query);
@@ -26,5 +29,21 @@ export class PopupUtils {
       throw new Error(`Element not found: ${query}`);
     }
     return element as T;
+  }
+
+  public openPanoramaPage() {
+    browser.tabs.create({
+      active: true,
+      windowId: browser.windows.WINDOW_ID_CURRENT,
+      url: browser.runtime.getURL(PANORAMA_PAGE),
+    }).then(() => {
+      window.close();
+    }).catch((e) => console.error(e));
+  }
+
+  public openOptionsPage() {
+    browser.runtime.openOptionsPage().then(() => {
+      window.close();
+    }).catch((e) => console.error(e));
   }
 }
