@@ -413,11 +413,9 @@ browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
 
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   const userContextId = UserContext.fromCookieStoreId(details.cookieStoreId);
-  if (details.frameId != 0) return false;
-  if (details.incognito) return false;
-  if (details.originUrl) return false;
-  if (0 != userContextId) return false;
-  if (!configExternalTabChooseContainer) return false;
+  if (details.frameId != 0 || 0 != userContextId || details.originUrl || details.incognito || !configExternalTabChooseContainer) {
+    return false;
+  }
   if (openTabs.has(details.tabId)) {
     console.info('Ignoring manually navigated tab: %d', details.tabId);
     return false;

@@ -47,6 +47,7 @@ export class BeforeRequestHandler {
       return;
     }
     browser.webRequest.onBeforeRequest.addListener(this._rawListener, {
+      incognito: false,
       urls: [
         '*://*/*', // all HTTP/HTTPS requests.
       ],
