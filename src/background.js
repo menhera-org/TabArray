@@ -34,6 +34,7 @@ import { UserContext } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
 import { TabGroupService } from './frameworks/tabGroups';
 import { UserContextVisibilityService } from './userContexts/UserContextVisibilityService';
+import { BeforeRequestHandler } from './background/BeforeRequestHandler';
 
 // watchdog
 let scriptCompleted = false;
@@ -409,70 +410,57 @@ browser.windows.getAll({
 
 browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
 
-setTimeout(() => {
-  browser.webRequest.onBeforeRequest.addListener((details) => {
-    const userContextId = UserContext.fromCookieStoreId(details.cookieStoreId);
-    const result = {};
-    for (;;) { // just a block.
-      if (details.frameId != 0) break;
-      if (details.incognito) break;
-      if (details.originUrl) break;
-      if (0 != userContextId) break;
-      if (!configExternalTabChooseContainer) break;
-      if (openTabs.has(details.tabId)) {
-        console.info('Ignoring manually navigated tab: %d', details.tabId);
-        break;
+const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
+  const userContextId = UserContext.fromCookieStoreId(details.cookieStoreId);
+  if (details.frameId != 0) return false;
+  if (details.incognito) return false;
+  if (details.originUrl) return false;
+  if (0 != userContextId) return false;
+  if (!configExternalTabChooseContainer) return false;
+  if (openTabs.has(details.tabId)) {
+    console.info('Ignoring manually navigated tab: %d', details.tabId);
+    return false;
+  }
+  const tabId = details.tabId;
+  const {url} = details;
+  console.log('Capturing request for tab %d: %s', tabId, url);
+  if (-1 != tabId) {
+    const tabObj = StateManager.getBrowserTab(tabId);
+    const {windowId} = tabObj;
+    const activeUserContextId = getActiveUserContext(windowId);
+    if ('sticky' == configExternalTabContainerOption) {
+      if (userContextId == activeUserContextId) {
+        console.log('Tab %d in active user context %d', tabId, userContextId);
+        openTabs.add(tabId);
+        browser.tabs.update(tabId, {
+          url,
+        }).then(() => {
+          console.log('Opened %s in tab %d', url, tabId);
+        }).catch((e) => {
+          console.error(e);
+        });
+      } else {
+        browser.tabs.remove(tabId).then(() => {
+          browser.tabs.create({
+            active: true,
+            url,
+            cookieStoreId: UserContext.toCookieStoreId(activeUserContextId),
+            windowId,
+          }).then(() => {
+            console.log('Reopened %s in container id %d', url, activeUserContextId);
+          }).catch((e) => {
+            console.error(e);
+          });
+        });
       }
-      const tabId = details.tabId;
-      if (-1 != tabId) {
-        const tabObj = StateManager.getBrowserTab(tabId);
-        const {windowId} = tabObj;
-        const activeUserContextId = getActiveUserContext(windowId);
-        if ('sticky' == configExternalTabContainerOption) {
-          if (userContextId == activeUserContextId) {
-            console.log('Tab %d in active user context %d', tabId, userContextId);
-            openTabs.add(tabId);
-            browser.tabs.update(tabId, {
-              url,
-            }).then(() => {
-              console.log('Opened %s in tab %d', url, tabId);
-            }).catch((e) => {
-              console.error(e);
-            });
-          } else {
-            browser.tabs.remove(tabId).then(() => {
-              browser.tabs.create({
-                active: true,
-                url,
-                cookieStoreId: UserContext.toCookieStoreId(activeUserContextId),
-                windowId,
-              }).then(() => {
-                console.log('Reopened %s in container id %d', url, activeUserContextId);
-              }).catch((e) => {
-                console.error(e);
-              });
-            });
-          }
-        }
-      }
-      const {url} = details;
-      console.log('New navigation target: %s', url);
-      const confirmPage = browser.runtime.getURL(CONFIRM_PAGE);
-      result.redirectUrl = confirmPage + '?' + (new URLSearchParams({
-        url,
-      }));
-      break;
     }
-    return result;
-  }, {
-    incognito: false,
-    urls: [
-      '*://*/*', // all HTTP/HTTPS requests.
-    ],
-    types: [
-      'main_frame', // top-level windows.
-    ],
-  }, ['blocking']);
+  }
+
+  return true;
+});
+
+setTimeout(() => {
+  beforeRequestHandler.startListening();
 }, 1000);
 
 console.log('background.js loaded in %d ms', Date.now() - scriptStart);
