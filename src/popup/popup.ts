@@ -31,9 +31,12 @@ document.body.innerHTML = TEMPLATE; // static string.
 const utils = new PopupUtils();
 
 const renderer = new PopupRenderer();
-renderer.render().catch((e) => {
-  console.error(e);
-});
+
+const renderInBackground = () => {
+  renderer.render().catch((e) => {
+    console.error(e);
+  });
+};
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
@@ -116,3 +119,19 @@ searchBox.addEventListener('input', (ev) => {
     menuListElement.classList.remove('search-result');
   }
 });
+
+browser.tabs.onActivated.addListener(renderInBackground);
+browser.tabs.onUpdated.addListener(renderInBackground);
+browser.tabs.onCreated.addListener(renderInBackground);
+browser.tabs.onRemoved.addListener(renderInBackground);
+browser.tabs.onMoved.addListener(renderInBackground);
+browser.tabs.onAttached.addListener(renderInBackground);
+browser.tabs.onDetached.addListener(renderInBackground);
+browser.tabs.onReplaced.addListener(renderInBackground);
+browser.windows.onCreated.addListener(renderInBackground);
+browser.windows.onRemoved.addListener(renderInBackground);
+browser.contextualIdentities.onCreated.addListener(renderInBackground);
+browser.contextualIdentities.onUpdated.addListener(renderInBackground);
+browser.contextualIdentities.onRemoved.addListener(renderInBackground);
+
+renderInBackground();
