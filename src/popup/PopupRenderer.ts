@@ -161,7 +161,6 @@ export class PopupRenderer {
   }
 
   public async render() {
-    // unimplemented.
     const browserWindow = await browser.windows.get(browser.windows.WINDOW_ID_CURRENT);
     const windowId = browserWindow.id;
     if (null == windowId) {
