@@ -24,8 +24,11 @@ import { PopupRenderer } from "./PopupRenderer";
 import { TEMPLATE } from './PopupTemplate';
 import { config } from '../config/config';
 import { MenulistContainerElement } from '../components/menulist-container';
+import { PopupUtils } from './PopupUtils';
 
 document.body.innerHTML = TEMPLATE; // static string.
+
+const utils = new PopupUtils();
 
 const renderer = new PopupRenderer();
 renderer.render().catch((e) => {
@@ -34,29 +37,29 @@ renderer.render().catch((e) => {
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
-document.querySelector<HTMLElement>('#button-panorama > .button-text')!.textContent = browser.i18n.getMessage('buttonPanorama');
-document.querySelector<HTMLElement>('#button-panorama')!.title = browser.i18n.getMessage('buttonPanorama');
-document.querySelector<HTMLElement>('#button-sidebar > .button-text')!.textContent = browser.i18n.getMessage('buttonSidebar');
-document.querySelector<HTMLElement>('#button-sidebar')!.title = browser.i18n.getMessage('buttonSidebar');
-document.querySelector<HTMLElement>('#button-new-container > .button-text')!.textContent = browser.i18n.getMessage('buttonNewContainer');
-document.querySelector<HTMLElement>('#button-new-container')!.title = browser.i18n.getMessage('buttonNewContainer');
-document.querySelector<HTMLElement>('#confirm-cancel-button')!.textContent = browser.i18n.getMessage('buttonCancel');
-document.querySelector<HTMLElement>('#confirm-ok-button')!.textContent = browser.i18n.getMessage('buttonOk');
-document.querySelector<HTMLElement>('#new-container-cancel-button')!.textContent = browser.i18n.getMessage('buttonCancel');
-document.querySelector<HTMLElement>('#new-container-ok-button')!.textContent = browser.i18n.getMessage('buttonOk');
-document.querySelector<HTMLElement>('label[for="new-container-name"]')!.textContent = browser.i18n.getMessage('newContainerNameLabel');
-document.querySelector<HTMLInputElement>('#new-container-name')!.placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
-document.querySelector<HTMLElement>('#menu-item-main > .button-text')!.textContent = browser.i18n.getMessage('menuItemMain');
-document.querySelector<HTMLElement>('#menu-item-windows > .button-text')!.textContent = browser.i18n.getMessage('menuItemWindows');
-document.querySelector<HTMLElement>('#menu-item-sites > .button-text')!.textContent = browser.i18n.getMessage('menuItemSites');
-document.querySelector<HTMLElement>('#menu-item-settings > .button-text')!.textContent = browser.i18n.getMessage('buttonSettings');
-document.querySelector<HTMLElement>('#button-new-window > .button-text')!.textContent = browser.i18n.getMessage('buttonNewWindow');
+utils.queryElementNonNull<HTMLElement>('#button-panorama > .button-text').textContent = browser.i18n.getMessage('buttonPanorama');
+utils.queryElementNonNull<HTMLElement>('#button-panorama').title = browser.i18n.getMessage('buttonPanorama');
+utils.queryElementNonNull<HTMLElement>('#button-sidebar > .button-text').textContent = browser.i18n.getMessage('buttonSidebar');
+utils.queryElementNonNull<HTMLElement>('#button-sidebar').title = browser.i18n.getMessage('buttonSidebar');
+utils.queryElementNonNull<HTMLElement>('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
+utils.queryElementNonNull<HTMLElement>('#button-new-container').title = browser.i18n.getMessage('buttonNewContainer');
+utils.queryElementNonNull<HTMLElement>('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
+utils.queryElementNonNull<HTMLElement>('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
+utils.queryElementNonNull<HTMLElement>('#new-container-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
+utils.queryElementNonNull<HTMLElement>('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
+utils.queryElementNonNull<HTMLElement>('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
+utils.queryElementNonNull<HTMLInputElement>('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
+utils.queryElementNonNull<HTMLElement>('#menu-item-main > .button-text').textContent = browser.i18n.getMessage('menuItemMain');
+utils.queryElementNonNull<HTMLElement>('#menu-item-windows > .button-text').textContent = browser.i18n.getMessage('menuItemWindows');
+utils.queryElementNonNull<HTMLElement>('#menu-item-sites > .button-text').textContent = browser.i18n.getMessage('menuItemSites');
+utils.queryElementNonNull<HTMLElement>('#menu-item-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
+utils.queryElementNonNull<HTMLElement>('#button-new-window > .button-text').textContent = browser.i18n.getMessage('buttonNewWindow');
 
-const sitesElement = document.querySelector<HTMLElement>('#sites')!;
+const sitesElement = utils.queryElementNonNull<HTMLElement>('#sites');
 
 location.hash = '#main';
 document.body.dataset.activeContent = 'main';
-window.addEventListener('hashchange', (ev) => {
+window.addEventListener('hashchange', () => {
   document.body.dataset.activeContent = location.hash.slice(1);
 });
 
@@ -68,23 +71,23 @@ config['appearance.popupSize'].observe((value) => {
   }
 });
 
-document.querySelector<HTMLButtonElement>('#menu-item-settings')!.addEventListener('click', (ev) => {
+utils.queryElementNonNull<HTMLButtonElement>('#menu-item-settings').addEventListener('click', (ev) => {
   ev.preventDefault();
   browser.runtime.openOptionsPage().then(() => {
     window.close();
   }).catch((e) => console.error(e));
 });
 
-document.querySelector('#site-pane-details-back-button')!.addEventListener('click', ev => {
+utils.queryElementNonNull('#site-pane-details-back-button').addEventListener('click', () => {
   sitesElement.dataset.activeContent = 'sites';
 });
 
-document.querySelector('#menu-item-sites')!.addEventListener('click', ev => {
+utils.queryElementNonNull('#menu-item-sites').addEventListener('click', () => {
   sitesElement.dataset.activeContent = 'sites';
 });
 
-const searchBox = document.querySelector<HTMLInputElement>('#search')!;
-const menuListElement = document.querySelector('#menuList')!;
+const searchBox = utils.queryElementNonNull<HTMLInputElement>('#search');
+const menuListElement = utils.queryElementNonNull<HTMLElement>('#menuList');
 
 searchBox.focus();
 searchBox.placeholder = browser.i18n.getMessage('searchPlaceholder');
