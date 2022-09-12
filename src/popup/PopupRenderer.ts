@@ -34,6 +34,8 @@ import { PopupWindowListRenderer } from "./PopupWindowListRenderer";
 import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
 import { Uint32 } from "../frameworks/types";
 import { UserContextService } from '../userContexts/UserContextService';
+import { PopupUtils } from './PopupUtils';
+import { PromiseUtils } from '../frameworks/utils';
 
 enum ContainerTabsState {
   NO_TABS,
@@ -48,6 +50,7 @@ export class PopupRenderer {
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly windowListRenderer = new PopupWindowListRenderer(this);
   public readonly siteListRenderer = new PopupSiteListRenderer(this);
+  private readonly _utils = new PopupUtils();
 
   public renderTab(tab: Tab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
     const element = new MenulistTabElement(tab, userContext);
@@ -66,9 +69,25 @@ export class PopupRenderer {
     return element;
   }
 
-  private renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
+  private createContainerElement(userContext: UserContext): MenulistContainerElement {
     userContext = this._userContextService.fillDefaultValues(userContext);
     const element = new MenulistContainerElement(userContext);
+    element.onContainerEdit.addListener(async () => {
+      // render container edit pane.
+    });
+    element.onContainerDelete.addListener(async () => {
+      this.confirmAsync(browser.i18n.getMessage('confirmContainerDelete', userContext.name)).then((result) => {
+        if (!result) return;
+        userContext.remove().catch((e) => {
+          console.error(e);
+        });
+      });
+    });
+    return element;
+  }
+
+  private renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
+    const element = this.createContainerElement(userContext);
     element.containerVisibilityToggleButton.disabled = true;
     return element;
   }
@@ -102,7 +121,7 @@ export class PopupRenderer {
 
   private renderContainer(windowId: number, userContext: UserContext): MenulistContainerElement {
     userContext = this._userContextService.fillDefaultValues(userContext);
-    const element = new MenulistContainerElement(userContext);
+    const element = this.createContainerElement(userContext);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     element.onContainerHide.addListener(async () => {
       await this._userContextVisibilityService.hideContainerOnWindow(windowId, userContext.id);
@@ -113,12 +132,6 @@ export class PopupRenderer {
     element.onContainerClick.addListener(async () => {
       await containers.openNewTabInContainer(userContext.id, windowId);
       window.close();
-    });
-    element.onContainerEdit.addListener(async () => {
-      // render container edit pane.
-    });
-    element.onContainerDelete.addListener(async () => {
-      // confirmAsync
     });
     return element;
   }
@@ -154,13 +167,9 @@ export class PopupRenderer {
     if (null == windowId) {
       return;
     }
-    const currentWindowMenuList = document.querySelector<HTMLElement>('#menuList');
-    const windowListMenuList = document.querySelector<HTMLElement>('#windowMenuList');
-    const sitesMenuList = document.querySelector<HTMLElement>('#sites-pane-top');
-    if (!currentWindowMenuList || !windowListMenuList || !sitesMenuList) {
-      console.warn('Elements not found');
-      return;
-    }
+    const currentWindowMenuList = this._utils.queryElementNonNull<HTMLElement>('#menuList');
+    const windowListMenuList = this._utils.queryElementNonNull<HTMLElement>('#windowMenuList');
+    const sitesMenuList = this._utils.queryElementNonNull<HTMLElement>('#sites-pane-top');
     const windowService = WindowService.getInstance();
     const [windowUserContextList, activeTabsByWindow, firstPartyTabMap] = await Promise.all([
       WindowUserContextList.create(windowId),
@@ -171,5 +180,45 @@ export class PopupRenderer {
     this.windowListRenderer.renderWindowListView(activeTabsByWindow, windowListMenuList);
     this.siteListRenderer.renderSiteListView(firstPartyTabMap, sitesMenuList);
     await this.siteListRenderer.rerenderSiteDetailsView();
+  }
+
+  public async confirmAsync(message: string): Promise<boolean> {
+    const confirmMessageElement = this._utils.queryElementNonNull<HTMLElement>('#confirm-message');
+    confirmMessageElement.textContent = message;
+    const cancelButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-cancel-button');
+    const okButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-ok-button');
+    const previousHash = location.hash;
+    location.hash = '#confirm';
+    const promise = PromiseUtils.createPromise<boolean>();
+    const handler = (result: boolean) => {
+      cleanUp();
+      promise.resolve(result);
+    };
+    const cancelHandler = () => {
+      handler(false);
+    };
+    const okHandler = () => {
+      handler(true);
+    };
+    const keyHandler = (ev: KeyboardEvent) => {
+      if (ev.key == 'Enter') {
+        ev.preventDefault();
+        okHandler();
+      }
+      if (ev.key == 'Escape') {
+        ev.preventDefault();
+        cancelHandler();
+      }
+    };
+    const cleanUp = () => {
+      location.hash = previousHash;
+      cancelButton.removeEventListener('click', cancelHandler);
+      okButton.removeEventListener('click', okHandler);
+      document.removeEventListener('keydown', keyHandler);
+    };
+    cancelButton.addEventListener('click', cancelHandler);
+    okButton.addEventListener('click', okHandler);
+    document.addEventListener('keydown', keyHandler, true);
+    return await promise.promise;
   }
 }
