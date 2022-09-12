@@ -52,14 +52,16 @@ export class PopupRenderer {
   public renderTab(tab: Tab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
     const element = new MenulistTabElement(tab, userContext);
     element.onTabClicked.addListener(() => {
-      tab.focus().then(() => {
-        window.close();
-      });
+      tab.focus();
     });
     element.onClose.addListener(() => {
-      tab.close().then(() => {
-        this.render();
-      });
+      tab.close();
+    });
+    element.onPin.addListener(() => {
+      tab.pin();
+    });
+    element.onUnpin.addListener(() => {
+      tab.unpin();
     });
     return element;
   }
@@ -104,11 +106,9 @@ export class PopupRenderer {
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     element.onContainerHide.addListener(async () => {
       await this._userContextVisibilityService.hideContainerOnWindow(windowId, userContext.id);
-      await this.render();
     });
     element.onContainerUnhide.addListener(async () => {
       await this._userContextVisibilityService.showContainerOnWindow(windowId, userContext.id);
-      await this.render();
     });
     element.onContainerClick.addListener(async () => {
       await containers.openNewTabInContainer(userContext.id, windowId);
