@@ -45,7 +45,7 @@ enum ContainerTabsState {
   VISIBLE_TABS,
 }
 
-export type NewContainerPanelResult = {
+type NewContainerPanelResult = {
   name: string;
   icon: string;
   color: string;
@@ -192,7 +192,7 @@ export class PopupRenderer {
     await this.siteListRenderer.rerenderSiteDetailsView();
   }
 
-  public async showPopup(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement): Promise<boolean> {
+  private async showPopup(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement): Promise<boolean> {
     MessageElement.textContent = message;
     const promise = PromiseUtils.createPromise<boolean>();
     const handler = (result: boolean) => {
@@ -241,7 +241,7 @@ export class PopupRenderer {
     return result;
   }
 
-  public async showContainerManipulationPanelAsync(dialogTitle: string, userContext?: UserContext): Promise<NewContainerPanelResult> {
+  private async showContainerManipulationPanelAsync(dialogTitle: string, userContext?: UserContext): Promise<NewContainerPanelResult> {
     const message = dialogTitle;
     const messageElement = this._utils.queryElementNonNull<HTMLElement>('#new-container .modal-title');
     const cancelButton = this._utils.queryElementNonNull<HTMLButtonElement>('#new-container-cancel-button');
