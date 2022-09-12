@@ -65,6 +65,7 @@ export class UserContextVisibilityService {
     });
     const tab = new Tab(browserTab);
     await browser.sessions.setTabValue(tab.id, 'indexTabUrl', url);
+    await browser.sessions.setTabValue(tab.id, 'indexTabUserContextId', userContextId);
     return tab;
   }
 

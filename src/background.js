@@ -116,7 +116,8 @@ const sortTabsByWindow = globalThis.sortTabsByWindow = async (windowId) => {
         if (indexTabs.has(userContextId)) {
           continue;
         }
-        const tabObj = await containers.createIndexTab(userContextId, windowId);
+        const tab = await userContextVisibilityService.createIndexTab(userContextId, windowId);
+        const tabObj = await browser.tabs.get(tab.id);
         sortedTabs.push(tabObj);
       } else {
         break;
@@ -220,12 +221,12 @@ browser.tabs.onRemoved.addListener((tabId, {windowId}) => {
 StateManager.addEventListener('tabClose', async ({detail}) => {
   const {userContextId, windowId, browserTab} = detail;
   try {
-    const indexTabUrl = await browser.sessions.getTabValue(browserTab.id, 'indexTabUrl');
-    if (!indexTabUrl) {
+    const indexTabUserContextId = await browser.sessions.getTabValue(browserTab.id, 'indexTabUserContextId');
+    if (indexTabUserContextId == null) {
       throw void 0;
     }
     // index closed, close all tabs of that group
-    await containers.closeAllTabsOnWindow(userContextId, windowId);
+    await containers.closeAllTabsOnWindow(indexTabUserContextId, windowId);
     return;
   } catch (e) {
     // nothing.

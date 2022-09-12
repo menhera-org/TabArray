@@ -34,22 +34,6 @@ export const closeAllTabsOnWindow = async (aUserContextId: Uint32.Uint32, aWindo
   await tabGroup.tabList.closeUnpinnedTabsOnWindow(aWindowId);
 };
 
-export const createIndexTab = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
-  const rawUserContext = await UserContext.get(aUserContextId);
-  const userContext = UserContextService.getInstance().fillDefaultValues(rawUserContext);
-  const url = IndexTab.getUrl(userContext.name, userContext.icon, userContext.colorCode).url;
-  const tabObj = await browser.tabs.create({
-    url,
-    cookieStoreId: UserContext.toCookieStoreId(aUserContextId),
-    windowId: aWindowId,
-    active: false,
-  });
-  if (tabObj.id != null) {
-    await browser.sessions.setTabValue(tabObj.id, 'indexTabUrl', url);
-  }
-  return tabObj;
-};
-
 export const getInactiveIds = async (aWindowId: number) => {
   const tabs = await browser.tabs.query({
     windowId: aWindowId,
