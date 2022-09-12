@@ -74,13 +74,16 @@ export class PopupSiteListRenderer {
     domainElement.textContent = firstPartyDomain;
     siteMenuListElement.textContent = '';
     this._renderedSiteDetails = { domain: firstPartyDomain, isPrivate: firstPartyUserContextList.isPrivate };
+    let tabCount = 0;
     for (const userContext of firstPartyUserContextList.getOpenUserContexts()) {
       const userContextElement = this._popupRenderer.renderContainerForFirstPartyDomain(firstPartyDomain, userContext, firstPartyUserContextList.isPrivate);
       siteMenuListElement.appendChild(userContextElement);
       for (const tab of firstPartyUserContextList.getUserContextTabs(userContext.id)) {
         const tabElement = this._popupRenderer.renderTab(tab, userContext);
         userContextElement.appendChild(tabElement);
+        tabCount++;
       }
+      userContextElement.tabCount = tabCount;
     }
   }
 
