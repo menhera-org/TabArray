@@ -46,4 +46,10 @@ export class PopupUtils {
       window.close();
     }).catch((e) => console.error(e));
   }
+
+  public openSidebar() {
+    browser.sidebarAction.open().catch((e) => {
+      console.error(e);
+    });
+  }
 }

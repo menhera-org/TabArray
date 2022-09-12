@@ -84,6 +84,11 @@ utils.queryElementNonNull<HTMLButtonElement>('#button-panorama').addEventListene
   utils.openPanoramaPage();
 });
 
+utils.queryElementNonNull<HTMLButtonElement>('#button-sidebar').addEventListener('click', (ev) => {
+  ev.preventDefault();
+  utils.openSidebar();
+});
+
 utils.queryElementNonNull('#site-pane-details-back-button').addEventListener('click', () => {
   sitesElement.dataset.activeContent = 'sites';
 });
