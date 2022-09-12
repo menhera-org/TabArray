@@ -28,9 +28,8 @@ import { config } from './config/config';
 import { setActiveUserContext } from './modules/usercontext-state.js';
 import { ADDON_PAGE } from './defs';
 import { getWindowIds } from './modules/windows';
-import './state-manager/StateManager.js';
 import {IndexTab} from './modules/IndexTab';
-import { UserContext } from './frameworks/tabGroups';
+import { UserContext, WindowUserContextList } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
 import { TabGroupService } from './frameworks/tabGroups';
 import { UserContextVisibilityService } from './userContexts/UserContextVisibilityService';
@@ -41,7 +40,7 @@ import { BackgroundUtils } from './background/BackgroundUtils';
 // watchdog
 let scriptCompleted = false;
 const scriptStart = Date.now();
-window.addEventListener('error', ev => {
+window.addEventListener('error', () => {
   if (!scriptCompleted) {
     setTimeout(() => location.reload(), 10000);
   }
@@ -214,14 +213,10 @@ browser.tabs.onCreated.addListener((tab) => {
   });
 });
 
-browser.tabs.onRemoved.addListener((tabId, {windowId}) => {
+browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) => {
   openTabs.delete(tabId);
-});
-
-StateManager.addEventListener('tabClose', async ({detail}) => {
-  const {userContextId, windowId, browserTab} = detail;
   try {
-    const indexTabUserContextId = await browser.sessions.getTabValue(browserTab.id, 'indexTabUserContextId');
+    const indexTabUserContextId = await browser.sessions.getTabValue(tabId, 'indexTabUserContextId');
     if (indexTabUserContextId == null) {
       throw void 0;
     }
@@ -232,32 +227,19 @@ StateManager.addEventListener('tabClose', async ({detail}) => {
     // nothing.
   }
 
-  browser.tabs.query({
-    windowId,
-    cookieStoreId: UserContext.toCookieStoreId(userContextId),
-  }).then(async (tabs) => {
-    const indexTabs = new Set;
-    let tabCount = 0;
-    for (const tabObj of tabs) {
-      try {
-        const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
-        if (!indexTabUrl) {
-          throw void 0;
-        }
-        indexTabs.add(tabObj.id);
-      } catch (e) {
-        tabCount++;
-      }
+  if (isWindowClosing) return;
+  const list = await WindowUserContextList.create(windowId);
+  for (const userContext of list.getOpenUserContexts()) {
+    const tabs = [... list.getUserContextTabs(userContext.id)];
+
+    // if the only remaining tab is the index tab, close it
+    if (tabs[0] && tabs.length == 1 && IndexTab.isIndexTabUrl(tabs[0].url)) {
+      await tabs[0].close();
     }
-    if (tabCount < 1) {
-      await browser.tabs.remove([... indexTabs]);
-    }
-  }).catch((e) => {
-    console.error(e);
-  });
+  }
 });
 
-browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
+browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
   const tab = await browser.tabs.get(tabId);
   if (tab.pinned) {
     return;
@@ -266,7 +248,7 @@ browser.tabs.onMoved.addListener(async (tabId, movedInfo) => {
   tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tabObj) => {
+browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, tabObj) => {
   try {
     const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
     if (!indexTabUrl) {
@@ -286,7 +268,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tabObj) => {
   ],
 });
 
-browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
   //console.log('tab %d hidden on window %d', tabId, tab.windowId);
   tabChangeChannel.postMessage(true);
 }, {
