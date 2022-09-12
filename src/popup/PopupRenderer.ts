@@ -170,5 +170,6 @@ export class PopupRenderer {
     this.currentWindowRenderer.renderCurrentWindowView(windowUserContextList, currentWindowMenuList);
     this.windowListRenderer.renderWindowListView(activeTabsByWindow, windowListMenuList);
     this.siteListRenderer.renderSiteListView(firstPartyTabMap, sitesMenuList);
+    await this.siteListRenderer.rerenderSiteDetailsView();
   }
 }

@@ -26,6 +26,7 @@ import { FirstPartyService, FirstPartyTabMap, FirstPartyUserContextList } from '
 
 export class PopupSiteListRenderer {
   private readonly _popupRenderer: PopupRenderer;
+  private _renderedSiteDetails: { domain: string, isPrivate: boolean } | null = null;
 
   public constructor(popupRenderer: PopupRenderer) {
     this._popupRenderer = popupRenderer;
@@ -72,6 +73,7 @@ export class PopupSiteListRenderer {
     const firstPartyDomain = firstPartyUserContextList.firstPartyDomain;
     domainElement.textContent = firstPartyDomain;
     siteMenuListElement.textContent = '';
+    this._renderedSiteDetails = { domain: firstPartyDomain, isPrivate: firstPartyUserContextList.isPrivate };
     for (const userContext of firstPartyUserContextList.getOpenUserContexts()) {
       const userContextElement = this._popupRenderer.renderContainerForFirstPartyDomain(firstPartyDomain, userContext, firstPartyUserContextList.isPrivate);
       siteMenuListElement.appendChild(userContextElement);
@@ -89,6 +91,13 @@ export class PopupSiteListRenderer {
       return;
     }
     this.renderSiteDetailsView(firstPartyUserContextList, element);
+  }
+
+  public async rerenderSiteDetailsView(): Promise<void> {
+    if (!this._renderedSiteDetails) {
+      return;
+    }
+    await this.updateSiteDetailsView(this._renderedSiteDetails.domain, this._renderedSiteDetails.isPrivate);
   }
 
   public switchToSiteDetailsView(): void {
