@@ -55,8 +55,8 @@ export const hideAll = async (aWindowId: number) => {
   }
 };
 
-export const reopenInContainer = async (aUserContextId: Uint32.Uint32, aTabId: number) => {
-  const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
+export const reopenInContainer = async (aUserContextId: Uint32.Uint32, aTabId: number, isPrivate = false) => {
+  const tabGroup = await (isPrivate ? tabGroupService.getPrivateBrowsingTabGroup() : tabGroupService.getTabGroupFromUserContextId(aUserContextId));
   await tabGroup.reopenTabInGroup(aTabId);
 };
 

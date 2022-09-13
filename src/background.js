@@ -361,8 +361,8 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   const {url} = details;
   console.log('Capturing request for tab %d: %s', tabId, url);
   if (-1 != tabId) {
-    const tabObj = await Tab.get(tabId);
-    const {windowId} = tabObj;
+    const tab = await Tab.get(tabId);
+    const {windowId} = tab;
     const activeUserContextId = getActiveUserContext(windowId);
     if ('sticky' == configExternalTabContainerOption) {
       if (userContextId == activeUserContextId) {
@@ -370,18 +370,14 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
         openTabs.add(tabId);
         return false;
       } else {
-        browser.tabs.remove(tabId).then(() => {
-          browser.tabs.create({
-            active: true,
-            url,
-            cookieStoreId: UserContext.toCookieStoreId(activeUserContextId),
-            windowId,
-          }).then(() => {
-            console.log('Reopened %s in container id %d', url, activeUserContextId);
-          }).catch((e) => {
-            console.error(e);
-          });
+        await browser.tabs.remove(tabId);
+        await browser.tabs.create({
+          active: true,
+          url,
+          cookieStoreId: UserContext.toCookieStoreId(activeUserContextId), // this tab is never private
+          windowId,
         });
+        console.log('Reopened %s in container id %d', url, activeUserContextId);
       }
     }
   }
