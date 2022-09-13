@@ -80,16 +80,6 @@ const sortTabsByWindow = globalThis.sortTabsByWindow = async (windowId) => {
     const pinnedTabs = tabs.filter(tab => tab.pinned);
     let sortedTabs = tabs.filter(tab => !tab.pinned);
 
-    const indexedUserContextIds = new Set;
-    const indexTabs = new Map;
-    for (const tabObj of tabs) {
-      const userContextId = UserContext.fromCookieStoreId(tabObj.cookieStoreId);
-      if (IndexTab.isIndexTabUrl(tabObj.url)) {
-        indexedUserContextIds.add(userContextId);
-        indexTabs.set(userContextId, tabObj.id);
-      }
-    }
-
     sortedTabs.sort((tab1, tab2) => {
       const userContextId1 = UserContext.fromCookieStoreId(tab1.cookieStoreId);
       const userContextId2 = UserContext.fromCookieStoreId(tab2.cookieStoreId);
