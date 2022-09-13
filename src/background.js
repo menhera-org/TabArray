@@ -310,6 +310,7 @@ browser.windows.getAll({
   windowTypes: ['normal'],
 }).then(async (windows) => {
   for (const window of windows) {
+    if (window.incognito) continue;
     const activeTabs = await browser.tabs.query({
       windowId: window.id,
       active: true,
