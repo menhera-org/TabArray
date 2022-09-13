@@ -50,4 +50,9 @@ export class WindowService {
     }
     return activeTabs;
   }
+
+  public async isPrivateWindow(windowId: number): Promise<boolean> {
+    const browserWindow = await browser.windows.get(windowId);
+    return browserWindow.incognito;
+  }
 }

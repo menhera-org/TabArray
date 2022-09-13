@@ -23,9 +23,11 @@ import { UserContext } from '../frameworks/tabGroups';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { Uint32 } from '../frameworks/types';
+import { WindowService } from '../frameworks/tabs/WindowService.js';
 
 const tabGroupService = TabGroupService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
+const windowService = WindowService.getInstance();
 
 export const closeAllTabsOnWindow = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
   const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
@@ -49,6 +51,11 @@ export const getInactiveIds = async (aWindowId: number) => {
 };
 
 export const hideAll = async (aWindowId: number) => {
+  const isPrivate = await windowService.isPrivateWindow(aWindowId);
+  if (isPrivate) {
+    console.log('hideAll: skip for private window');
+    return;
+  }
   const userContextIds = await getInactiveIds(aWindowId);
   for (const userContextId of userContextIds) {
     await userContextVisibilityService.hideContainerOnWindow(aWindowId, userContextId);

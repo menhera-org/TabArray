@@ -27,6 +27,7 @@ import { IndexTab } from '../modules/IndexTab';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
 import { Tab } from '../frameworks/tabs';
+import { WindowService } from '../frameworks/tabs/WindowService';
 //import { OriginAttributes } from '../frameworks/tabGroups';
 //import { TabGroup } from '../frameworks/tabGroups';
 
@@ -48,11 +49,16 @@ export class UserContextVisibilityService {
     return UserContextVisibilityService.INSTANCE;
   }
 
+  private readonly _windowService = WindowService.getInstance();
+
   private constructor() {
     // nothing.
     console.log('tab.groups.indexOption: ', configGroupIndexOption);
   }
 
+  /**
+   * You should not create index tabs for private windows (useless).
+   */
   public async createIndexTab (windowId: number, userContextId: Uint32.Uint32): Promise<Tab> {
     const rawUserContext = await UserContext.get(userContextId);
     const userContext = UserContextService.getInstance().fillDefaultValues(rawUserContext);
@@ -70,6 +76,10 @@ export class UserContextVisibilityService {
   }
 
   private async getContainerTabsOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<Tab[]> {
+    const browserWindow = await browser.windows.get(windowId, { populate: false });
+    if (browserWindow.incognito) {
+      throw new Error('Private windows are not supported here.');
+    }
     const cookieStoreId = UserContext.toCookieStoreId(userContextId);
     const brwoserTabs = await browser.tabs.query({ windowId, cookieStoreId });
     const tabs = brwoserTabs.map((browserTab) => new Tab(browserTab));
@@ -77,8 +87,10 @@ export class UserContextVisibilityService {
   }
 
   public async hideContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
+    const isPrivate = await this._windowService.isPrivateWindow(windowId);
+    if (isPrivate) return;
     console.log('hideContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
-    const helper = await WindowUserContextVisibilityHelper.create(windowId, userContextId);
+    const helper = await WindowUserContextVisibilityHelper.create(windowId, userContextId); // throws for private windows.
     if (helper.tabsToHide.length < 1) {
       console.log('No tabs to hide on window %d for userContext %d', windowId, userContextId);
       return;
@@ -99,8 +111,10 @@ export class UserContextVisibilityService {
   }
 
   public async showContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
+    const isPrivate = await this._windowService.isPrivateWindow(windowId);
+    if (isPrivate) return;
     console.log('showContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
-    const tabs = await this.getContainerTabsOnWindow(windowId, userContextId);
+    const tabs = await this.getContainerTabsOnWindow(windowId, userContextId); // throws for private windows.
     if (tabs.length < 1) {
       console.log('No tabs to show on window %d for userContext %d', windowId, userContextId);
       return;

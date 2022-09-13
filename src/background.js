@@ -138,6 +138,9 @@ browser.tabs.onAttached.addListener(async () => {
 });
 
 browser.tabs.onCreated.addListener((tab) => {
+  if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
+    return;
+  }
   const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
   const activeUserContextId = getActiveUserContext(tab.windowId);
   const windowId = tab.windowId;
@@ -199,6 +202,9 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
 });
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
+  if (UserContext.isCookieStoreIdPrivateBrowsing(tabObj.cookieStoreId)) {
+    return;
+  }
   const userContextId = UserContext.fromCookieStoreId(tabObj.cookieStoreId);
   const windowId = tabObj.windowId;
   const activeUserContextId = getActiveUserContext(tabObj.windowId);
@@ -229,6 +235,9 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   const tab = await browser.tabs.get(tabId);
+  if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
+    return;
+  }
   const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
   const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
   const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
@@ -285,11 +294,15 @@ browser.menus.create({
 
 browser.menus.onClicked.addListener((info, tab) => {
   if (info.menuItemId == 'tab-hide-container') {
-    const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
-    if (!tab.windowId) {
-      return;
+    try {
+      const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
+      if (!tab.windowId) {
+        return;
+      }
+      userContextVisibilityService.hideContainerOnWindow(tab.windowId, userContextId).catch(e => console.error(e));
+    } catch (e) {
+      // errors emitted for private tabs
     }
-    userContextVisibilityService.hideContainerOnWindow(tab.windowId, userContextId).catch(e => console.error(e));
   }
 });
 

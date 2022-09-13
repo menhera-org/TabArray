@@ -127,11 +127,15 @@ export class PopupRenderer {
     userContext = this._userContextService.fillDefaultValues(userContext);
     const element = this.createContainerElement(userContext);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
-    element.onContainerHide.addListener(async () => {
-      await this._userContextVisibilityService.hideContainerOnWindow(windowId, userContext.id);
+    element.onContainerHide.addListener(() => {
+      this._userContextVisibilityService.hideContainerOnWindow(windowId, userContext.id).catch(() => {
+        // ignore. (errors for private windows)
+      });
     });
-    element.onContainerUnhide.addListener(async () => {
-      await this._userContextVisibilityService.showContainerOnWindow(windowId, userContext.id);
+    element.onContainerUnhide.addListener(() => {
+      this._userContextVisibilityService.showContainerOnWindow(windowId, userContext.id).catch(() => {
+        // ignore. (errors for private windows)
+      });
     });
     element.onContainerClick.addListener(async () => {
       await containers.openNewTabInContainer(userContext.id, windowId);

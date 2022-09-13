@@ -21,6 +21,10 @@
 
 import browser from 'webextension-polyfill';
 
+/**
+ * Returns the list of IDs of all non-private windows.
+ * @returns the IDs of non-private windows.
+ */
 export const getWindowIds = async () => {
   try {
     const windows = await browser.windows.getAll({
@@ -29,6 +33,7 @@ export const getWindowIds = async () => {
     });
     return windows
     .filter((window) => window.id !== undefined)
+    .filter((window) => !window.incognito)
     .map((window) => window.id ?? browser.windows.WINDOW_ID_NONE);
   } catch (e) {
     return [];

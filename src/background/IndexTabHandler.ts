@@ -63,6 +63,8 @@ browser.tabs.onCreated.addListener(async (browserTab) => {
   await PromiseUtils.sleep(100);
   if (indexTabOption != 'always') return;
   const tab = new Tab(await browser.tabs.get(browserTab.id));
+  const browserWindow = await browser.windows.get(tab.windowId, {populate: false});
+  if (browserWindow.incognito) return;
   if (IndexTab.isIndexTabUrl(tab.url)) {
     indexTabUserContextMap.set(tab.id, tab.userContextId);
   }
