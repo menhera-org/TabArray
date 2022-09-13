@@ -53,7 +53,6 @@ export class UserContextVisibilityService {
 
   private constructor() {
     // nothing.
-    console.log('tab.groups.indexOption: ', configGroupIndexOption);
   }
 
   /**
