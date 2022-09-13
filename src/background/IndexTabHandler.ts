@@ -27,24 +27,25 @@ import { Tab } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { config } from '../config/config';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
+import { PromiseUtils } from '../frameworks/utils';
+import { Uint32 } from '../frameworks/types';
 
 const tabGroupService = TabGroupService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
+const indexTabUserContextMap = new Map<number, Uint32.Uint32>();
 
 browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) => {
-  try {
-    const indexTabUserContextId = await browser.sessions.getTabValue(tabId, 'indexTabUserContextId');
-    if (indexTabUserContextId == null) {
-      throw void 0;
-    }
+  if (isWindowClosing) return;
+
+  const indexTabUserContextId = indexTabUserContextMap.get(tabId);
+  if (indexTabUserContextId != undefined) {
+    indexTabUserContextMap.delete(tabId);
     // index closed, close all tabs of that group
+    console.log('index tab %d closed on window %d, close all tabs of that group %d', tabId, windowId, indexTabUserContextId);
     await containers.closeAllTabsOnWindow(indexTabUserContextId, windowId);
     return;
-  } catch (e) {
-    // nothing.
   }
 
-  if (isWindowClosing) return;
   const list = await WindowUserContextList.create(windowId);
   for (const userContext of list.getOpenUserContexts()) {
     const tabs = [... list.getUserContextTabs(userContext.id)];
@@ -57,9 +58,14 @@ browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) =>
 });
 
 browser.tabs.onCreated.addListener(async (browserTab) => {
+  if (browserTab.id == null) return;
   const indexTabOption = await config['tab.groups.indexOption'].getValue();
+  await PromiseUtils.sleep(100);
   if (indexTabOption != 'always') return;
-  const tab = new Tab(browserTab);
+  const tab = new Tab(await browser.tabs.get(browserTab.id));
+  if (IndexTab.isIndexTabUrl(tab.url)) {
+    indexTabUserContextMap.set(tab.id, tab.userContextId);
+  }
   const tabGroup = await (tab.isPrivate()
     ? tabGroupService.getPrivateBrowsingTabGroup()
     : tabGroupService.getTabGroupFromUserContextId(tab.originAttributes.userContextId ?? UserContext.ID_DEFAULT));
@@ -72,6 +78,15 @@ browser.tabs.onCreated.addListener(async (browserTab) => {
   }
   if (!hasIndexTab) {
     await userContextVisibilityService.createIndexTab(tab.windowId, tabGroup.originAttributes.userContextId ?? UserContext.ID_DEFAULT);
+  }
+});
+
+browser.tabs.query({}).then(async (browserTabs) => {
+  const tabs = browserTabs.map((browserTab) => new Tab(browserTab));
+  for (const tab of tabs) {
+    if (IndexTab.isIndexTabUrl(tab.url)) {
+      indexTabUserContextMap.set(tab.id, tab.userContextId);
+    }
   }
 });
 
