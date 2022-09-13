@@ -19,11 +19,24 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
-export * as config from './config';
-export * as dns from './dns';
-export * as utils from './utils';
-export * as types from './types';
-export * as tabGroups from './tabGroups';
-export * as tabs from './tabs';
-export * as extension from './extension';
+import browser from 'webextension-polyfill';
+
+export class ExtensionService {
+  private static readonly INSTANCE = new ExtensionService();
+
+  public static getInstance() {
+    return ExtensionService.INSTANCE;
+  }
+
+  private constructor() {
+    // nothing.
+  }
+
+  public getInternalUuid(): string {
+    return new URL(browser.runtime.getURL('/')).hostname;
+  }
+
+  public getVersion(): string {
+    return browser.runtime.getManifest().version;
+  }
+}
