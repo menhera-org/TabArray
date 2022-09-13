@@ -22,7 +22,7 @@ import browser from 'webextension-polyfill';
 import * as containers from './modules/containers';
 import { isNewTabPage } from './modules/newtab';
 
-import {WebExtensionsBroadcastChannel} from './modules/broadcasting';
+import { WebExtensionsBroadcastChannel } from './modules/broadcasting';
 import { getActiveUserContext, setActiveUserContext } from './modules/usercontext-state.js';
 import { config } from './config/config';
 import { ADDON_PAGE } from './defs';
