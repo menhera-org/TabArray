@@ -330,5 +330,9 @@
     "buttonClear": {
         "message": "Clear",
         "description": "Button to clear data."
+    },
+    "privateBrowsing": {
+        "message": "Private Browsing",
+        "description": "Private Browsing page"
     }
 }
