@@ -4,7 +4,7 @@
   "description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "node script/clean.js ; webpack ; web-ext build --source-dir ./dist/ --artifacts-dir ./builds/ --overwrite-dest",
+    "build": "node script/clean.js ; eslint . ; webpack ; web-ext build --source-dir ./dist/ --artifacts-dir ./builds/ --overwrite-dest",
     "watch": "webpack -w",
     "clean": "node script/clean.js",
     "typedoc": "typedoc --out ./docs/typedoc-frameworks ./src/frameworks/index.ts",
