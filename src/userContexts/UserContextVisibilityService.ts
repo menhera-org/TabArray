@@ -83,7 +83,7 @@ export class UserContextVisibilityService {
       console.log('No tabs to hide on window %d for userContext %d', windowId, userContextId);
       return;
     }
-    if ('collapsed' == configGroupIndexOption && helper.hasIndexTab) {
+    if ('collapsed' == configGroupIndexOption && !helper.hasIndexTab) {
       await this.createIndexTab(windowId, userContextId);
     }
     if (helper.active) {
