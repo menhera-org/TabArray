@@ -330,5 +330,9 @@
     "buttonClear": {
         "message": "消去",
         "description": "Button to clear data."
+    },
+    "privateBrowsing": {
+        "message": "プライベートブラウジング",
+        "description": "Private Browsing page"
     }
 }
