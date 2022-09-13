@@ -26,6 +26,7 @@ import { FirstPartyService } from './FirstPartyService';
 import { PromiseUtils } from '../utils';
 import { UrlService } from '../dns';
 import { TabList } from './TabList';
+import { WindowService } from '../tabs';
 
 type TabGroupObserver = (tabGroup: TabGroup) => void;
 
@@ -33,6 +34,7 @@ export class TabGroup {
   public readonly originAttributes: OriginAttributes;
   private readonly _tabIds = new Set<number>();
   private readonly _firstPartyService = FirstPartyService.getInstance();
+  private readonly _windowService = WindowService.getInstance();
   private readonly _observers = new Set<TabGroupObserver>();
   private readonly _initializationPromise = PromiseUtils.createPromise<void>();
   private readonly _urlService = UrlService.getInstance();
@@ -186,6 +188,12 @@ export class TabGroup {
       }
     } else if (this.originAttributes.hasFirstpartyDomain()) {
       throw new Error('URL is not specified');
+    }
+    if (windowId != undefined) {
+      const windowIsPrivate = await this._windowService.isPrivateWindow(windowId);
+      if (this.originAttributes.isPrivateBrowsing() !== windowIsPrivate) {
+        throw new Error('Window is not in the same private browsing mode');
+      }
     }
     const cookieStoreId = this.originAttributes.hasCookieStoreId() ? this.originAttributes.cookieStoreId : undefined;
     const lastIndex = windowId ? await this.tabList.getLastIndexOnWindow(windowId) : undefined;
