@@ -36,6 +36,7 @@ import { UserContextVisibilityService } from './userContexts/UserContextVisibili
 import { BeforeRequestHandler } from './background/BeforeRequestHandler';
 import { Tab } from './frameworks/tabs';
 import { BackgroundUtils } from './background/BackgroundUtils';
+import './background/ExtensionDirectoryListRewriter';
 
 // watchdog
 let scriptCompleted = false;
