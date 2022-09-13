@@ -88,8 +88,6 @@ const sortTabsByWindow = globalThis.sortTabsByWindow = async (windowId) => {
     const pinnedTabs = tabs.filter(tab => tab.pinned);
     let sortedTabs = tabs.filter(tab => !tab.pinned);
 
-    const userContextIds = new Set(tabs.map(tabObj => UserContext.fromCookieStoreId(tabObj.cookieStoreId)));
-    const hiddenUserContextIds = new Set(tabs.filter(tabObj => tabObj.hidden).map(tabObj => UserContext.fromCookieStoreId(tabObj.cookieStoreId)));
     const indexedUserContextIds = new Set;
     const indexTabs = new Map;
     for (const tabObj of tabs) {
@@ -99,45 +97,21 @@ const sortTabsByWindow = globalThis.sortTabsByWindow = async (windowId) => {
         indexTabs.set(userContextId, tabObj.id);
       }
     }
-    for (const userContextId of userContextIds) {
-      if (configGroupIndexOption == 'collapsed' && !hiddenUserContextIds.has(userContextId)) {
-        if (indexTabs.has(userContextId)) {
-          const tabId = indexTabs.get(userContextId);
-          await browser.sessions.removeTabValue(tabId, 'indexTabUrl');
-          await browser.tabs.remove(tabId);
-          sortedTabs = sortedTabs.filter((tabObj) => tabObj.id != tabId);
-        }
-      } else if (configGroupIndexOption != 'never') {
-        if (indexTabs.has(userContextId)) {
-          continue;
-        }
-        console.log('creating index tab for', userContextId, windowId);
-        const tab = await userContextVisibilityService.createIndexTab(windowId, userContextId);
-        const tabObj = await browser.tabs.get(tab.id);
-        sortedTabs.push(tabObj);
-      } else {
-        break;
-      }
-    }
-    if ('collapsed' == configGroupIndexOption) {
-      // TODO
-    }
-    for (const tabObj of sortedTabs) {
-      tabObj.indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
-    }
+
     sortedTabs.sort((tab1, tab2) => {
       const userContextId1 = UserContext.fromCookieStoreId(tab1.cookieStoreId);
       const userContextId2 = UserContext.fromCookieStoreId(tab2.cookieStoreId);
       if (userContextId1 == userContextId2) {
-        if (tab1.indexTabUrl) {
+        if (IndexTab.isIndexTabUrl(tab1.url)) {
           return -1;
         }
-        if (tab2.indexTabUrl) {
+        if (IndexTab.isIndexTabUrl(tab2.url)) {
           return 1;
         }
       }
       return userContextId1 - userContextId2;
     });
+
     const pinnedCount = pinnedTabs.length;
     for (let i = 0; i < sortedTabs.length; i++) {
       const tab = sortedTabs[i];
