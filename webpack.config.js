@@ -10,6 +10,7 @@ module.exports = {
   mode: 'production',
   context: __dirname,
   target: ['web', 'es2020'],
+  devtool: 'inline-cheap-source-map',
   entry: {
     'background': './src/background.js',
     'index': {

@@ -22,7 +22,7 @@
   },
   "include": [
     "src/**/*",
-    "webpack.config.js",
+    "*.js",
     ".eslintrc.cjs",
     "script/*.js"
   ]
