@@ -49,6 +49,20 @@ export class PrivateBrowsingService {
     return windowId;
   }
 
+  /**
+   * Open a new private browsing window.
+   * @returns the window ID of the created private browsing window
+   */
+  public async openPrivateWindow(): Promise<number> {
+    const browserWindow = await browser.windows.create({
+      incognito: true,
+    });
+    if (null == browserWindow.id) {
+      throw new Error('browserWindow.id is null.');
+    }
+    return browserWindow.id;
+  }
+
   public async openTabInPrivateBrowsing(url: string, currentWindowId?: number): Promise<Tab> {
     const supported = await this._extensionService.isAllowedInPrivateBrowsing();
     if (!supported) {
@@ -63,6 +77,9 @@ export class PrivateBrowsingService {
     }
     if (undefined == windowId) {
       windowId = await this.getOpenPrivateWindowId();
+    }
+    if (undefined == windowId) {
+      windowId = await this.openPrivateWindow();
     }
     const browserTab = await browser.tabs.create({
       url: url,

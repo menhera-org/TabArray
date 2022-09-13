@@ -26,6 +26,11 @@ import { config } from '../config/config';
 import { UserContext } from '../frameworks/tabGroups';
 import * as containers from '../modules/containers';
 import { UserContextService } from '../userContexts/UserContextService';
+import { ExtensionService } from '../frameworks/extension';
+import { PrivateBrowsingService } from '../frameworks/tabs';
+
+const extensionService = ExtensionService.getInstance();
+const privateBrowsingService = PrivateBrowsingService.getInstance();
 
 const params = new URLSearchParams(location.search);
 
@@ -64,12 +69,11 @@ settingsButton.addEventListener('click', () => {
 });
 
 
-const renderUserContext = (origUserContext: UserContext, aUserContextElement: HTMLButtonElement | null = null) => {
-  const userContext = UserContextService.getInstance().fillDefaultValues(origUserContext);
+const renderButton = (tooltipText: string, name: string, iconUrl: string, useIconMask: boolean, maskColor = '#000000', aUserContextElement: HTMLButtonElement | null = null) => {
   const userContextElement = aUserContextElement ?? document.createElement('button');
   userContextElement.classList.add('userContext-button');
   userContextElement.textContent = '';
-  userContextElement.title = i18n.getMessage('defaultContainerName', String(userContext.id));
+  userContextElement.title = tooltipText;
 
   const userContextIconElement = document.createElement('span');
   userContextIconElement.classList.add('userContext-button-icon');
@@ -77,11 +81,31 @@ const renderUserContext = (origUserContext: UserContext, aUserContextElement: HT
   userContextLabelElement.classList.add('userContext-button-label');
   userContextElement.append(userContextIconElement, userContextLabelElement);
 
-  const iconUrl = userContext.iconUrl || '/img/category_black_24dp.svg';
-  userContextIconElement.style.mask = `url(${iconUrl}) center center/75% no-repeat`;
-  userContextIconElement.style.backgroundColor = userContext.colorCode || '#000';
-  userContextLabelElement.textContent = userContext.name;
+  if (useIconMask) {
+    userContextIconElement.style.mask = `url(${iconUrl}) center center/75% no-repeat`;
+    userContextIconElement.style.backgroundColor = maskColor;
+  } else {
+    userContextIconElement.style.background = `no-repeat center/75% url(${iconUrl})`;
+  }
+
+  userContextLabelElement.textContent = name;
   return userContextElement;
+};
+
+const renderUserContext = (origUserContext: UserContext, aUserContextElement: HTMLButtonElement | null = null) => {
+  const userContext = UserContextService.getInstance().fillDefaultValues(origUserContext);
+  const tooltipText = i18n.getMessage('defaultContainerName', String(userContext.id));
+  const iconUrl = userContext.iconUrl || '/img/category_black_24dp.svg';
+  const userContextElement = renderButton(tooltipText, userContext.name, iconUrl, true, userContext.colorCode || '#000', aUserContextElement);
+  return userContextElement;
+};
+
+const createPrivateBrowsingButton = () => {
+  const tooltipText = i18n.getMessage('privateBrowsing');
+  const name = tooltipText;
+  const iconUrl = '/img/private-browsing-icon.svg';
+  const button = renderButton(tooltipText, name, iconUrl, false);
+  return button;
 };
 
 const createUserContextElement = (userContext: UserContext) => {
@@ -119,7 +143,23 @@ const createUserContextElement = (userContext: UserContext) => {
   });
 };
 
-UserContext.getAll().then((userContexts) => {
+UserContext.getAll().then(async (userContexts) => {
+  const privateBrowsingSupported = await extensionService.isAllowedInPrivateBrowsing();
+  if (privateBrowsingSupported) {
+    const privateBrowsingButton = createPrivateBrowsingButton();
+    containersElement.append(privateBrowsingButton);
+    privateBrowsingButton.addEventListener('click', () => {
+      privateBrowsingService.openTabInPrivateBrowsing(url).then(async () => {
+        const currentTab = await browser.tabs.getCurrent();
+        if (undefined == currentTab.id) {
+          throw new Error('Current tab has no ID');
+        }
+        await browser.tabs.remove(currentTab.id);
+      }).catch((e) => {
+        console.error(e);
+      });
+    });
+  }
   userContexts.forEach(createUserContextElement);
 });
 
