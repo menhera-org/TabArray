@@ -111,7 +111,8 @@ const sortTabsByWindow = globalThis.sortTabsByWindow = async (windowId) => {
         if (indexTabs.has(userContextId)) {
           continue;
         }
-        const tab = await userContextVisibilityService.createIndexTab(userContextId, windowId);
+        console.log('creating index tab for', userContextId, windowId);
+        const tab = await userContextVisibilityService.createIndexTab(windowId, userContextId);
         const tabObj = await browser.tabs.get(tab.id);
         sortedTabs.push(tabObj);
       } else {
