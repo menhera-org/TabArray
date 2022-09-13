@@ -113,7 +113,6 @@ export class UserContextVisibilityService {
   public async showContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
     const isPrivate = await this._windowService.isPrivateWindow(windowId);
     if (isPrivate) return;
-    console.log('showContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
     const tabs = await this.getContainerTabsOnWindow(windowId, userContextId); // throws for private windows.
     if (tabs.length < 1) {
       console.log('No tabs to show on window %d for userContext %d', windowId, userContextId);
@@ -134,6 +133,7 @@ export class UserContextVisibilityService {
     if (tabIdsToShow.length < 1) {
       return;
     }
+    console.log('showContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
     await browser.tabs.show(tabIdsToShow);
   }
 
