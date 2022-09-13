@@ -28,6 +28,9 @@ const activeUserContextIdByWindow = new Map;
 const forceUpdate = () => {
   browser.tabs.query({active: true}).then((tabs) => {
     for (const tab of tabs) {
+      if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
+        continue;
+      }
       const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
       if (tab.url == 'about:blank' && tab.status == 'loading' && activeUserContextIdByWindow.has(tab.windowId)) {
         continue;
