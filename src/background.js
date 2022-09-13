@@ -19,7 +19,6 @@
 
 import './install';
 import browser from 'webextension-polyfill';
-import * as containers from './modules/containers';
 import { isNewTabPage } from './modules/newtab';
 
 import { WebExtensionsBroadcastChannel } from './modules/broadcasting';
@@ -28,13 +27,14 @@ import { config } from './config/config';
 import { ADDON_PAGE } from './defs';
 import { getWindowIds } from './modules/windows';
 import { IndexTab } from './modules/IndexTab';
-import { UserContext, WindowUserContextList } from './frameworks/tabGroups';
+import { UserContext } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
 import { TabGroupService } from './frameworks/tabGroups';
 import { UserContextVisibilityService } from './userContexts/UserContextVisibilityService';
 import { BeforeRequestHandler } from './background/BeforeRequestHandler';
 import { Tab } from './frameworks/tabs';
 import { BackgroundUtils } from './background/BackgroundUtils';
+import './background/IndexTabHandler';
 
 // watchdog
 let scriptCompleted = false;
@@ -210,30 +210,8 @@ browser.tabs.onCreated.addListener((tab) => {
   });
 });
 
-browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) => {
+browser.tabs.onRemoved.addListener(async (tabId) => {
   openTabs.delete(tabId);
-  try {
-    const indexTabUserContextId = await browser.sessions.getTabValue(tabId, 'indexTabUserContextId');
-    if (indexTabUserContextId == null) {
-      throw void 0;
-    }
-    // index closed, close all tabs of that group
-    await containers.closeAllTabsOnWindow(indexTabUserContextId, windowId);
-    return;
-  } catch (e) {
-    // nothing.
-  }
-
-  if (isWindowClosing) return;
-  const list = await WindowUserContextList.create(windowId);
-  for (const userContext of list.getOpenUserContexts()) {
-    const tabs = [... list.getUserContextTabs(userContext.id)];
-
-    // if the only remaining tab is the index tab, close it
-    if (tabs[0] && tabs.length == 1 && IndexTab.isIndexTabUrl(tabs[0].url)) {
-      await tabs[0].close();
-    }
-  }
 });
 
 browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
@@ -243,26 +221,6 @@ browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
   }
   await sortTabs();
   tabChangeChannel.postMessage(true);
-});
-
-browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, tabObj) => {
-  try {
-    const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
-    if (!indexTabUrl) {
-      throw void 0;
-    }
-    await browser.tabs.update(tabId, {
-      pinned: false,
-    });
-  } catch (e) {
-    // nothing.
-  }
-  await sortTabs();
-  tabChangeChannel.postMessage(true);
-}, {
-  properties: [
-    'pinned',
-  ],
 });
 
 browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
