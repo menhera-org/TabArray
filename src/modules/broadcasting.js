@@ -80,7 +80,7 @@ export class WebExtensionsBroadcastChannel extends EventTarget {
       }
     };
     browser.runtime.sendMessage(message).catch((e) => {
-      console.error(e);
+      console.debug(e);
     });
     shadow.internalHandler(message);
   }
