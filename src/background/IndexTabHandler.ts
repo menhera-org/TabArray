@@ -22,7 +22,14 @@
 import browser from 'webextension-polyfill';
 import * as containers from '../modules/containers';
 import { IndexTab } from '../modules/IndexTab';
-import { WindowUserContextList } from '../frameworks/tabGroups';
+import { UserContext, WindowUserContextList } from '../frameworks/tabGroups';
+import { Tab } from '../frameworks/tabs';
+import { TabGroupService } from '../frameworks/tabGroups';
+import { config } from '../config/config';
+import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
+
+const tabGroupService = TabGroupService.getInstance();
+const userContextVisibilityService = UserContextVisibilityService.getInstance();
 
 browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) => {
   try {
@@ -46,6 +53,25 @@ browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) =>
     if (tabs[0] && tabs.length == 1 && IndexTab.isIndexTabUrl(tabs[0].url)) {
       await tabs[0].close();
     }
+  }
+});
+
+browser.tabs.onCreated.addListener(async (browserTab) => {
+  const indexTabOption = await config['tab.groups.indexOption'].getValue();
+  if (indexTabOption != 'always') return;
+  const tab = new Tab(browserTab);
+  const tabGroup = await (tab.isPrivate()
+    ? tabGroupService.getPrivateBrowsingTabGroup()
+    : tabGroupService.getTabGroupFromUserContextId(tab.originAttributes.userContextId ?? UserContext.ID_DEFAULT));
+  let hasIndexTab = false;
+  for (const tab of await tabGroup.tabList.getTabs()) {
+    if (IndexTab.isIndexTabUrl(tab.url)) {
+      hasIndexTab = true;
+      break;
+    }
+  }
+  if (!hasIndexTab) {
+    await userContextVisibilityService.createIndexTab(tab.windowId, tabGroup.originAttributes.userContextId ?? UserContext.ID_DEFAULT);
   }
 });
 
