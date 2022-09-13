@@ -68,6 +68,13 @@ export const reopenInContainer = async (aUserContextId: Uint32.Uint32, aTabId: n
 };
 
 export const openNewTabInContainer = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
+  const isPrivate = await windowService.isPrivateWindow(aWindowId);
+  if (isPrivate) {
+    await browser.tabs.create({
+      windowId: aWindowId,
+    });
+    return;
+  }
   const windowId = aWindowId;
   const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
   const userContextId = UserContext.fromCookieStoreId(cookieStoreId);

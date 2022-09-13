@@ -32,9 +32,13 @@ import { UserContextService } from "../userContexts/UserContextService";
 import { PanoramaContainerElement } from "../components/panorama-container";
 import { UserContext } from "../frameworks/tabGroups";
 import * as i18n from '../modules/i18n';
+import { WindowService } from '../frameworks/tabs';
+import { TabGroupService } from '../frameworks/tabGroups';
 
 const panoramaStateStore = new PanoramaStateStore();
 const userContextService = UserContextService.getInstance();
+const windowService = WindowService.getInstance();
+const tabGroupService = TabGroupService.getInstance();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -67,10 +71,13 @@ const renderTab = (tab: Tab) => {
   return tabElement;
 };
 
-const renderContainer = async (userContext: UserContext) => {
+const renderContainer = async (userContext: UserContext, isPrivate = false) => {
   const userContextId = userContext.id;
+  if (isPrivate) {
+    console.assert(userContextId == 0);
+  }
   const containerElement = new PanoramaContainerElement(userContext);
-  const tabGroup = await userContext.getTabGroup();
+  const tabGroup = await (isPrivate ? tabGroupService.getPrivateBrowsingTabGroup() : userContext.getTabGroup());
   const tabs = (await tabGroup.tabList.getTabs()).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
   containerElement.tabCount = tabs.length;
   containerElement.containerTabsElement.append(...tabs.map((tab) => {
@@ -89,9 +96,10 @@ const renderContainer = async (userContext: UserContext) => {
 
 const render = async () => {
   console.log('render()');
-  const userContexts = (await UserContext.getAll())
+  const isPrivate = await windowService.isPrivateWindow(browser.windows.WINDOW_ID_CURRENT);
+  const userContexts = (await UserContext.getAll(isPrivate))
     .map((userContext) => userContextService.fillDefaultValues(userContext));
-  const containerElements = await Promise.all(userContexts.map((userContext) => renderContainer(userContext)));
+  const containerElements = await Promise.all(userContexts.map((userContext) => renderContainer(userContext, isPrivate)));
   const nonemptyContainerElements = containerElements.filter((containerElement) => containerElement.tabCount > 0);
   const emptyContainerElements = containerElements.filter((containerElement) => containerElement.tabCount === 0);
   const containersContainer = document.querySelector<HTMLDivElement>('#containers');

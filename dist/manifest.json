@@ -26,7 +26,7 @@
     "sessions",
     "browsingData"
   ],
-  "incognito": "not_allowed",
+  "incognito": "spanning",
   "background": {
     "page": "background.html"
   },
