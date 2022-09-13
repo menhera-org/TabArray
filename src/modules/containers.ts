@@ -18,10 +18,8 @@
 */
 
 import browser from 'webextension-polyfill';
-import { IndexTab } from './IndexTab';
 import { setActiveUserContext } from './usercontext-state.js';
 import { UserContext } from '../frameworks/tabGroups';
-import { UserContextService } from '../userContexts/UserContextService';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { Uint32 } from '../frameworks/types';
