@@ -94,12 +94,9 @@ const sortTabsByWindow = globalThis.sortTabsByWindow = async (windowId) => {
     const indexTabs = new Map;
     for (const tabObj of tabs) {
       const userContextId = UserContext.fromCookieStoreId(tabObj.cookieStoreId);
-      try {
-        new IndexTab(tabObj.url);
+      if (IndexTab.isIndexTabUrl(tabObj.url)) {
         indexedUserContextIds.add(userContextId);
         indexTabs.set(userContextId, tabObj.id);
-      } catch (e) {
-        // nothing.
       }
     }
     for (const userContextId of userContextIds) {
