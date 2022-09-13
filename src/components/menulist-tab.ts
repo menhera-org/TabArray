@@ -79,7 +79,11 @@ export class MenulistTabElement extends HTMLElement {
     this._tabId = tab.id;
     this.titleElement.textContent = tab.title;
     this.tabButton.title = tab.url;
-    this.iconUrl = tab.favIconUrl;
+    if (tab.url == 'about:addons') {
+      this.iconUrl = '/img/extension.svg';
+    } else {
+      this.iconUrl = tab.favIconUrl;
+    }
     if (tab.pinned) {
       this.pinButton.classList.add("pinned");
       this.pinButton.title = browser.i18n.getMessage('tooltipTabUnpinButton');
