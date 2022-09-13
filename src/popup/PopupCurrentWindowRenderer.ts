@@ -114,7 +114,9 @@ export class PopupCurrentWindowRenderer {
     tabCount += this.renderPinnedTabs(windowUserContextList, element);
     tabCount += this.renderOpenContainers(windowUserContextList, element);
     currentWindowLabel.tabCountString = String(tabCount);
-    element.appendChild(this.renderMoreContainersLabel());
-    this.renderInactiveContainers(windowUserContextList, element);
+    if (!windowUserContextList.isPrivate) {
+      element.appendChild(this.renderMoreContainersLabel());
+      this.renderInactiveContainers(windowUserContextList, element);
+    }
   }
 }
