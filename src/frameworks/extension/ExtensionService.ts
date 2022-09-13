@@ -39,4 +39,9 @@ export class ExtensionService {
   public getVersion(): string {
     return browser.runtime.getManifest().version;
   }
+
+  public async isAllowedInPrivateBrowsing(): Promise<boolean> {
+    const allowed = await browser.extension.isAllowedIncognitoAccess();
+    return allowed;
+  }
 }
