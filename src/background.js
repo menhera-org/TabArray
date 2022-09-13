@@ -74,25 +74,34 @@ config['tab.external.containerOption'].observe((value) => {
   }
 });
 
+/**
+ *
+ * @param {Tab} tab1
+ * @param {Tab} tab2
+ * @returns number
+ */
+const tabSortingCallback = (tab1, tab2) => {
+  const userContextId1 = tab1.userContextId;
+  const userContextId2 = tab2.userContextId;
+  if (userContextId1 == userContextId2) {
+    if (IndexTab.isIndexTabUrl(tab1.url)) {
+      return -1;
+    }
+    if (IndexTab.isIndexTabUrl(tab2.url)) {
+      return 1;
+    }
+  }
+  return userContextId1 - userContextId2;
+};
+
 const sortTabsByWindow = globalThis.sortTabsByWindow = async (windowId) => {
   try {
-    const tabs = await browser.tabs.query({windowId: windowId});
+    const browserTabs = await browser.tabs.query({windowId: windowId});
+    const tabs = browserTabs.map((tab) => new Tab(tab));
     const pinnedTabs = tabs.filter(tab => tab.pinned);
     let sortedTabs = tabs.filter(tab => !tab.pinned);
 
-    sortedTabs.sort((tab1, tab2) => {
-      const userContextId1 = UserContext.fromCookieStoreId(tab1.cookieStoreId);
-      const userContextId2 = UserContext.fromCookieStoreId(tab2.cookieStoreId);
-      if (userContextId1 == userContextId2) {
-        if (IndexTab.isIndexTabUrl(tab1.url)) {
-          return -1;
-        }
-        if (IndexTab.isIndexTabUrl(tab2.url)) {
-          return 1;
-        }
-      }
-      return userContextId1 - userContextId2;
-    });
+    sortedTabs.sort(tabSortingCallback);
 
     const pinnedCount = pinnedTabs.length;
     for (let i = 0; i < sortedTabs.length; i++) {
