@@ -23,12 +23,11 @@ import * as containers from './modules/containers';
 import { isNewTabPage } from './modules/newtab';
 
 import {WebExtensionsBroadcastChannel} from './modules/broadcasting';
-import { getActiveUserContext } from './modules/usercontext-state.js';
+import { getActiveUserContext, setActiveUserContext } from './modules/usercontext-state.js';
 import { config } from './config/config';
-import { setActiveUserContext } from './modules/usercontext-state.js';
 import { ADDON_PAGE } from './defs';
 import { getWindowIds } from './modules/windows';
-import {IndexTab} from './modules/IndexTab';
+import { IndexTab } from './modules/IndexTab';
 import { UserContext, WindowUserContextList } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
 import { TabGroupService } from './frameworks/tabGroups';
