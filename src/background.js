@@ -294,15 +294,15 @@ browser.menus.create({
 
 browser.menus.onClicked.addListener((info, tab) => {
   if (info.menuItemId == 'tab-hide-container') {
-    try {
-      const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
-      if (!tab.windowId) {
-        return;
-      }
-      userContextVisibilityService.hideContainerOnWindow(tab.windowId, userContextId).catch(e => console.error(e));
-    } catch (e) {
-      // errors emitted for private tabs
+    if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
+      return;
     }
+
+    const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
+    if (tab.windowId == null) {
+      return;
+    }
+    userContextVisibilityService.hideContainerOnWindow(tab.windowId, userContextId).catch(e => console.error(e));
   }
 });
 
