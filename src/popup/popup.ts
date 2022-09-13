@@ -92,7 +92,7 @@ utils.queryElementNonNull<HTMLButtonElement>('#button-sidebar').addEventListener
 });
 
 utils.queryElementNonNull<HTMLButtonElement>('#button-new-container').addEventListener('click', () => {
-  renderer.showNewContainerPanelAsync().then((result) => {
+  renderer.modalRenderer.showNewContainerPanelAsync().then((result) => {
     if (!result) return;
     console.log('Created new container', result);
   });
