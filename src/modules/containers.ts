@@ -23,7 +23,7 @@ import { UserContext } from '../frameworks/tabGroups';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { Uint32 } from '../frameworks/types';
-import { WindowService } from '../frameworks/tabs/WindowService.js';
+import { WindowService } from '../frameworks/tabs/WindowService';
 
 const tabGroupService = TabGroupService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
