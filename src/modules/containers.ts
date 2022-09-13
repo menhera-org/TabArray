@@ -30,7 +30,8 @@ const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const windowService = WindowService.getInstance();
 
 export const closeAllTabsOnWindow = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
-  const tabGroup = await tabGroupService.getTabGroupFromUserContextId(aUserContextId);
+  const isPrivate = await windowService.isPrivateWindow(aWindowId);
+  const tabGroup = await (isPrivate ? tabGroupService.getPrivateBrowsingTabGroup() : tabGroupService.getTabGroupFromUserContextId(aUserContextId));
   await tabGroup.tabList.closeUnpinnedTabsOnWindow(aWindowId);
 };
 
