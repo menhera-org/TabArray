@@ -352,5 +352,17 @@
     "confirmPrivateBrowsingClearCookie": {
         "message": "Do you want to clear cookies for private browsing?",
         "description": "Confirmation message before clearing cookies for private browsing."
+    },
+    "buttonEditContainer": {
+        "message": "Edit Container…",
+        "description": "Button to edit a container."
+    },
+    "buttonContainerClearCookie": {
+        "message": "Clear cookies…",
+        "description": "Button to clear cookies in a container."
+    },
+    "buttonDeleteContainer": {
+        "message": "Delete Container…",
+        "description": "Button to delete a container."
     }
 }
