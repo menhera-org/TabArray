@@ -24,11 +24,6 @@ import { EventSink } from "../frameworks/utils";
 import { Uint32 } from "../frameworks/types";
 
 export class ContainerSorterElement extends HTMLElement {
-  private static readonly TEMPLATE = `
-    <link rel='stylesheet' href='/components/container-sorter.css'/>
-    <div id='containers'></div>
-  `;
-
   public readonly onChanged = new EventSink<Uint32.Uint32[]>();
 
   public constructor(userContexts: UserContext[]) {
@@ -37,7 +32,16 @@ export class ContainerSorterElement extends HTMLElement {
     if (!this.shadowRoot) {
       throw new Error('Shadow root is null');
     }
-    this.shadowRoot.innerHTML = ContainerSorterElement.TEMPLATE;
+
+    const styleSheet = document.createElement('link');
+    styleSheet.rel = 'stylesheet';
+    styleSheet.href = '/components/container-sorter.css';
+    this.shadowRoot.appendChild(styleSheet);
+
+    const containersElement = document.createElement('div');
+    containersElement.id = 'containers';
+    this.shadowRoot.appendChild(containersElement);
+
     this.setUserContexts(userContexts);
   }
 
