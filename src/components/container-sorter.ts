@@ -56,8 +56,8 @@ export class ContainerSorterElement extends HTMLElement {
 
     const iconElement = document.createElement('div');
     iconElement.classList.add('icon');
-    iconElement.style.mask = `url(${userContext.iconUrl}) center center / contain no-repeat`;
-    iconElement.style.backgroundColor = userContext.color;
+    iconElement.style.mask = `url(${userContext.iconUrl}) center center / 75% no-repeat`;
+    iconElement.style.backgroundColor = userContext.colorCode;
     element.appendChild(iconElement);
 
     const nameElement = document.createElement('div');

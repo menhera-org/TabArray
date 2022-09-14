@@ -23,3 +23,26 @@
 
 @namespace url(http://www.w3.org/1999/xhtml);
 
+#containers {
+  inline-size: max-content;
+  max-inline-size: 100%;
+}
+
+.container {
+  display: block grid;
+  grid-template-columns: 2em 1fr 2em 2em;
+}
+
+.container:not(:first-of-type) {
+  border-block-start: solid .0625rem var(--border-color);
+}
+
+.container > .name {
+  display: block;
+  grid-column: 2;
+  grid-row: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: .5em;
+}
