@@ -68,6 +68,12 @@ So it would not be possible.
 See the [issues](https://github.com/menhera-org/TabArray/issues).
 Something missing you need? Please file a new feature request there.
 
+## Building the extension
+
+1. Install the latest Node.JS/NPM using [NVM](https://github.com/nvm-sh/nvm).
+2. In this directory, run `npm install`.
+3. Run `npm run build` for production builds, and `npm run dev` for development builds.
+
 ## License
 
 Copyright &copy; 2022 Menhera.org contributors.
