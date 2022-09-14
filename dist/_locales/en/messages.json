@@ -348,5 +348,9 @@
     "tooltipContainerClearCookie": {
         "message": "Clear all cookies in this container",
         "description": "Tooltip for a button to clear all cookies in a container."
+    },
+    "confirmPrivateBrowsingClearCookie": {
+        "message": "Do you want to clear cookies for private browsing?",
+        "description": "Confirmation message before clearing cookies for private browsing."
     }
 }
