@@ -25,21 +25,6 @@ import { Tab } from "../frameworks/tabs";
 import { EventSink } from '../frameworks/utils';
 
 export class MenulistTabElement extends HTMLElement {
-  private static readonly TEMPLATE = `
-    <link rel='stylesheet' href='/components/menulist-tab.css'/>
-    <div id='tab-menu'>
-      <img id='tab-private-icon' src='/img/private-browsing-icon.svg'/>
-      <div id='tab-main'>
-        <button id='tab-pin-button'></button>
-        <button id='tab-button'>
-          <img id='tab-icon'/>
-          <span id='tab-title'></span>
-        </button>
-        <button id='tab-close-button'></button>
-      </div>
-    </div>
-  `;
-
   private _tabId = -1;
   public readonly onTabClicked = new EventSink<number>();
   public readonly onPin = new EventSink<number>();
@@ -52,7 +37,7 @@ export class MenulistTabElement extends HTMLElement {
     if (!this.shadowRoot) {
       throw new Error("Shadow root is null");
     }
-    this.shadowRoot.innerHTML = MenulistTabElement.TEMPLATE;
+    this.buildElement();
     this.setTab(tab);
     this.setUserContext(userContext);
     this.closeButton.title = browser.i18n.getMessage('buttonTabClose');
@@ -73,6 +58,46 @@ export class MenulistTabElement extends HTMLElement {
     this.closeButton.onclick = () => {
       this.onClose.dispatch(this.tabId);
     };
+  }
+
+  private buildElement() {
+    const styleSheet = document.createElement('link');
+    styleSheet.rel = 'stylesheet';
+    styleSheet.href = '/components/menulist-tab.css';
+    this.shadowRoot?.appendChild(styleSheet);
+
+    const tabMenu = document.createElement('div');
+    tabMenu.id = 'tab-menu';
+    this.shadowRoot?.appendChild(tabMenu);
+
+    const tabPrivateIcon = document.createElement('img');
+    tabPrivateIcon.id = 'tab-private-icon';
+    tabPrivateIcon.src = '/img/private-browsing-icon.svg';
+    tabMenu.appendChild(tabPrivateIcon);
+
+    const tabMain = document.createElement('div');
+    tabMain.id = 'tab-main';
+    tabMenu.appendChild(tabMain);
+
+    const tabPinButton = document.createElement('button');
+    tabPinButton.id = 'tab-pin-button';
+    tabMain.appendChild(tabPinButton);
+
+    const tabButton = document.createElement('button');
+    tabButton.id = 'tab-button';
+    tabMain.appendChild(tabButton);
+
+    const tabIcon = document.createElement('img');
+    tabIcon.id = 'tab-icon';
+    tabButton.appendChild(tabIcon);
+
+    const tabTitle = document.createElement('span');
+    tabTitle.id = 'tab-title';
+    tabButton.appendChild(tabTitle);
+
+    const tabCloseButton = document.createElement('button');
+    tabCloseButton.id = 'tab-close-button';
+    tabMain.appendChild(tabCloseButton);
   }
 
   public setTab(tab: Tab) {
