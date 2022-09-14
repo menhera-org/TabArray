@@ -364,5 +364,9 @@
     "buttonDeleteContainer": {
         "message": "Delete Container…",
         "description": "Button to delete a container."
+    },
+    "buttonDone": {
+        "message": "Done",
+        "description": "Button to complete an action."
     }
 }
