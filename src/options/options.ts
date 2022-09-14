@@ -20,10 +20,17 @@
 import browser from 'webextension-polyfill';
 import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
+import { ContainerSorterElement } from '../components/container-sorter';
+import { UserContext } from '../frameworks/tabGroups';
+import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { UserContextService } from '../userContexts/UserContextService';
 
 interface HTMLFormInput extends HTMLElement {
   value: string;
 }
+
+const sortingOrderStore = UserContextSortingOrderStore.getInstance();
+const userContextService = UserContextService.getInstance();
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
@@ -93,6 +100,27 @@ setTextContent('label[for="select-popupSize"]', 'labelPopupSize');
 
 setTextContent('#select-popupSize > option[value="standard"]', 'labelPopupSizeStandard');
 setTextContent('#select-popupSize > option[value="large"]', 'labelPopupSizeLarge');
+
+UserContext.getAll().then((userContexts) => {
+  const sortedUserContext = sortingOrderStore.sort(userContexts.map((userContext) => userContextService.fillDefaultValues(userContext)));
+  const containerSorter = new ContainerSorterElement(sortedUserContext);
+  document.body?.appendChild(containerSorter);
+
+  const callback = async () => {
+    const userContexts = (await UserContext.getAll()).map((userContext) => userContextService.fillDefaultValues(userContext));
+    const sortedUserContext = sortingOrderStore.sort(userContexts);
+    containerSorter.setUserContexts(sortedUserContext);
+  };
+
+  sortingOrderStore.onChanged.addListener(callback);
+  UserContext.onCreated.addListener(callback);
+  UserContext.onRemoved.addListener(callback);
+  UserContext.onUpdated.addListener(callback);
+
+  containerSorter.onChanged.addListener((sortOrder) => {
+    sortingOrderStore.setOrder(sortOrder);
+  });
+});
 
 // newtab.keepContainer setting
 config['newtab.keepContainer'].observe((value) => {
