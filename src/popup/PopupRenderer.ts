@@ -94,15 +94,21 @@ export class PopupRenderer {
     });
 
     element.onContainerClearCookie.addListener(() => {
+      if (isPrivate) {
+        this.modalRenderer.confirmAsync(browser.i18n.getMessage('confirmPrivateBrowsingClearCookie')).then((result) => {
+          if (!result) return;
+          this._privateBrowsingService.clearBrowsingData().then(() => {
+            console.log('Removed browsing data for private browsing');
+          }).catch((e) => {
+            console.error(e);
+          });
+        });
+        return;
+      }
       this.modalRenderer.confirmAsync(browser.i18n.getMessage('confirmContainerClearCookie', userContext.name)).then((result) => {
         if (!result) return;
-        const promise = isPrivate ? this._privateBrowsingService.clearBrowsingData() : userContext.removeBrowsingData();
-        promise.then(() => {
-          if (isPrivate) {
-            console.log('Removed browsing data for private browsing');
-          } else {
-            console.log('Removed browsing data for container', userContext);
-          }
+        userContext.removeBrowsingData().then(() => {
+          console.log('Removed browsing data for container', userContext);
         }).catch((e) => {
           console.error(e);
         });
