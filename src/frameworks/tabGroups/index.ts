@@ -29,3 +29,4 @@ export { FirstPartyTabMap } from './FirstPartyTabMap';
 export { WindowUserContextList } from './WindowUserContextList';
 export { DefinedUserContextList } from './DefinedUserContextList';
 export { FirstPartyUserContextList } from './FirstPartyUserContextList';
+export { UserContextSortingProvider } from './UserContextSortingProvider';
