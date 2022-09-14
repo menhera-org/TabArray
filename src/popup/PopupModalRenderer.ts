@@ -204,7 +204,7 @@ export class PopupModalRenderer {
   public async showContainerOptionsPanelAsync(userContext: UserContext, isPrivate = false): Promise<void> {
     const messageElement = this._utils.queryElementNonNull<HTMLElement>('#container-menu .modal-title');
     const doneButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-done-button');
-    const message = browser.i18n.getMessage('containerOptions', isPrivate ? userContext.name : browser.i18n.getMessage('privateBrowsing'));
+    const message = browser.i18n.getMessage('containerOptions', isPrivate ? browser.i18n.getMessage('privateBrowsing') : userContext.name);
     const previousHash = location.hash;
 
     const editButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-edit-button');
