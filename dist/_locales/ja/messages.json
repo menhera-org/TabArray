@@ -378,5 +378,13 @@
                 "example": "Container 3"
             }
         }
+    },
+    "optionsHeadingContainerSortOrder": {
+        "message": "コンテナーを並び替える",
+        "description": "Heading text of options page for changing container order."
+    },
+    "optionsDescriptionContainerSortOrder": {
+        "message": "この設定はほかの拡張機能には影響ありません。",
+        "description": "Description text for changing container order."
     }
 }
