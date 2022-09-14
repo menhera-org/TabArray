@@ -334,5 +334,15 @@
     "privateBrowsing": {
         "message": "Private Browsing",
         "description": "Private Browsing page"
+    },
+    "confirmContainerClearCookie": {
+        "message": "Do you want to clear cookies for this container: $NAME$?",
+        "description": "Confirmation message before clearing cookies in a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
     }
 }
