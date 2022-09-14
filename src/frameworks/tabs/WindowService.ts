@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 import { UserContext } from '../tabGroups';
 import { Tab } from './Tab';
 
-export type ActiveTabsByWindow = Map<number, {tab: Tab, userContext: UserContext}>;
+export type ActiveTabsByWindow = Map<number, {tab: Tab, userContext: UserContext, isPrivate: boolean}>;
 
 export class WindowService {
   private static readonly INSTANCE = new WindowService();
@@ -46,7 +46,8 @@ export class WindowService {
       }
       // return "No Container" for private browsing.
       const userContext = await UserContext.get(tab.originAttributes.userContextId);
-      activeTabs.set(tab.windowId, { tab, userContext });
+      const isPrivate = await this.isPrivateWindow(tab.windowId);
+      activeTabs.set(tab.windowId, { tab, userContext, isPrivate });
     }
     return activeTabs;
   }

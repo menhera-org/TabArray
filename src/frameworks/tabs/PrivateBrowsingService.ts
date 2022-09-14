@@ -38,7 +38,16 @@ export class PrivateBrowsingService {
     // Do nothing.
   }
 
+  private async checkForPrivateBrowsingSupport(): Promise<void> {
+    const supported = await this._extensionService.isAllowedInPrivateBrowsing();
+    if (!supported) {
+      throw new Error('This extension is not allowed in private browsing.');
+    }
+  }
+
   public async getOpenPrivateWindowId(): Promise<number | undefined> {
+    await this.checkForPrivateBrowsingSupport();
+
     const windows = await browser.windows.getAll({ windowTypes: ['normal'] });
     let windowId: number | undefined;
     for (const window of windows) {
@@ -54,6 +63,8 @@ export class PrivateBrowsingService {
    * @returns the window ID of the created private browsing window
    */
   public async openPrivateWindow(): Promise<number> {
+    await this.checkForPrivateBrowsingSupport();
+
     const browserWindow = await browser.windows.create({
       incognito: true,
     });
@@ -64,10 +75,8 @@ export class PrivateBrowsingService {
   }
 
   public async openTabInPrivateBrowsing(url: string, currentWindowId?: number): Promise<Tab> {
-    const supported = await this._extensionService.isAllowedInPrivateBrowsing();
-    if (!supported) {
-      throw new Error('This extension is not allowed in private browsing.');
-    }
+    await this.checkForPrivateBrowsingSupport();
+
     let windowId: number | undefined = undefined;
     if (undefined != currentWindowId) {
       const windowIsPrivate = await this._windowService.isPrivateWindow(currentWindowId);
@@ -86,5 +95,17 @@ export class PrivateBrowsingService {
       windowId: windowId,
     });
     return new Tab(browserTab);
+  }
+
+  public async clearBrowsingData(): Promise<void> {
+    await this.checkForPrivateBrowsingSupport();
+
+    await browser.browsingData.remove({
+      cookieStoreId: 'firefox-private',
+    }, {
+      cookies: true,
+      localStorage: true, // not supported on old Firefox
+      indexedDB: true,
+    });
   }
 }

@@ -92,7 +92,7 @@ export class PopupCurrentWindowRenderer {
     for (const openUserContext of openUserContexts) {
       const tabs = [... windowUserContextList.getUserContextTabs(openUserContext.id)];
       tabCount += tabs.length;
-      const containerElement = this.popupRenderer.renderContainerWithTabs(windowUserContextList.windowId, openUserContext, tabs);
+      const containerElement = this.popupRenderer.renderContainerWithTabs(windowUserContextList.windowId, openUserContext, tabs, windowUserContextList.isPrivate);
       element.appendChild(containerElement);
     }
     return tabCount;
@@ -101,7 +101,7 @@ export class PopupCurrentWindowRenderer {
   public renderInactiveContainers(windowUserContextList: WindowUserContextList, element: HTMLElement): void {
     const inactiveUserContexts = windowUserContextList.getInactiveUserContexts();
     for (const inactiveUserContext of inactiveUserContexts) {
-      const containerElement = this.popupRenderer.renderContainerWithTabs(windowUserContextList.windowId, inactiveUserContext, []);
+      const containerElement = this.popupRenderer.renderContainerWithTabs(windowUserContextList.windowId, inactiveUserContext, [], windowUserContextList.isPrivate);
       element.appendChild(containerElement);
     }
   }

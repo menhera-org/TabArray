@@ -48,10 +48,10 @@ export class PopupWindowListRenderer {
     return windowLabel;
   }
 
-  public renderWindow(windowId: number, activeTab: Tab, userContext: UserContext, element: HTMLElement): void {
+  public renderWindow(windowId: number, activeTab: Tab, userContext: UserContext, element: HTMLElement, isPrivate = false): void {
     const windowLabel = this.renderWindowLabel(windowId);
     element.appendChild(windowLabel);
-    const containerElement = this._popupRenderer.renderContainerForWindow(windowId, userContext);
+    const containerElement = this._popupRenderer.renderContainerForWindow(windowId, userContext, isPrivate);
     element.appendChild(containerElement);
     const tabElement = this._popupRenderer.renderTab(activeTab, userContext);
     containerElement.appendChild(tabElement);
@@ -65,8 +65,8 @@ export class PopupWindowListRenderer {
       if (!details) {
         continue;
       }
-      const { tab, userContext } = details;
-      this.renderWindow(windowId, tab, userContext, element);
+      const { tab, userContext, isPrivate } = details;
+      this.renderWindow(windowId, tab, userContext, element, isPrivate);
     }
   }
 }

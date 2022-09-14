@@ -36,6 +36,7 @@ import { Uint32 } from "../frameworks/types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { PopupUtils } from './PopupUtils';
 import { PopupModalRenderer } from './PopupModalRenderer';
+import { PrivateBrowsingService } from '../frameworks/tabs';
 
 enum ContainerTabsState {
   NO_TABS,
@@ -47,6 +48,8 @@ enum ContainerTabsState {
 export class PopupRenderer {
   private _userContextVisibilityService = UserContextVisibilityService.getInstance();
   private _userContextService = UserContextService.getInstance();
+  private _privateBrowsingService = PrivateBrowsingService.getInstance();
+
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly windowListRenderer = new PopupWindowListRenderer(this);
   public readonly siteListRenderer = new PopupSiteListRenderer(this);
@@ -70,7 +73,7 @@ export class PopupRenderer {
     return element;
   }
 
-  private createContainerElement(userContext: UserContext): MenulistContainerElement {
+  private createContainerElement(userContext: UserContext, isPrivate = false): MenulistContainerElement {
     userContext = this._userContextService.fillDefaultValues(userContext);
     const element = new MenulistContainerElement(userContext);
 
@@ -93,8 +96,13 @@ export class PopupRenderer {
     element.onContainerClearCookie.addListener(() => {
       this.modalRenderer.confirmAsync(browser.i18n.getMessage('confirmContainerClearCookie', userContext.name)).then((result) => {
         if (!result) return;
-        userContext.removeBrowsingData().then(() => {
-          console.log('Removed browsing data for container', userContext);
+        const promise = isPrivate ? this._privateBrowsingService.clearBrowsingData() : userContext.removeBrowsingData();
+        promise.then(() => {
+          if (isPrivate) {
+            console.log('Removed browsing data for private browsing');
+          } else {
+            console.log('Removed browsing data for container', userContext);
+          }
         }).catch((e) => {
           console.error(e);
         });
@@ -104,8 +112,8 @@ export class PopupRenderer {
     return element;
   }
 
-  private renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
-    const element = this.createContainerElement(userContext);
+  private renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT, isPrivate = false): MenulistContainerElement {
+    const element = this.createContainerElement(userContext, isPrivate);
     element.containerVisibilityToggleButton.disabled = true;
     return element;
   }
@@ -118,14 +126,14 @@ export class PopupRenderer {
     });
   }
 
-  public renderContainerForWindow(windowId: number, userContext: UserContext = UserContext.DEFAULT): MenulistContainerElement {
-    const element = this.renderPartialContainerElement(userContext);
+  public renderContainerForWindow(windowId: number, userContext: UserContext = UserContext.DEFAULT, isPrivate = false): MenulistContainerElement {
+    const element = this.renderPartialContainerElement(userContext, isPrivate);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     return element;
   }
 
   public renderContainerForFirstPartyDomain(domain: string, userContext: UserContext = UserContext.DEFAULT, isPrivateBrowsing = false): MenulistContainerElement {
-    const element = this.renderPartialContainerElement(userContext);
+    const element = this.renderPartialContainerElement(userContext, isPrivateBrowsing);
     element.onContainerClose.addListener(() => {
       const originAttributes = new OriginAttributes(domain, userContext.id, (isPrivateBrowsing ? 1 : 0) as Uint32.Uint32);
       TabGroup.createTabGroup(originAttributes).then((tabGroup) => {
@@ -137,9 +145,9 @@ export class PopupRenderer {
     return element;
   }
 
-  private renderContainer(windowId: number, userContext: UserContext): MenulistContainerElement {
+  private renderContainer(windowId: number, userContext: UserContext, isPrivate = false): MenulistContainerElement {
     userContext = this._userContextService.fillDefaultValues(userContext);
-    const element = this.createContainerElement(userContext);
+    const element = this.createContainerElement(userContext, isPrivate);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     element.onContainerHide.addListener(() => {
       this._userContextVisibilityService.hideContainerOnWindow(windowId, userContext.id).catch(() => {
@@ -158,8 +166,8 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderContainerWithTabs(windowId: number, userContext: UserContext, tabs: Tab[]): MenulistContainerElement {
-    const element = this.renderContainer(windowId, userContext);
+  public renderContainerWithTabs(windowId: number, userContext: UserContext, tabs: Tab[], isPrivate = false): MenulistContainerElement {
+    const element = this.renderContainer(windowId, userContext, isPrivate);
     let tabCount = 0;
     let state = ContainerTabsState.NO_TABS;
     for (const tab of tabs) {
