@@ -59,6 +59,8 @@ setTextContent('#optionsHeadingExperimental', 'optionsHeadingExperimental');
 setTextContent('#optionsHeadingFirefox', 'optionsHeadingFirefox');
 setTextContent('#optionsDescriptionExperimental', 'optionsDescriptionExperimental');
 setTextContent('#optionsDescriptionFirefox', 'optionsDescriptionFirefox');
+setTextContent('#optionsHeadingContainerSortOrder', 'optionsHeadingContainerSortOrder');
+setTextContent('#optionsDescriptionContainerSortOrder', 'optionsDescriptionContainerSortOrder');
 
 const inputNewTabKeepContainer = document.querySelector<HTMLInputElement>('#input-newtabKeepContainer');
 setTextContent('label[for="input-newtabKeepContainer"]', 'labelNewTabKeepContainer');
