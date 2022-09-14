@@ -25,6 +25,7 @@
   --border-color: #888;
   --hover-color: rgba(0, 0, 0, 0.1);
   --secondary-background-color: #d7d7db;
+  --button-text-color: #0033cc;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,5 +35,6 @@
     --border-color: #999;
     --hover-color: rgba(255, 255, 255, 0.1);
     --secondary-background-color: #4a4a4f;
+    --button-text-color: #aae2ff;
   }
 }

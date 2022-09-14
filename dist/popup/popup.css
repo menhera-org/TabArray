@@ -49,7 +49,7 @@ body.large:not(.sidebar) {
 }
 
 a, button {
-  color: #0033cc;
+  color: var(--button-text-color);
   background-color: transparent;
   border: none;
   appearance: none;
@@ -631,15 +631,20 @@ body > .modal:target {
 
 .modal-actions {
   margin-block: 1em;
-  display: block grid;
-  grid-auto-columns: max-content;
-  grid-auto-flow: column;
+  display: block flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-around;
+  row-gap: 1em;
 }
 
 .modal-actions > button {
   inline-size: max-content;
   border-radius: .25em;
+}
+
+.modal-actions > button:disabled {
+  display: none;
 }
 
 .modal-actions > button.button-default {
