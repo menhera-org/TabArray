@@ -211,7 +211,7 @@ export class PopupModalRenderer {
     const clearCookie = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-clear-cookie-button');
     const deleteButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-delete-button');
 
-    if (isPrivate) {
+    if (isPrivate || userContext.id == 0) {
       editButton.disabled = true;
       deleteButton.disabled = true;
     } else {
