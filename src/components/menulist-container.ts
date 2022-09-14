@@ -35,6 +35,7 @@ export class MenulistContainerElement extends HTMLElement {
         </button>
         <button id='container-edit-button'></button>
         <button id='container-close-button'></button>
+        <button id='container-clear-cookie-button'></button>
         <button id='container-delete-button'></button>
       </div>
       <div id='container-tabs'>
@@ -52,6 +53,7 @@ export class MenulistContainerElement extends HTMLElement {
   public readonly onContainerEdit = new EventSink<void>();
   public readonly onContainerClose = new EventSink<void>();
   public readonly onContainerDelete = new EventSink<void>();
+  public readonly onContainerClearCookie = new EventSink<void>();
 
   public constructor(userContext: UserContext = UserContext.DEFAULT) {
     super();
@@ -65,6 +67,7 @@ export class MenulistContainerElement extends HTMLElement {
     this.containerDeleteButton.title = browser.i18n.getMessage('tooltipContainerDelete');
     this.containerEditButton.title = browser.i18n.getMessage('tooltipEditContainerButton');
     this.containerVisibilityToggleButton.title = browser.i18n.getMessage('tooltipHideContainerButton');
+    this.containerClearCookieButton.title = browser.i18n.getMessage('tooltipContainerClearCookie');
     this.tabCount = 0;
     this.registerEventListeners();
   }
@@ -88,6 +91,9 @@ export class MenulistContainerElement extends HTMLElement {
     };
     this.containerEditButton.onclick = () => {
       this.onContainerEdit.dispatch();
+    };
+    this.containerClearCookieButton.onclick = () => {
+      this.onContainerClearCookie.dispatch();
     };
   }
 
@@ -135,6 +141,10 @@ export class MenulistContainerElement extends HTMLElement {
 
   public get containerVisibilityToggleButton(): HTMLButtonElement {
     return this.shadowRoot?.querySelector('#container-visibility-toggle') as HTMLButtonElement;
+  }
+
+  public get containerClearCookieButton(): HTMLButtonElement {
+    return this.shadowRoot?.querySelector('#container-clear-cookie-button') as HTMLButtonElement;
   }
 
   public get containerName(): string {

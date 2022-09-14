@@ -47,7 +47,7 @@ button {
 
 #container-header {
   display: block grid;
-  grid-template-columns: 2em 1fr 2em 2em 2em;
+  grid-template-columns: 2em 1fr 2em 2em 2em 2em;
   padding-inline-end: 1em;
 }
 
@@ -88,6 +88,10 @@ button[disabled] {
 
 #container-delete-button {
   mask: url(/img/delete_black_24dp.svg) center center/75% no-repeat;
+}
+
+#container-clear-cookie-button {
+  mask: url(/img/cookie_black_24dp.svg) center center/75% no-repeat;
 }
 
 #container-button {

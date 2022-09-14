@@ -73,12 +73,14 @@ export class PopupRenderer {
   private createContainerElement(userContext: UserContext): MenulistContainerElement {
     userContext = this._userContextService.fillDefaultValues(userContext);
     const element = new MenulistContainerElement(userContext);
+
     element.onContainerEdit.addListener(async () => {
       this.modalRenderer.showEditContainerPanelAsync(userContext).then((result) => {
         if (result == userContext) return;
         console.log('Container edited', result);
       });
     });
+
     element.onContainerDelete.addListener(async () => {
       this.modalRenderer.confirmAsync(browser.i18n.getMessage('confirmContainerDelete', userContext.name)).then((result) => {
         if (!result) return;
@@ -87,6 +89,18 @@ export class PopupRenderer {
         });
       });
     });
+
+    element.onContainerClearCookie.addListener(() => {
+      this.modalRenderer.confirmAsync(browser.i18n.getMessage('confirmContainerClearCookie', userContext.name)).then((result) => {
+        if (!result) return;
+        userContext.removeBrowsingData().then(() => {
+          console.log('Removed browsing data for container', userContext);
+        }).catch((e) => {
+          console.error(e);
+        });
+      });
+    });
+
     return element;
   }
 
