@@ -378,5 +378,13 @@
                 "example": "Container 3"
             }
         }
+    },
+    "optionsHeadingContainerSortOrder": {
+        "message": "Sort Containers",
+        "description": "Heading text of options page for changing container order."
+    },
+    "optionsDescriptionContainerSortOrder": {
+        "message": "This setting does not affect other extensions.",
+        "description": "Description text for changing container order."
     }
 }
