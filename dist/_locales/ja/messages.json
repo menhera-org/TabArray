@@ -344,5 +344,9 @@
                 "example": "Container 3"
             }
         }
+    },
+    "tooltipContainerClearCookie": {
+        "message": "このコンテナーの Cookie を削除する",
+        "description": "Tooltip for a button to clear all cookies in a container."
     }
 }
