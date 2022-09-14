@@ -368,5 +368,15 @@
     "buttonDone": {
         "message": "完了",
         "description": "Button to complete an action."
+    },
+    "containerOptions": {
+        "message": "$NAME$ のコンテナー オプション",
+        "description": "Menu title for container options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
     }
 }
