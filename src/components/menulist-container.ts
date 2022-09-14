@@ -33,10 +33,8 @@ export class MenulistContainerElement extends HTMLElement {
           <span id='container-icon'></span>
           <span id='container-name'></span>
         </button>
-        <button id='container-edit-button'></button>
+        <button id='container-options-button'></button>
         <button id='container-close-button'></button>
-        <button id='container-clear-cookie-button'></button>
-        <button id='container-delete-button'></button>
       </div>
       <div id='container-tabs'>
         <slot></slot>
@@ -50,8 +48,11 @@ export class MenulistContainerElement extends HTMLElement {
   public readonly onContainerHide = new EventSink<void>();
   public readonly onContainerUnhide = new EventSink<void>();
   public readonly onContainerClick = new EventSink<void>();
-  public readonly onContainerEdit = new EventSink<void>();
   public readonly onContainerClose = new EventSink<void>();
+  public readonly onContainerOptionsClick = new EventSink<void>();
+
+  // unused.
+  public readonly onContainerEdit = new EventSink<void>();
   public readonly onContainerDelete = new EventSink<void>();
   public readonly onContainerClearCookie = new EventSink<void>();
 
@@ -64,10 +65,8 @@ export class MenulistContainerElement extends HTMLElement {
     this.shadowRoot.innerHTML = MenulistContainerElement.TEMPLATE;
     this.setUserContext(userContext);
     this.containerCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
-    this.containerDeleteButton.title = browser.i18n.getMessage('tooltipContainerDelete');
-    this.containerEditButton.title = browser.i18n.getMessage('tooltipEditContainerButton');
+    this.containerOptionsButton.title = browser.i18n.getMessage('containerOptions', userContext.name);
     this.containerVisibilityToggleButton.title = browser.i18n.getMessage('tooltipHideContainerButton');
-    this.containerClearCookieButton.title = browser.i18n.getMessage('tooltipContainerClearCookie');
     this.tabCount = 0;
     this.registerEventListeners();
   }
@@ -86,14 +85,8 @@ export class MenulistContainerElement extends HTMLElement {
     this.containerCloseButton.onclick = () => {
       this.onContainerClose.dispatch();
     };
-    this.containerDeleteButton.onclick = () => {
-      this.onContainerDelete.dispatch();
-    };
-    this.containerEditButton.onclick = () => {
-      this.onContainerEdit.dispatch();
-    };
-    this.containerClearCookieButton.onclick = () => {
-      this.onContainerClearCookie.dispatch();
+    this.containerOptionsButton.onclick = () => {
+      this.onContainerOptionsClick.dispatch();
     };
   }
 
@@ -104,10 +97,6 @@ export class MenulistContainerElement extends HTMLElement {
     const iconUrl = userContext.iconUrl;
     if (!iconUrl.includes(')')) {
       this.containerIconElement.style.mask = `url(${iconUrl}) center center / contain no-repeat`;
-    }
-    if (userContext.id == 0) {
-      this.containerEditButton.disabled = true;
-      this.containerDeleteButton.disabled = true;
     }
   }
 
@@ -127,24 +116,16 @@ export class MenulistContainerElement extends HTMLElement {
     return this.shadowRoot?.querySelector('#container') as HTMLDivElement;
   }
 
-  private get containerEditButton(): HTMLButtonElement {
-    return this.shadowRoot?.querySelector('#container-edit-button') as HTMLButtonElement;
-  }
-
   private get containerCloseButton(): HTMLButtonElement {
     return this.shadowRoot?.querySelector('#container-close-button') as HTMLButtonElement;
   }
 
-  private get containerDeleteButton(): HTMLButtonElement {
-    return this.shadowRoot?.querySelector('#container-delete-button') as HTMLButtonElement;
+  private get containerOptionsButton(): HTMLButtonElement {
+    return this.shadowRoot?.querySelector('#container-options-button') as HTMLButtonElement;
   }
 
   public get containerVisibilityToggleButton(): HTMLButtonElement {
     return this.shadowRoot?.querySelector('#container-visibility-toggle') as HTMLButtonElement;
-  }
-
-  public get containerClearCookieButton(): HTMLButtonElement {
-    return this.shadowRoot?.querySelector('#container-clear-cookie-button') as HTMLButtonElement;
   }
 
   public get containerName(): string {

@@ -50,10 +50,17 @@ utils.queryElementNonNull<HTMLElement>('#button-new-container > .button-text').t
 utils.queryElementNonNull<HTMLElement>('#button-new-container').title = browser.i18n.getMessage('buttonNewContainer');
 utils.queryElementNonNull<HTMLElement>('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 utils.queryElementNonNull<HTMLElement>('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
+
 utils.queryElementNonNull<HTMLElement>('#new-container-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 utils.queryElementNonNull<HTMLElement>('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 utils.queryElementNonNull<HTMLElement>('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
 utils.queryElementNonNull<HTMLInputElement>('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
+
+utils.queryElementNonNull<HTMLElement>('#container-menu-edit-button').textContent = browser.i18n.getMessage('buttonEditContainer');
+utils.queryElementNonNull<HTMLElement>('#container-menu-clear-cookie-button').textContent = browser.i18n.getMessage('buttonContainerClearCookie');
+utils.queryElementNonNull<HTMLElement>('#container-menu-delete-button').textContent = browser.i18n.getMessage('buttonDeleteContainer');
+utils.queryElementNonNull<HTMLElement>('#container-menu-done-button').textContent = browser.i18n.getMessage('buttonDone');
+
 utils.queryElementNonNull<HTMLElement>('#menu-item-main > .button-text').textContent = browser.i18n.getMessage('menuItemMain');
 utils.queryElementNonNull<HTMLElement>('#menu-item-windows > .button-text').textContent = browser.i18n.getMessage('menuItemWindows');
 utils.queryElementNonNull<HTMLElement>('#menu-item-sites > .button-text').textContent = browser.i18n.getMessage('menuItemSites');

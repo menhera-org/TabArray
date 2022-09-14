@@ -97,4 +97,16 @@ export const TEMPLATE = `
     </div>
   </div>
 </div>
+<div id='container-menu' class='modal'>
+  <div class='modal-content'>
+    <h2 class='modal-title'></h2>
+    <div class='modal-actions'>
+      <button id='container-menu-edit-button'>buttonEditContainer</button>
+      <button id='container-menu-clear-cookie-button'>buttonContainerClearCookie</button>
+      <button id='container-menu-delete-button'>buttonDeleteContainer</button>
+      <button id='container-menu-done-button' class='button-default'>buttonDone</button>
+    </div>
+  </div>
+</div>
+</div>
 `;

@@ -78,20 +78,12 @@ button[disabled] {
   opacity: 1;
 }
 
-#container-edit-button {
-  mask: url(/img/edit_black_24dp.svg) center center/75% no-repeat;
-}
-
 #container-close-button {
   mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
 }
 
-#container-delete-button {
-  mask: url(/img/delete_black_24dp.svg) center center/75% no-repeat;
-}
-
-#container-clear-cookie-button {
-  mask: url(/img/cookie_black_24dp.svg) center center/75% no-repeat;
+#container-options-button {
+  mask: url(/img/more_horiz_black_24dp.svg) center center/75% no-repeat;
 }
 
 #container-button {

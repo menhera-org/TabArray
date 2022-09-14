@@ -27,6 +27,7 @@ import { PromiseUtils } from '../frameworks/utils';
 import { ColorPickerElement } from '../components/usercontext-colorpicker';
 import { IconPickerElement } from '../components/usercontext-iconpicker';
 import { UserContextService } from '../userContexts/UserContextService';
+import { PrivateBrowsingService } from '../frameworks/tabs';
 
 type NewContainerPanelResult = {
   name: string;
@@ -34,14 +35,51 @@ type NewContainerPanelResult = {
   color: string;
 };
 
+type KeyHandlers = {
+  okHandler: () => void;
+  cancelHandler: () => void;
+};
+
 export class PopupModalRenderer {
   private readonly _popupRenderer: PopupRenderer;
   private readonly _utils: PopupUtils;
   private readonly _userContextService = UserContextService.getInstance();
+  private readonly _keyHandlersStack = new Array<KeyHandlers>();
+  private _privateBrowsingService = PrivateBrowsingService.getInstance();
 
   constructor(popupRenderer: PopupRenderer) {
     this._popupRenderer = popupRenderer;
     this._utils = new PopupUtils();
+
+    const catchEvent = (ev: Event) => {
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+    };
+
+    const keyHandler = (ev: KeyboardEvent) => {
+      const handlers = this._keyHandlersStack[this._keyHandlersStack.length - 1];
+      if (!handlers) {
+        return;
+      }
+      if (ev.key == 'Enter') {
+        catchEvent(ev);
+        handlers.okHandler();
+      }
+      if (ev.key == 'Escape') {
+        catchEvent(ev);
+        handlers.cancelHandler();
+      }
+    };
+
+    document.addEventListener('keydown', keyHandler, true);
+  }
+
+  public pushKeyHandlers(okHandler: () => void, cancelHandler: () => void) {
+    this._keyHandlersStack.push({ okHandler, cancelHandler });
+  }
+
+  public popKeyHandlers() {
+    this._keyHandlersStack.pop();
   }
 
   private async showModal(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement): Promise<boolean> {
@@ -57,28 +95,18 @@ export class PopupModalRenderer {
     const okHandler = () => {
       handler(true);
     };
-    const catchEvent = (ev: Event) => {
-      ev.preventDefault();
-      ev.stopImmediatePropagation();
-    };
-    const keyHandler = (ev: KeyboardEvent) => {
-      if (ev.key == 'Enter') {
-        catchEvent(ev);
-        okHandler();
-      }
-      if (ev.key == 'Escape') {
-        catchEvent(ev);
-        cancelHandler();
-      }
-    };
     const cleanUp = () => {
       cancelButton.removeEventListener('click', cancelHandler);
-      okButton.removeEventListener('click', okHandler);
-      document.removeEventListener('keydown', keyHandler);
+      if (okButton != cancelButton) {
+        okButton.removeEventListener('click', okHandler);
+      }
+      this.popKeyHandlers();
     };
     cancelButton.addEventListener('click', cancelHandler);
-    okButton.addEventListener('click', okHandler);
-    document.addEventListener('keydown', keyHandler, true);
+    if (okButton != cancelButton) {
+      okButton.addEventListener('click', okHandler);
+    }
+    this.pushKeyHandlers(okHandler, cancelHandler);
     return await promise.promise;
   }
 
@@ -134,9 +162,85 @@ export class PopupModalRenderer {
   public async showEditContainerPanelAsync(userContext: UserContext): Promise<UserContext> {
     try {
       const { name, icon, color } = await this.showContainerManipulationPanelAsync(browser.i18n.getMessage('editContainerDialogTitle'), userContext);
-      return await this._userContextService.updateProperties(userContext, name, color, icon);
+      const updateUserContext = await this._userContextService.updateProperties(userContext, name, color, icon);
+      console.log('Container updated', updateUserContext);
+      return updateUserContext;
     } catch (e) {
       return userContext;
     }
+  }
+
+  public showContainerClearCookieModal(userContext: UserContext, isPrivate = false): void {
+    if (isPrivate) {
+      this.confirmAsync(browser.i18n.getMessage('confirmPrivateBrowsingClearCookie')).then((result) => {
+        if (!result) return;
+        this._privateBrowsingService.clearBrowsingData().then(() => {
+          console.log('Removed browsing data for private browsing');
+        }).catch((e) => {
+          console.error(e);
+        });
+      });
+      return;
+    }
+    this.confirmAsync(browser.i18n.getMessage('confirmContainerClearCookie', userContext.name)).then((result) => {
+      if (!result) return;
+      userContext.removeBrowsingData().then(() => {
+        console.log('Removed browsing data for container', userContext);
+      }).catch((e) => {
+        console.error(e);
+      });
+    });
+  }
+
+  public showDeleteContainerModal(userContext: UserContext): void {
+    this.confirmAsync(browser.i18n.getMessage('confirmContainerDelete', userContext.name)).then((result) => {
+      if (!result) return;
+      userContext.remove().catch((e) => {
+        console.error(e);
+      });
+    });
+  }
+
+  public async showContainerOptionsPanelAsync(userContext: UserContext, isPrivate = false): Promise<void> {
+    const messageElement = this._utils.queryElementNonNull<HTMLElement>('#container-menu .modal-title');
+    const doneButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-done-button');
+    const message = browser.i18n.getMessage('containerOptions', isPrivate ? userContext.name : browser.i18n.getMessage('privateBrowsing'));
+    const previousHash = location.hash;
+
+    const editButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-edit-button');
+    const clearCookie = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-clear-cookie-button');
+    const deleteButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-delete-button');
+
+    if (isPrivate) {
+      editButton.disabled = true;
+      deleteButton.disabled = true;
+    } else {
+      editButton.disabled = false;
+      deleteButton.disabled = false;
+    }
+
+    const editHandler = async () => {
+      await this.showEditContainerPanelAsync(userContext);
+    };
+
+    const clearCookieHandler = () => {
+      this.showContainerClearCookieModal(userContext, isPrivate);
+    };
+
+    const deleteHandler = () => {
+      this.showDeleteContainerModal(userContext);
+    };
+
+    editButton.addEventListener('click', editHandler);
+    clearCookie.addEventListener('click', clearCookieHandler);
+    deleteButton.addEventListener('click', deleteHandler);
+
+    location.hash = '#container-menu';
+    await this.showModal(message, messageElement, doneButton, doneButton);
+    location.hash = previousHash;
+
+    editButton.removeEventListener('click', editHandler);
+    clearCookie.removeEventListener('click', clearCookieHandler);
+    deleteButton.removeEventListener('click', deleteHandler);
   }
 }
