@@ -370,7 +370,7 @@
         "description": "Button to complete an action."
     },
     "containerOptions": {
-        "message": "Container Options for: $NAME$?",
+        "message": "Container Options for: $NAME$",
         "description": "Menu title for container options.",
         "placeholders": {
             "name": {
