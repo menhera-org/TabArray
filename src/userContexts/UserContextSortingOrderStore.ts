@@ -23,6 +23,7 @@ import { Uint32 } from '../frameworks/types';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextSortingProvider } from '../frameworks/tabGroups';
 import { StorageArea, StorageItem } from '../frameworks/storage';
+import { PromiseUtils } from '../frameworks/utils';
 
 export class UserContextSortingOrderStore {
   private static readonly STORAGE_KEY = 'userContextSortingOrder';
@@ -35,11 +36,13 @@ export class UserContextSortingOrderStore {
 
   private readonly storageItem: StorageItem<Uint32.Uint32[]>;
   private readonly sortingProvider = new UserContextSortingProvider();
+  private readonly initializationPromise = PromiseUtils.createPromise<void>();
 
   private constructor() {
     this.storageItem = new StorageItem(UserContextSortingOrderStore.STORAGE_KEY, [], StorageArea.LOCAL);
     this.storageItem.observe((newValue) => {
       this.sortingProvider.setOrder(newValue);
+      this.initializationPromise.resolve();
     });
   }
 
@@ -58,5 +61,9 @@ export class UserContextSortingOrderStore {
 
   public sortingCallback(a: Uint32.Uint32, b: Uint32.Uint32): number {
     return this.sortingProvider.sortingCallback(a, b);
+  }
+
+  public get initialized(): Promise<void> {
+    return this.initializationPromise.promise;
   }
 }
