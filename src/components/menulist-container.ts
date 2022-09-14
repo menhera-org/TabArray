@@ -24,24 +24,6 @@ import { UserContext } from "../frameworks/tabGroups";
 import { EventSink } from '../frameworks/utils';
 
 export class MenulistContainerElement extends HTMLElement {
-  private static readonly TEMPLATE= `
-    <link rel="stylesheet" href="/components/menulist-container.css"/>
-    <div id='container'>
-      <div id='container-header'>
-        <button id='container-visibility-toggle'></button>
-        <button id='container-button'>
-          <span id='container-icon'></span>
-          <span id='container-name'></span>
-        </button>
-        <button id='container-options-button'></button>
-        <button id='container-close-button'></button>
-      </div>
-      <div id='container-tabs'>
-        <slot></slot>
-      </div>
-    </div>
-  `;
-
   private _tabCount = 0;
   private _hidden = false;
 
@@ -62,13 +44,59 @@ export class MenulistContainerElement extends HTMLElement {
     if (!this.shadowRoot) {
       throw new Error("Shadow root is null");
     }
-    this.shadowRoot.innerHTML = MenulistContainerElement.TEMPLATE;
+    this.buildElement();
     this.setUserContext(userContext);
     this.containerCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
     this.containerOptionsButton.title = browser.i18n.getMessage('containerOptions', userContext.name);
     this.containerVisibilityToggleButton.title = browser.i18n.getMessage('tooltipHideContainerButton');
     this.tabCount = 0;
     this.registerEventListeners();
+  }
+
+  private buildElement() {
+    const styleSheet = document.createElement('link');
+    styleSheet.rel = 'stylesheet';
+    styleSheet.href = '/components/menulist-container.css';
+    this.shadowRoot?.appendChild(styleSheet);
+
+    const containerElement = document.createElement('div');
+    containerElement.id = 'container';
+    this.shadowRoot?.appendChild(containerElement);
+
+    const containerHeaderElement = document.createElement('div');
+    containerHeaderElement.id = 'container-header';
+    containerElement.appendChild(containerHeaderElement);
+
+    const containerVisibilityToggleButton = document.createElement('button');
+    containerVisibilityToggleButton.id = 'container-visibility-toggle';
+    containerHeaderElement.appendChild(containerVisibilityToggleButton);
+
+    const containerButton = document.createElement('button');
+    containerButton.id = 'container-button';
+    containerHeaderElement.appendChild(containerButton);
+
+    const containerIconElement = document.createElement('span');
+    containerIconElement.id = 'container-icon';
+    containerButton.appendChild(containerIconElement);
+
+    const containerNameElement = document.createElement('span');
+    containerNameElement.id = 'container-name';
+    containerButton.appendChild(containerNameElement);
+
+    const containerOptionsButton = document.createElement('button');
+    containerOptionsButton.id = 'container-options-button';
+    containerHeaderElement.appendChild(containerOptionsButton);
+
+    const containerCloseButton = document.createElement('button');
+    containerCloseButton.id = 'container-close-button';
+    containerHeaderElement.appendChild(containerCloseButton);
+
+    const containerTabsElement = document.createElement('div');
+    containerTabsElement.id = 'container-tabs';
+    containerElement.appendChild(containerTabsElement);
+
+    const slotElement = document.createElement('slot');
+    containerTabsElement.appendChild(slotElement);
   }
 
   private registerEventListeners() {
