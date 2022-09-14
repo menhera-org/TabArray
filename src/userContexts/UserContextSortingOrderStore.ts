@@ -55,4 +55,8 @@ export class UserContextSortingOrderStore {
   public sort(userContexts: UserContext[]): UserContext[] {
     return this.sortingProvider.sort(userContexts);
   }
+
+  public sortingCallback(a: Uint32.Uint32, b: Uint32.Uint32): number {
+    return this.sortingProvider.sortingCallback(a, b);
+  }
 }

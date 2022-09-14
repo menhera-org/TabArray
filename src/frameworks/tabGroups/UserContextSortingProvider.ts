@@ -43,22 +43,24 @@ export class UserContextSortingProvider {
     return userContexts.map((userContext) => userContext.id);
   }
 
+  public sortingCallback(a: Uint32.Uint32, b: Uint32.Uint32): number {
+    const aIndex = this.order.indexOf(a);
+    const bIndex = this.order.indexOf(b);
+    if (aIndex < 0 && bIndex < 0) {
+      return a - b;
+    }
+    if (aIndex < 0) {
+      return 1;
+    }
+    if (bIndex < 0) {
+      return -1;
+    }
+    return aIndex - bIndex;
+  }
+
   public sort(userContexts: UserContext[]): UserContext[] {
     const copiedUserContexts = [... userContexts];
-    copiedUserContexts.sort((a, b) => {
-      const aIndex = this.order.indexOf(a.id);
-      const bIndex = this.order.indexOf(b.id);
-      if (aIndex < 0 && bIndex < 0) {
-        return a.id - b.id;
-      }
-      if (aIndex < 0) {
-        return 1;
-      }
-      if (bIndex < 0) {
-        return -1;
-      }
-      return aIndex - bIndex;
-    });
+    copiedUserContexts.sort((a, b) => this.sortingCallback(a.id, b.id));
     return copiedUserContexts;
   }
 }
