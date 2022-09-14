@@ -364,5 +364,9 @@
     "buttonDeleteContainer": {
         "message": "コンテナーを削除…",
         "description": "Button to delete a container."
+    },
+    "buttonDone": {
+        "message": "完了",
+        "description": "Button to complete an action."
     }
 }
