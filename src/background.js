@@ -25,8 +25,6 @@ import { WebExtensionsBroadcastChannel } from './modules/broadcasting';
 import { getActiveUserContext, setActiveUserContext } from './modules/usercontext-state.js';
 import { config } from './config/config';
 import { ADDON_PAGE } from './defs';
-import { getWindowIds } from './modules/windows';
-import { IndexTab } from './modules/IndexTab';
 import { UserContext } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
 import { TabGroupService } from './frameworks/tabGroups';
@@ -34,6 +32,7 @@ import { UserContextVisibilityService } from './userContexts/UserContextVisibili
 import { BeforeRequestHandler } from './background/BeforeRequestHandler';
 import { Tab } from './frameworks/tabs';
 import { BackgroundUtils } from './background/BackgroundUtils';
+import { TabSortingService } from './background/TabSortingService';
 import './background/IndexTabHandler';
 
 // watchdog
@@ -48,6 +47,7 @@ window.addEventListener('error', () => {
 const userContextService = UserContextService.getInstance();
 const tabGroupService = TabGroupService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
+const tabSortingService = TabSortingService.getInstance();
 const utils = new BackgroundUtils();
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
@@ -56,7 +56,6 @@ const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 // Set of tab IDs.
 const openTabs = new Set;
 
-let tabSorting = false;
 let configNewTabInContainerEnabled = true;
 let configExternalTabChooseContainer = true;
 let configExternalTabContainerOption = 'choose';
@@ -74,65 +73,8 @@ config['tab.external.containerOption'].observe((value) => {
   }
 });
 
-/**
- *
- * @param {Tab} tab1
- * @param {Tab} tab2
- * @returns number
- */
-const tabSortingCallback = (tab1, tab2) => {
-  const userContextId1 = tab1.userContextId;
-  const userContextId2 = tab2.userContextId;
-  if (userContextId1 == userContextId2) {
-    if (IndexTab.isIndexTabUrl(tab1.url)) {
-      return -1;
-    }
-    if (IndexTab.isIndexTabUrl(tab2.url)) {
-      return 1;
-    }
-  }
-  return userContextId1 - userContextId2;
-};
-
-const sortTabsByWindow = globalThis.sortTabsByWindow = async (windowId) => {
-  try {
-    const browserTabs = await browser.tabs.query({windowId: windowId});
-    const tabs = browserTabs.map((tab) => new Tab(tab));
-    const pinnedTabs = tabs.filter(tab => tab.pinned);
-    let sortedTabs = tabs.filter(tab => !tab.pinned);
-
-    sortedTabs.sort(tabSortingCallback);
-
-    const pinnedCount = pinnedTabs.length;
-    for (let i = 0; i < sortedTabs.length; i++) {
-      const tab = sortedTabs[i];
-      const currentIndex = tab.index;
-      const targetIndex = pinnedCount + i;
-      if (targetIndex != currentIndex) {
-        await browser.tabs.move(tab.id, {index: targetIndex});
-      }
-    }
-  } catch (e) {
-    console.error(e);
-  }
-};
-
-const sortTabs = globalThis.sortTabs = async () => {
-  if (tabSorting) return;
-  tabSorting = true;
-  try {
-    for (const windowId of await getWindowIds()) {
-      await sortTabsByWindow(windowId);
-    }
-  } catch (e) {
-    console.error(e);
-  } finally {
-    tabSorting = false;
-  }
-};
-
 browser.tabs.onAttached.addListener(async () => {
-  await sortTabs();
+  await tabSortingService.sortTabs();
   tabChangeChannel.postMessage(true);
 });
 
@@ -171,7 +113,7 @@ browser.tabs.onCreated.addListener((tab) => {
       });
     }, 3000);
   }
-  sortTabs().then(() => {
+  tabSortingService.sortTabs().then(() => {
     tabChangeChannel.postMessage(true);
   }).catch((e) => {
     console.error(e);
@@ -187,7 +129,7 @@ browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
   if (tab.pinned) {
     return;
   }
-  await sortTabs();
+  await tabSortingService.sortTabs();
   tabChangeChannel.postMessage(true);
 });
 
@@ -283,7 +225,7 @@ browser.contextualIdentities.onRemoved.addListener(async ({contextualIdentity}) 
   });
 });
 
-sortTabs();
+tabSortingService.sortTabs();
 
 browser.menus.create({
   id: 'tab-hide-container',
