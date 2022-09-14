@@ -67,7 +67,6 @@ export class ContainerSorterElement extends HTMLElement {
 
     const upButton = document.createElement('button');
     upButton.classList.add('up');
-    upButton.textContent = '↑';
     element.appendChild(upButton);
     upButton.addEventListener('click', () => {
       const parent = element.parentElement;
@@ -81,7 +80,6 @@ export class ContainerSorterElement extends HTMLElement {
 
     const downButton = document.createElement('button');
     downButton.classList.add('down');
-    downButton.textContent = '↓';
     element.appendChild(downButton);
     downButton.addEventListener('click', () => {
       const parent = element.parentElement;

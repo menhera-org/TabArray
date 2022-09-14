@@ -31,6 +31,7 @@
 .container {
   display: block grid;
   grid-template-columns: 2em 1fr 2em 2em;
+  padding-inline: .5em;
 }
 
 .container:not(:first-of-type) {
@@ -45,4 +46,25 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: .5em;
+}
+
+.up, .down {
+  background-color: var(--text-color);
+  opacity: .5;
+  appearance: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.up:hover, .up:focus, .down:hover, .down:focus {
+  opacity: 1;
+}
+
+.up {
+  mask: url(/img/arrow_upward_black_24dp.svg) no-repeat center / contain;
+}
+
+.down {
+  mask: url(/img/arrow_downward_black_24dp.svg) no-repeat center / contain;
 }
