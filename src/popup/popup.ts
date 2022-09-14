@@ -21,15 +21,12 @@
 
 import browser from 'webextension-polyfill';
 import { PopupRenderer } from "./PopupRenderer";
-import { TEMPLATE } from './PopupTemplate';
 import { config } from '../config/config';
 import { MenulistContainerElement } from '../components/menulist-container';
 import { PopupUtils } from './PopupUtils';
 import '../components/usercontext-colorpicker';
 import '../components/usercontext-iconpicker';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
-
-document.body.innerHTML = TEMPLATE; // static string.
 
 const utils = new PopupUtils();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
