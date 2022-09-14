@@ -368,5 +368,15 @@
     "buttonDone": {
         "message": "Done",
         "description": "Button to complete an action."
+    },
+    "containerOptions": {
+        "message": "Container Options for: $NAME$?",
+        "description": "Menu title for container options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
     }
 }
