@@ -358,7 +358,7 @@
         "description": "Button to edit a container."
     },
     "buttonContainerClearCookie": {
-        "message": "Clear cookies…",
+        "message": "Clear Cookies…",
         "description": "Button to clear cookies in a container."
     },
     "buttonDeleteContainer": {
