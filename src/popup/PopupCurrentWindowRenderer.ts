@@ -25,10 +25,12 @@ import { MenulistWindowElement } from '../components/menulist-window';
 import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { WindowUserContextList } from '../frameworks/tabGroups';
+import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 
 export class PopupCurrentWindowRenderer {
   private readonly popupRenderer: PopupRenderer;
   private readonly userContextVisibilityService = UserContextVisibilityService.getInstance();
+  private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
   public constructor(popupRenderer: PopupRenderer) {
     this.popupRenderer = popupRenderer;
@@ -87,7 +89,7 @@ export class PopupCurrentWindowRenderer {
    * @returns the number of tabs.
    */
   public renderOpenContainers(windowUserContextList: WindowUserContextList, element: HTMLElement): number {
-    const openUserContexts = windowUserContextList.getOpenUserContexts();
+    const openUserContexts = this._userContextSortingOrderStore.sort([... windowUserContextList.getOpenUserContexts()]);
     let tabCount = 0;
     for (const openUserContext of openUserContexts) {
       const tabs = [... windowUserContextList.getUserContextTabs(openUserContext.id)];
@@ -99,7 +101,7 @@ export class PopupCurrentWindowRenderer {
   }
 
   public renderInactiveContainers(windowUserContextList: WindowUserContextList, element: HTMLElement): void {
-    const inactiveUserContexts = windowUserContextList.getInactiveUserContexts();
+    const inactiveUserContexts = this._userContextSortingOrderStore.sort([... windowUserContextList.getInactiveUserContexts()]);
     for (const inactiveUserContext of inactiveUserContexts) {
       const containerElement = this.popupRenderer.renderContainerWithTabs(windowUserContextList.windowId, inactiveUserContext, [], windowUserContextList.isPrivate);
       element.appendChild(containerElement);

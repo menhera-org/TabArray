@@ -24,6 +24,7 @@ import { UserContext } from '../frameworks/tabGroups';
 import { UserContextSortingProvider } from '../frameworks/tabGroups';
 import { StorageArea, StorageItem } from '../frameworks/storage';
 import { PromiseUtils } from '../frameworks/utils';
+import { EventSink } from '../frameworks/utils';
 
 export class UserContextSortingOrderStore {
   private static readonly STORAGE_KEY = 'userContextSortingOrder';
@@ -38,11 +39,14 @@ export class UserContextSortingOrderStore {
   private readonly sortingProvider = new UserContextSortingProvider();
   private readonly initializationPromise = PromiseUtils.createPromise<void>();
 
+  public readonly onChanged = new EventSink<void>();
+
   private constructor() {
     this.storageItem = new StorageItem(UserContextSortingOrderStore.STORAGE_KEY, [], StorageArea.LOCAL);
     this.storageItem.observe((newValue) => {
       this.sortingProvider.setOrder(newValue);
       this.initializationPromise.resolve();
+      this.onChanged.dispatch();
     });
   }
 

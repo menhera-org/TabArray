@@ -27,10 +27,12 @@ import { MenulistContainerElement } from '../components/menulist-container';
 import { PopupUtils } from './PopupUtils';
 import '../components/usercontext-colorpicker';
 import '../components/usercontext-iconpicker';
+import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 
 document.body.innerHTML = TEMPLATE; // static string.
 
 const utils = new PopupUtils();
+const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
 const renderer = new PopupRenderer();
 
@@ -157,5 +159,7 @@ browser.windows.onRemoved.addListener(renderInBackground);
 browser.contextualIdentities.onCreated.addListener(renderInBackground);
 browser.contextualIdentities.onUpdated.addListener(renderInBackground);
 browser.contextualIdentities.onRemoved.addListener(renderInBackground);
+
+userContextSortingOrderStore.onChanged.addListener(renderInBackground);
 
 renderInBackground();

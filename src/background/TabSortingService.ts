@@ -23,13 +23,17 @@ import browser from 'webextension-polyfill';
 import { Tab } from '../frameworks/tabs';
 import { getWindowIds } from '../modules/windows';
 import { IndexTab } from '../modules/IndexTab';
+import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+
+const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
 let tabSorting = false;
 
 const tabSortingCallback = (tab1: Tab, tab2: Tab) => {
   const userContextId1 = tab1.userContextId;
   const userContextId2 = tab2.userContextId;
-  if (userContextId1 == userContextId2) {
+  const order = userContextSortingOrderStore.sortingCallback(userContextId1, userContextId2);
+  if (order == 0) {
     if (IndexTab.isIndexTabUrl(tab1.url)) {
       return -1;
     }
@@ -37,7 +41,7 @@ const tabSortingCallback = (tab1: Tab, tab2: Tab) => {
       return 1;
     }
   }
-  return userContextId1 - userContextId2;
+  return order;
 };
 
 const sortTabsByWindow = async (windowId: number) => {
@@ -77,6 +81,8 @@ const sortTabs = async () => {
     tabSorting = false;
   }
 };
+
+userContextSortingOrderStore.onChanged.addListener(sortTabs);
 
 export class TabSortingService {
   private static readonly INSTANCE = new TabSortingService();

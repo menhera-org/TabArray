@@ -36,7 +36,7 @@ import { Uint32 } from "../frameworks/types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { PopupUtils } from './PopupUtils';
 import { PopupModalRenderer } from './PopupModalRenderer';
-import { PrivateBrowsingService } from '../frameworks/tabs';
+import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 
 enum ContainerTabsState {
   NO_TABS,
@@ -48,13 +48,12 @@ enum ContainerTabsState {
 export class PopupRenderer {
   private _userContextVisibilityService = UserContextVisibilityService.getInstance();
   private _userContextService = UserContextService.getInstance();
-  private _privateBrowsingService = PrivateBrowsingService.getInstance();
+  private readonly _utils = new PopupUtils();
 
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly windowListRenderer = new PopupWindowListRenderer(this);
   public readonly siteListRenderer = new PopupSiteListRenderer(this);
   public readonly modalRenderer = new PopupModalRenderer(this);
-  private readonly _utils = new PopupUtils();
 
   public renderTab(tab: Tab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
     const element = new MenulistTabElement(tab, userContext);
@@ -176,6 +175,7 @@ export class PopupRenderer {
       WindowUserContextList.create(windowId),
       windowService.getActiveTabsByWindow(),
       FirstPartyTabMap.create(browserWindow.incognito),
+      UserContextSortingOrderStore.getInstance().initialized,
     ]);
     this.currentWindowRenderer.renderCurrentWindowView(windowUserContextList, currentWindowMenuList);
     this.windowListRenderer.renderWindowListView(activeTabsByWindow, windowListMenuList);
