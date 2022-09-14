@@ -352,5 +352,17 @@
     "confirmPrivateBrowsingClearCookie": {
         "message": "プライベートブラウジングの Cookie をすべて削除してよろしいですか?",
         "description": "Confirmation message before clearing cookies for private browsing."
+    },
+    "buttonEditContainer": {
+        "message": "コンテナーを編集…",
+        "description": "Button to edit a container."
+    },
+    "buttonContainerClearCookie": {
+        "message": "Cookie を削除…",
+        "description": "Button to clear cookies in a container."
+    },
+    "buttonDeleteContainer": {
+        "message": "コンテナーを削除…",
+        "description": "Button to delete a container."
     }
 }
