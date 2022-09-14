@@ -1,390 +1,390 @@
 {
-    "effectiveLocale": {
-        "message": "ja",
-        "description": "Locale of this messages.json."
-    },
-    "extensionDescription": {
-        "message": "プライベートで隔離されたコンテナーを使用したChromeのようなタブグループ：Firefoxのための究極のタブ管理とグループ。",
-        "description": "Description of the extension."
-    },
-    "browserActionPopupTitle": {
-        "message": "Container Tab Groups: ポップアップページ",
-        "description": "Title of the popup page for browserAction."
-    },
-    "buttonHideInactiveContainers": {
-        "message": "他のコンテナーを最小化する",
-        "description": "Button label to hide inactive containers on a window."
-    },
-    "buttonNewContainer": {
-        "message": "新しいコンテナーを作成…",
-        "description": "Button label to create a new container."
-    },
-    "buttonCancel": {
-        "message": "キャンセル",
-        "description": "Button label to cancel an action."
-    },
-    "buttonOk": {
-        "message": "OK",
-        "description": "Button label to confirm an action."
-    },
-    "newContainerNameLabel": {
-        "message": "名前",
-        "description": "Label for inputting the name of a new container."
-    },
-    "newContainerNamePlaceholder": {
-        "message": "コンテナーの名前",
-        "description": "Placeholder for the input field of the name of a new container."
-    },
-    "newContainerDialogTitle": {
-        "message": "コンテナーの作成",
-        "description": "Title of the dialog prompting for creating a new container."
-    },
-    "editContainerDialogTitle": {
-        "message": "コンテナーの編集",
-        "description": "Title of the dialog prompting for editting a container."
-    },
-    "contextMenuHideSelectedContainer": {
-        "message": "このコンテナーを隠す",
-        "description": "Context menu item text for hiding the container of the selected tab."
-    },
-    "tooltipTabPinButton": {
-        "message": "このタブをピン留めする",
-        "description": "Tooltip for the button to pin a tab."
-    },
-    "tooltipTabUnpinButton": {
-        "message": "タブのピン留めを外す",
-        "description": "Tooltip for the button to unpin a tab."
-    },
-    "tooltipHideContainerButton": {
-        "message": "このコンテナーのタブを隠す",
-        "description": "Tooltip for the button to hide the tabs of a container."
-    },
-    "tooltipUnhideContainerButton": {
-        "message": "このコンテナーのタブを表示",
-        "description": "Tooltip for the button to unhide the tabs of a container."
-    },
-    "tooltipEditContainerButton": {
-        "message": "このコンテナーを編集",
-        "description": "Tooltip for the button to edit a container."
-    },
-    "currentWindow": {
-        "message": "このウィンドウ (#$ID$)",
-        "description": "Title of popup section for the current window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "2"
-            }
-        }
-    },
-    "currentWindowMoreContainers": {
-        "message": "このウィンドウの他のコンテナー",
-        "desciption": "Title for section listing unused containers for a window."
-    },
-    "windowLabel": {
-        "message": "ウィンドウ $ID$",
-        "description": "Label for a window with ID.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "1"
-            }
-        }
-    },
-    "tooltipWindowLabel": {
-        "message": "ウィンドウ $ID$ に切り替える",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
-    "tooltipContainerCloseAll": {
-        "message": "このコンテナーのタブを全て閉じる",
-        "description": "Tooltip for a button to close all tabs of a container."
-    },
-    "tooltipContainerDelete": {
-        "message": "このコンテナーを永久に削除する",
-        "description": "Tooltip for a button to permanently delete a container."
-    },
-    "confirmContainerDelete": {
-        "message": "本当にこのコンテナーを永久に削除しますか: $NAME$?",
-        "description": "Confirmation message before deleting a container.",
-        "placeholders": {
-            "name": {
-                "content": "$1",
-                "example": "Container 3"
-            }
-        }
-    },
-    "defaultContainerName": {
-        "message": "コンテナー $ID$",
-        "description": "Descriptive default name of a container.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "443"
-            }
-        }
-    },
-    "invalidContainerName": {
-        "message": "利用不能のコンテナー $ID$",
-        "description": "Name shown for an unavailable container.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "443"
-            }
-        }
-    },
-    "noContainer": {
-        "message": "コンテナーなし",
-        "description": "Virtual container name for tabs with no container."
-    },
-    "browserActionTitle": {
-        "message": "タブ・グループ",
-        "description": "Title of browserAction about tabs and container-based groups."
-    },
-    "labelNewTabKeepContainer": {
-        "message": "新しいタブを現在のコンテナーで開く (粘着コンテナー)",
-        "description": "Title of option to always open new tab in current container."
-    },
-    "labelFirstPartyIsolate": {
-        "message": "ファーストパーティ分離 (FPI) を有効化する",
-        "description": "Option to enable first-party isolation."
-    },
-    "buttonAboutAddon": {
-        "message": "Container Tab Groups について・評価…",
-        "description": "Menu item to open the extension's addons.mozilla.org page."
-    },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
-            }
-        }
-    },
-    "buttonSettings": {
-        "message": "設定",
-        "description": "Menu item to open the extensions's settings."
-    },
-    "labelResistFingerprinting": {
-        "message": "Firefoxのフィンガープリント防止機能を有効化する (privacy.resistFingerprinting)",
-        "description": "Option to enable privacy.resistFingerprinting."
-    },
-    "labelDragTabToChangeContainer": {
-        "message": "タブをドラッグしてコンテナーに移動する",
-        "description": "Option to enable the user to drag a tab to move between containers."
-    },
-    "optionsHeadingExperimental": {
-        "message": "実験的な機能",
-        "description": "Heading text of options page for experimental addon features."
-    },
-    "optionsHeadingFirefox": {
-        "message": "Firefox 設定",
-        "description": "Heading text of options page for changing Firefox settings."
-    },
-    "optionsDescriptionExperimental": {
-        "message": "これらのオプションの一部を無効にすることでバグっぽい動作がみられる場合に対処することができる場合があります．",
-        "description": "Description text for experimental features options."
-    },
-    "optionsDescriptionFirefox": {
-        "message": "ここでプライバシー関連の隠された Firefox 設定の一部を変更することができます．",
-        "description": "Description text for Firefox settings options."
-    },
-    "panoramaGrid": {
-        "message": "パノラマ・グリッド",
-        "description": "Panorama Grid page (grid view of container and tabs)"
-    },
-    "buttonPanorama": {
-        "message": "パノラマ・グリッドを開く",
-        "description": "Button label to open Panorama Grid"
-    },
-    "buttonOpenTabInContainer": {
-        "message": "新しいタブを開く",
-        "description": "Button label to open a new tab in the specified container"
-    },
-    "buttonTabClose": {
-        "message": "このタブを閉じる",
-        "description": "Button label to close a tab."
-    },
-    "tooltipCollapseContainers": {
-        "message": "コンテナーを最小化する",
-        "description": "Tooltip for the button to collapse inactive containers."
-    },
-    "tooltipExpandContainers": {
-        "message": "すべてのコンテナーを表示",
-        "description": "Tooltip for the button to expand containers."
-    },
-    "titleSelectContainer": {
-        "message": "コンテナーを選択",
-        "description": "Title of the popup asking the user to choose a container to open a new tab in."
-    },
-    "descriptionSelectContainer": {
-        "message": "あなたは以下の新しいタブを開こうとしています：$URL$．",
-        "description": "Confirmation message before the user chooses a container to open a new tab in.",
-        "placeholders": {
-            "url": {
-                "content": "$1",
-                "example": "https://example.com/"
-            }
-        }
-    },
-    "promptSelectContainer": {
-        "message": "このタブを開くコンテナーを選択してください．",
-        "description": "Message asking the user to select a container for a new tab."
-    },
-    "labelSelectContainerExternalTabs": {
-        "message": "外部アプリケーションがタブを開くときにコンテナーを選ぶ",
-        "description": "Option to enable container selection on externally opened tabs."
-    },
-    "labelExternalTabSelectContainerOption": {
-        "message": "外部アプリケーションがタブを開いたとき：",
-        "description": "Label for option for handling of externally opened tabs"
-    },
-    "labelExternalTabOptionChooseContainer": {
-        "message": "毎回コンテナーを選択する",
-        "description": "Option to choose a container every time an external application opens a tab."
-    },
-    "labelExternalTabOptionStickyContainer": {
-        "message": "最後に使用したコンテナーで開く",
-        "description": "Option to use the last active container for externally opened tabs."
-    },
-    "labelExternalTabOptionDisabled": {
-        "message": "デフォルトのコンテナーで開く (コンテナーなし)",
-        "description": "Option to disable handling of externally opened tabs."
-    },
-    "labelGroupIndexOption": {
-        "message": "各コンテナーに見出しタブを表示する",
-        "description": "Option to show index tabs for containers."
-    },
-    "labelGroupIndexOptionAlways": {
-        "message": "すべてのコンテナー",
-        "description": "Option to show index tabs for all containers."
-    },
-    "labelGroupIndexOptionCollapsed": {
-        "message": "最小化されたコンテナー",
-        "description": "Option to show index tabs for collapsed containers."
-    },
-    "labelGroupIndexOptionNever": {
-        "message": "無効",
-        "description": "Option to show index tabs for no containers."
-    },
-    "optionsHeadingAppearance": {
-        "message": "外観設定",
-        "description": "Heading text of options page for changing appearance settings."
-    },
-    "labelPopupSize": {
-        "message": "ポップアップの大きさ",
-        "description": "Prompt for changing popup size."
-    },
-    "labelPopupSizeStandard": {
-        "message": "標準",
-        "description": "Label text for standard popup size."
-    },
-    "labelPopupSizeLarge": {
-        "message": "大きい",
-        "description": "Label text for large popup size."
-    },
-    "searchPlaceholder": {
-        "message": "コンテナーを検索",
-        "description": "Placeholder text for searching containers."
-    },
-    "menuItemMain": {
-        "message": "コンテナー",
-        "description": "Menu item for containers view."
-    },
-    "menuItemWindows": {
-        "message": "ウィンドウ",
-        "description": "Menu item for windows view"
-    },
-    "menuItemSites": {
-        "message": "サイト",
-        "description": "Menu item for sites view"
-    },
-    "tooltipCloseWindow": {
-        "message": "ウィンドウを閉じる",
-        "description": "Tooltip for a button to close all tabs of a window."
-    },
-    "buttonNewWindow": {
-        "message": "新規ウインドウ",
-        "description": "Button to open a new window."
-    },
-    "buttonSidebar": {
-        "message": "サイドバーを開く",
-        "description": "Button to open Sidebar."
-    },
-    "optionsHeadingUserData": {
-        "message": "あなたのデータ",
-        "description": "Heading text of options page for managing user data."
-    },
-    "labelClearRecentSites": {
-        "message": "最近訪問したサイトのリストを消去する",
-        "description": "Label text for clearing the list of visited sites"
-    },
-    "buttonClear": {
-        "message": "消去",
-        "description": "Button to clear data."
-    },
-    "privateBrowsing": {
-        "message": "プライベートブラウジング",
-        "description": "Private Browsing page"
-    },
-    "confirmContainerClearCookie": {
-        "message": "このコンテナーの Cookie をすべて削除してよろしいですか: $NAME$?",
-        "description": "Confirmation message before clearing cookies in a container.",
-        "placeholders": {
-            "name": {
-                "content": "$1",
-                "example": "Container 3"
-            }
-        }
-    },
-    "tooltipContainerClearCookie": {
-        "message": "このコンテナーの Cookie を削除する",
-        "description": "Tooltip for a button to clear all cookies in a container."
-    },
-    "confirmPrivateBrowsingClearCookie": {
-        "message": "プライベートブラウジングの Cookie をすべて削除してよろしいですか?",
-        "description": "Confirmation message before clearing cookies for private browsing."
-    },
-    "buttonEditContainer": {
-        "message": "コンテナーを編集…",
-        "description": "Button to edit a container."
-    },
-    "buttonContainerClearCookie": {
-        "message": "Cookie を削除…",
-        "description": "Button to clear cookies in a container."
-    },
-    "buttonDeleteContainer": {
-        "message": "コンテナーを削除…",
-        "description": "Button to delete a container."
-    },
-    "buttonDone": {
-        "message": "完了",
-        "description": "Button to complete an action."
-    },
-    "containerOptions": {
-        "message": "$NAME$ のコンテナー オプション",
-        "description": "Menu title for container options.",
-        "placeholders": {
-            "name": {
-                "content": "$1",
-                "example": "Container 3"
-            }
-        }
-    },
-    "optionsHeadingContainerSortOrder": {
-        "message": "コンテナーを並び替える",
-        "description": "Heading text of options page for changing container order."
-    },
-    "optionsDescriptionContainerSortOrder": {
-        "message": "この設定はほかの拡張機能には影響ありません。",
-        "description": "Description text for changing container order."
+  "effectiveLocale": {
+    "message": "ja",
+    "description": "Locale of this messages.json."
+  },
+  "extensionDescription": {
+    "message": "プライベートで隔離されたコンテナーを使用したChromeのようなタブグループ：Firefoxのための究極のタブ管理とグループ。",
+    "description": "Description of the extension."
+  },
+  "browserActionPopupTitle": {
+    "message": "Container Tab Groups: ポップアップページ",
+    "description": "Title of the popup page for browserAction."
+  },
+  "buttonHideInactiveContainers": {
+    "message": "他のコンテナーを最小化する",
+    "description": "Button label to hide inactive containers on a window."
+  },
+  "buttonNewContainer": {
+    "message": "新しいコンテナーを作成…",
+    "description": "Button label to create a new container."
+  },
+  "buttonCancel": {
+    "message": "キャンセル",
+    "description": "Button label to cancel an action."
+  },
+  "buttonOk": {
+    "message": "OK",
+    "description": "Button label to confirm an action."
+  },
+  "newContainerNameLabel": {
+    "message": "名前",
+    "description": "Label for inputting the name of a new container."
+  },
+  "newContainerNamePlaceholder": {
+    "message": "コンテナーの名前",
+    "description": "Placeholder for the input field of the name of a new container."
+  },
+  "newContainerDialogTitle": {
+    "message": "コンテナーの作成",
+    "description": "Title of the dialog prompting for creating a new container."
+  },
+  "editContainerDialogTitle": {
+    "message": "コンテナーの編集",
+    "description": "Title of the dialog prompting for editting a container."
+  },
+  "contextMenuHideSelectedContainer": {
+    "message": "このコンテナーを隠す",
+    "description": "Context menu item text for hiding the container of the selected tab."
+  },
+  "tooltipTabPinButton": {
+    "message": "このタブをピン留めする",
+    "description": "Tooltip for the button to pin a tab."
+  },
+  "tooltipTabUnpinButton": {
+    "message": "タブのピン留めを外す",
+    "description": "Tooltip for the button to unpin a tab."
+  },
+  "tooltipHideContainerButton": {
+    "message": "このコンテナーのタブを隠す",
+    "description": "Tooltip for the button to hide the tabs of a container."
+  },
+  "tooltipUnhideContainerButton": {
+    "message": "このコンテナーのタブを表示",
+    "description": "Tooltip for the button to unhide the tabs of a container."
+  },
+  "tooltipEditContainerButton": {
+    "message": "このコンテナーを編集",
+    "description": "Tooltip for the button to edit a container."
+  },
+  "currentWindow": {
+    "message": "このウィンドウ (#$ID$)",
+    "description": "Title of popup section for the current window.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "2"
+      }
     }
+  },
+  "currentWindowMoreContainers": {
+    "message": "このウィンドウの他のコンテナー",
+    "desciption": "Title for section listing unused containers for a window."
+  },
+  "windowLabel": {
+    "message": "ウィンドウ $ID$",
+    "description": "Label for a window with ID.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "tooltipWindowLabel": {
+    "message": "ウィンドウ $ID$ に切り替える",
+    "description": "Tooltip for a menu item representing a window.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "tooltipContainerCloseAll": {
+    "message": "このコンテナーのタブを全て閉じる",
+    "description": "Tooltip for a button to close all tabs of a container."
+  },
+  "tooltipContainerDelete": {
+    "message": "このコンテナーを永久に削除する",
+    "description": "Tooltip for a button to permanently delete a container."
+  },
+  "confirmContainerDelete": {
+    "message": "本当にこのコンテナーを永久に削除しますか: $NAME$?",
+    "description": "Confirmation message before deleting a container.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Container 3"
+      }
+    }
+  },
+  "defaultContainerName": {
+    "message": "コンテナー $ID$",
+    "description": "Descriptive default name of a container.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "443"
+      }
+    }
+  },
+  "invalidContainerName": {
+    "message": "利用不能のコンテナー $ID$",
+    "description": "Name shown for an unavailable container.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "443"
+      }
+    }
+  },
+  "noContainer": {
+    "message": "コンテナーなし",
+    "description": "Virtual container name for tabs with no container."
+  },
+  "browserActionTitle": {
+    "message": "タブ・グループ",
+    "description": "Title of browserAction about tabs and container-based groups."
+  },
+  "labelNewTabKeepContainer": {
+    "message": "新しいタブを現在のコンテナーで開く (粘着コンテナー)",
+    "description": "Title of option to always open new tab in current container."
+  },
+  "labelFirstPartyIsolate": {
+    "message": "ファーストパーティ分離 (FPI) を有効化する",
+    "description": "Option to enable first-party isolation."
+  },
+  "buttonAboutAddon": {
+    "message": "Container Tab Groups について・評価…",
+    "description": "Menu item to open the extension's addons.mozilla.org page."
+  },
+  "windowTitlePrefaceTemplate": {
+    "message": "($CONTAINER$)",
+    "description": "String to add before window title",
+    "placeholders": {
+      "container": {
+        "content": "$1",
+        "example": "Container 1"
+      }
+    }
+  },
+  "buttonSettings": {
+    "message": "設定",
+    "description": "Menu item to open the extensions's settings."
+  },
+  "labelResistFingerprinting": {
+    "message": "Firefoxのフィンガープリント防止機能を有効化する (privacy.resistFingerprinting)",
+    "description": "Option to enable privacy.resistFingerprinting."
+  },
+  "labelDragTabToChangeContainer": {
+    "message": "タブをドラッグしてコンテナーに移動する",
+    "description": "Option to enable the user to drag a tab to move between containers."
+  },
+  "optionsHeadingExperimental": {
+    "message": "実験的な機能",
+    "description": "Heading text of options page for experimental addon features."
+  },
+  "optionsHeadingFirefox": {
+    "message": "Firefox 設定",
+    "description": "Heading text of options page for changing Firefox settings."
+  },
+  "optionsDescriptionExperimental": {
+    "message": "これらのオプションの一部を無効にすることでバグっぽい動作がみられる場合に対処することができる場合があります．",
+    "description": "Description text for experimental features options."
+  },
+  "optionsDescriptionFirefox": {
+    "message": "ここでプライバシー関連の隠された Firefox 設定の一部を変更することができます．",
+    "description": "Description text for Firefox settings options."
+  },
+  "panoramaGrid": {
+    "message": "パノラマ・グリッド",
+    "description": "Panorama Grid page (grid view of container and tabs)"
+  },
+  "buttonPanorama": {
+    "message": "パノラマ・グリッドを開く",
+    "description": "Button label to open Panorama Grid"
+  },
+  "buttonOpenTabInContainer": {
+    "message": "新しいタブを開く",
+    "description": "Button label to open a new tab in the specified container"
+  },
+  "buttonTabClose": {
+    "message": "このタブを閉じる",
+    "description": "Button label to close a tab."
+  },
+  "tooltipCollapseContainers": {
+    "message": "コンテナーを最小化する",
+    "description": "Tooltip for the button to collapse inactive containers."
+  },
+  "tooltipExpandContainers": {
+    "message": "すべてのコンテナーを表示",
+    "description": "Tooltip for the button to expand containers."
+  },
+  "titleSelectContainer": {
+    "message": "コンテナーを選択",
+    "description": "Title of the popup asking the user to choose a container to open a new tab in."
+  },
+  "descriptionSelectContainer": {
+    "message": "あなたは以下の新しいタブを開こうとしています：$URL$．",
+    "description": "Confirmation message before the user chooses a container to open a new tab in.",
+    "placeholders": {
+      "url": {
+        "content": "$1",
+        "example": "https://example.com/"
+      }
+    }
+  },
+  "promptSelectContainer": {
+    "message": "このタブを開くコンテナーを選択してください．",
+    "description": "Message asking the user to select a container for a new tab."
+  },
+  "labelSelectContainerExternalTabs": {
+    "message": "外部アプリケーションがタブを開くときにコンテナーを選ぶ",
+    "description": "Option to enable container selection on externally opened tabs."
+  },
+  "labelExternalTabSelectContainerOption": {
+    "message": "外部アプリケーションがタブを開いたとき：",
+    "description": "Label for option for handling of externally opened tabs"
+  },
+  "labelExternalTabOptionChooseContainer": {
+    "message": "毎回コンテナーを選択する",
+    "description": "Option to choose a container every time an external application opens a tab."
+  },
+  "labelExternalTabOptionStickyContainer": {
+    "message": "最後に使用したコンテナーで開く",
+    "description": "Option to use the last active container for externally opened tabs."
+  },
+  "labelExternalTabOptionDisabled": {
+    "message": "デフォルトのコンテナーで開く (コンテナーなし)",
+    "description": "Option to disable handling of externally opened tabs."
+  },
+  "labelGroupIndexOption": {
+    "message": "各コンテナーに見出しタブを表示する",
+    "description": "Option to show index tabs for containers."
+  },
+  "labelGroupIndexOptionAlways": {
+    "message": "すべてのコンテナー",
+    "description": "Option to show index tabs for all containers."
+  },
+  "labelGroupIndexOptionCollapsed": {
+    "message": "最小化されたコンテナー",
+    "description": "Option to show index tabs for collapsed containers."
+  },
+  "labelGroupIndexOptionNever": {
+    "message": "無効",
+    "description": "Option to show index tabs for no containers."
+  },
+  "optionsHeadingAppearance": {
+    "message": "外観設定",
+    "description": "Heading text of options page for changing appearance settings."
+  },
+  "labelPopupSize": {
+    "message": "ポップアップの大きさ",
+    "description": "Prompt for changing popup size."
+  },
+  "labelPopupSizeStandard": {
+    "message": "標準",
+    "description": "Label text for standard popup size."
+  },
+  "labelPopupSizeLarge": {
+    "message": "大きい",
+    "description": "Label text for large popup size."
+  },
+  "searchPlaceholder": {
+    "message": "コンテナーを検索",
+    "description": "Placeholder text for searching containers."
+  },
+  "menuItemMain": {
+    "message": "コンテナー",
+    "description": "Menu item for containers view."
+  },
+  "menuItemWindows": {
+    "message": "ウィンドウ",
+    "description": "Menu item for windows view"
+  },
+  "menuItemSites": {
+    "message": "サイト",
+    "description": "Menu item for sites view"
+  },
+  "tooltipCloseWindow": {
+    "message": "ウィンドウを閉じる",
+    "description": "Tooltip for a button to close all tabs of a window."
+  },
+  "buttonNewWindow": {
+    "message": "新規ウインドウ",
+    "description": "Button to open a new window."
+  },
+  "buttonSidebar": {
+    "message": "サイドバーを開く",
+    "description": "Button to open Sidebar."
+  },
+  "optionsHeadingUserData": {
+    "message": "あなたのデータ",
+    "description": "Heading text of options page for managing user data."
+  },
+  "labelClearRecentSites": {
+    "message": "最近訪問したサイトのリストを消去する",
+    "description": "Label text for clearing the list of visited sites"
+  },
+  "buttonClear": {
+    "message": "消去",
+    "description": "Button to clear data."
+  },
+  "privateBrowsing": {
+    "message": "プライベートブラウジング",
+    "description": "Private Browsing page"
+  },
+  "confirmContainerClearCookie": {
+    "message": "このコンテナーの Cookie をすべて削除してよろしいですか: $NAME$?",
+    "description": "Confirmation message before clearing cookies in a container.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Container 3"
+      }
+    }
+  },
+  "tooltipContainerClearCookie": {
+    "message": "このコンテナーの Cookie を削除する",
+    "description": "Tooltip for a button to clear all cookies in a container."
+  },
+  "confirmPrivateBrowsingClearCookie": {
+    "message": "プライベートブラウジングの Cookie をすべて削除してよろしいですか?",
+    "description": "Confirmation message before clearing cookies for private browsing."
+  },
+  "buttonEditContainer": {
+    "message": "コンテナーを編集…",
+    "description": "Button to edit a container."
+  },
+  "buttonContainerClearCookie": {
+    "message": "Cookie を削除…",
+    "description": "Button to clear cookies in a container."
+  },
+  "buttonDeleteContainer": {
+    "message": "コンテナーを削除…",
+    "description": "Button to delete a container."
+  },
+  "buttonDone": {
+    "message": "完了",
+    "description": "Button to complete an action."
+  },
+  "containerOptions": {
+    "message": "$NAME$ のコンテナー オプション",
+    "description": "Menu title for container options.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Container 3"
+      }
+    }
+  },
+  "optionsHeadingContainerSortOrder": {
+    "message": "コンテナーを並び替える",
+    "description": "Heading text of options page for changing container order."
+  },
+  "optionsDescriptionContainerSortOrder": {
+    "message": "この設定はほかの拡張機能には影響ありません。",
+    "description": "Description text for changing container order."
+  }
 }
