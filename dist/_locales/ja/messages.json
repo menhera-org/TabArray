@@ -348,5 +348,9 @@
     "tooltipContainerClearCookie": {
         "message": "このコンテナーの Cookie を削除する",
         "description": "Tooltip for a button to clear all cookies in a container."
+    },
+    "confirmPrivateBrowsingClearCookie": {
+        "message": "プライベートブラウジングの Cookie をすべて削除してよろしいですか?",
+        "description": "Confirmation message before clearing cookies for private browsing."
     }
 }
