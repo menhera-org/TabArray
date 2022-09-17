@@ -27,13 +27,14 @@ import { config } from './config/config';
 import { ADDON_PAGE } from './defs';
 import { UserContext } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
-import { TabGroupService } from './frameworks/tabGroups';
 import { UserContextVisibilityService } from './userContexts/UserContextVisibilityService';
 import { BeforeRequestHandler } from './background/BeforeRequestHandler';
 import { Tab } from './frameworks/tabs';
 import { BackgroundUtils } from './background/BackgroundUtils';
 import { TabSortingService } from './background/TabSortingService';
 import './background/IndexTabHandler';
+import './background/BackgroundContainerObservers';
+import './background/BackgroundMenu';
 
 // watchdog
 let scriptCompleted = false;
@@ -45,7 +46,6 @@ window.addEventListener('error', () => {
 });
 
 const userContextService = UserContextService.getInstance();
-const tabGroupService = TabGroupService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const tabSortingService = TabSortingService.getInstance();
 const utils = new BackgroundUtils();
@@ -214,38 +214,8 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   }
 });
 
-browser.contextualIdentities.onRemoved.addListener(async ({contextualIdentity}) => {
-  const userContextId = UserContext.fromCookieStoreId(contextualIdentity.cookieStoreId);
-  console.log('userContext %d removed', userContextId);
-  const tabGroup = await tabGroupService.getTabGroupFromUserContextId(userContextId);
-  tabGroup.tabList.closeTabs().then(() => {
-    console.log('Closed all tabs for userContext %d', userContextId);
-  }).catch((e) => {
-    console.error('cleanup failed for userContext %d', userContextId, e);
-  });
-});
-
 tabSortingService.sortTabs();
 
-browser.menus.create({
-  id: 'tab-hide-container',
-  title: browser.i18n.getMessage('contextMenuHideSelectedContainer'),
-  contexts: ['tab'],
-});
-
-browser.menus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId == 'tab-hide-container') {
-    if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
-      return;
-    }
-
-    const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
-    if (tab.windowId == null) {
-      return;
-    }
-    userContextVisibilityService.hideContainerOnWindow(tab.windowId, userContextId).catch(e => console.error(e));
-  }
-});
 
 browser.windows.getAll({
   windowTypes: ['normal'],
@@ -270,6 +240,7 @@ browser.windows.getAll({
 browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
 
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
+  // since this is never a private tab, we can use this safely.
   const userContextId = UserContext.fromCookieStoreId(details.cookieStoreId);
   if (details.frameId != 0 || 0 != userContextId || details.originUrl || details.incognito || !configExternalTabChooseContainer) {
     return false;
