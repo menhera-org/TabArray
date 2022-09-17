@@ -59,7 +59,7 @@ export class PopupWindowListRenderer {
 
   public renderWindowListView(activeTabsByWindow: ActiveTabsByWindow, element: HTMLElement): void {
     element.textContent = '';
-    const windowIds = [... activeTabsByWindow.keys()].sort();
+    const windowIds = [... activeTabsByWindow.keys()].sort((a, b) => a - b);
     for (const windowId of windowIds) {
       const details = activeTabsByWindow.get(windowId);
       if (!details) {
