@@ -85,10 +85,13 @@ config['appearance.popupSize'].observe((value) => {
   }
 });
 
+// Open a new window
 const buttonNewWindow = utils.queryElementNonNull<HTMLButtonElement>('#button-new-window');
 buttonNewWindow.addEventListener('click', () => {
   utils.openNewWindow(false);
 });
+
+// Open a new private window
 const buttonNewPrivateWindow = utils.queryElementNonNull<HTMLButtonElement>('#button-new-private-window');
 extensionService.isAllowedInPrivateBrowsing().then((allowed) => {
   if (!allowed) {
