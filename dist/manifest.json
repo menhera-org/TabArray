@@ -68,7 +68,7 @@
     },
     "_execute_sidebar_action": {
       "suggested_key": {
-        "default": "Ctrl+Alt+Shift+T"
+        "default": "Ctrl+Alt+S"
       },
       "description": "__MSG_commandOpenSidebar__"
     }
