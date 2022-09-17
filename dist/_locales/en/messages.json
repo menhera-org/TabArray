@@ -386,5 +386,9 @@
   "optionsDescriptionContainerSortOrder": {
     "message": "This setting does not affect other extensions.",
     "description": "Description text for changing container order."
+  },
+  "commandOpenPopup": {
+    "message": "Open the popup",
+    "description": "Description text for using command to open popup."
   }
 }

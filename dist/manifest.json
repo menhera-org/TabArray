@@ -59,6 +59,14 @@
     },
     "default_panel": "sidebar/sidebar.html"
   },
+  "commands": {
+    "open-popup": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+T"
+      },
+      "description": "__MSG_commandOpenPopup__"
+    }
+  },
   "icons": {
     "48": "icon.svg",
     "96": "icon.svg"
