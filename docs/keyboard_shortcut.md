@@ -6,6 +6,10 @@
 
 - <kbd> Ctrl + Alt + G </kbd>
 
+### Opening the sidebar
+
+- <kbd> Ctrl + Alt + S </kbd>
+
 ## Popup Shortcuts
 
 ### Selecting a tab
