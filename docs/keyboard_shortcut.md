@@ -4,7 +4,7 @@
 
 ### Opening the popup
 
-- <kbd> Ctrl + Alt + G </kbd>
+- <kbd> Ctrl + Alt + T </kbd>
 
 ### Opening the sidebar
 
