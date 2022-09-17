@@ -390,5 +390,9 @@
   "commandOpenPopup": {
     "message": "コンテナー ポップアップを開く",
     "description": "Description text for using command to open popup."
+  },
+  "commandOpenSidebar": {
+    "message": "コンテナー サイドバーを開く",
+    "description": "Description text for using command to open sidebar."
   }
 }
