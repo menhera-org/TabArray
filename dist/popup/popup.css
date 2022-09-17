@@ -238,9 +238,13 @@ button {
   background-color: var(--text-color);
 }
 
-#button-new-window::before {
+#button-new-window::before, #button-new-private-window::before {
   mask: url(/img/add_black_24dp.svg) center center/75% no-repeat;
   background-color: var(--text-color);
+}
+
+#button-new-private-window:disabled {
+  display: none;
 }
 
 #sites > * {

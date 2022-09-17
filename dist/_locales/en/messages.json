@@ -394,5 +394,9 @@
   "commandOpenSidebar": {
     "message": "Open the Sidebar",
     "description": "Description text for using command to open sidebar."
+  },
+  "buttonNewPrivateWindow": {
+    "message": "New Private Window",
+    "description": "Button to open a new private window."
   }
 }

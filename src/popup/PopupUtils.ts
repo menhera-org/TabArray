@@ -23,6 +23,14 @@ import browser from 'webextension-polyfill';
 import {PANORAMA_PAGE} from '../defs';
 
 export class PopupUtils {
+  private handlePopupClose(promise: Promise<unknown>) {
+    promise.then(() => {
+      window.close();
+    }).catch((e) => {
+      console.error(e);
+    });
+  }
+
   public queryElementNonNull<T extends Element>(query: string): T {
     const element = document.querySelector(query);
     if (null == element) {
@@ -32,24 +40,29 @@ export class PopupUtils {
   }
 
   public openPanoramaPage() {
-    browser.tabs.create({
+    this.handlePopupClose(browser.tabs.create({
       active: true,
       windowId: browser.windows.WINDOW_ID_CURRENT,
       url: browser.runtime.getURL(PANORAMA_PAGE),
-    }).then(() => {
-      window.close();
-    }).catch((e) => console.error(e));
+    }));
   }
 
   public openOptionsPage() {
-    browser.runtime.openOptionsPage().then(() => {
+    this.handlePopupClose(browser.runtime.openOptionsPage().then(() => {
       window.close();
-    }).catch((e) => console.error(e));
+    }));
   }
 
   public openSidebar() {
     browser.sidebarAction.open().catch((e) => {
       console.error(e);
     });
+  }
+
+  public openNewWindow(isPrivate: boolean) {
+    this.handlePopupClose(browser.windows.create({
+      incognito: isPrivate,
+      focused: true,
+    }));
   }
 }

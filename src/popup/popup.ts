@@ -27,9 +27,11 @@ import { PopupUtils } from './PopupUtils';
 import '../components/usercontext-colorpicker';
 import '../components/usercontext-iconpicker';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { ExtensionService } from '../frameworks/extension';
 
 const utils = new PopupUtils();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+const extensionService = ExtensionService.getInstance();
 
 const renderer = new PopupRenderer();
 
@@ -65,6 +67,7 @@ utils.queryElementNonNull<HTMLElement>('#menu-item-windows > .button-text').text
 utils.queryElementNonNull<HTMLElement>('#menu-item-sites > .button-text').textContent = browser.i18n.getMessage('menuItemSites');
 utils.queryElementNonNull<HTMLElement>('#menu-item-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
 utils.queryElementNonNull<HTMLElement>('#button-new-window > .button-text').textContent = browser.i18n.getMessage('buttonNewWindow');
+utils.queryElementNonNull<HTMLElement>('#button-new-private-window > .button-text').textContent = browser.i18n.getMessage('buttonNewPrivateWindow');
 
 const sitesElement = utils.queryElementNonNull<HTMLElement>('#sites');
 
@@ -80,6 +83,21 @@ config['appearance.popupSize'].observe((value) => {
   if (configPopupSize == 'large') {
     document.body.classList.add('large');
   }
+});
+
+const buttonNewWindow = utils.queryElementNonNull<HTMLButtonElement>('#button-new-window');
+buttonNewWindow.addEventListener('click', () => {
+  utils.openNewWindow(false);
+});
+const buttonNewPrivateWindow = utils.queryElementNonNull<HTMLButtonElement>('#button-new-private-window');
+extensionService.isAllowedInPrivateBrowsing().then((allowed) => {
+  if (!allowed) {
+    buttonNewPrivateWindow.disabled = true;
+  }
+});
+
+buttonNewPrivateWindow.addEventListener('click', () => {
+  utils.openNewWindow(true);
 });
 
 utils.queryElementNonNull<HTMLButtonElement>('#menu-item-settings').addEventListener('click', (ev) => {
