@@ -386,5 +386,9 @@
   "optionsDescriptionContainerSortOrder": {
     "message": "この設定はほかの拡張機能には影響ありません。",
     "description": "Description text for changing container order."
+  },
+  "commandOpenPopup": {
+    "message": "コンテナー ポップアップを開く",
+    "description": "Description text for using command to open popup."
   }
 }
