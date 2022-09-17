@@ -60,11 +60,17 @@
     "default_panel": "sidebar/sidebar.html"
   },
   "commands": {
-    "open-popup": {
+    "_execute_browser_action": {
       "suggested_key": {
         "default": "Ctrl+Alt+T"
       },
       "description": "__MSG_commandOpenPopup__"
+    },
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+Shift+T"
+      },
+      "description": "__MSG_commandOpenSidebar__"
     }
   },
   "icons": {

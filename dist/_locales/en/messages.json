@@ -390,5 +390,9 @@
   "commandOpenPopup": {
     "message": "Open the popup",
     "description": "Description text for using command to open popup."
+  },
+  "commandOpenSidebar": {
+    "message": "Open the Sidebar",
+    "description": "Description text for using command to open sidebar."
   }
 }
