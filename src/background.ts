@@ -78,15 +78,13 @@ browser.tabs.onAttached.addListener(async () => {
 });
 
 browser.tabs.onCreated.addListener((tab) => {
-  if (null == tab.cookieStoreId) return;
+  if (null == tab.cookieStoreId || null == tab.windowId || null == tab.id) return;
   if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
     return;
   }
   const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
   const activeUserContextId = getActiveUserContext(tab.windowId);
   const windowId = tab.windowId;
-  if (windowId == null) return;
-  if (null == tab.id) return;
   if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
     utils.reopenNewTabInContainer(tab.id, activeUserContextId, windowId).catch((e) => {
       console.error(e);
@@ -243,7 +241,7 @@ browser.windows.getAll({
 
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   // since this is never a private tab, we can use this safely.
-  if (details.cookieStoreId == null) return false;
+  if (details.cookieStoreId == null || details.tabId == -1) return false;
   const userContextId = UserContext.fromCookieStoreId(details.cookieStoreId);
   if (details.frameId != 0 || 0 != userContextId || details.originUrl || details.incognito || !configExternalTabChooseContainer) {
     return false;
@@ -254,7 +252,6 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   }
   const tabId = details.tabId;
   const {url} = details;
-  if (tabId == -1) return false;
   console.log('Capturing request for tab %d: %s', tabId, url);
 
   const tab = await Tab.get(tabId);
