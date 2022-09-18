@@ -93,29 +93,9 @@ export class PopupModalRenderer {
     this._keyHandlersStack.pop();
   }
 
-  private async showModal(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement, hash: string): Promise<boolean> {
-    const previousHash = location.hash;
-    const activeElement = this.getActiveElement();
-    location.hash = hash;
-    MessageElement.textContent = message;
-    const promise = PromiseUtils.createPromise<boolean>();
-    const handler = (result: boolean) => {
-      cleanUp();
-      promise.resolve(result);
-    };
-    const cancelHandler = () => {
-      handler(false);
-    };
-    const okHandler = (ev?: Event) => {
-      const activeElement = this.getActiveElement();
-      if (ev instanceof KeyboardEvent && activeElement) {
-        activeElement.click();
-      } else {
-        handler(true);
-      }
-    };
-    const keyHandler = (ev: KeyboardEvent) => {
-      const buttons = okButton.parentElement?.getElementsByTagName('button');
+  private defineKeyHandlerForModal(buttonElement: HTMLButtonElement) {
+    return (ev: KeyboardEvent) => {
+      const buttons = buttonElement.parentElement?.getElementsByTagName('button');
       if (!buttons) return;
       const buttonArray = [... buttons];
       const activeElement = this.getActiveElement();
@@ -132,8 +112,32 @@ export class PopupModalRenderer {
         } else {
           buttonArray[index + 1]?.focus();
         }
+      } else if (ev.key == ' ') {
+        buttonArray[index]?.click();
       }
     };
+  }
+
+  private async showModal(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement, hash: string): Promise<boolean> {
+    const previousHash = location.hash;
+    const activeElement = this.getActiveElement();
+    location.hash = hash;
+    MessageElement.textContent = message;
+    const promise = PromiseUtils.createPromise<boolean>();
+    const handler = (result: boolean) => {
+      cleanUp();
+      promise.resolve(result);
+    };
+    const cancelHandler = () => handler(false);
+    const okHandler = (ev?: Event) => {
+      const activeElement = this.getActiveElement();
+      if (ev instanceof KeyboardEvent && activeElement) {
+        activeElement.click();
+      } else {
+        handler(true);
+      }
+    };
+    const keyHandler = this.defineKeyHandlerForModal(okButton);
     const cleanUp = () => {
       cancelButton.removeEventListener('click', cancelHandler);
       if (okButton != cancelButton) {
