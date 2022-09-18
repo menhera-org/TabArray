@@ -42,7 +42,7 @@ const getSitesView = () => {
 const arrowUpHandler = () => {
   const activeElement = utils.getActiveElement();
   const mainButtons = [... document.querySelectorAll('#main menulist-container, #main menulist-tab')] as HTMLElement[];
-  const windowsButtons = [... document.querySelectorAll('#windows-inner > button, #windows menulist-container, #windows menulist-tab')] as HTMLElement[];
+  const windowsButtons = [... document.querySelectorAll('#windows-inner > button:not(:disabled), #windows menulist-container, #windows menulist-tab')] as HTMLElement[];
   const sitesButtons = [... document.querySelectorAll('#sites-pane-top > button')] as HTMLElement[];
   const sitesDetailsButtons = [... document.querySelectorAll('#sites-pane-details menulist-container, #sites-pane-details menulist-tab')] as HTMLElement[];
   switch (location.hash) {
@@ -68,7 +68,7 @@ const arrowUpHandler = () => {
 const arrowDownHandler = () => {
   const activeElement = utils.getActiveElement();
   const mainButtons = [... document.querySelectorAll('#main menulist-container, #main menulist-tab')] as HTMLElement[];
-  const windowsButtons = [... document.querySelectorAll('#windows-inner > button, #windows menulist-container, #windows menulist-tab')] as HTMLElement[];
+  const windowsButtons = [... document.querySelectorAll('#windows-inner > button:not(:disabled), #windows menulist-container, #windows menulist-tab')] as HTMLElement[];
   const sitesButtons = [... document.querySelectorAll('#sites-pane-top > button')] as HTMLElement[];
   const sitesDetailsButtons = [... document.querySelectorAll('#sites-pane-details menulist-container, #sites-pane-details menulist-tab')] as HTMLElement[];
   switch (location.hash) {
