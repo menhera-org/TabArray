@@ -38,7 +38,7 @@ type NewContainerPanelResult = {
 type KeyHandlers = {
   okHandler: (event?: Event) => void;
   cancelHandler: (event?: Event) => void;
-  keyHandler?: (event: KeyboardEvent) => void;
+  keyHandler?: (event: KeyboardEvent) => boolean;
 };
 
 export class PopupModalRenderer {
@@ -69,8 +69,9 @@ export class PopupModalRenderer {
         catchEvent(ev);
         handlers.cancelHandler(ev);
       } else if (handlers.keyHandler) {
-        catchEvent(ev);
-        handlers.keyHandler(ev);
+        if (handlers.keyHandler(ev)) {
+          catchEvent(ev);
+        }
       }
     };
 
@@ -85,7 +86,7 @@ export class PopupModalRenderer {
     return null;
   }
 
-  public pushKeyHandlers(okHandler: (event?: Event) => void, cancelHandler: (event?: Event) => void, keyHandler?: (event: KeyboardEvent) => void) {
+  public pushKeyHandlers(okHandler: (event?: Event) => void, cancelHandler: (event?: Event) => void, keyHandler?: (event: KeyboardEvent) => boolean) {
     this._keyHandlersStack.push({ okHandler, cancelHandler, keyHandler });
   }
 
@@ -96,7 +97,7 @@ export class PopupModalRenderer {
   private defineKeyHandlerForModal(buttonElement: HTMLButtonElement) {
     return (ev: KeyboardEvent) => {
       const buttons = buttonElement.parentElement?.getElementsByTagName('button');
-      if (!buttons) return;
+      if (!buttons) return false;
       const buttonArray = [... buttons];
       const activeElement = this.getActiveElement();
       const index = activeElement instanceof HTMLButtonElement ? buttonArray.indexOf(activeElement) : -1;
@@ -106,15 +107,20 @@ export class PopupModalRenderer {
         } else {
           buttonArray[index - 1]?.focus();
         }
+        return true;
       } else if (ev.key == 'ArrowDown' || ev.key == 'ArrowRight') {
         if (index < 0 || index >= buttonArray.length - 1) {
           buttonArray[0]?.focus();
         } else {
           buttonArray[index + 1]?.focus();
         }
+        return true;
       } else if (ev.key == ' ') {
         buttonArray[index]?.click();
+        return true;
       }
+
+      return false;
     };
   }
 
