@@ -26,6 +26,7 @@
   --hover-color: rgba(0, 0, 0, 0.1);
   --secondary-background-color: #d7d7db;
   --button-text-color: #0033cc;
+  --accent-color: #5eaf30;
 }
 
 @media (prefers-color-scheme: dark) {

@@ -82,7 +82,10 @@ export class PopupModalRenderer {
     this._keyHandlersStack.pop();
   }
 
-  private async showModal(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement): Promise<boolean> {
+  private async showModal(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement, hash: string): Promise<boolean> {
+    const previousHash = location.hash;
+    const activeElement = document.activeElement;
+    location.hash = hash;
     MessageElement.textContent = message;
     const promise = PromiseUtils.createPromise<boolean>();
     const handler = (result: boolean) => {
@@ -107,17 +110,20 @@ export class PopupModalRenderer {
       okButton.addEventListener('click', okHandler);
     }
     this.pushKeyHandlers(okHandler, cancelHandler);
-    return await promise.promise;
+    cancelButton.focus();
+    const result = await promise.promise;
+    location.hash = previousHash;
+    if (activeElement && activeElement instanceof HTMLElement) {
+      activeElement.focus();
+    }
+    return result;
   }
 
   public async confirmAsync(message: string): Promise<boolean> {
     const confirmMessageElement = this._utils.queryElementNonNull<HTMLElement>('#confirm-message');
     const cancelButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-cancel-button');
     const okButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-ok-button');
-    const previousHash = location.hash;
-    location.hash = '#confirm';
-    const result = await this.showModal(message, confirmMessageElement, okButton, cancelButton);
-    location.hash = previousHash;
+    const result = await this.showModal(message, confirmMessageElement, okButton, cancelButton, '#confirm');
     return result;
   }
 
@@ -129,7 +135,6 @@ export class PopupModalRenderer {
     const nameElement = this._utils.queryElementNonNull<HTMLInputElement>('#new-container-name');
     const iconElement = this._utils.queryElementNonNull<IconPickerElement>('#new-container-icon');
     const colorElement = this._utils.queryElementNonNull<ColorPickerElement>('#new-container-color');
-    const previousHash = location.hash;
     nameElement.value = '';
     iconElement.value = 'fingerprint';
     colorElement.value = 'blue';
@@ -138,9 +143,7 @@ export class PopupModalRenderer {
       iconElement.value = userContext.icon;
       colorElement.value = userContext.color;
     }
-    location.hash = '#new-container';
-    const result = await this.showModal(message, messageElement, okButton, cancelButton);
-    location.hash = previousHash;
+    const result = await this.showModal(message, messageElement, okButton, cancelButton, '#new-container');
     if (!result) {
       throw new Error('User cancelled');
     }
@@ -205,7 +208,6 @@ export class PopupModalRenderer {
     const messageElement = this._utils.queryElementNonNull<HTMLElement>('#container-menu .modal-title');
     const doneButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-done-button');
     const message = browser.i18n.getMessage('containerOptions', isPrivate ? browser.i18n.getMessage('privateBrowsing') : userContext.name);
-    const previousHash = location.hash;
 
     const editButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-edit-button');
     const clearCookie = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-clear-cookie-button');
@@ -235,9 +237,7 @@ export class PopupModalRenderer {
     clearCookie.addEventListener('click', clearCookieHandler);
     deleteButton.addEventListener('click', deleteHandler);
 
-    location.hash = '#container-menu';
-    await this.showModal(message, messageElement, doneButton, doneButton);
-    location.hash = previousHash;
+    await this.showModal(message, messageElement, doneButton, doneButton, '#container-menu');
 
     editButton.removeEventListener('click', editHandler);
     clearCookie.removeEventListener('click', clearCookieHandler);
