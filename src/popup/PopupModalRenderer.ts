@@ -96,9 +96,7 @@ export class PopupModalRenderer {
 
   private defineKeyHandlerForModal(buttonElement: HTMLButtonElement) {
     return (ev: KeyboardEvent) => {
-      const buttons = buttonElement.parentElement?.getElementsByTagName('button');
-      if (!buttons) return false;
-      const buttonArray = [... buttons];
+      const buttonArray = [... buttonElement.parentElement?.getElementsByTagName('button') ?? []];
       const activeElement = this.getActiveElement();
       const index = activeElement instanceof HTMLButtonElement ? buttonArray.indexOf(activeElement) : -1;
       if (ev.key == 'ArrowUp' || ev.key == 'ArrowLeft') {
