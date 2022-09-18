@@ -18,7 +18,8 @@
     "noImplicitOverride": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "allowJs": true
+    "allowJs": true,
+    "checkJs": false
   },
   "include": [
     "src/**/*",

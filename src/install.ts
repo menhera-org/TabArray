@@ -18,6 +18,7 @@
 */
 
 import browser from 'webextension-polyfill';
+import { ADDON_PAGE } from './defs';
 
 /**
  * Codes to run on first installation.
@@ -37,3 +38,5 @@ browser.runtime.onInstalled.addListener((details) => {
     });
   }
 });
+
+browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));

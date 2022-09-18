@@ -24,7 +24,6 @@ import { isNewTabPage } from './modules/newtab';
 import { WebExtensionsBroadcastChannel } from './modules/broadcasting';
 import { getActiveUserContext, setActiveUserContext } from './modules/usercontext-state.js';
 import { config } from './config/config';
-import { ADDON_PAGE } from './defs';
 import { UserContext } from './frameworks/tabGroups';
 import { UserContextService } from './userContexts/UserContextService';
 import { UserContextVisibilityService } from './userContexts/UserContextVisibilityService';
@@ -236,8 +235,6 @@ browser.windows.getAll({
     }
   }
 });
-
-browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
 
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   // since this is never a private tab, we can use this safely.
