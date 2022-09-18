@@ -41,6 +41,11 @@ button {
   display: block;
 }
 
+button:focus {
+  box-shadow: 0 0 .25rem .25rem var(--accent-color);
+  outline: none;
+}
+
 #container {
   display: block;
 }

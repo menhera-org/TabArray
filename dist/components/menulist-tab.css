@@ -57,6 +57,11 @@ button {
   text-align: start;
 }
 
+button:focus {
+  box-shadow: 0 0 .25rem .25rem var(--accent-color);
+  outline: none;
+}
+
 .button-text {
   padding-inline: .5em;
   padding-block: .5em;
