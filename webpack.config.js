@@ -12,7 +12,7 @@ module.exports = {
   target: ['web', 'es2020'],
   devtool: 'inline-cheap-source-map',
   entry: {
-    'background': './src/background.js',
+    'background': './src/background.ts',
     'index': {
       import: './src/index/index-tab.ts',
       filename: 'index/index-tab.js',

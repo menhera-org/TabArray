@@ -78,12 +78,14 @@ browser.tabs.onAttached.addListener(async () => {
 });
 
 browser.tabs.onCreated.addListener((tab) => {
+  if (null == tab.cookieStoreId) return;
   if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
     return;
   }
   const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
   const activeUserContextId = getActiveUserContext(tab.windowId);
   const windowId = tab.windowId;
+  if (windowId == null) return;
   if (null == tab.id) return;
   if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
     utils.reopenNewTabInContainer(tab.id, activeUserContextId, windowId).catch((e) => {
@@ -142,6 +144,7 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
 });
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
+  if (tabObj.cookieStoreId == null || tabObj.url == null || tabObj.windowId == null) return;
   if (UserContext.isCookieStoreIdPrivateBrowsing(tabObj.cookieStoreId)) {
     return;
   }
@@ -174,15 +177,15 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
 });
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
-  const tab = await browser.tabs.get(tabId);
-  if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
+  const tabObj = await browser.tabs.get(tabId);
+  if (tabObj.cookieStoreId == null || tabObj.id == null) return;
+  if (UserContext.isCookieStoreIdPrivateBrowsing(tabObj.cookieStoreId)) {
     return;
   }
-  const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
+  const userContextId = UserContext.fromCookieStoreId(tabObj.cookieStoreId);
   const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
   const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
   try {
-    const tabObj = tab;
     const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
     if (!indexTabUrl) {
       throw void 0;
@@ -208,7 +211,7 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   } catch (e) {
     console.error(e);
   }
-  if (!tab.pinned) {
+  if (!tabObj.pinned) {
     await userContextVisibilityService.showContainerOnWindow(windowId, userContextId);
   }
 });
@@ -221,11 +224,13 @@ browser.windows.getAll({
 }).then(async (windows) => {
   for (const window of windows) {
     if (window.incognito) continue;
+    if (window.id == null) continue;
     const activeTabs = await browser.tabs.query({
       windowId: window.id,
       active: true,
     });
     for (const activeTab of activeTabs) {
+      if (activeTab.cookieStoreId == null) continue;
       const userContextId = UserContext.fromCookieStoreId(activeTab.cookieStoreId);
       const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
       const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
@@ -238,6 +243,7 @@ browser.windows.getAll({
 
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   // since this is never a private tab, we can use this safely.
+  if (details.cookieStoreId == null) return false;
   const userContextId = UserContext.fromCookieStoreId(details.cookieStoreId);
   if (details.frameId != 0 || 0 != userContextId || details.originUrl || details.incognito || !configExternalTabChooseContainer) {
     return false;
