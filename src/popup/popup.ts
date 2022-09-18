@@ -28,6 +28,7 @@ import '../components/usercontext-colorpicker';
 import '../components/usercontext-iconpicker';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { ExtensionService } from '../frameworks/extension';
+import { cancelHandler, okHandler, keyHandler } from './PopupKeyHandlers';
 
 const utils = new PopupUtils();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
@@ -163,6 +164,9 @@ searchBox.addEventListener('input', () => {
     menuListElement.classList.remove('search-result');
   }
 });
+
+// keyboard handlers
+renderer.modalRenderer.pushKeyHandlers(okHandler, cancelHandler, keyHandler);
 
 browser.tabs.onActivated.addListener(renderInBackground);
 browser.tabs.onUpdated.addListener(renderInBackground);

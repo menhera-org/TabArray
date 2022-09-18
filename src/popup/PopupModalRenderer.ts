@@ -78,14 +78,6 @@ export class PopupModalRenderer {
     document.addEventListener('keydown', keyHandler, true);
   }
 
-  private getActiveElement(): HTMLElement | null {
-    const activeElement = document.activeElement == document.body ? null : document.activeElement;
-    if (activeElement instanceof HTMLElement) {
-      return activeElement;
-    }
-    return null;
-  }
-
   public pushKeyHandlers(okHandler: (event?: Event) => void, cancelHandler: (event?: Event) => void, keyHandler?: (event: KeyboardEvent) => boolean) {
     this._keyHandlersStack.push({ okHandler, cancelHandler, keyHandler });
   }
@@ -97,7 +89,7 @@ export class PopupModalRenderer {
   private defineKeyHandlerForModal(buttonElement: HTMLButtonElement) {
     return (ev: KeyboardEvent) => {
       const buttonArray = [... buttonElement.parentElement?.getElementsByTagName('button') ?? []];
-      const activeElement = this.getActiveElement();
+      const activeElement = this._utils.getActiveElement();
       const index = activeElement instanceof HTMLButtonElement ? buttonArray.indexOf(activeElement) : -1;
       if (ev.key == 'ArrowUp' || ev.key == 'ArrowLeft') {
         if (index <= 0) {
@@ -124,7 +116,7 @@ export class PopupModalRenderer {
 
   private async showModal(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement, hash: string): Promise<boolean> {
     const previousHash = location.hash;
-    const activeElement = this.getActiveElement();
+    const activeElement = this._utils.getActiveElement();
     location.hash = hash;
     MessageElement.textContent = message;
     const promise = PromiseUtils.createPromise<boolean>();
@@ -134,7 +126,7 @@ export class PopupModalRenderer {
     };
     const cancelHandler = () => handler(false);
     const okHandler = (ev?: Event) => {
-      const activeElement = this.getActiveElement();
+      const activeElement = this._utils.getActiveElement();
       if (ev instanceof KeyboardEvent && activeElement) {
         activeElement.click();
       } else {

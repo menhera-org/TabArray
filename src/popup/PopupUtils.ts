@@ -23,6 +23,14 @@ import browser from 'webextension-polyfill';
 import {PANORAMA_PAGE} from '../defs';
 
 export class PopupUtils {
+  public getActiveElement(): HTMLElement | null {
+    const activeElement = document.activeElement == document.body ? null : document.activeElement;
+    if (activeElement instanceof HTMLElement) {
+      return activeElement;
+    }
+    return null;
+  }
+
   private handlePopupClose(promise: Promise<unknown>) {
     promise.then(() => {
       window.close();
