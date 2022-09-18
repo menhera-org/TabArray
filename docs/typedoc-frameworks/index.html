@@ -15,7 +15,10 @@
   <h1>Container Tab Groups</h1>
 </a>
 <p><img src="https://github.com/menhera-org/TabArray/actions/workflows/node.js.yml/badge.svg" alt="build">
-<a href="https://addons.mozilla.org/firefox/addon/container-tab-groups/"><img src="https://img.shields.io/badge/addons.mozilla.org-Download-green" alt="Download from addons.mozilla.org"></a>
+<a href="https://addons.mozilla.org/firefox/addon/container-tab-groups/"><img src="https://img.shields.io/amo/dw/tab-array@menhera.org" alt="Downloads"></a>
+<a href="https://addons.mozilla.org/firefox/addon/container-tab-groups/"><img src="https://img.shields.io/amo/users/tab-array@menhera.org" alt="Users"></a>
+<a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/Made%20in-TypeScript-%233178c6?logo=typescript&logoColor=white" alt="Made in TypeScript"></a>
+<img src="https://img.shields.io/github/license/menhera-org/TabArray" alt="License">
 <a href="https://codeclimate.com/github/menhera-org/TabArray/maintainability"><img src="https://api.codeclimate.com/v1/badges/80a4d073dd8edce17391/maintainability" alt="Maintainability"></a></p>
 <p>Chrome-like tab groups using isolated containers: The ultimate tab manager and groups for Firefox.</p>
 <p><a href="https://addons.mozilla.org/firefox/addon/container-tab-groups/"><img src="TabArray.png" alt="Extension icon"></a></p>
@@ -83,6 +86,32 @@
 <li>The official extension ID is <code>tab-array@menhera.org</code>. (Not an email address.)</li>
 </ul>
 
+<a href="#faqs" id="faqs" style="color: inherit; text-decoration: none;">
+  <h2>FAQs</h2>
+</a>
+
+<a href="#will-this-be-available-for-chrome" id="will-this-be-available-for-chrome" style="color: inherit; text-decoration: none;">
+  <h3>Will this be available for Chrome?</h3>
+</a>
+<p>This extension depends on many technologies not available in Chrome (only in Firefox),
+where the most important is Firefox&#39;s isolated containers feature.
+So it would not be possible.</p>
+
+<a href="#when-will-feature-be-released" id="when-will-feature-be-released" style="color: inherit; text-decoration: none;">
+  <h3>When will (feature) be released?</h3>
+</a>
+<p>See the <a href="https://github.com/menhera-org/TabArray/issues">issues</a>.
+Something missing you need? Please file a new feature request there.</p>
+
+<a href="#building-the-extension" id="building-the-extension" style="color: inherit; text-decoration: none;">
+  <h2>Building the extension</h2>
+</a>
+<ol>
+<li>Install the latest Node.JS/NPM using <a href="https://github.com/nvm-sh/nvm">NVM</a>.</li>
+<li>In this directory, run <code>npm install</code>.</li>
+<li>Run <code>npm run build</code> for production builds, and <code>npm run dev</code> for development builds.</li>
+</ol>
+
 <a href="#license" id="license" style="color: inherit; text-decoration: none;">
   <h2>License</h2>
 </a>
@@ -112,6 +141,7 @@
 <ul>
 <li class="tsd-kind-namespace"><a href="modules/config.html">config</a></li>
 <li class="tsd-kind-namespace"><a href="modules/dns.html">dns</a></li>
+<li class="tsd-kind-namespace"><a href="modules/extension.html">extension</a></li>
 <li class="tsd-kind-namespace"><a href="modules/storage.html">storage</a></li>
 <li class="tsd-kind-namespace"><a href="modules/tabGroups.html">tab<wbr/>Groups</a></li>
 <li class="tsd-kind-namespace"><a href="modules/tabs.html">tabs</a></li>
