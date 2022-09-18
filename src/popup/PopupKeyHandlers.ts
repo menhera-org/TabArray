@@ -69,11 +69,7 @@ const arrowUpHandler = () => {
       return arrowUpHandlerInner(activeElement, windowsButtons);
     }
     case '#sites': {
-      if (getSitesView() === 'sites') {
-        return arrowUpHandlerInner(activeElement, sitesButtons);
-      } else {
-        return arrowUpHandlerInner(activeElement, sitesDetailsButtons);
-      }
+      return getSitesView() === 'sites' ? arrowUpHandlerInner(activeElement, sitesButtons) : arrowUpHandlerInner(activeElement, sitesDetailsButtons);
     }
   }
   return false;
@@ -111,11 +107,7 @@ const arrowDownHandler = () => {
       return arrowDownHandlerInner(activeElement, windowsButtons);
     }
     case '#sites': {
-      if (getSitesView() === 'sites') {
-        return arrowDownHandlerInner(activeElement, sitesButtons);
-      } else {
-        return arrowDownHandlerInner(activeElement, sitesDetailsButtons);
-      }
+      return getSitesView() === 'sites' ? arrowDownHandlerInner(activeElement, sitesButtons) : arrowDownHandlerInner(activeElement, sitesDetailsButtons);
     }
   }
   return false;
