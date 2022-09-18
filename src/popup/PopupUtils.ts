@@ -31,6 +31,26 @@ export class PopupUtils {
     return null;
   }
 
+  public arrowUpHandler(activeElement: HTMLElement | null, buttons: HTMLElement[]) {
+    const index = activeElement ? buttons.indexOf(activeElement) : -1;
+    if (index <= 0) {
+      buttons[buttons.length - 1]?.focus();
+    } else {
+      buttons[index - 1]?.focus();
+    }
+    return true;
+  }
+
+  public arrowDownHandler(activeElement: HTMLElement | null, buttons: HTMLElement[]) {
+    const index = activeElement ? buttons.indexOf(activeElement) : -1;
+    if (index < 0 || index >= buttons.length - 1) {
+      buttons[0]?.focus();
+    } else {
+      buttons[index + 1]?.focus();
+    }
+    return true;
+  }
+
   private handlePopupClose(promise: Promise<unknown>) {
     promise.then(() => {
       window.close();

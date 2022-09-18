@@ -88,23 +88,13 @@ export class PopupModalRenderer {
 
   private defineKeyHandlerForModal(buttonElement: HTMLButtonElement) {
     return (ev: KeyboardEvent) => {
-      const buttonArray = [... buttonElement.parentElement?.getElementsByTagName('button') ?? []];
+      const buttonArray = [... buttonElement.parentElement?.getElementsByTagName('button') ?? []].filter((button) => !button.disabled);
       const activeElement = this._utils.getActiveElement();
       const index = activeElement instanceof HTMLButtonElement ? buttonArray.indexOf(activeElement) : -1;
       if (ev.key == 'ArrowUp' || ev.key == 'ArrowLeft') {
-        if (index <= 0) {
-          buttonArray[buttonArray.length - 1]?.focus();
-        } else {
-          buttonArray[index - 1]?.focus();
-        }
-        return true;
+        return this._utils.arrowUpHandler(activeElement, buttonArray);
       } else if (ev.key == 'ArrowDown' || ev.key == 'ArrowRight') {
-        if (index < 0 || index >= buttonArray.length - 1) {
-          buttonArray[0]?.focus();
-        } else {
-          buttonArray[index + 1]?.focus();
-        }
-        return true;
+        return this._utils.arrowDownHandler(activeElement, buttonArray);
       } else if (ev.key == ' ') {
         buttonArray[index]?.click();
         return true;

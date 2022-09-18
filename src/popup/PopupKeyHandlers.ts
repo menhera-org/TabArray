@@ -39,16 +39,6 @@ const getSitesView = () => {
   return document.querySelector<HTMLElement>('#sites')?.dataset.activeContent ?? 'sites';
 };
 
-const arrowUpHandlerInner = (activeElement: HTMLElement | null, buttons: HTMLElement[]) => {
-  const index = activeElement ? buttons.indexOf(activeElement) : -1;
-  if (index <= 0) {
-    buttons[buttons.length - 1]?.focus();
-  } else {
-    buttons[index - 1]?.focus();
-  }
-  return true;
-};
-
 const arrowUpHandler = () => {
   const activeElement = utils.getActiveElement();
   const mainButtons = [... document.querySelectorAll('#main menulist-container, #main menulist-tab')] as HTMLElement[];
@@ -66,23 +56,13 @@ const arrowUpHandler = () => {
       return true;
     }
     case '#windows': {
-      return arrowUpHandlerInner(activeElement, windowsButtons);
+      return utils.arrowUpHandler(activeElement, windowsButtons);
     }
     case '#sites': {
-      return getSitesView() === 'sites' ? arrowUpHandlerInner(activeElement, sitesButtons) : arrowUpHandlerInner(activeElement, sitesDetailsButtons);
+      return getSitesView() === 'sites' ? utils.arrowUpHandler(activeElement, sitesButtons) : utils.arrowUpHandler(activeElement, sitesDetailsButtons);
     }
   }
   return false;
-};
-
-const arrowDownHandlerInner = (activeElement: HTMLElement | null, buttons: HTMLElement[]) => {
-  const index = activeElement ? buttons.indexOf(activeElement) : -1;
-  if (index < 0 || index >= buttons.length - 1) {
-    buttons[0]?.focus();
-  } else {
-    buttons[index + 1]?.focus();
-  }
-  return true;
 };
 
 const arrowDownHandler = () => {
@@ -104,10 +84,10 @@ const arrowDownHandler = () => {
       return true;
     }
     case '#windows': {
-      return arrowDownHandlerInner(activeElement, windowsButtons);
+      return utils.arrowDownHandler(activeElement, windowsButtons);
     }
     case '#sites': {
-      return getSitesView() === 'sites' ? arrowDownHandlerInner(activeElement, sitesButtons) : arrowDownHandlerInner(activeElement, sitesDetailsButtons);
+      return getSitesView() === 'sites' ? utils.arrowDownHandler(activeElement, sitesButtons) : utils.arrowDownHandler(activeElement, sitesDetailsButtons);
     }
   }
   return false;
