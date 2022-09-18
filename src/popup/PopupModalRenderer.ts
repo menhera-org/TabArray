@@ -36,8 +36,9 @@ type NewContainerPanelResult = {
 };
 
 type KeyHandlers = {
-  okHandler: () => void;
-  cancelHandler: () => void;
+  okHandler: (event?: Event) => void;
+  cancelHandler: (event?: Event) => void;
+  keyHandler?: (event: KeyboardEvent) => void;
 };
 
 export class PopupModalRenderer {
@@ -63,19 +64,29 @@ export class PopupModalRenderer {
       }
       if (ev.key == 'Enter') {
         catchEvent(ev);
-        handlers.okHandler();
-      }
-      if (ev.key == 'Escape') {
+        handlers.okHandler(ev);
+      } else if (ev.key == 'Escape') {
         catchEvent(ev);
-        handlers.cancelHandler();
+        handlers.cancelHandler(ev);
+      } else if (handlers.keyHandler) {
+        catchEvent(ev);
+        handlers.keyHandler(ev);
       }
     };
 
     document.addEventListener('keydown', keyHandler, true);
   }
 
-  public pushKeyHandlers(okHandler: () => void, cancelHandler: () => void) {
-    this._keyHandlersStack.push({ okHandler, cancelHandler });
+  private getActiveElement(): HTMLElement | null {
+    const activeElement = document.activeElement == document.body ? null : document.activeElement;
+    if (activeElement instanceof HTMLElement) {
+      return activeElement;
+    }
+    return null;
+  }
+
+  public pushKeyHandlers(okHandler: (event?: Event) => void, cancelHandler: (event?: Event) => void, keyHandler?: (event: KeyboardEvent) => void) {
+    this._keyHandlersStack.push({ okHandler, cancelHandler, keyHandler });
   }
 
   public popKeyHandlers() {
@@ -84,7 +95,7 @@ export class PopupModalRenderer {
 
   private async showModal(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement, hash: string): Promise<boolean> {
     const previousHash = location.hash;
-    const activeElement = document.activeElement;
+    const activeElement = this.getActiveElement();
     location.hash = hash;
     MessageElement.textContent = message;
     const promise = PromiseUtils.createPromise<boolean>();
@@ -95,8 +106,33 @@ export class PopupModalRenderer {
     const cancelHandler = () => {
       handler(false);
     };
-    const okHandler = () => {
-      handler(true);
+    const okHandler = (ev?: Event) => {
+      const activeElement = this.getActiveElement();
+      if (ev instanceof KeyboardEvent && activeElement) {
+        activeElement.click();
+      } else {
+        handler(true);
+      }
+    };
+    const keyHandler = (ev: KeyboardEvent) => {
+      const buttons = okButton.parentElement?.getElementsByTagName('button');
+      if (!buttons) return;
+      const buttonArray = [... buttons];
+      const activeElement = this.getActiveElement();
+      const index = activeElement instanceof HTMLButtonElement ? buttonArray.indexOf(activeElement) : -1;
+      if (ev.key == 'ArrowUp' || ev.key == 'ArrowLeft') {
+        if (index <= 0) {
+          buttonArray[buttonArray.length - 1]?.focus();
+        } else {
+          buttonArray[index - 1]?.focus();
+        }
+      } else if (ev.key == 'ArrowDown' || ev.key == 'ArrowRight') {
+        if (index < 0 || index >= buttonArray.length - 1) {
+          buttonArray[0]?.focus();
+        } else {
+          buttonArray[index + 1]?.focus();
+        }
+      }
     };
     const cleanUp = () => {
       cancelButton.removeEventListener('click', cancelHandler);
@@ -109,11 +145,11 @@ export class PopupModalRenderer {
     if (okButton != cancelButton) {
       okButton.addEventListener('click', okHandler);
     }
-    this.pushKeyHandlers(okHandler, cancelHandler);
+    this.pushKeyHandlers(okHandler, cancelHandler, keyHandler);
     cancelButton.focus();
     const result = await promise.promise;
     location.hash = previousHash;
-    if (activeElement && activeElement instanceof HTMLElement) {
+    if (activeElement) {
       activeElement.focus();
     }
     return result;
