@@ -62,7 +62,7 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "default": "Ctrl+Alt+T"
+        "default": "Ctrl+Alt+G"
       },
       "description": "__MSG_commandOpenPopup__"
     },
