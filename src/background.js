@@ -248,26 +248,26 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   }
   const tabId = details.tabId;
   const {url} = details;
+  if (tabId == -1) return false;
   console.log('Capturing request for tab %d: %s', tabId, url);
-  if (-1 != tabId) {
-    const tab = await Tab.get(tabId);
-    const {windowId} = tab;
-    const activeUserContextId = getActiveUserContext(windowId);
-    if ('sticky' == configExternalTabContainerOption) {
-      if (userContextId == activeUserContextId) {
-        console.log('Tab %d in active user context %d', tabId, userContextId);
-        openTabs.add(tabId);
-        return false;
-      } else {
-        await browser.tabs.remove(tabId);
-        await browser.tabs.create({
-          active: true,
-          url,
-          cookieStoreId: UserContext.toCookieStoreId(activeUserContextId), // this tab is never private
-          windowId,
-        });
-        console.log('Reopened %s in container id %d', url, activeUserContextId);
-      }
+
+  const tab = await Tab.get(tabId);
+  const {windowId} = tab;
+  const activeUserContextId = getActiveUserContext(windowId);
+  if ('sticky' == configExternalTabContainerOption) {
+    if (userContextId == activeUserContextId) {
+      console.log('Tab %d in active user context %d', tabId, userContextId);
+      openTabs.add(tabId);
+      return false;
+    } else {
+      await browser.tabs.remove(tabId);
+      await browser.tabs.create({
+        active: true,
+        url,
+        cookieStoreId: UserContext.toCookieStoreId(activeUserContextId), // this tab is never private
+        windowId,
+      });
+      console.log('Reopened %s in container id %d', url, activeUserContextId);
     }
   }
 
