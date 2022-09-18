@@ -190,6 +190,10 @@ export class MenulistContainerElement extends HTMLElement {
       this.containerVisibilityToggleButton.title = browser.i18n.getMessage('tooltipHideContainerButton');
     }
   }
+
+  public override focus() {
+    this.containerButton.focus();
+  }
 }
 
 customElements.define('menulist-container', MenulistContainerElement);
