@@ -1,7 +1,8 @@
 # Container Tab Groups
 
 ![build](https://github.com/menhera-org/TabArray/actions/workflows/node.js.yml/badge.svg)
-[![Download from addons.mozilla.org](https://img.shields.io/badge/addons.mozilla.org-Download-green)](https://addons.mozilla.org/firefox/addon/container-tab-groups/)
+[![Downloads](https://img.shields.io/amo/dw/tab-array@menhera.org)](https://addons.mozilla.org/firefox/addon/container-tab-groups/)
+[![Users](https://img.shields.io/amo/users/tab-array@menhera.org)](https://addons.mozilla.org/firefox/addon/container-tab-groups/)
 [![Made in TypeScript](https://img.shields.io/badge/Made%20in-TypeScript-%233178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 ![License](https://img.shields.io/github/license/menhera-org/TabArray)
 [![Maintainability](https://api.codeclimate.com/v1/badges/80a4d073dd8edce17391/maintainability)](https://codeclimate.com/github/menhera-org/TabArray/maintainability)
