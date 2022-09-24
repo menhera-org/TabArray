@@ -95,7 +95,7 @@ export class PopupModalRenderer {
         return this._utils.arrowUpHandler(activeElement, buttonArray);
       } else if (ev.key == 'ArrowDown' || ev.key == 'ArrowRight') {
         return this._utils.arrowDownHandler(activeElement, buttonArray);
-      } else if (ev.key == ' ') {
+      } else if (ev.key == ' ' && activeElement instanceof HTMLButtonElement) {
         buttonArray[index]?.click();
         return true;
       }
