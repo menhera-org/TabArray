@@ -1,0 +1,103 @@
+// -*- indent-tabs-mode: nil; tab-width: 2; -*-
+// vim: set ts=2 sw=2 et ai :
+
+/*
+  Container Tab Groups
+  Copyright (C) 2022 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+import browser from 'webextension-polyfill';
+import { CookieProvider } from '../frameworks/cookies';
+import { OriginAttributes } from '../frameworks/tabGroups';
+import { UserContext } from '../frameworks/tabGroups';
+import { Uint32 } from '../frameworks/types';
+import { UserContextService } from '../userContexts/UserContextService';
+
+const cookieProvider = new CookieProvider();
+const userContextService = UserContextService.getInstance();
+
+const selectContainers = document.querySelector('#selectContainers') as HTMLSelectElement;
+const cookieDomains = document.querySelector('#cookieDomains') as HTMLTableSectionElement;
+const headingCookies = document.querySelector('#headingCookies') as HTMLHeadingElement;
+const cookiesHeadingDomain = document.querySelector('#cookiesHeadingDomain') as HTMLTableCellElement;
+const cookiesHeadingActions = document.querySelector('#cookiesHeadingActions') as HTMLTableCellElement;
+if (!selectContainers || !cookieDomains || !headingCookies || !cookiesHeadingDomain || !cookiesHeadingActions) {
+  throw new Error('element is not found.');
+}
+
+document.title = browser.i18n.getMessage('headingCookies');
+headingCookies.textContent = browser.i18n.getMessage('headingCookies');
+cookiesHeadingDomain.textContent = browser.i18n.getMessage('cookiesHeadingDomain');
+cookiesHeadingActions.textContent = browser.i18n.getMessage('cookiesHeadingActions');
+
+const getSelectedOriginAttributes = () => {
+  return OriginAttributes.fromString(selectContainers.value);
+};
+
+const render = async () => {
+  const userContexts = (await UserContext.getAll(false)).map((userContext) => userContextService.fillDefaultValues(userContext));
+  const containers: Map<OriginAttributes, string> = new Map;
+  for (const userContext of userContexts) {
+    containers.set(new OriginAttributes('', userContext.id, 0 as Uint32.Uint32), userContext.name);
+  }
+
+  // private browsing.
+  const privateBrowsingName = browser.i18n.getMessage('privateBrowsing');
+  containers.set(new OriginAttributes('', 0 as Uint32.Uint32, 1 as Uint32.Uint32), privateBrowsingName);
+
+  selectContainers.textContent = '';
+  for (const [originAttributes, name] of containers) {
+    const option = document.createElement('option');
+    option.value = originAttributes.toString();
+    option.textContent = name;
+    selectContainers.appendChild(option);
+  }
+
+  const selectedOriginAttributes = getSelectedOriginAttributes();
+  renderContainer(selectedOriginAttributes);
+};
+
+const renderContainer = async (originAttributes: OriginAttributes) => {
+  const domains = await cookieProvider.getCookieRegistrableDomainsForOriginAttributes(originAttributes);
+  cookieDomains.textContent = '';
+  for (const domain of domains) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.textContent = domain;
+    td.classList.add('domain');
+    const td2 = document.createElement('td');
+    td2.classList.add('actions');
+    const button = document.createElement('button');
+    button.classList.add('delete');
+    button.addEventListener('click', async () => {
+      const removedOriginAttributes = new OriginAttributes(domain, originAttributes.userContextId, originAttributes.privateBrowsingId);
+      await cookieProvider.removeDataForOriginAttributes(removedOriginAttributes);
+      console.log('Removed browsing data for:', removedOriginAttributes);
+      renderContainer(originAttributes);
+    });
+    td2.appendChild(button);
+    tr.appendChild(td);
+    tr.appendChild(td2);
+    cookieDomains.appendChild(tr);
+  }
+};
+
+selectContainers.addEventListener('change', () => {
+  const selectedOriginAttributes = getSelectedOriginAttributes();
+  renderContainer(selectedOriginAttributes);
+});
+
+render();

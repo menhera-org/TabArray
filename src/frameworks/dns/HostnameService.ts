@@ -56,4 +56,25 @@ export class HostnameService {
     }
   }
 
+  public compareDomains(domain1: string, domain2: string): number {
+    const hostname1 = this.getEncodedDomain(domain1);
+    const hostname2 = this.getEncodedDomain(domain2);
+    const hostname1Parts = hostname1.split(".");
+    const hostname2Parts = hostname2.split(".");
+    const hostname1Length = hostname1Parts.length;
+    const hostname2Length = hostname2Parts.length;
+    const length = Math.min(hostname1Length, hostname2Length);
+    for (let i = 0; i < length; i++) {
+      const part1 = hostname1Parts[hostname1Length - i - 1] ?? '';
+      const part2 = hostname2Parts[hostname2Length - i - 1] ?? '';
+      if (part1 !== part2) {
+        return part1.localeCompare(part2);
+      }
+    }
+    return hostname1Length - hostname2Length;
+  }
+
+  public sortDomains(domains: Iterable<string>): string[] {
+    return [...domains].sort((domain1, domain2) => this.compareDomains(domain1, domain2));
+  }
 }

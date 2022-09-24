@@ -46,6 +46,7 @@ document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
 utils.queryElementNonNull<HTMLElement>('#button-panorama > .button-text').textContent = browser.i18n.getMessage('buttonPanorama');
 utils.queryElementNonNull<HTMLElement>('#button-panorama').title = browser.i18n.getMessage('buttonPanorama');
+utils.queryElementNonNull<HTMLElement>('#button-cookies').title = browser.i18n.getMessage('tooltipCookies');
 utils.queryElementNonNull<HTMLElement>('#button-sidebar > .button-text').textContent = browser.i18n.getMessage('buttonSidebar');
 utils.queryElementNonNull<HTMLElement>('#button-sidebar').title = browser.i18n.getMessage('buttonSidebar');
 utils.queryElementNonNull<HTMLElement>('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
@@ -112,6 +113,11 @@ utils.queryElementNonNull<HTMLButtonElement>('#menu-item-settings').addEventList
 utils.queryElementNonNull<HTMLButtonElement>('#button-panorama').addEventListener('click', (ev) => {
   ev.preventDefault();
   utils.openPanoramaPage();
+});
+
+utils.queryElementNonNull<HTMLButtonElement>('#button-cookies').addEventListener('click', (ev) => {
+  ev.preventDefault();
+  utils.openCookiesPage();
 });
 
 utils.queryElementNonNull<HTMLButtonElement>('#button-sidebar').addEventListener('click', (ev) => {
