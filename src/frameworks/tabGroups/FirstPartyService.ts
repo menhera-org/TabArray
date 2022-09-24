@@ -24,6 +24,7 @@ import { storage } from "..";
 import { utils } from "..";
 import { OriginAttributes } from "./OriginAttributes";
 import { TabGroup } from "./TabGroup";
+import { HostnameService } from "../dns";
 
 const { PromiseUtils } = utils;
 
@@ -41,6 +42,7 @@ export class FirstPartyService {
   // This must be at the end of static definitions.
   private static INSTANCE = new FirstPartyService();
 
+  private readonly hostnameService = HostnameService.getInstance();
   private readonly registrableDomainService = new dns.RegistrableDomainService();
   private readonly publicSuffixListStorage = new storage.StorageItem<PublicSuffixListData>(FirstPartyService.PSL_STORAGE_KEY, {
     rules: [],
@@ -104,5 +106,13 @@ export class FirstPartyService {
     const originAttributes = new OriginAttributes(domain);
     const tabGroup = await TabGroup.createTabGroup(originAttributes);
     await tabGroup.tabList.closeTabs();
+  }
+
+  public getUniqueRegistrableDomains(domains: Iterable<string>): string[] {
+    const uniqueDomains = new Set<string>();
+    for (const domain of domains) {
+      uniqueDomains.add(this.getRegistrableDomain(new URL(`http://${domain}`)));
+    }
+    return this.hostnameService.sortDomains(uniqueDomains);
   }
 }

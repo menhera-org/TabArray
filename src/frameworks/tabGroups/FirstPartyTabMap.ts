@@ -96,7 +96,7 @@ export class FirstPartyTabMap implements ImplementedMap {
   }
 
   public keys(): IterableIterator<string> {
-    return [... this.tabMap.keys()].sort().values();
+    return [... this.tabMap.keys()].sort((a, b) => this.hostnameService.compareDomains(a, b)).values();
   }
 
   public values(): IterableIterator<readonly Tab[]> {

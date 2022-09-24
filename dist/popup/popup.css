@@ -153,7 +153,7 @@ button {
 
 #topbox {
   display: block grid;
-  grid-template-columns: 1fr max-content max-content max-content;
+  grid-template-columns: 1fr max-content max-content max-content max-content;
   grid-template-rows: 2.5em;
   padding-inline-start: 1em;
 }
@@ -207,6 +207,17 @@ button {
   inline-size: 2.5em;
   color: inherit;
   mask: url(/img/grid_view_black_24dp.svg) center center/75% no-repeat;
+  background-color: var(--text-color);
+}
+
+#button-cookies {
+  background-repeat: no-repeat;
+  background-size: 1.5em;
+  background-position: center center;
+  block-size: 100%;
+  inline-size: 2.5em;
+  color: inherit;
+  mask: url(/img/cookie_black_24dp.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 

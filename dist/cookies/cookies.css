@@ -1,0 +1,105 @@
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+
+/*
+  Container Tab Groups
+  Copyright (C) 2022 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+@import url(/theme.css);
+
+:root {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+body {
+  inline-size: 50em;
+  max-inline-size: 50%;
+  margin-inline: auto;
+  margin-block: 1em;
+}
+
+#main {
+  border: solid 2px var(--border-color);
+  border-radius: .5em;
+  paint-order: fill;
+}
+
+#cookies {
+  border-spacing: 0;
+  box-sizing: border-box;
+  inline-size: 100%;
+}
+
+#cookies thead {
+  position: sticky;
+  top: 0;
+  border-top-left-radius: .5em;
+  border-top-right-radius: .5em;
+  z-index: 1;
+}
+
+#cookies thead > tr > th {
+  background-color: var(--background-color);
+}
+
+#cookies thead > tr:first-of-type {
+  border-top-left-radius: .5em;
+  border-top-right-radius: .5em;
+}
+
+#cookies thead > tr:first-of-type > th:first-of-type {
+  border-top-left-radius: .5em;
+}
+
+#cookies thead > tr:first-of-type > th:last-of-type {
+  border-top-right-radius: .5em;
+}
+
+#cookies thead > tr:last-of-type > th {
+  border-bottom: solid 2px var(--border-color);
+}
+
+#cookies tbody tr:not(:last-of-type) > td {
+  border-bottom: solid 1px var(--border-color);
+}
+
+#cookies td.domain, #cookies th {
+  padding: .5em;
+}
+
+#cookies td {
+  vertical-align: middle;
+}
+
+#cookies td.actions {
+  text-align: end;
+}
+
+#cookies .delete {
+  display: block;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  background-color: var(--text-color);
+  opacity: .5;
+  mask: url(/img/close_black_24dp.svg) no-repeat center / 75%;
+  margin-inline-start: auto;
+}
+
+#cookies .delete:hover, #cookies .delete:focus {
+  opacity: 1;
+}

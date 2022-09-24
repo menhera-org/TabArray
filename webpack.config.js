@@ -33,6 +33,10 @@ module.exports = {
       import: './src/panorama/panorama.ts',
       filename: 'panorama/panorama.js',
     },
+    'cookies': {
+      import: './src/cookies/cookies.ts',
+      filename: 'cookies/cookies.js',
+    },
   },
 
   output: {

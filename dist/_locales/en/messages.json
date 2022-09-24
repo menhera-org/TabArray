@@ -398,5 +398,21 @@
   "buttonNewPrivateWindow": {
     "message": "New Private Window",
     "description": "Button to open a new private window."
+  },
+  "headingCookies": {
+    "message": "Cookies",
+    "description": "Heading text of cookies page."
+  },
+  "cookiesHeadingDomain": {
+    "message": "Domain",
+    "description": "Heading text for domains in cookies table."
+  },
+  "cookiesHeadingActions": {
+    "message": "Actions",
+    "description": "Heading text for action buttons in cookies table."
+  },
+  "tooltipCookies": {
+    "message": "View Cookies",
+    "description": "Tooltip for a button to view cookies."
   }
 }

@@ -34,6 +34,8 @@ import { TabSortingService } from './background/TabSortingService';
 import './background/IndexTabHandler';
 import './background/BackgroundContainerObservers';
 import './background/BackgroundMenu';
+import { CookieProvider } from './frameworks/cookies';
+import { OriginAttributes } from './frameworks/tabGroups';
 
 // watchdog
 let scriptCompleted = false;
@@ -280,6 +282,9 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
 setTimeout(() => {
   beforeRequestHandler.startListening();
 }, 1000);
+
+Object.defineProperty(globalThis, 'cookieProvider', { value: new CookieProvider() });
+Object.defineProperty(globalThis, 'OriginAttributes', { value: OriginAttributes });
 
 console.log('background.js loaded in %d ms', Date.now() - scriptStart);
 scriptCompleted = true;

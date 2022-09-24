@@ -19,9 +19,6 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// NOTE: Panorama page is not available for private windows. (To be fixed.)
-// Panorama pages should be separate for normal and private windows.
-
 import browser from 'webextension-polyfill';
 import * as containers from '../modules/containers';
 import { PanoramaStateStore } from "./PanoramaStateStore";
