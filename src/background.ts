@@ -245,7 +245,9 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   // since this is never a private tab, we can use this safely.
   if (details.cookieStoreId == null || details.tabId == -1) return false;
   const userContextId = UserContext.fromCookieStoreId(details.cookieStoreId);
-  if (details.frameId != 0 || 0 != userContextId || details.originUrl || details.incognito || !configExternalTabChooseContainer) {
+  const userContextIds = new Set((await UserContext.getAll(false)).map((userContext) => userContext.id));
+  const userContextIsDefined = userContextIds.has(userContextId);
+  if (details.frameId != 0 || 0 != userContextId && userContextIsDefined || details.originUrl || details.incognito || !configExternalTabChooseContainer && userContextIsDefined) {
     return false;
   }
   if (openTabs.has(details.tabId)) {
