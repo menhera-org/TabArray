@@ -398,5 +398,21 @@
   "buttonNewPrivateWindow": {
     "message": "新規プライベートウインドウ",
     "description": "Button to open a new private window."
+  },
+  "headingCookies": {
+    "message": "Cookie",
+    "description": "Heading text of cookies page."
+  },
+  "cookiesHeadingDomain": {
+    "message": "ドメイン",
+    "description": "Heading text for domains in cookies table."
+  },
+  "cookiesHeadingActions": {
+    "message": "アクション",
+    "description": "Heading text for action buttons in cookies table."
+  },
+  "tooltipCookies": {
+    "message": "Cookie を見る",
+    "description": "Tooltip for a button to view cookies."
   }
 }
