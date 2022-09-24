@@ -34,6 +34,7 @@ import { TabSortingService } from './background/TabSortingService';
 import './background/IndexTabHandler';
 import './background/BackgroundContainerObservers';
 import './background/BackgroundMenu';
+import './background/BackgroundCookieAutoclean';
 
 // watchdog
 let scriptCompleted = false;

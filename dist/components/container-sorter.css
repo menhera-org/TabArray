@@ -30,7 +30,7 @@
 
 .container {
   display: block grid;
-  grid-template-columns: 2em 1fr 2em 2em;
+  grid-template-columns: 2em 1fr 2em 2em auto;
   padding-inline: .5em;
 }
 
@@ -67,4 +67,9 @@
 
 .down {
   mask: url(/img/arrow_downward_black_24dp.svg) no-repeat center / contain;
+}
+
+.options {
+  align-self: center;
+  margin-inline-start: 1em;
 }

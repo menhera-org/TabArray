@@ -414,5 +414,9 @@
   "tooltipCookies": {
     "message": "View Cookies",
     "description": "Tooltip for a button to view cookies."
+  },
+  "enableCookiesAutoclean": {
+    "message": "Enable autoclean of cookies",
+    "description": "Label text for enabling autoclean of cookies."
   }
 }
