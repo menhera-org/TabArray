@@ -416,7 +416,7 @@
     "description": "Tooltip for a button to view cookies."
   },
   "enableCookiesAutoclean": {
-    "message": "Automatically clean cookies when closing a container",
+    "message": "Automatically clean cookies",
     "description": "Label text for enabling autoclean of cookies."
   }
 }
