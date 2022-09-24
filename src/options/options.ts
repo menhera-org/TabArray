@@ -24,6 +24,7 @@ import { ContainerSorterElement } from '../components/container-sorter';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { UserContextService } from '../userContexts/UserContextService';
+import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
 
 interface HTMLFormInput extends HTMLElement {
   value: string;
@@ -31,6 +32,7 @@ interface HTMLFormInput extends HTMLElement {
 
 const sortingOrderStore = UserContextSortingOrderStore.getInstance();
 const userContextService = UserContextService.getInstance();
+const cookieAutocleanService = CookieAutocleanService.getInstance();
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
@@ -101,9 +103,10 @@ setTextContent('label[for="select-popupSize"]', 'labelPopupSize');
 setTextContent('#select-popupSize > option[value="standard"]', 'labelPopupSizeStandard');
 setTextContent('#select-popupSize > option[value="large"]', 'labelPopupSizeLarge');
 
-UserContext.getAll().then((userContexts) => {
+UserContext.getAll().then(async (userContexts) => {
+  const autocleanEnabledUserContextIds = await cookieAutocleanService.getAutocleanEnabledUserContexts();
   const sortedUserContext = sortingOrderStore.sort(userContexts.map((userContext) => userContextService.fillDefaultValues(userContext)));
-  const containerSorter = new ContainerSorterElement(sortedUserContext);
+  const containerSorter = new ContainerSorterElement(sortedUserContext, autocleanEnabledUserContextIds);
   document.body?.appendChild(containerSorter);
 
   const callback = async () => {

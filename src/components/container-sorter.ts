@@ -19,14 +19,16 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
 import { EventSink } from "../frameworks/utils";
 import { Uint32 } from "../frameworks/types";
-
+import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
 export class ContainerSorterElement extends HTMLElement {
+  private readonly _cookieAutocleanService = CookieAutocleanService.getInstance();
   public readonly onChanged = new EventSink<Uint32.Uint32[]>();
 
-  public constructor(userContexts: UserContext[]) {
+  public constructor(userContexts: UserContext[], autocleanEnabledUserContextIds: Uint32.Uint32[] = []) {
     super();
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
@@ -42,7 +44,7 @@ export class ContainerSorterElement extends HTMLElement {
     containersElement.id = 'containers';
     this.shadowRoot.appendChild(containersElement);
 
-    this.setUserContexts(userContexts);
+    this.setUserContexts(userContexts, autocleanEnabledUserContextIds);
   }
 
   private get containersElement(): HTMLDivElement {
@@ -53,7 +55,28 @@ export class ContainerSorterElement extends HTMLElement {
     return element as HTMLDivElement;
   }
 
-  private renderUserContext(userContext: UserContext): HTMLDivElement {
+  private createOptionsElement(userContext: UserContext, autocleanEnabled = false): HTMLDivElement {
+    const options = document.createElement('div');
+    options.classList.add('options');
+    options.classList.add('browser-style');
+    const autocleanLabel = document.createElement('label');
+    const autocleanCheckbox = document.createElement('input');
+    autocleanCheckbox.type = 'checkbox';
+    autocleanCheckbox.checked = autocleanEnabled;
+    autocleanCheckbox.addEventListener('change', () => {
+      if (autocleanCheckbox.checked) {
+        this._cookieAutocleanService.enableAutocleanForUserContext(userContext.id);
+      } else {
+        this._cookieAutocleanService.disableAutocleanForUserContext(userContext.id);
+      }
+    });
+    autocleanLabel.appendChild(autocleanCheckbox);
+    autocleanLabel.appendChild(document.createTextNode(browser.i18n.getMessage('enableCookiesAutoclean')));
+    options.appendChild(autocleanLabel);
+    return options;
+  }
+
+  private renderUserContext(userContext: UserContext, autocleanEnabled = false): HTMLDivElement {
     const element = document.createElement('div');
     element.classList.add('container');
     element.dataset.userContextId = userContext.id.toString();
@@ -96,14 +119,17 @@ export class ContainerSorterElement extends HTMLElement {
       this.onChanged.dispatch(this.getOrder());
     });
 
+    const options = this.createOptionsElement(userContext, autocleanEnabled);
+    element.appendChild(options);
+
     return element;
   }
 
-  public setUserContexts(userContexts: UserContext[]) {
+  public setUserContexts(userContexts: UserContext[], autocleanEnabledUserContextIds: Uint32.Uint32[] = []) {
     const containersElement = this.containersElement;
     containersElement.textContent = '';
     for (const userContext of userContexts) {
-      containersElement.appendChild(this.renderUserContext(userContext));
+      containersElement.appendChild(this.renderUserContext(userContext, autocleanEnabledUserContextIds.includes(userContext.id)));
     }
   }
 

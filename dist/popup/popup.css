@@ -161,6 +161,7 @@ button {
 #search-wrapper {
   display: grid;
   grid-template-columns: max-content 1fr;
+  border-block-end: solid 2px transparent;
 }
 
 #search-wrapper::before {
@@ -173,8 +174,8 @@ button {
 }
 
 #search-wrapper:focus-within {
-  box-shadow: inset 0 0 .25rem var(--accent-color);
   outline: none;
+  border-color: var(--accent-color);
 }
 
 #search {

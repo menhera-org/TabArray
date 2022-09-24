@@ -414,5 +414,9 @@
   "tooltipCookies": {
     "message": "Cookie を見る",
     "description": "Tooltip for a button to view cookies."
+  },
+  "enableCookiesAutoclean": {
+    "message": "Cookie を自動的に削除する",
+    "description": "Label text for enabling autoclean of cookies."
   }
 }
