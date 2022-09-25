@@ -75,7 +75,7 @@ export class PopupCurrentWindowRenderer {
     const pinnedTabs = windowUserContextList.getPinnedTabs();
     let tabCount = 0;
     for (const tab of pinnedTabs) {
-      const tabElement = this.popupRenderer.renderTab(tab);
+      const tabElement = this.popupRenderer.renderTab(tab, windowUserContextList.getUserContext(tab.userContextId));
       element.appendChild(tabElement);
       tabCount++;
     }
