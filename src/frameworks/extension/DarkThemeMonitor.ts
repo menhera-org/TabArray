@@ -19,5 +19,19 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export { ExtensionService } from './ExtensionService';
-export { DarkThemeMonitor } from './DarkThemeMonitor';
+import { EventSink } from "../utils";
+
+export class DarkThemeMonitor {
+  private _matchedMedia = window.matchMedia("(prefers-color-scheme: dark)");
+  public readonly onChanged = new EventSink<void>();
+
+  public constructor() {
+    this._matchedMedia.addEventListener("change", () => {
+      this.onChanged.dispatch();
+    });
+  }
+
+  public get isDarkTheme(): boolean {
+    return this._matchedMedia.matches;
+  }
+}
