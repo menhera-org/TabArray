@@ -31,11 +31,13 @@ import { UserContext } from "../frameworks/tabGroups";
 import * as i18n from '../modules/i18n';
 import { WindowService } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
+import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 
 const panoramaStateStore = new PanoramaStateStore();
 const userContextService = UserContextService.getInstance();
 const windowService = WindowService.getInstance();
 const tabGroupService = TabGroupService.getInstance();
+const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -50,7 +52,9 @@ const renderTab = (tab: Tab) => {
   } else if (tab.url) {
     tabElement.tabTitle = tab.url;
   }
-  if (tab.favIconUrl) {
+  if (tab.url == 'about:addons' || tab.favIconUrl == 'chrome://mozapps/skin/extensions/extension.svg') {
+    tabElement.iconUrl = '/img/extension.svg';
+  } else if (tab.favIconUrl) {
     tabElement.iconUrl = tab.favIconUrl;
   }
   const previewUrl = panoramaStateStore.getPreviewUrl(tab.id);
@@ -93,8 +97,9 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
 
 const render = async () => {
   console.log('render()');
+  await userContextSortingOrderStore.initialized;
   const isPrivate = await windowService.isPrivateWindow(browser.windows.WINDOW_ID_CURRENT);
-  const userContexts = (await UserContext.getAll(isPrivate))
+  const userContexts = userContextSortingOrderStore.sort(await UserContext.getAll(isPrivate))
     .map((userContext) => userContextService.fillDefaultValues(userContext));
   const containerElements = await Promise.all(userContexts.map((userContext) => renderContainer(userContext, isPrivate)));
   const nonemptyContainerElements = containerElements.filter((containerElement) => containerElement.tabCount > 0);
