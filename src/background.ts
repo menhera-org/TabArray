@@ -260,6 +260,9 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   const tab = await Tab.get(tabId);
   const {windowId} = tab;
   const activeUserContextId = getActiveUserContext(windowId);
+  if (tab.discarded) {
+    return false;
+  }
   if ('sticky' == configExternalTabContainerOption) {
     if (userContextId == activeUserContextId) {
       console.log('Tab %d in active user context %d', tabId, userContextId);
