@@ -110,9 +110,10 @@ UserContext.getAll().then(async (userContexts) => {
   document.body?.appendChild(containerSorter);
 
   const callback = async () => {
+    const autocleanEnabledUserContextIds = await cookieAutocleanService.getAutocleanEnabledUserContexts();
     const userContexts = (await UserContext.getAll()).map((userContext) => userContextService.fillDefaultValues(userContext));
     const sortedUserContext = sortingOrderStore.sort(userContexts);
-    containerSorter.setUserContexts(sortedUserContext);
+    containerSorter.setUserContexts(sortedUserContext, autocleanEnabledUserContextIds);
   };
 
   sortingOrderStore.onChanged.addListener(callback);
