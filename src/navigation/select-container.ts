@@ -54,6 +54,7 @@ if (!containersElement || !headingElement || !descriptionElement || !promptEleme
 }
 
 
+document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = i18n.getMessage('titleSelectContainer');
 headingElement.textContent = i18n.getMessage('titleSelectContainer');
 descriptionElement.textContent = i18n.getMessage('descriptionSelectContainer', url || 'about:blank');

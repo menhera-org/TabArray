@@ -38,6 +38,7 @@ if (!selectContainers || !cookieDomains || !headingCookies || !cookiesHeadingDom
   throw new Error('element is not found.');
 }
 
+document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('headingCookies');
 headingCookies.textContent = browser.i18n.getMessage('headingCookies');
 cookiesHeadingDomain.textContent = browser.i18n.getMessage('cookiesHeadingDomain');
