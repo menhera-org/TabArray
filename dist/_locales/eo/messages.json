@@ -56,7 +56,7 @@
     "description": "Tooltip for the button to unpin a tab."
   },
   "tooltipHideContainerButton": {
-    "message": "Kaŝi la langetojn de tiu ujo",
+    "message": "Kolapsi la langetojn de tiu ujo",
     "description": "Tooltip for the button to hide the tabs of a container."
   },
   "tooltipUnhideContainerButton": {
@@ -190,43 +190,43 @@
     "description": "Heading text of options page for changing Firefox settings."
   },
   "optionsDescriptionExperimental": {
-    "message": "Disabling some of these options can solve buggy behaviors when observed.",
+    "message": "Malebligi iujn ĉi tiujn opciojn povas solvi fuŝajn kondutojn kiam observate.",
     "description": "Description text for experimental features options."
   },
   "optionsDescriptionFirefox": {
-    "message": "Here you can change some hidden Firefox settings related to privacy.",
+    "message": "Ĉi tie vi povas ŝanĝi kelka kaŝitajn agordojn de Firefox rilata al privateco..",
     "description": "Description text for Firefox settings options."
   },
   "panoramaGrid": {
-    "message": "Panorama Grid",
+    "message": "Panoramo Krado",
     "description": "Panorama Grid page (grid view of container and tabs)"
   },
   "buttonPanorama": {
-    "message": "Open Panorama Grid",
+    "message": "Malfermi Panoramo Krado",
     "description": "Button label to open Panorama Grid"
   },
   "buttonOpenTabInContainer": {
-    "message": "Open New Tab",
+    "message": "Malfermi novan langeton",
     "description": "Button label to open a new tab in the specified container"
   },
   "buttonTabClose": {
-    "message": "Close This Tab",
+    "message": "Fermi la langeton",
     "description": "Button label to close a tab."
   },
   "tooltipCollapseContainers": {
-    "message": "Collapse Containers",
+    "message": "Kolapsi la ujojn",
     "description": "Tooltip for the button to collapse inactive containers."
   },
   "tooltipExpandContainers": {
-    "message": "Expand Containers",
+    "message": "Etendi la ujojn",
     "description": "Tooltip for the button to expand containers."
   },
   "titleSelectContainer": {
-    "message": "Select a Container",
+    "message": "Elekti ujon",
     "description": "Title of the popup asking the user to choose a container to open a new tab in."
   },
   "descriptionSelectContainer": {
-    "message": "You are about to open a new Tab: $URL$.",
+    "message": "Vi estas malfermonta novan langeton: $URL$.",
     "description": "Confirmation message before the user chooses a container to open a new tab in.",
     "placeholders": {
       "url": {
@@ -236,47 +236,47 @@
     }
   },
   "promptSelectContainer": {
-    "message": "Please select a Container to open this tab in.",
+    "message": "Elektu ujon:",
     "description": "Message asking the user to select a container for a new tab."
   },
   "labelSelectContainerExternalTabs": {
-    "message": "Select a Container when an external application open a Tab",
+    "message": "Elekti ujon kiam ekstera aplicaĵo malfermas langeton",
     "description": "Option to enable container selection on externally opened tabs."
   },
   "labelExternalTabSelectContainerOption": {
-    "message": "When an external application opens a tab:",
+    "message": "Kiam ekstera aplicaĵo malfermas langeton:",
     "description": "Label for option for handling of externally opened tabs"
   },
   "labelExternalTabOptionChooseContainer": {
-    "message": "Choose a container every time",
+    "message": "Elekti ujon ĉiufoje",
     "description": "Option to choose a container every time an external application opens a tab."
   },
   "labelExternalTabOptionStickyContainer": {
-    "message": "Open in last active container",
+    "message": "Malfermi langeton en lasta aktiva ujo",
     "description": "Option to use the last active container for externally opened tabs."
   },
   "labelExternalTabOptionDisabled": {
-    "message": "Open in default container (No Container)",
+    "message": "Malfermi langeton en defaŭlta ujo (Neniu ujo)",
     "description": "Option to disable handling of externally opened tabs."
   },
   "labelGroupIndexOption": {
-    "message": "Show an index tab for each container",
+    "message": "Montri Indeksajn Langetojn por ujoj",
     "description": "Option to show index tabs for containers."
   },
   "labelGroupIndexOptionAlways": {
-    "message": "All containers",
+    "message": "Ĉiu ujoj",
     "description": "Option to show index tabs for all containers."
   },
   "labelGroupIndexOptionCollapsed": {
-    "message": "Collapsed containers",
+    "message": "Kolapsita ujoj",
     "description": "Option to show index tabs for collapsed containers."
   },
   "labelGroupIndexOptionNever": {
-    "message": "Never",
+    "message": "Nenium",
     "description": "Option to show index tabs for no containers."
   },
   "optionsHeadingAppearance": {
-    "message": "Appearance Options",
+    "message": "Aspektaj agordoj",
     "description": "Heading text of options page for changing appearance settings."
   },
   "labelPopupSize": {
