@@ -53,6 +53,13 @@ This extension is intended to replace the following features/extensions:
 
 - Keyboard shortcuts will be implemented.
 
+## Available languages
+
+- English
+- 日本語
+- Français
+- Esperanto
+
 ## About the project
 
 - _TabArray_ is the code name, and _Container Tab Groups_ is the user-facing name.
