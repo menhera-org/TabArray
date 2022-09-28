@@ -64,7 +64,7 @@ This extension is intended to replace the following features/extensions:
 ### Translators
 
 - metastable-void (ja, eo)
-- 佐々木Alex🐇 (fr, es-ES)
+- 佐々木Alex🐇 (Sasaki Alex🐇) (fr, es-ES)
 
 ## About the project
 
