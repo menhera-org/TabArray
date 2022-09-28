@@ -36,11 +36,11 @@ type PublicSuffixListData = {
 };
 
 export class FirstPartyService {
-  private static PSL_STORAGE_KEY = "weeg.dns.publicSuffixList";
-  private static PSL_UPDATE_INTERVAL = 1000 * 60 * 60 * 24; // 1 day
+  private static readonly PSL_STORAGE_KEY = "weeg.dns.publicSuffixList";
+  private static readonly PSL_UPDATE_INTERVAL = 1000 * 60 * 60 * 24; // 1 day
 
   // This must be at the end of static definitions.
-  private static INSTANCE = new FirstPartyService();
+  private static readonly INSTANCE = new FirstPartyService();
 
   private readonly hostnameService = HostnameService.getInstance();
   private readonly registrableDomainService = new dns.RegistrableDomainService();
@@ -99,6 +99,9 @@ export class FirstPartyService {
   }
 
   public getRegistrableDomain(url: URL): string {
+    this.updatePublicSuffixList().catch((e) => {
+      console.error(e);
+    });
     return this.registrableDomainService.getRegistrableDomain(url.href);
   }
 
