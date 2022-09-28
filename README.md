@@ -59,6 +59,12 @@ This extension is intended to replace the following features/extensions:
 - 日本語
 - Français
 - Esperanto
+- Español
+
+### Translators
+
+- metastable-void (ja, eo)
+- 佐々木Alex🐇 (fr, es-ES)
 
 ## About the project
 
