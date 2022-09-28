@@ -51,6 +51,7 @@ export class FirstPartyService {
     initialized: false,
   }, storage.StorageArea.LOCAL);
   private readonly initializationPromise = PromiseUtils.createPromise<void>();
+  private updatedTime = -Infinity;
 
   public static getInstance(): FirstPartyService {
     return FirstPartyService.INSTANCE;
@@ -65,7 +66,7 @@ export class FirstPartyService {
       } else {
         this.registrableDomainService.importRules(value.rules, value.exceptionRules);
         this.initializationPromise.resolve();
-        if (Date.now() - value.updatedTime > FirstPartyService.PSL_UPDATE_INTERVAL) {
+        if (Date.now() - value.updatedTime >= FirstPartyService.PSL_UPDATE_INTERVAL) {
           this.updatePublicSuffixList().catch((e) => {
             console.error(e);
           });
@@ -82,9 +83,17 @@ export class FirstPartyService {
     }, FirstPartyService.PSL_UPDATE_INTERVAL);
   }
 
+  private recentlyUpdated(): boolean {
+    return Date.now() - this.updatedTime < FirstPartyService.PSL_UPDATE_INTERVAL;
+  }
+
   public async updatePublicSuffixList(): Promise<void> {
+    if (this.recentlyUpdated()) {
+      return;
+    }
     let {updatedTime} = await this.publicSuffixListStorage.getValue();
-    if (Date.now() - updatedTime < FirstPartyService.PSL_UPDATE_INTERVAL) {
+    this.updatedTime = updatedTime;
+    if (this.recentlyUpdated()) {
       return;
     }
     await this.registrableDomainService.updateRules();
