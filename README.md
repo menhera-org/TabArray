@@ -49,9 +49,27 @@ This extension is intended to replace the following features/extensions:
 
 - View source (view-source: URLs) on No Container does not work. This is the limitation of WebExtensions API.
 
+## Compatiblity
+
+### Compatible
+
+- Firefox Multi-Account Containers
+- Facebook Container
+- Temporary Containers
+- Most extensions that changes the New Tab page.
+
+Probably more compatible extensions...
+
+### Incompatible
+
+- Tree Style Tab
+- Many other tab management extensions? (#32)
+
+**Improve the compatibility with top 10 popular tab management extensions, for example**
+
 ## What's next
 
-- Keyboard shortcuts will be implemented.
+- Keyboard shortcuts will be implemented. → The first implementation is available.
 
 ## Available languages
 
