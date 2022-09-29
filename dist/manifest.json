@@ -18,6 +18,7 @@
     "cookies",
     "contextualIdentities",
     "menus",
+    "menus.overrideContext",
     "storage",
     "browserSettings",
     "privacy",
