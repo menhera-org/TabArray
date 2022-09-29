@@ -203,6 +203,20 @@ button:focus {
   padding-inline: .5em;
   padding-block: .5em;
   overflow: hidden;
-  text-overflow: ellipsis;
+  /* text-overflow: ellipsis; */
   white-space: nowrap;
+  position: relative;
+}
+
+#tab-title::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to left, white, black 2em);
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
