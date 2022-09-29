@@ -24,7 +24,8 @@
     "webRequest",
     "webRequestBlocking",
     "sessions",
-    "browsingData"
+    "browsingData",
+    "theme"
   ],
   "incognito": "spanning",
   "background": {
