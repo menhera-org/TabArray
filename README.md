@@ -56,6 +56,7 @@ This extension is intended to replace the following features/extensions:
 - Firefox Multi-Account Containers
 - Facebook Container
 - Temporary Containers
+- Tab Session Manager
 - Most extensions that changes the New Tab page.
 
 Probably more compatible extensions...
