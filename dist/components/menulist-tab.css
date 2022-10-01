@@ -216,7 +216,6 @@ button:focus {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(to left, white, black 2em);
-  mix-blend-mode: screen;
+  background-image: linear-gradient(to left, var(--background-color), transparent 2em);
   pointer-events: none;
 }
