@@ -45,8 +45,8 @@ const renderInBackground = () => {
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
 utils.queryElementNonNull<HTMLElement>('#button-panorama > .button-text').textContent = browser.i18n.getMessage('buttonPanorama');
-utils.queryElementNonNull<HTMLElement>('#button-panorama').title = browser.i18n.getMessage('buttonPanorama');
-utils.queryElementNonNull<HTMLElement>('#button-cookies').title = browser.i18n.getMessage('tooltipCookies');
+utils.queryElementNonNull<HTMLElement>('#button-cookies > .button-text').textContent = browser.i18n.getMessage('tooltipCookies');
+utils.queryElementNonNull<HTMLElement>('#button-about-addon > .button-text').textContent = browser.i18n.getMessage('buttonAboutAddon');
 utils.queryElementNonNull<HTMLElement>('#button-sidebar > .button-text').textContent = browser.i18n.getMessage('buttonSidebar');
 utils.queryElementNonNull<HTMLElement>('#button-sidebar').title = browser.i18n.getMessage('buttonSidebar');
 utils.queryElementNonNull<HTMLElement>('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
@@ -99,6 +99,17 @@ extensionService.isAllowedInPrivateBrowsing().then((allowed) => {
   if (!allowed) {
     buttonNewPrivateWindow.disabled = true;
   }
+});
+
+const buttonMenu = utils.queryElementNonNull<HTMLButtonElement>('#button-menu');
+const topMenu = utils.queryElementNonNull<HTMLElement>('#top-menu');
+buttonMenu.addEventListener('click', () => {
+  topMenu.hidden = !topMenu.hidden;
+});
+
+const buttonAboutAddon = utils.queryElementNonNull<HTMLButtonElement>('#button-about-addon');
+buttonAboutAddon.addEventListener('click', () => {
+  utils.openAddonPage();
 });
 
 buttonNewPrivateWindow.addEventListener('click', () => {

@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { PANORAMA_PAGE, COOKIES_PAGE } from '../defs';
+import { PANORAMA_PAGE, COOKIES_PAGE, ADDON_PAGE } from '../defs';
 
 export class PopupUtils {
   public getActiveElement(): HTMLElement | null {
@@ -65,6 +65,14 @@ export class PopupUtils {
       throw new Error(`Element not found: ${query}`);
     }
     return element as T;
+  }
+
+  public openAddonPage() {
+    this.handlePopupClose(browser.tabs.create({
+      active: true,
+      windowId: browser.windows.WINDOW_ID_CURRENT,
+      url: browser.runtime.getURL(ADDON_PAGE),
+    }));
   }
 
   public openPanoramaPage() {

@@ -156,6 +156,16 @@ button {
   grid-template-columns: 1fr max-content max-content max-content max-content;
   grid-template-rows: 2.5em;
   padding-inline-start: 1em;
+  position: relative;
+}
+
+#top-menu {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-end: 0;
+  background-color: var(--background-color);
+  box-shadow: 0 0 .5em #888; /* TODO: use theme color */
+  z-index: 10;
 }
 
 #search-wrapper {
@@ -196,30 +206,23 @@ button {
   block-size: 100%;
   inline-size: 2.5em;
   color: inherit;
-  mask: url(/img/firefox-icons/sidebars.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/sidebars.svg) center center/50% no-repeat;
   background-color: var(--text-color);
 }
 
-#button-panorama {
+#button-menu {
   background-repeat: no-repeat;
   background-size: 1.5em;
   background-position: center center;
   block-size: 100%;
   inline-size: 2.5em;
   color: inherit;
-  mask: url(/img/material-icons/grid_view.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/menu.svg) center center/50% no-repeat;
   background-color: var(--text-color);
 }
 
-#button-cookies {
-  background-repeat: no-repeat;
-  background-size: 1.5em;
-  background-position: center center;
-  block-size: 100%;
-  inline-size: 2.5em;
+#top-menu > button {
   color: inherit;
-  mask: url(/img/material-icons/cookie.svg) center center/75% no-repeat;
-  background-color: var(--text-color);
 }
 
 #button-new-container {
@@ -233,7 +236,7 @@ button {
   background-color: var(--text-color);
 }
 
-#button-panorama > .button-text, #button-new-container > .button-text, #button-sidebar > .button-text {
+:is(#button-new-container, #button-sidebar) > .button-text {
   display: none;
 }
 
