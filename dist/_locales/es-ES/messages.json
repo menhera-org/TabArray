@@ -418,5 +418,37 @@
   "enableCookiesAutoclean": {
     "message": "Borrar automáticamente las Cookies",
     "description": "Label text for enabling autoclean of cookies."
+  },
+  "contextMenuNewTab": {
+    "message": "Nueva pestaña",
+    "description": "New Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuReloadTab": {
+    "message": "Recargar pestaña",
+    "description": "Reload Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuMuteTab": {
+    "message": "Silenciar pestaña",
+    "description": "Mute Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuUnmuteTab": {
+    "message": "Restaurar sonido en pestaña",
+    "description": "Unmute Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuPinTab": {
+    "message": "Fijar pestaña",
+    "description": "Pin Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuUnpinTab": {
+    "message": "Soltar pestaña",
+    "description": "Unpin Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuDuplicateTab": {
+    "message": "DDuplicar pestaña",
+    "description": "Duplicate Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuCloseTab": {
+    "message": "Cerrar pestaña",
+    "description": "Close Tab menu (same as browser's tab menu)"
   }
 }
