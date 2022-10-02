@@ -169,7 +169,7 @@ button {
   content: '';
   inline-size: 2.5em;
   block-size: 100%;
-  mask: url(/img/material-icons/search.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/search.svg) center center / 50% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -196,7 +196,7 @@ button {
   block-size: 100%;
   inline-size: 2.5em;
   color: inherit;
-  mask: url(/img/sidebar.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/sidebars.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -229,7 +229,7 @@ button {
   block-size: 100%;
   inline-size: 2.5em;
   color: inherit;
-  mask: url(/img/material-icons/add.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/add.svg) center center / 50% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -251,12 +251,12 @@ button {
 }
 
 #button-settings::before {
-  mask: url(/img/material-icons/settings.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/settings.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
 #button-new-window::before, #button-new-private-window::before {
-  mask: url(/img/material-icons/add.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/add.svg) center center / 60% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -295,7 +295,7 @@ button {
   display: block;
   inline-size: 3rem;
   block-size: 3rem;
-  mask: url(/img/material-icons/arrow_back.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/back.svg) center center/50% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -328,15 +328,15 @@ button {
 }
 
 #bottom-menu > #menu-item-sites::before {
-  mask: url(/img/material-icons/public.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/defaultFavicon.svg) center center/75% no-repeat;
 }
 
 #bottom-menu > #menu-item-windows::before {
-  mask: url(/img/material-icons/window.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/window.svg) center center/75% no-repeat;
 }
 
 #bottom-menu > #menu-item-settings::before {
-  mask: url(/img/material-icons/settings.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/settings.svg) center center/75% no-repeat;
 }
 
 [data-active-content="main"] #menu-item-main {
@@ -385,7 +385,7 @@ button {
   inline-size: 2rem;
   opacity: .5;
   background-color: var(--text-color);
-  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
 }
 
 #sites > * > button > .site-close:hover {
@@ -494,7 +494,7 @@ button {
 }
 
 .tab > .tab-close-button {
-  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
   background-color: var(--text-color);
   opacity: .25;
 }
@@ -553,7 +553,7 @@ button {
 }
 
 .window-label > .window-close-button {
-  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -619,13 +619,7 @@ button {
 }
 
 .container > .close-container-button {
-  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
-  background-color: var(--text-color);
-  opacity: .25;
-}
-
-.container > .delete-container-button {
-  mask: url(/img/material-icons/delete.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
   background-color: var(--text-color);
   opacity: .25;
 }

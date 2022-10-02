@@ -25,7 +25,16 @@ import { Tab } from "../frameworks/tabs";
 import { EventSink } from '../frameworks/utils';
 
 export class MenulistTabElement extends HTMLElement {
+  private static readonly MASKED_ICONS = new Map([
+    ['chrome://global/skin/icons/settings.svg', '/img/firefox-icons/settings.svg'],
+    ['chrome://global/skin/icons/developer.svg', '/img/firefox-icons/developer.svg'],
+    ['chrome://browser/skin/window.svg', '/img/firefox-icons/window.svg'],
+    ['chrome://mozapps/skin/extensions/extension.svg', '/img/firefox-icons/extension.svg'],
+    ['', '/img/firefox-icons/defaultFavicon.svg'],
+  ]);
+
   private _tabId = -1;
+
   public readonly onTabClicked = new EventSink<number>();
   public readonly onPin = new EventSink<number>();
   public readonly onUnpin = new EventSink<number>();
@@ -42,9 +51,6 @@ export class MenulistTabElement extends HTMLElement {
     this.setUserContext(userContext);
     this.closeButton.title = browser.i18n.getMessage('buttonTabClose');
     // this.privateIconElement.title = browser.i18n.getMessage('buttonTabPrivate');
-    this.iconElement.onerror = () => {
-      this.iconElement.src = '/img/transparent.png';
-    };
     this.tabButton.onclick = () => {
       this.onTabClicked.dispatch(this.tabId);
     };
@@ -87,7 +93,7 @@ export class MenulistTabElement extends HTMLElement {
     tabButton.id = 'tab-button';
     tabMain.appendChild(tabButton);
 
-    const tabIcon = document.createElement('img');
+    const tabIcon = document.createElement('span');
     tabIcon.id = 'tab-icon';
     tabButton.appendChild(tabIcon);
 
@@ -102,13 +108,11 @@ export class MenulistTabElement extends HTMLElement {
 
   public setTab(tab: Tab) {
     this._tabId = tab.id;
+
     this.titleElement.textContent = tab.title;
     this.tabButton.title = tab.url;
-    if (tab.url == 'about:addons') {
-      this.iconUrl = '/img/extension.svg';
-    } else {
-      this.iconUrl = tab.favIconUrl;
-    }
+    this.iconUrl = tab.favIconUrl;
+
     if (tab.pinned) {
       this.pinButton.classList.add("pinned");
       this.pinButton.title = browser.i18n.getMessage('tooltipTabUnpinButton');
@@ -116,14 +120,17 @@ export class MenulistTabElement extends HTMLElement {
       this.pinButton.classList.remove("pinned");
       this.pinButton.title = browser.i18n.getMessage('tooltipTabPinButton');
     }
+
     if (tab.isPrivate()) {
       this.privateIconElement.style.visibility = "visible";
     } else {
       this.privateIconElement.style.visibility = "hidden";
     }
+
     if (tab.discarded) {
       this.tabButton.classList.add("discarded");
     }
+
     if (tab.active) {
       this.tabButton.classList.add("active");
     }
@@ -169,9 +176,9 @@ export class MenulistTabElement extends HTMLElement {
     return this.getButton("tab-close-button");
   }
 
-  private get iconElement(): HTMLImageElement {
+  private get iconElement(): HTMLSpanElement {
     const icon = this.getShadowElement("tab-icon");
-    return icon as HTMLImageElement;
+    return icon as HTMLSpanElement;
   }
 
   private get privateIconElement(): HTMLImageElement {
@@ -190,11 +197,21 @@ export class MenulistTabElement extends HTMLElement {
   }
 
   public get iconUrl(): string {
-    return this.iconElement.src;
+    return this.iconElement.dataset.iconUrl ?? '';
   }
 
   public set iconUrl(url: string) {
-    this.iconElement.src = url;
+    this.iconElement.dataset.iconUrl = url;
+    if (MenulistTabElement.MASKED_ICONS.has(url)) {
+      const replacedUrl = MenulistTabElement.MASKED_ICONS.get(url) ?? '';
+      this.iconElement.classList.add('masked');
+      this.iconElement.style.mask = `url(${replacedUrl}) center center / 75% no-repeat`;
+      this.iconElement.style.backgroundImage = '';
+    } else {
+      this.iconElement.classList.remove('masked');
+      this.iconElement.style.mask = '';
+      this.iconElement.style.backgroundImage = `url(${url})`;
+    }
   }
 
   public get tabTitle(): string {

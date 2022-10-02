@@ -89,7 +89,7 @@ button {
 .container-new-tab::before {
   display: block;
   content: '';
-	mask: url(/img/material-icons/add.svg) center center/40% no-repeat;
+	mask: url(/img/firefox-icons/add.svg) center center/40% no-repeat;
 	background-color: var(--text-color);
   inline-size: 16rem;
   min-block-size: 9rem;

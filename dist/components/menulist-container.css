@@ -84,7 +84,7 @@ button[disabled] {
 }
 
 #container-close-button {
-  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
 }
 
 #container-options-button {

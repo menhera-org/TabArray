@@ -83,16 +83,6 @@ button:focus {
   font-weight: bold;
 }
 
-.tab-icon {
-  inline-size: 75%;
-  align-self: center;
-  justify-self: center;
-}
-
-.tab-icon.img-error {
-  visibility: hidden;
-}
-
 .tab > button, .container > button, .window-label > button {
   background-size: 1.5em;
   background-repeat: no-repeat;
@@ -117,7 +107,7 @@ button:focus {
 }
 
 .tab > .tab-close-button {
-  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
   background-color: var(--text-color);
   opacity: .25;
 }
@@ -162,7 +152,7 @@ button:focus {
   background-color: var(--hover-color);
 }
 
-#tab-icon, #tab-private-icon {
+#tab-private-icon {
   inline-size: 75%;
   align-self: center;
   justify-self: center;
@@ -191,7 +181,7 @@ button:focus {
 }
 
 #tab-close-button {
-  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
   opacity: .25;
 }
 
@@ -218,4 +208,14 @@ button:focus {
   height: 100%;
   background-image: linear-gradient(to left, var(--background-color), transparent 2em);
   pointer-events: none;
+}
+
+#tab-icon {
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center center;
+}
+
+#tab-icon.masked {
+  background-color: var(--text-color);
 }
