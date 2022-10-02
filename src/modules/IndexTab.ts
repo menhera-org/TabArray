@@ -20,7 +20,7 @@
 import browser from 'webextension-polyfill';
 
 const indexPageUrl = browser.runtime.getURL('/index/index-tab.html');
-const defaultIconUrl = browser.runtime.getURL('/img/category_black_24dp.svg')
+const defaultIconUrl = browser.runtime.getURL('/img/material-icons/category.svg');
 const iconUrl = browser.runtime.getURL('/img/usercontext.svg');
 
 export class IndexTab {

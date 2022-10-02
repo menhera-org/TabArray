@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
 
 export class UserContextService {
-  private static readonly DEFAULT_ICON_URL = browser.runtime.getURL('/img/category_black_24dp.svg');
+  private static readonly DEFAULT_ICON_URL = browser.runtime.getURL('/img/material-icons/category.svg');
   private static readonly DEFAULT_COLOR_CODE = '#7c7c7d';
 
   /**

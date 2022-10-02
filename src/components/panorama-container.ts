@@ -68,7 +68,7 @@ export class PanoramaContainerElement extends HTMLElement {
 
   public setUserContext(userContext: UserContext): void {
     this._userContextId = userContext.id;
-    const iconUrl = userContext.iconUrl || '/img/category_black_24dp.svg';
+    const iconUrl = userContext.iconUrl || '/img/material-icons/category.svg';
     if (iconUrl.includes(')')) {
       throw new Error(`Invalid icon URL: ${iconUrl}`);
     }

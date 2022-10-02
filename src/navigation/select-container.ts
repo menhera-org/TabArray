@@ -96,7 +96,7 @@ const renderButton = (tooltipText: string, name: string, iconUrl: string, useIco
 const renderUserContext = (origUserContext: UserContext, aUserContextElement: HTMLButtonElement | null = null) => {
   const userContext = UserContextService.getInstance().fillDefaultValues(origUserContext);
   const tooltipText = i18n.getMessage('defaultContainerName', String(userContext.id));
-  const iconUrl = userContext.iconUrl || '/img/category_black_24dp.svg';
+  const iconUrl = userContext.iconUrl || '/img/material-icons/category.svg';
   const userContextElement = renderButton(tooltipText, userContext.name, iconUrl, true, userContext.colorCode || '#000', aUserContextElement);
   return userContextElement;
 };
@@ -104,7 +104,7 @@ const renderUserContext = (origUserContext: UserContext, aUserContextElement: HT
 const createPrivateBrowsingButton = () => {
   const tooltipText = i18n.getMessage('privateBrowsing');
   const name = tooltipText;
-  const iconUrl = '/img/private-browsing-icon.svg';
+  const iconUrl = '/img/firefox-icons/private-browsing-icon.svg';
   const button = renderButton(tooltipText, name, iconUrl, false);
   return button;
 };

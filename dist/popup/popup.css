@@ -169,7 +169,7 @@ button {
   content: '';
   inline-size: 2.5em;
   block-size: 100%;
-  mask: url(/img/search_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/search.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -207,7 +207,7 @@ button {
   block-size: 100%;
   inline-size: 2.5em;
   color: inherit;
-  mask: url(/img/grid_view_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/grid_view.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -218,7 +218,7 @@ button {
   block-size: 100%;
   inline-size: 2.5em;
   color: inherit;
-  mask: url(/img/cookie_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/cookie.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -229,7 +229,7 @@ button {
   block-size: 100%;
   inline-size: 2.5em;
   color: inherit;
-  mask: url(/img/add_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/add.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -238,7 +238,7 @@ button {
 }
 
 #button-hide-inactive::before {
-  mask: url(/img/unfold_less_black_24dp.svg) center center/contain no-repeat;
+  mask: url(/img/material-icons/unfold_less.svg) center center/contain no-repeat;
   background-color: var(--text-color);
 }
 
@@ -251,12 +251,12 @@ button {
 }
 
 #button-settings::before {
-  mask: url(/img/settings_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/settings.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
 #button-new-window::before, #button-new-private-window::before {
-  mask: url(/img/add_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/add.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -295,7 +295,7 @@ button {
   display: block;
   inline-size: 3rem;
   block-size: 3rem;
-  mask: url(/img/arrow_back_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/arrow_back.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -324,19 +324,19 @@ button {
 }
 
 #bottom-menu > #menu-item-main::before {
-  mask: url(/img/folder_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/folder.svg) center center/75% no-repeat;
 }
 
 #bottom-menu > #menu-item-sites::before {
-  mask: url(/img/public_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/public.svg) center center/75% no-repeat;
 }
 
 #bottom-menu > #menu-item-windows::before {
-  mask: url(/img/window_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/window.svg) center center/75% no-repeat;
 }
 
 #bottom-menu > #menu-item-settings::before {
-  mask: url(/img/settings_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/settings.svg) center center/75% no-repeat;
 }
 
 [data-active-content="main"] #menu-item-main {
@@ -385,7 +385,7 @@ button {
   inline-size: 2rem;
   opacity: .5;
   background-color: var(--text-color);
-  mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
 }
 
 #sites > * > button > .site-close:hover {
@@ -405,7 +405,7 @@ button {
   content: '';
   inline-size: 2rem;
   background-color: var(--text-color);
-  mask: url(/img/chevron_right_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/chevron_right.svg) center center/75% no-repeat;
 }
 
 #bottom-menu > .menu-item > .button-text {
@@ -481,7 +481,7 @@ button {
 }
 
 .tab > .tab-pin-button {
-  mask: url(/img/push_pin_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/push_pin.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -494,7 +494,7 @@ button {
 }
 
 .tab > .tab-close-button {
-  mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
   background-color: var(--text-color);
   opacity: .25;
 }
@@ -543,17 +543,17 @@ button {
 }
 
 .window-label > .window-collapse-button {
-  mask: url(/img/unfold_less_black_24dp.svg) center center/contain no-repeat;
+  mask: url(/img/material-icons/unfold_less.svg) center center/contain no-repeat;
   background-color: var(--text-color);
 }
 
 .window-label > .window-expand-button {
-  mask: url(/img/unfold_more_black_24dp.svg) center center/contain no-repeat;
+  mask: url(/img/material-icons/unfold_more.svg) center center/contain no-repeat;
   background-color: var(--text-color);
 }
 
 .window-label > .window-close-button {
-  mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -577,13 +577,13 @@ button {
 }
 
 .container-visible > .container-visibility-toggle {
-  mask: url(/img/expand_less_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/expand_less.svg) center center/75% no-repeat;
   background-color: var(--text-color);
   visibility: visible;
 }
 
 .container-hidden > .container-visibility-toggle {
-  mask: url(/img/expand_more_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/expand_more.svg) center center/75% no-repeat;
   background-color: var(--text-color);
   visibility: visible;
 }
@@ -609,7 +609,7 @@ button {
 }
 
 .container > .edit-container-button {
-  mask: url(/img/edit_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/edit.svg) center center/75% no-repeat;
   background-color: var(--text-color);
   opacity: .25;
 }
@@ -619,13 +619,13 @@ button {
 }
 
 .container > .close-container-button {
-  mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
   background-color: var(--text-color);
   opacity: .25;
 }
 
 .container > .delete-container-button {
-  mask: url(/img/delete_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/delete.svg) center center/75% no-repeat;
   background-color: var(--text-color);
   opacity: .25;
 }

@@ -66,12 +66,12 @@ button[disabled] {
 }
 
 #container #container-visibility-toggle {
-  mask: url(/img/expand_less_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/expand_less.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
 #container.hidden #container-visibility-toggle {
-  mask: url(/img/expand_more_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/expand_more.svg) center center/75% no-repeat;
 }
 
 #container-header > button:not(#container-button) {
@@ -84,11 +84,11 @@ button[disabled] {
 }
 
 #container-close-button {
-  mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
 }
 
 #container-options-button {
-  mask: url(/img/more_horiz_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/more_horiz.svg) center center/75% no-repeat;
 }
 
 #container-button {

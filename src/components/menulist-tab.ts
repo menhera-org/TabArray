@@ -72,7 +72,7 @@ export class MenulistTabElement extends HTMLElement {
 
     const tabPrivateIcon = document.createElement('img');
     tabPrivateIcon.id = 'tab-private-icon';
-    tabPrivateIcon.src = '/img/private-browsing-icon.svg';
+    tabPrivateIcon.src = '/img/firefox-icons/private-browsing-icon.svg';
     tabMenu.appendChild(tabPrivateIcon);
 
     const tabMain = document.createElement('div');

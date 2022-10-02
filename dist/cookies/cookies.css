@@ -96,7 +96,7 @@ body {
   block-size: 1.5em;
   background-color: var(--text-color);
   opacity: .5;
-  mask: url(/img/close_black_24dp.svg) no-repeat center / 75%;
+  mask: url(/img/material-icons/close.svg) no-repeat center / 75%;
   margin-inline-start: auto;
 }
 

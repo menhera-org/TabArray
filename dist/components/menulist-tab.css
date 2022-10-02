@@ -104,7 +104,7 @@ button:focus {
 }
 
 .tab > .tab-pin-button {
-  mask: url(/img/push_pin_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/push_pin.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -117,7 +117,7 @@ button:focus {
 }
 
 .tab > .tab-close-button {
-  mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
   background-color: var(--text-color);
   opacity: .25;
 }
@@ -179,7 +179,7 @@ button:focus {
 
 #tab-pin-button {
   opacity: 0;
-  mask: url(/img/push_pin_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/push_pin.svg) center center/75% no-repeat;
 }
 
 #tab-pin-button.pinned {
@@ -191,7 +191,7 @@ button:focus {
 }
 
 #tab-close-button {
-  mask: url(/img/close_black_24dp.svg) center center/75% no-repeat;
+  mask: url(/img/material-icons/close.svg) center center/75% no-repeat;
   opacity: .25;
 }
 
