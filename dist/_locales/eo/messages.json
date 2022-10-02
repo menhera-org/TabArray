@@ -418,5 +418,37 @@
   "enableCookiesAutoclean": {
     "message": "Aŭtomate viŝi kuketojn",
     "description": "Label text for enabling autoclean of cookies."
+  },
+  "contextMenuNewTab": {
+    "message": "Nova langeto",
+    "description": "New Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuReloadTab": {
+    "message": "Reŝargi langeton",
+    "description": "Reload Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuMuteTab": {
+    "message": "Silentigi langeton",
+    "description": "Mute Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuUnmuteTab": {
+    "message": "Malsilentigi langeton",
+    "description": "Unmute Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuPinTab": {
+    "message": "Alpingli langeton",
+    "description": "Pin Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuUnpinTab": {
+    "message": "Depingli langeton",
+    "description": "Unpin Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuDuplicateTab": {
+    "message": "Duobligi langeton",
+    "description": "Duplicate Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuCloseTab": {
+    "message": "Fermi langeton",
+    "description": "Close Tab menu (same as browser's tab menu)"
   }
 }
