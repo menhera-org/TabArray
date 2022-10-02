@@ -19,14 +19,19 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
-export * as config from './config';
-export * as dns from './dns';
-export * as utils from './utils';
-export * as types from './types';
-export * as tabGroups from './tabGroups';
-export * as tabs from './tabs';
-export * as extension from './extension';
-export * as cookies from './cookies';
-export * as colors from './colors';
-export * as menus from './menus';
+import browser from 'webextension-polyfill';
+import { MenuItem } from './MenuItem';
+
+/**
+ * A menu item that is only shown when the user right-clicks on a tab in a popup/sidebar.
+ */
+export class PopupTabContextMenuItem extends MenuItem {
+  public constructor(createProperties: browser.Menus.CreateCreatePropertiesType) {
+    super({
+      ... createProperties,
+      contexts:  ['tab'],
+      viewTypes: ['sidebar', 'popup'],
+      documentUrlPatterns: [`moz-extension://${location.host}/*`],
+    });
+  }
+}
