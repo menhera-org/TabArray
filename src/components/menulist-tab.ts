@@ -127,6 +127,14 @@ export class MenulistTabElement extends HTMLElement {
     if (tab.active) {
       this.tabButton.classList.add("active");
     }
+
+    // https://qiita.com/piroor/items/44ccbc2ee918bc88c3ea
+    this.addEventListener('contextmenu', () => {
+      browser.menus.overrideContext({
+        context: 'tab',
+        tabId: this._tabId,
+      });
+    }, { capture: true })
   }
 
   public setUserContext(userContext: UserContext) {

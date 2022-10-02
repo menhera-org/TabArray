@@ -19,14 +19,29 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
-export * as config from './config';
-export * as dns from './dns';
-export * as utils from './utils';
-export * as types from './types';
-export * as tabGroups from './tabGroups';
-export * as tabs from './tabs';
-export * as extension from './extension';
-export * as cookies from './cookies';
-export * as colors from './colors';
-export * as menus from './menus';
+export class Xyz {
+  public readonly x: number;
+  public readonly y: number;
+  public readonly z: number;
+
+  public constructor(x: number, y: number, z: number) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+
+  public toArray(): [number, number, number] {
+    return [this.x, this.y, this.z];
+  }
+
+  public mix(other: Xyz, weight = .5): Xyz {
+    if (weight < 0 || weight > 1 || isNaN(weight)) {
+      throw new Error("Weight must be between 0 and 1");
+    }
+    return new Xyz(
+      this.x * (1 - weight) + other.x * weight,
+      this.y * (1 - weight) + other.y * weight,
+      this.z * (1 - weight) + other.z * weight
+    );
+  }
+}

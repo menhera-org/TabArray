@@ -418,5 +418,37 @@
   "enableCookiesAutoclean": {
     "message": "Cookie を自動的に削除する",
     "description": "Label text for enabling autoclean of cookies."
+  },
+  "contextMenuNewTab": {
+    "message": "新しいタブ",
+    "description": "New Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuReloadTab": {
+    "message": "タブを再読み込み",
+    "description": "Reload Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuMuteTab": {
+    "message": "タブをミュート",
+    "description": "Mute Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuUnmuteTab": {
+    "message": "タブのミュートを解除",
+    "description": "Unmute Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuPinTab": {
+    "message": "タブをピン留め",
+    "description": "Pin Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuUnpinTab": {
+    "message": "タブのピン留めを外す",
+    "description": "Unpin Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuDuplicateTab": {
+    "message": "タブを複製",
+    "description": "Duplicate Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuCloseTab": {
+    "message": "タブを閉じる",
+    "description": "Close Tab menu (same as browser's tab menu)"
   }
 }

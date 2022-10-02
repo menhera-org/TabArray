@@ -40,6 +40,7 @@ export class Tab {
   public readonly index: number;
   public readonly isSharing: boolean;
   public readonly lastAccessed: number;
+  public readonly muted: boolean;
 
   public static async get(id: number): Promise<Tab> {
     const tab = await browser.tabs.get(id);
@@ -64,6 +65,7 @@ export class Tab {
     this.hidden = browserTab.hidden ?? false;
     this.active = browserTab.active;
     this.pinned = browserTab.pinned;
+    this.muted = browserTab.mutedInfo?.muted ?? false;
     this.lastAccessed = browserTab.lastAccessed ?? 0;
     if (browserTab.sharingState !== undefined) {
       this.isSharing = this.checkSharingState(browserTab.sharingState);

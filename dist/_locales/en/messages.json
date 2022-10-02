@@ -418,5 +418,37 @@
   "enableCookiesAutoclean": {
     "message": "Automatically clean cookies",
     "description": "Label text for enabling autoclean of cookies."
+  },
+  "contextMenuNewTab": {
+    "message": "New Tab",
+    "description": "New Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuReloadTab": {
+    "message": "Reload Tab",
+    "description": "Reload Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuMuteTab": {
+    "message": "Mute Tab",
+    "description": "Mute Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuUnmuteTab": {
+    "message": "Unmute Tab",
+    "description": "Unmute Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuPinTab": {
+    "message": "Pin Tab",
+    "description": "Pin Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuUnpinTab": {
+    "message": "Unpin Tab",
+    "description": "Unpin Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuDuplicateTab": {
+    "message": "Duplicate Tab",
+    "description": "Duplicate Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuCloseTab": {
+    "message": "Close Tab",
+    "description": "Close Tab menu (same as browser's tab menu)"
   }
 }
