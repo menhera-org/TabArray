@@ -19,15 +19,10 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
-export * as config from './config';
-export * as dns from './dns';
-export * as utils from './utils';
-export * as types from './types';
-export * as tabGroups from './tabGroups';
-export * as tabs from './tabs';
-export * as extension from './extension';
-export * as cookies from './cookies';
-export * as colors from './colors';
-export * as menus from './menus';
-export * as themes from './themes';
+export interface Theme {
+  readonly backgroundColor: string;
+  readonly textColor: string;
+  readonly borderColor: string;
+  readonly hoverColor: string;
+  readonly secondaryBackgroundColor: string;
+}

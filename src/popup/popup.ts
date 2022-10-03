@@ -26,6 +26,7 @@ import { MenulistContainerElement } from '../components/menulist-container';
 import { PopupUtils } from './PopupUtils';
 import '../components/usercontext-colorpicker';
 import '../components/usercontext-iconpicker';
+// import './PopupThemes';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { ExtensionService } from '../frameworks/extension';
 import { cancelHandler, okHandler, keyHandler } from './PopupKeyHandlers';
