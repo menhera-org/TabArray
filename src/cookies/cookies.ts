@@ -25,16 +25,21 @@ import { OriginAttributes } from '../frameworks/tabGroups';
 import { UserContext } from '../frameworks/tabGroups';
 import { Uint32 } from '../frameworks/types';
 import { UserContextService } from '../userContexts/UserContextService';
+import { PrivateBrowsingService } from '../frameworks/tabs';
+import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 
 const cookieProvider = new CookieProvider();
 const userContextService = UserContextService.getInstance();
+const privateBrowsingService = PrivateBrowsingService.getInstance();
+const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
 const selectContainers = document.querySelector('#selectContainers') as HTMLSelectElement;
 const cookieDomains = document.querySelector('#cookieDomains') as HTMLTableSectionElement;
 const headingCookies = document.querySelector('#headingCookies') as HTMLHeadingElement;
 const cookiesHeadingDomain = document.querySelector('#cookiesHeadingDomain') as HTMLTableCellElement;
 const cookiesHeadingActions = document.querySelector('#cookiesHeadingActions') as HTMLTableCellElement;
-if (!selectContainers || !cookieDomains || !headingCookies || !cookiesHeadingDomain || !cookiesHeadingActions) {
+const buttonContainerClearCookie = document.querySelector('#buttonContainerClearCookie') as HTMLButtonElement;
+if (!selectContainers || !cookieDomains || !headingCookies || !cookiesHeadingDomain || !cookiesHeadingActions || !buttonContainerClearCookie) {
   throw new Error('element is not found.');
 }
 
@@ -43,13 +48,15 @@ document.title = browser.i18n.getMessage('headingCookies');
 headingCookies.textContent = browser.i18n.getMessage('headingCookies');
 cookiesHeadingDomain.textContent = browser.i18n.getMessage('cookiesHeadingDomain');
 cookiesHeadingActions.textContent = browser.i18n.getMessage('cookiesHeadingActions');
+buttonContainerClearCookie.textContent = browser.i18n.getMessage('buttonContainerClearCookie');
 
 const getSelectedOriginAttributes = () => {
   return OriginAttributes.fromString(selectContainers.value);
 };
 
 const render = async () => {
-  const userContexts = (await UserContext.getAll(false)).map((userContext) => userContextService.fillDefaultValues(userContext));
+  await userContextSortingOrderStore.initialized;
+  const userContexts = userContextSortingOrderStore.sort((await UserContext.getAll(false)).map((userContext) => userContextService.fillDefaultValues(userContext)));
   const containers: Map<OriginAttributes, string> = new Map;
   for (const userContext of userContexts) {
     containers.set(new OriginAttributes('', userContext.id, 0 as Uint32.Uint32), userContext.name);
@@ -99,6 +106,17 @@ const renderContainer = async (originAttributes: OriginAttributes) => {
 selectContainers.addEventListener('change', () => {
   const selectedOriginAttributes = getSelectedOriginAttributes();
   renderContainer(selectedOriginAttributes);
+});
+
+buttonContainerClearCookie.addEventListener('click', async () => {
+  const selectedOriginAttributes = getSelectedOriginAttributes();
+  if (selectedOriginAttributes.isPrivateBrowsing()) {
+    await privateBrowsingService.clearBrowsingData();
+  } else if (selectedOriginAttributes.userContextId != null) {
+    const userContext = UserContext.createIncompleteUserContext(selectedOriginAttributes.userContextId);
+    await userContext.removeBrowsingData();
+  }
+  await renderContainer(selectedOriginAttributes);
 });
 
 render();
