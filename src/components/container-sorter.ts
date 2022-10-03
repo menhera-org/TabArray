@@ -60,6 +60,7 @@ export class ContainerSorterElement extends HTMLElement {
     options.classList.add('options');
     options.classList.add('browser-style');
     const autocleanLabel = document.createElement('label');
+    autocleanLabel.classList.add('browser-style');
     const autocleanCheckbox = document.createElement('input');
     autocleanCheckbox.type = 'checkbox';
     autocleanCheckbox.checked = autocleanEnabled;
