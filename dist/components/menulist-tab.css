@@ -186,7 +186,7 @@ button:focus {
 }
 
 #tab-close-button:hover, #tab-close-button:focus {
-  opacity: .5;
+  opacity: 1;
 }
 
 #tab-title {
