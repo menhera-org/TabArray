@@ -61,7 +61,7 @@ export class ThemeService {
     const isDarkTheme = darkThemeMonitor.isDarkTheme;
 
     const backgroundColor = this.parseThemeColor(browserTheme.colors?.frame || browserTheme.colors?.accentcolor);
-    const textColor = this.parseThemeColor(browserTheme.colors?.tab_text || browserTheme.colors?.bookmark_text || browserTheme.colors?.toolbar_text
+    const textColor = this.parseThemeColor(browserTheme.colors?.tab_text || browserTheme.colors?.bookmark_text || browserTheme.colors?.toolbar_text || browserTheme.colors?.tab_background_text
       || (isDarkTheme ? '#ffffff' : '#222222'));
     const secondaryTextColor = this.parseThemeColor(browserTheme.colors?.tab_background_text || browserTheme.colors?.textcolor
       || (isDarkTheme ? '#999999' : '#888888'));
