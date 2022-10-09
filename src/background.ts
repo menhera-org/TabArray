@@ -35,6 +35,7 @@ import './background/IndexTabHandler';
 import './background/BackgroundContainerObservers';
 import './background/BackgroundMenu';
 import './background/BackgroundCookieAutoclean';
+import './api/ApiDefinitions';
 
 // watchdog
 let scriptCompleted = false;
