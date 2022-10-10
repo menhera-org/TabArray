@@ -20,13 +20,49 @@
 */
 
 import browser from 'webextension-polyfill';
+import { UserContext } from '../frameworks/tabGroups';
+import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { UserContextService } from '../userContexts/UserContextService';
 
-browser.runtime.onMessageExternal.addListener(async (message, sender) => {
+export type UserContextType = {
+  id: number;
+  name: string;
+  icon: string;
+  color: string;
+  iconUrl: string;
+  colorCode: string;
+  cookieStoreId: string;
+  index: number;
+};
+
+export const API_GET_CONTAINERS = 'get-containers';
+
+const sortingOrderStore = UserContextSortingOrderStore.getInstance();
+const userContextService = UserContextService.getInstance();
+
+export const getContainers = async () => {
+  const contexts = await UserContext.getAll();
+  const sortedContexts = sortingOrderStore.sort(contexts.map((context) => userContextService.fillDefaultValues(context)));
+  const result: UserContextType[] = [];
+  for (const context of sortedContexts) {
+    result.push({
+      ... context,
+      index: contexts.indexOf(context),
+      cookieStoreId: context.cookieStoreId,
+    });
+  }
+  return result;
+};
+
+browser.runtime.onMessageExternal.addListener(async (message, sender): Promise<unknown> => {
   console.log('message:', message, 'sender:', sender);
   if (!message) {
     throw new Error('message is null');
   }
   switch (message.type) {
+    case API_GET_CONTAINERS: {
+      return getContainers();
+    }
     default: {
       throw new Error('unknown message type');
     }
