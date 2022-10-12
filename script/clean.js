@@ -49,7 +49,7 @@ const findAndClear = function find(startPath, filter) {
   }
 };
 
-const distDir = path.join(__dirname, 'dist');
-const buildsDir = path.join(__dirname, 'builds');
+const distDir = path.join(__dirname, '../dist');
+const buildsDir = path.join(__dirname, '../builds');
 findAndClear(distDir, '.js');
 fs.rmSync(buildsDir, { recursive: true, force: true });
