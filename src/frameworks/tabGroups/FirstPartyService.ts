@@ -19,14 +19,12 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { dns } from "..";
-import { storage } from "..";
-import { utils } from "..";
 import { OriginAttributes } from "./OriginAttributes";
 import { TabGroup } from "./TabGroup";
 import { HostnameService } from "../dns";
-
-const { PromiseUtils } = utils;
+import { RegistrableDomainService } from "../dns";
+import { PromiseUtils } from "../utils";
+import { StorageArea, StorageItem } from '../storage';
 
 type PublicSuffixListData = {
   rules: string[];
@@ -43,13 +41,13 @@ export class FirstPartyService {
   private static readonly INSTANCE = new FirstPartyService();
 
   private readonly hostnameService = HostnameService.getInstance();
-  private readonly registrableDomainService = new dns.RegistrableDomainService();
-  private readonly publicSuffixListStorage = new storage.StorageItem<PublicSuffixListData>(FirstPartyService.PSL_STORAGE_KEY, {
+  private readonly registrableDomainService = new RegistrableDomainService();
+  private readonly publicSuffixListStorage = new StorageItem<PublicSuffixListData>(FirstPartyService.PSL_STORAGE_KEY, {
     rules: [],
     exceptionRules: [],
     updatedTime: 0,
     initialized: false,
-  }, storage.StorageArea.LOCAL);
+  }, StorageArea.LOCAL);
   private readonly initializationPromise = PromiseUtils.createPromise<void>();
   private updatedTime = -Infinity;
 
