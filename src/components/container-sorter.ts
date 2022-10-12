@@ -40,9 +40,27 @@ export class ContainerSorterElement extends HTMLElement {
     styleSheet.href = '/components/container-sorter.css';
     this.shadowRoot.appendChild(styleSheet);
 
+    const containersWrapperElement = document.createElement('div');
+    containersWrapperElement.id = 'containers-wrapper';
+    this.shadowRoot.appendChild(containersWrapperElement);
+
+    const headerElement = document.createElement('div');
+    headerElement.classList.add('header');
+    containersWrapperElement.appendChild(headerElement);
+
+    const headerContainerElement = document.createElement('div');
+    headerContainerElement.classList.add('header-container');
+    headerContainerElement.textContent = browser.i18n.getMessage('menuItemMain');
+    headerElement.appendChild(headerContainerElement);
+
+    const headerAutocleanElement = document.createElement('div');
+    headerAutocleanElement.classList.add('header-autoclean');
+    headerAutocleanElement.textContent = browser.i18n.getMessage('enableCookiesAutoclean');
+    headerElement.appendChild(headerAutocleanElement);
+
     const containersElement = document.createElement('div');
     containersElement.id = 'containers';
-    this.shadowRoot.appendChild(containersElement);
+    containersWrapperElement.appendChild(containersElement);
 
     this.setUserContexts(userContexts, autocleanEnabledUserContextIds);
   }
@@ -59,8 +77,6 @@ export class ContainerSorterElement extends HTMLElement {
     const options = document.createElement('div');
     options.classList.add('options');
     options.classList.add('browser-style');
-    const autocleanLabel = document.createElement('label');
-    autocleanLabel.classList.add('browser-style');
     const autocleanCheckbox = document.createElement('input');
     autocleanCheckbox.type = 'checkbox';
     autocleanCheckbox.checked = autocleanEnabled;
@@ -71,9 +87,7 @@ export class ContainerSorterElement extends HTMLElement {
         this._cookieAutocleanService.disableAutocleanForUserContext(userContext.id);
       }
     });
-    autocleanLabel.appendChild(autocleanCheckbox);
-    autocleanLabel.appendChild(document.createTextNode(browser.i18n.getMessage('enableCookiesAutoclean')));
-    options.appendChild(autocleanLabel);
+    options.appendChild(autocleanCheckbox);
     return options;
   }
 
