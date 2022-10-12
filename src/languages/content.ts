@@ -47,7 +47,7 @@ if (languages) {
 const navigatorPrototype = Object.getPrototypeOf(navigator);
 const navigatorPrototypeWrapped = navigatorPrototype.wrappedJSObject;
 
-// const descriptors = Object.getOwnPropertyDescriptors(navigatorPrototype);
+// const descriptors = Object.getOwnPropertyDescriptors(navigatorPrototypeWrapped);
 
 // this is configurable, so deletable
 delete navigatorPrototypeWrapped.languages;
