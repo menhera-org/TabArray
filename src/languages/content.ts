@@ -90,6 +90,9 @@ gLanguageStore.onLanguagesChanged.addListener(() => {
 
 browser.runtime.onMessage.addListener((message) => {
   if (message.type === 'language-changed') {
-    gLanguageStore.languages = String(message.languages ?? '');
+    const languages = String(message.languages ?? '');
+    if (gLanguageStore.languages !== languages) {
+      gLanguageStore.languages = languages;
+    }
   }
 });
