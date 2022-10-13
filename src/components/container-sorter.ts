@@ -115,6 +115,7 @@ export class ContainerSorterElement extends HTMLElement {
   private renderUserContext(userContext: UserContext, autocleanEnabled = false): HTMLDivElement {
     const element = document.createElement('div');
     element.classList.add('container');
+    element.draggable = true;
     element.dataset.userContextId = userContext.id.toString();
 
     const iconElement = document.createElement('div');
