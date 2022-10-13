@@ -122,4 +122,6 @@
   border: none;
   border-radius: 0;
   padding: .5em;
+  color: inherit;
+  background-color: transparent;
 }
