@@ -24,8 +24,11 @@ import { UserContext } from "../frameworks/tabGroups";
 import { EventSink } from "../frameworks/utils";
 import { Uint32 } from "../frameworks/types";
 import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
+import { LanguageSettings } from '../languages/LanguageSettings';
+
 export class ContainerSorterElement extends HTMLElement {
   private readonly _cookieAutocleanService = CookieAutocleanService.getInstance();
+  private readonly _languageSettings = LanguageSettings.getInstance();
   public readonly onChanged = new EventSink<Uint32.Uint32[]>();
 
   public constructor(userContexts: UserContext[], autocleanEnabledUserContextIds: Uint32.Uint32[] = []) {
@@ -58,6 +61,11 @@ export class ContainerSorterElement extends HTMLElement {
     headerAutocleanElement.textContent = browser.i18n.getMessage('enableCookiesAutoclean');
     headerElement.appendChild(headerAutocleanElement);
 
+    const headerLanguagesElement = document.createElement('div');
+    headerLanguagesElement.classList.add('header-languages');
+    headerLanguagesElement.textContent = browser.i18n.getMessage('optionsLabelLanguages');
+    headerElement.appendChild(headerLanguagesElement);
+
     const containersElement = document.createElement('div');
     containersElement.id = 'containers';
     containersWrapperElement.appendChild(containersElement);
@@ -89,6 +97,19 @@ export class ContainerSorterElement extends HTMLElement {
     });
     options.appendChild(autocleanCheckbox);
     return options;
+  }
+
+  private createLanguageOptionsElement(userContext: UserContext): HTMLInputElement {
+    const originAttributes = userContext.toOriginAttributes();
+    const languages = this._languageSettings.getLanguages(originAttributes);
+    const input = document.createElement('input');
+    input.classList.add('languages');
+    input.type = 'text';
+    input.value = languages;
+    input.addEventListener('change', () => {
+      this._languageSettings.setLanguages(originAttributes, input.value);
+    });
+    return input;
   }
 
   private renderUserContext(userContext: UserContext, autocleanEnabled = false): HTMLDivElement {
@@ -136,6 +157,9 @@ export class ContainerSorterElement extends HTMLElement {
 
     const options = this.createOptionsElement(userContext, autocleanEnabled);
     element.appendChild(options);
+
+    const languageOptions = this.createLanguageOptionsElement(userContext);
+    element.appendChild(languageOptions);
 
     return element;
   }
