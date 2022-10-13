@@ -19,15 +19,18 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export { OriginAttributes } from './OriginAttributes';
-export { FirstPartyService } from './FirstPartyService';
-export { TabGroup } from './TabGroup';
-export { UserContext } from './UserContext';
-export { TabGroupService } from './TabGroupService';
-export { TabList } from './TabList';
-export { FirstPartyTabMap } from './FirstPartyTabMap';
-export { WindowUserContextList } from './WindowUserContextList';
-export { DefinedUserContextList } from './DefinedUserContextList';
-export { FirstPartyUserContextList } from './FirstPartyUserContextList';
-export { UserContextSortingProvider } from './UserContextSortingProvider';
-export { CookieStoreSet } from './CookieStoreSet';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+type CloneIntoOptions = {
+  cloneFunctions?: boolean;
+  defineAs?: string;
+};
+
+declare const cloneInto: <T,>(value: T, scope?: unknown, options?: CloneIntoOptions) => T;
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+declare const exportFunction: <T extends Function>(fn: T, scope?: unknown, options?: CloneIntoOptions) => T;
+
+interface Object {
+  wrappedJSObject: this;
+}

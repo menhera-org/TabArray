@@ -39,6 +39,8 @@ export class OriginAttributes {
   private static readonly PRIVATE_STORE = 'firefox-private';
   private static readonly CONTAINER_STORE = 'firefox-container-';
 
+  public static readonly PRIVATE = OriginAttributes.fromCookieStoreId(OriginAttributes.PRIVATE_STORE);
+
   public readonly firstpartyDomain: string;
   public readonly userContextId: Uint32.Uint32 | null;
   public readonly privateBrowsingId: Uint32.Uint32 | null;

@@ -24,8 +24,11 @@ import { UserContext } from "../frameworks/tabGroups";
 import { EventSink } from "../frameworks/utils";
 import { Uint32 } from "../frameworks/types";
 import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
+import { LanguageSettings } from '../languages/LanguageSettings';
+
 export class ContainerSorterElement extends HTMLElement {
   private readonly _cookieAutocleanService = CookieAutocleanService.getInstance();
+  private readonly _languageSettings = LanguageSettings.getInstance();
   public readonly onChanged = new EventSink<Uint32.Uint32[]>();
 
   public constructor(userContexts: UserContext[], autocleanEnabledUserContextIds: Uint32.Uint32[] = []) {
@@ -40,9 +43,32 @@ export class ContainerSorterElement extends HTMLElement {
     styleSheet.href = '/components/container-sorter.css';
     this.shadowRoot.appendChild(styleSheet);
 
+    const containersWrapperElement = document.createElement('div');
+    containersWrapperElement.id = 'containers-wrapper';
+    this.shadowRoot.appendChild(containersWrapperElement);
+
+    const headerElement = document.createElement('div');
+    headerElement.classList.add('header');
+    containersWrapperElement.appendChild(headerElement);
+
+    const headerContainerElement = document.createElement('div');
+    headerContainerElement.classList.add('header-container');
+    headerContainerElement.textContent = browser.i18n.getMessage('menuItemMain');
+    headerElement.appendChild(headerContainerElement);
+
+    const headerAutocleanElement = document.createElement('div');
+    headerAutocleanElement.classList.add('header-autoclean');
+    headerAutocleanElement.textContent = browser.i18n.getMessage('enableCookiesAutoclean');
+    headerElement.appendChild(headerAutocleanElement);
+
+    const headerLanguagesElement = document.createElement('div');
+    headerLanguagesElement.classList.add('header-languages');
+    headerLanguagesElement.textContent = browser.i18n.getMessage('optionsLabelLanguages');
+    headerElement.appendChild(headerLanguagesElement);
+
     const containersElement = document.createElement('div');
     containersElement.id = 'containers';
-    this.shadowRoot.appendChild(containersElement);
+    containersWrapperElement.appendChild(containersElement);
 
     this.setUserContexts(userContexts, autocleanEnabledUserContextIds);
   }
@@ -59,8 +85,6 @@ export class ContainerSorterElement extends HTMLElement {
     const options = document.createElement('div');
     options.classList.add('options');
     options.classList.add('browser-style');
-    const autocleanLabel = document.createElement('label');
-    autocleanLabel.classList.add('browser-style');
     const autocleanCheckbox = document.createElement('input');
     autocleanCheckbox.type = 'checkbox';
     autocleanCheckbox.checked = autocleanEnabled;
@@ -71,15 +95,27 @@ export class ContainerSorterElement extends HTMLElement {
         this._cookieAutocleanService.disableAutocleanForUserContext(userContext.id);
       }
     });
-    autocleanLabel.appendChild(autocleanCheckbox);
-    autocleanLabel.appendChild(document.createTextNode(browser.i18n.getMessage('enableCookiesAutoclean')));
-    options.appendChild(autocleanLabel);
+    options.appendChild(autocleanCheckbox);
     return options;
+  }
+
+  private createLanguageOptionsElement(userContext: UserContext): HTMLInputElement {
+    const originAttributes = userContext.toOriginAttributes();
+    const languages = this._languageSettings.getLanguages(originAttributes);
+    const input = document.createElement('input');
+    input.classList.add('languages');
+    input.type = 'text';
+    input.value = languages;
+    input.addEventListener('change', () => {
+      this._languageSettings.setLanguages(originAttributes, input.value);
+    });
+    return input;
   }
 
   private renderUserContext(userContext: UserContext, autocleanEnabled = false): HTMLDivElement {
     const element = document.createElement('div');
     element.classList.add('container');
+    // element.draggable = true;
     element.dataset.userContextId = userContext.id.toString();
 
     const iconElement = document.createElement('div');
@@ -122,6 +158,9 @@ export class ContainerSorterElement extends HTMLElement {
 
     const options = this.createOptionsElement(userContext, autocleanEnabled);
     element.appendChild(options);
+
+    const languageOptions = this.createLanguageOptionsElement(userContext);
+    element.appendChild(languageOptions);
 
     return element;
   }

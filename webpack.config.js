@@ -11,6 +11,11 @@ module.exports = {
   context: __dirname,
   target: ['web', 'es2020'],
   devtool: 'inline-cheap-source-map',
+
+  resolve: {
+    extensions: ['.ts', '.d.ts', '.js'],
+  },
+
   entry: {
     'background': './src/background.ts',
     'index': {
@@ -37,6 +42,10 @@ module.exports = {
       import: './src/cookies/cookies.ts',
       filename: 'cookies/cookies.js',
     },
+    'languages': {
+      import: './src/languages/content.ts',
+      filename: 'languages/content.js',
+    },
   },
 
   output: {
@@ -49,11 +58,6 @@ module.exports = {
         test: /\.(js|ts)$/,
         use: 'ts-loader',
       },
-    ],
-  },
-  resolve: {
-    extensions: [
-      '.ts', '.js',
     ],
   },
 };
