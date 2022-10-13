@@ -418,5 +418,9 @@
   "enableCookiesAutoclean": {
     "message": "Автоматически очищать файлы cookie",
     "description": "Label text for enabling autoclean of cookies."
+  },
+  "optionsLabelLanguages": {
+    "message": "Языки",
+    "description": "Label text for languages of a container."
   }
 }
