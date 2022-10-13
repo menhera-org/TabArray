@@ -79,11 +79,12 @@ Probably more compatible extensions...
 - Français
 - Esperanto
 - Español
+- Русский
 
 ### Translators
 
 - metastable-void (ja, eo)
-- 佐々木Alex🐇 (Sasaki Alex🐇) (fr, es-ES)
+- 佐々木Alex🐇 (Sasaki Alex🐇) (fr, es-ES, ru)
 
 ## About the project
 

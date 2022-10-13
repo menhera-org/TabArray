@@ -419,6 +419,38 @@
     "message": "Автоматически очищать файлы cookie",
     "description": "Label text for enabling autoclean of cookies."
   },
+  "contextMenuNewTab": {
+    "message": "Новая вкладка",
+    "description": "New Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuReloadTab": {
+    "message": "Обновить вкладку",
+    "description": "Reload Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuMuteTab": {
+    "message": "Отключить звук вкладки",
+    "description": "Mute Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuUnmuteTab": {
+    "message": "Включить звук вкладки",
+    "description": "Unmute Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuPinTab": {
+    "message": "Закрепить вкладку",
+    "description": "Pin Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuUnpinTab": {
+    "message": "Открепить вкладку",
+    "description": "Unpin Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuDuplicateTab": {
+    "message": "Дублировать вкладку",
+    "description": "Duplicate Tab menu (same as browser's tab menu)"
+  },
+  "contextMenuCloseTab": {
+    "message": "Закрыть вкладку",
+    "description": "Close Tab menu (same as browser's tab menu)"
+  },
   "optionsLabelLanguages": {
     "message": "Языки",
     "description": "Label text for languages of a container."
