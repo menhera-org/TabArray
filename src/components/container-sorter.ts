@@ -106,6 +106,7 @@ export class ContainerSorterElement extends HTMLElement {
     input.classList.add('languages');
     input.type = 'text';
     input.value = languages;
+    input.placeholder = navigator.languages.join(',');
     input.addEventListener('change', () => {
       this._languageSettings.setLanguages(originAttributes, input.value);
     });
