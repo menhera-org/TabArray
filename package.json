@@ -7,7 +7,7 @@
     "build": "node script/clean.js ; eslint . ; webpack ; web-ext build --source-dir ./dist/ --artifacts-dir ./builds/ --overwrite-dest --filename container-tab-groups.prod.xpi",
     "dev": "node script/clean.js ; eslint . ; webpack --mode=development ; web-ext build --source-dir ./dist/ --artifacts-dir ./builds/ --overwrite-dest --filename container-tab-groups.dev.xpi",
     "watch": "webpack -w",
-    "clean": "node script/clean.js",
+    "clean": "node script/clean.js ; node script/clean-builds.js",
     "typedoc": "typedoc --out ./docs/typedoc-frameworks ./src/frameworks/index.ts",
     "test": "node script/test.js"
   },
