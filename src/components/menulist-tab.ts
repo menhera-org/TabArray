@@ -141,7 +141,7 @@ export class MenulistTabElement extends HTMLElement {
         context: 'tab',
         tabId: this._tabId,
       });
-    }, { capture: true })
+    }, { capture: true });
   }
 
   public setUserContext(userContext: UserContext) {

@@ -54,7 +54,7 @@ export class Srgb {
     return value > 0.0031308 ? 1.055 * value ** (1/2.4) - 0.055 : 12.92 * value;
   }
 
-  private static expaneGamma(value: number): number {
+  private static expandGamma(value: number): number {
     return value > 0.04045 ? ((value + 0.055) / 1.055) ** 2.4 : value / 12.92;
   }
 
@@ -107,7 +107,7 @@ export class Srgb {
   }
 
   public toXyz(): Xyz {
-    const xyz = Srgb.linearRgbToXyz(Srgb.expaneGamma(this.r), Srgb.expaneGamma(this.g), Srgb.expaneGamma(this.b));
+    const xyz = Srgb.linearRgbToXyz(Srgb.expandGamma(this.r), Srgb.expandGamma(this.g), Srgb.expandGamma(this.b));
     return new Xyz(xyz[0], xyz[1], xyz[2]);
   }
 }
