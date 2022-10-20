@@ -50,6 +50,7 @@ const findAndClear = function find(startPath, filter) {
 };
 
 const distDir = path.join(__dirname, '../dist');
-const buildsDir = path.join(__dirname, '../builds');
 findAndClear(distDir, '.js');
-fs.rmSync(buildsDir, { recursive: true, force: true });
+
+// const buildsDir = path.join(__dirname, '../builds');
+// fs.rmSync(buildsDir, { recursive: true, force: true });
