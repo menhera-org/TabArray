@@ -28,9 +28,11 @@ import * as containers from '../modules/containers';
 import { UserContextService } from '../userContexts/UserContextService';
 import { ExtensionService } from '../frameworks/extension';
 import { PrivateBrowsingService } from '../frameworks/tabs';
+import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 
 const extensionService = ExtensionService.getInstance();
 const privateBrowsingService = PrivateBrowsingService.getInstance();
+const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
 const params = new URLSearchParams(location.search);
 
@@ -145,6 +147,7 @@ const createUserContextElement = (userContext: UserContext) => {
 };
 
 UserContext.getAll().then(async (userContexts) => {
+  await userContextSortingOrderStore.initialized;
   const privateBrowsingSupported = await extensionService.isAllowedInPrivateBrowsing();
   if (privateBrowsingSupported) {
     const privateBrowsingButton = createPrivateBrowsingButton();
@@ -161,7 +164,7 @@ UserContext.getAll().then(async (userContexts) => {
       });
     });
   }
-  userContexts.forEach(createUserContextElement);
+  userContextSortingOrderStore.sort(userContexts).forEach(createUserContextElement);
 });
 
 UserContext.onCreated.addListener(createUserContextElement);

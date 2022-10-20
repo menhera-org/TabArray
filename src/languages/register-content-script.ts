@@ -69,7 +69,7 @@ languageSettings.onChanged.addListener(async () => {
       runAt: 'document_start',
       cookieStoreId,
     });
-    console.log(contentScript);
+    // console.log(contentScript);
     contentScripts.set(key, contentScript);
   }
 
