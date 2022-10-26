@@ -63,8 +63,12 @@ export class TabList {
     return tabs.filter((tab) => !tab.pinned);
   }
 
+  private async closeTabsByIds(tabIds: number[]): Promise<void> {
+    await browser.tabs.remove(tabIds);
+  }
+
   public async closeTabs(): Promise<void> {
-    await browser.tabs.remove(Array.from(this._tabIds));
+    await this.closeTabsByIds(Array.from(this._tabIds));
   }
 
   public async closeUnpinnedTabs(): Promise<void> {
@@ -75,7 +79,7 @@ export class TabList {
         tabIds.push(tab.id);
       }
     }
-    await browser.tabs.remove(tabIds);
+    await this.closeTabsByIds(tabIds);
   }
 
   public async closeUnpinnedTabsOnWindow(windowId: number): Promise<void> {
@@ -86,7 +90,7 @@ export class TabList {
         tabIds.push(tab.id);
       }
     }
-    await browser.tabs.remove(tabIds);
+    await this.closeTabsByIds(tabIds);
   }
 
   public async getLastIndexOnWindow(windowId: number): Promise<number | undefined> {
