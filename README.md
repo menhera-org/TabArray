@@ -64,9 +64,15 @@ Probably more compatible extensions...
 ### Incompatible
 
 - Tree Style Tab
+- Simple Tab Groups (?)
 - Many other tab management extensions? (#32)
 
-**Improve the compatibility with top 10 popular tab management extensions, for example**
+### Compatibility To Do's
+
+- Improve the compatibility with top 10 popular tab management extensions, for example
+- Export the APIs to work nicely with Tree Style Tab
+- Make this extension compatible with Simple Tab Groups, or make this extension feature-rich
+enough to unnecessitate Simple Tab Groups.
 
 ## What's next
 
