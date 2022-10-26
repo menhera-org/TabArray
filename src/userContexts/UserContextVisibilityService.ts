@@ -58,7 +58,7 @@ export class UserContextVisibilityService {
   /**
    * You should not create index tabs for private windows (useless).
    */
-  public async createIndexTab (windowId: number, userContextId: Uint32.Uint32): Promise<Tab> {
+  public async createIndexTab(windowId: number, userContextId: Uint32.Uint32): Promise<Tab> {
     const rawUserContext = await UserContext.get(userContextId);
     const userContext = UserContextService.getInstance().fillDefaultValues(rawUserContext);
     const url = IndexTab.getUrl(userContext.name, userContext.icon, userContext.colorCode).url;
