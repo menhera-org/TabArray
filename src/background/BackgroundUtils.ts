@@ -22,9 +22,17 @@
 import browser from 'webextension-polyfill';
 import { Uint32 } from '../frameworks/types';
 import * as containers from '../modules/containers';
+import { PromiseUtils } from '../frameworks/utils';
+import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 
+const userContextVisibilityService = UserContextVisibilityService.getInstance();
 export class BackgroundUtils {
   public async reopenNewTabInContainer(tabId: number, userContextId: Uint32.Uint32, windowId: number) {
+    await PromiseUtils.sleep(100);
+    if (await userContextVisibilityService.isIndexTab(tabId)) {
+      console.log('Ignoring an index tab: ', tabId);
+      return;
+    }
     await browser.tabs.remove(tabId);
     await containers.openNewTabInContainer(userContextId, windowId);
   }

@@ -74,6 +74,16 @@ export class UserContextVisibilityService {
     return tab;
   }
 
+  public async isIndexTab(tabId: number): Promise<boolean> {
+    const userContextId = await browser.sessions.getTabValue(tabId, 'indexTabUserContextId');
+    return null != userContextId;
+  }
+
+  public async unregisterIndexTab(tabId: number): Promise<void> {
+    await browser.sessions.removeTabValue(tabId, 'indexTabUrl');
+    await browser.sessions.removeTabValue(tabId, 'indexTabUserContextId');
+  }
+
   private async getContainerTabsOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<Tab[]> {
     const browserWindow = await browser.windows.get(windowId, { populate: false });
     if (browserWindow.incognito) {
@@ -121,6 +131,8 @@ export class UserContextVisibilityService {
     for (const tab of tabs) {
       if (IndexTab.isIndexTabUrl(tab.url)) {
         if ('collapsed' == configGroupIndexOption) {
+          console.log('Unregistering an index tab on window %d for userContext %d', windowId, userContextId);
+          await this.unregisterIndexTab(tab.id);
           await tab.close();
         }
         continue;

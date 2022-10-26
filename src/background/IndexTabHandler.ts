@@ -38,7 +38,8 @@ browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) =>
   if (isWindowClosing) return;
 
   const indexTabUserContextId = indexTabUserContextMap.get(tabId);
-  if (indexTabUserContextId != undefined) {
+  const isIndexTab = await userContextVisibilityService.isIndexTab(tabId);
+  if (indexTabUserContextId != undefined && isIndexTab) {
     indexTabUserContextMap.delete(tabId);
     // index closed, close all tabs of that group
     console.log('index tab %d closed on window %d, close all tabs of that group %d', tabId, windowId, indexTabUserContextId);
@@ -108,5 +109,16 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
 }, {
   properties: [
     'pinned',
+  ],
+});
+
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, browserTab) => {
+  const url = browserTab.url ?? 'about:blank';
+  if (!IndexTab.isIndexTabUrl(url)) {
+    indexTabUserContextMap.delete(tabId);
+  }
+}, {
+  properties: [
+    'url',
   ],
 });
