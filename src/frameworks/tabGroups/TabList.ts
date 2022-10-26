@@ -28,7 +28,7 @@ import { Tab } from "../tabs";
 export class TabList {
   private readonly _tabIds: ReadonlyArray<number>;
 
-  constructor(tabIds: Iterable<number>) {
+  public constructor(tabIds: Iterable<number>) {
     this._tabIds = [...tabIds];
   }
 
