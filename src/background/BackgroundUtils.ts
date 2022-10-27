@@ -25,12 +25,12 @@ import * as containers from '../modules/containers';
 import { PromiseUtils } from '../frameworks/utils';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 
-const userContextVisibilityService = UserContextVisibilityService.getInstance();
-
 export class BackgroundUtils {
+  private static readonly userContextVisibilityService = UserContextVisibilityService.getInstance();
+
   public async reopenNewTabInContainer(tabId: number, userContextId: Uint32.Uint32, windowId: number) {
     await PromiseUtils.sleep(100);
-    if (await userContextVisibilityService.isIndexTab(tabId)) {
+    if (await BackgroundUtils.userContextVisibilityService.isIndexTab(tabId)) {
       console.log('Ignoring an index tab: ', tabId);
       return;
     }
