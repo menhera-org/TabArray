@@ -86,10 +86,41 @@ browser.tabs.onCreated.addListener(async (browserTab) => {
 });
 
 browser.tabs.query({}).then(async (browserTabs) => {
+  const userContextIdsWithIndexTab = new Set<Uint32.Uint32>();
   const tabs = browserTabs.map((browserTab) => new Tab(browserTab));
   for (const tab of tabs) {
     if (IndexTab.isIndexTabUrl(tab.url)) {
       indexTabUserContextMap.set(tab.id, tab.userContextId);
+      userContextIdsWithIndexTab.add(tab.userContextId);
+    }
+  }
+});
+
+browser.windows.getAll({
+  populate: false,
+  windowTypes: ['normal'],
+}).then(async (browserWindows) => {
+  const indexTabOption = await config['tab.groups.indexOption'].getValue();
+  if (indexTabOption == 'never') return;
+  for (const browserWindow of browserWindows) {
+    if (null == browserWindow.id) continue;
+    const windowUserContextList = await WindowUserContextList.create(browserWindow.id);
+    const userContexts = windowUserContextList.getOpenUserContexts();
+    for (const userContext of userContexts) {
+      const tabs = [... windowUserContextList.getUserContextTabs(userContext.id)];
+      let hasIndexTab = false;
+      let hidden = false;
+      for (const tab of tabs) {
+        if (tab.hidden) {
+          hidden = true;
+        }
+        if (IndexTab.isIndexTabUrl(tab.url)) {
+          hasIndexTab = true;
+        }
+      }
+      if (!hasIndexTab && (hidden || indexTabOption == 'always')) {
+        await userContextVisibilityService.createIndexTab(browserWindow.id, userContext.id);
+      }
     }
   }
 });
