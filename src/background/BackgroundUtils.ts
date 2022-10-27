@@ -26,6 +26,7 @@ import { PromiseUtils } from '../frameworks/utils';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
+
 export class BackgroundUtils {
   public async reopenNewTabInContainer(tabId: number, userContextId: Uint32.Uint32, windowId: number) {
     await PromiseUtils.sleep(100);
