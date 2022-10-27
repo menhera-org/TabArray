@@ -53,6 +53,7 @@ browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) =>
 
     // if the only remaining tab is the index tab, close it
     if (tabs[0] && tabs.length == 1 && IndexTab.isIndexTabUrl(tabs[0].url)) {
+      await userContextVisibilityService.unregisterIndexTab(tabs[0].id);
       await tabs[0].close();
     }
   }
