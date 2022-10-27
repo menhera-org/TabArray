@@ -62,11 +62,15 @@ export class UserContextVisibilityService {
     const rawUserContext = await UserContext.get(userContextId);
     const userContext = UserContextService.getInstance().fillDefaultValues(rawUserContext);
     const url = IndexTab.getUrl(userContext.name, userContext.icon, userContext.colorCode).url;
+    const cookieStoreId = UserContext.toCookieStoreId(userContextId);
+    const browserTabs = await browser.tabs.query({ windowId, cookieStoreId });
+    const minIndex = browserTabs.reduce((min, browserTab) => Math.min(min, browserTab.index), Number.MAX_SAFE_INTEGER);
     const browserTab = await browser.tabs.create({
       url,
-      cookieStoreId: UserContext.toCookieStoreId(userContextId),
+      cookieStoreId,
       windowId,
       active: false,
+      index: minIndex,
     });
     const tab = new Tab(browserTab);
     await browser.sessions.setTabValue(tab.id, 'indexTabUrl', url);
