@@ -140,7 +140,7 @@
     }
   },
   "noContainer": {
-    "message": "Pas de conteneur",
+    "message": "Sans conteneur",
     "description": "Virtual container name for tabs with no container."
   },
   "browserActionTitle": {
@@ -256,7 +256,7 @@
     "description": "Option to use the last active container for externally opened tabs."
   },
   "labelExternalTabOptionDisabled": {
-    "message": "Ouvrir dans le conteneur par défaut (Pas de conteneur)",
+    "message": "Ouvrir dans le conteneur par défaut (Sans conteneur)",
     "description": "Option to disable handling of externally opened tabs."
   },
   "labelGroupIndexOption": {
