@@ -14,7 +14,7 @@
   "author": "Menhera.org",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@types/node": "^18.11.4",
+    "@types/node": "^18.11.8",
     "@types/webextension-polyfill": "^0.9.1",
     "ts-loader": "^9.4.1",
     "typedoc": "^0.23.18",
