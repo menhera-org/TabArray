@@ -63,7 +63,12 @@ const sortTabsByWindow = async (windowId: number) => {
       const currentIndex = tab.index;
       const targetIndex = pinnedCount + i;
       if (targetIndex != currentIndex) {
-        await PromiseUtils.timeout(browser.tabs.move(tab.id, {index: targetIndex}), TAB_MOVE_TIMEOUT);
+        try {
+          await PromiseUtils.timeout(browser.tabs.move(tab.id, {index: targetIndex}), TAB_MOVE_TIMEOUT);
+        } catch (e) {
+          console.error('Error moving tab %d from index %d to %d on window %d', tab.id, currentIndex, targetIndex, windowId, e);
+          throw e;
+        }
       }
     }
   } catch (e) {
