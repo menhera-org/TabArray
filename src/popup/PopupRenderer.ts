@@ -162,9 +162,11 @@ export class PopupRenderer {
   }
 
   public async render() {
+    const startTime = Date.now();
     const browserWindow = await browser.windows.get(browser.windows.WINDOW_ID_CURRENT);
     const windowId = browserWindow.id;
     if (null == windowId) {
+      console.warn('windowId is null');
       return;
     }
     const currentWindowMenuList = this._utils.queryElementNonNull<HTMLElement>('#menuList');
@@ -176,10 +178,14 @@ export class PopupRenderer {
       windowService.getActiveTabsByWindow(),
       FirstPartyTabMap.create(browserWindow.incognito),
       UserContextSortingOrderStore.getInstance().initialized,
+      this.siteListRenderer.rerenderSiteDetailsView(),
     ]);
     this.currentWindowRenderer.renderCurrentWindowView(windowUserContextList, currentWindowMenuList);
     this.windowListRenderer.renderWindowListView(activeTabsByWindow, windowListMenuList);
     this.siteListRenderer.renderSiteListView(firstPartyTabMap, sitesMenuList);
-    await this.siteListRenderer.rerenderSiteDetailsView();
+    const elapsed = Date.now() - startTime;
+    if (elapsed > 500) {
+      console.debug(`rendering took ${elapsed}ms`);
+    }
   }
 }
