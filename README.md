@@ -99,6 +99,7 @@ enough to unnecessitate Simple Tab Groups.
 
 - _TabArray_ is the code name, and _Container Tab Groups_ is the user-facing name.
 - The official extension ID is `tab-array@menhera.org`. (Not an email address.)
+- To contact the developers, use [Google Groups](https://groups.google.com/a/menhera.com/g/ctg-l) or [GitHub discussions](https://github.com/menhera-org/TabArray/discussions).
 
 ## FAQs
 
