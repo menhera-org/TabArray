@@ -49,4 +49,11 @@ export class PromiseUtils {
     setTimeout(resolve, ms);
     return promise;
   }
+
+  public static timeout(promise: Promise<unknown>, ms: number, message = "Timed out") {
+    const timeout = PromiseUtils.sleep(ms).then(() => {
+      throw new Error(message);
+    });
+    return Promise.race([promise, timeout]);
+  }
 }

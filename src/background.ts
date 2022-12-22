@@ -48,6 +48,8 @@ window.addEventListener('error', () => {
   }
 });
 
+const TAB_SORTING_INTERVAL = 10000;
+
 const userContextService = UserContextService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const tabSortingService = TabSortingService.getInstance();
@@ -219,6 +221,10 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
 });
 
 tabSortingService.sortTabs();
+
+setInterval(() => {
+  tabSortingService.sortTabs();
+}, TAB_SORTING_INTERVAL);
 
 
 browser.windows.getAll({

@@ -24,6 +24,9 @@ import { Tab } from '../frameworks/tabs';
 import { getWindowIds } from '../modules/windows';
 import { IndexTab } from '../modules/IndexTab';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { PromiseUtils } from '../frameworks/utils';
+
+const TAB_MOVE_TIMEOUT = 60000;
 
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
@@ -60,7 +63,7 @@ const sortTabsByWindow = async (windowId: number) => {
       const currentIndex = tab.index;
       const targetIndex = pinnedCount + i;
       if (targetIndex != currentIndex) {
-        await browser.tabs.move(tab.id, {index: targetIndex});
+        await PromiseUtils.timeout(browser.tabs.move(tab.id, {index: targetIndex}), TAB_MOVE_TIMEOUT);
       }
     }
   } catch (e) {
@@ -69,12 +72,17 @@ const sortTabsByWindow = async (windowId: number) => {
 };
 
 const sortTabs = async () => {
-  if (tabSorting) return;
+  if (tabSorting) {
+    console.debug('Tab sorting is already in progress.');
+    return;
+  }
   tabSorting = true;
+  const promises: Promise<void>[] = [];
   try {
     for (const windowId of await getWindowIds()) {
-      await sortTabsByWindow(windowId);
+      promises.push(sortTabsByWindow(windowId));
     }
+    await Promise.all(promises);
   } catch (e) {
     console.error(e);
   } finally {
