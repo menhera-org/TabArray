@@ -34,6 +34,37 @@ export class CookieProvider {
     }
   }
 
+  private getDomainsForCookies(cookies: browser.Cookies.Cookie[]): string[] {
+    const domains: Set<string> = new Set;
+    for (const cookie of cookies) {
+      const domain = cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain;
+      domains.add(domain);
+    }
+    return this._hostnameService.sortDomains(domains);
+  }
+
+  public async getCookiesForFirstPartyDomain(originAttributes: OriginAttributes): Promise<browser.Cookies.Cookie[]> {
+    const firstPartyDomain = originAttributes.firstpartyDomain;
+    const cookieStoreId = originAttributes.cookieStoreId;
+    const partitionKey = {};
+    return await browser.cookies.getAll({
+      firstPartyDomain,
+      partitionKey,
+      storeId: cookieStoreId,
+    });
+  }
+
+  public async getCookieDomainsForFirstPartyDomain(originAttributes: OriginAttributes): Promise<string[]> {
+    const cookies = await this.getCookiesForFirstPartyDomain(originAttributes);
+    return this.getDomainsForCookies(cookies);
+  }
+
+  public async getCookieRegistrableDomainsForFirstPartyDomain(originAttributes: OriginAttributes): Promise<string[]> {
+    await this._firstPartyService.initialized;
+    const domains = await this.getCookieDomainsForFirstPartyDomain(originAttributes);
+    return this._firstPartyService.getUniqueFirstPartyDomains(domains);
+  }
+
   public async getCookiesForOriginAttributes(originAttributes: OriginAttributes): Promise<browser.Cookies.Cookie[]> {
     this.validateOriginAttributes(originAttributes);
     const domain = originAttributes.hasFirstpartyDomain() ? originAttributes.firstpartyDomain : undefined;
@@ -48,23 +79,30 @@ export class CookieProvider {
     });
   }
 
-  public async getCookieDomainsForOriginAttributes(originAttributes: OriginAttributes): Promise<string[]> {
-    const cookies = await this.getCookiesForOriginAttributes(originAttributes);
+  public async getFirstPartyDomainsForOriginAttributes(originAttributes: OriginAttributes): Promise<string[]> {
+    const partitionKey = {};
+    const cookieStoreId = originAttributes.cookieStoreId;
+    const cookies = await browser.cookies.getAll({
+      storeId: cookieStoreId,
+      firstPartyDomain: null,
+      partitionKey,
+    });
     const domains = new Set<string>();
     for (const cookie of cookies) {
-      if (this._hostnameService.isHostnameIpAddress(`http://${cookie.domain}`)) {
-        continue;
-      }
-      const domain = cookie.domain.startsWith('.') ? cookie.domain.substring(1) : cookie.domain;
-      domains.add(domain);
+      domains.add(cookie.firstPartyDomain);
     }
     return this._hostnameService.sortDomains(domains);
+  }
+
+  public async getCookieDomainsForOriginAttributes(originAttributes: OriginAttributes): Promise<string[]> {
+    const cookies = await this.getCookiesForOriginAttributes(originAttributes);
+    return this.getDomainsForCookies(cookies);
   }
 
   public async getCookieRegistrableDomainsForOriginAttributes(originAttributes: OriginAttributes): Promise<string[]> {
     await this._firstPartyService.initialized;
     const domains = await this.getCookieDomainsForOriginAttributes(originAttributes);
-    return this._firstPartyService.getUniqueRegistrableDomains(domains);
+    return this._firstPartyService.getUniqueFirstPartyDomains(domains);
   }
 
   public async removeDataForOriginAttributes(originAttributes: OriginAttributes): Promise<void> {

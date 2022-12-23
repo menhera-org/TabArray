@@ -78,8 +78,12 @@ body {
   border-bottom: solid 1px var(--border-color);
 }
 
-#cookies td.domain, #cookies th {
+#cookies td.domain, #cookies th, #cookies td.first-party-domain {
   padding: .5em;
+}
+
+#cookies td.first-party-domain {
+  background-color: var(--secondary-background-color);
 }
 
 #cookies td {

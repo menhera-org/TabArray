@@ -79,27 +79,43 @@ const render = async () => {
 };
 
 const renderContainer = async (originAttributes: OriginAttributes) => {
-  const domains = await cookieProvider.getCookieRegistrableDomainsForOriginAttributes(originAttributes);
+  const firstPartyDomains = await cookieProvider.getFirstPartyDomainsForOriginAttributes(originAttributes);
   cookieDomains.textContent = '';
-  for (const domain of domains) {
-    const tr = document.createElement('tr');
-    const td = document.createElement('td');
-    td.textContent = domain;
-    td.classList.add('domain');
-    const td2 = document.createElement('td');
-    td2.classList.add('actions');
-    const button = document.createElement('button');
-    button.classList.add('delete');
-    button.addEventListener('click', async () => {
-      const removedOriginAttributes = new OriginAttributes(domain, originAttributes.userContextId, originAttributes.privateBrowsingId);
-      await cookieProvider.removeDataForOriginAttributes(removedOriginAttributes);
-      console.log('Removed browsing data for:', removedOriginAttributes);
-      renderContainer(originAttributes);
-    });
-    td2.appendChild(button);
-    tr.appendChild(td);
-    tr.appendChild(td2);
-    cookieDomains.appendChild(tr);
+
+  for (const firstPartyDomain of firstPartyDomains) {
+    const domains = await cookieProvider.getCookieRegistrableDomainsForFirstPartyDomain(
+      new OriginAttributes(firstPartyDomain, originAttributes.userContextId, originAttributes.privateBrowsingId));
+
+    {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 2;
+      td.classList.add('first-party-domain');
+      td.textContent = `^firstPartyDomain=${firstPartyDomain}`;
+      tr.appendChild(td);
+      cookieDomains.appendChild(tr);
+    }
+
+    for (const domain of domains) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.textContent = domain;
+      td.classList.add('domain');
+      const td2 = document.createElement('td');
+      td2.classList.add('actions');
+      const button = document.createElement('button');
+      button.classList.add('delete');
+      button.addEventListener('click', async () => {
+        const removedOriginAttributes = new OriginAttributes(domain, originAttributes.userContextId, originAttributes.privateBrowsingId);
+        await cookieProvider.removeDataForOriginAttributes(removedOriginAttributes);
+        console.log('Removed browsing data for:', removedOriginAttributes);
+        renderContainer(originAttributes);
+      });
+      td2.appendChild(button);
+      tr.appendChild(td);
+      tr.appendChild(td2);
+      cookieDomains.appendChild(tr);
+    }
   }
 };
 

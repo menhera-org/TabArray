@@ -57,6 +57,21 @@ export class HostnameService {
   }
 
   public compareDomains(domain1: string, domain2: string): number {
+    if (domain1 === domain2) {
+      return 0;
+    } else if (domain1 === '') {
+      return -1;
+    } else if (domain2 === '') {
+      return 1;
+    }
+
+    if (this.isHostnameIpAddress(domain1) && this.isHostnameIpAddress(domain2)) {
+      return domain1.localeCompare(domain2);
+    } else if (this.isHostnameIpAddress(domain1)) {
+      return -1;
+    } else if (this.isHostnameIpAddress(domain2)) {
+      return 1;
+    }
     const hostname1 = this.getEncodedDomain(domain1);
     const hostname2 = this.getEncodedDomain(domain2);
     const hostname1Parts = hostname1.split(".");

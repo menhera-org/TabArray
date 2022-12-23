@@ -118,10 +118,18 @@ export class FirstPartyService {
     await tabGroup.tabList.closeTabs();
   }
 
-  public getUniqueRegistrableDomains(domains: Iterable<string>): string[] {
+  public getUniqueFirstPartyDomains(domains: Iterable<string>): string[] {
     const uniqueDomains = new Set<string>();
     for (const domain of domains) {
-      uniqueDomains.add(this.getRegistrableDomain(new URL(`http://${domain}`)));
+      if (domain === '') {
+        continue;
+      }
+      const url = new URL(`http://${domain}`);
+      if (this.hostnameService.isHostnameIpAddress(url.href)) {
+        uniqueDomains.add(domain);
+        continue;
+      }
+      uniqueDomains.add(this.getRegistrableDomain(url));
     }
     return this.hostnameService.sortDomains(uniqueDomains);
   }
