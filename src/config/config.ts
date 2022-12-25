@@ -27,6 +27,7 @@ export type PopupSize = 'standard' | 'large';
 export type GroupIndexOption = 'never' | 'always' | 'collapsed';
 
 export const config = {
+  'help.shownOnce': new StorageConfigurationOption<boolean>('help.shownOnce', false),
   'newtab.keepContainer': new StorageConfigurationOption<boolean>('newtab.keepContainer', true),
   'tab.external.containerOption': new StorageConfigurationOption<ExternalContainerOption>('tab.external.containerOption', 'choose'),
   'appearance.popupSize': new StorageConfigurationOption<PopupSize>('appearance.popupSize', 'standard'),

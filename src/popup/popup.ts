@@ -92,6 +92,13 @@ config['appearance.popupSize'].observe((value) => {
   }
 });
 
+config['help.shownOnce'].getValue().then((shownOnce) => {
+  if (!shownOnce) {
+    location.hash = '#help';
+    config['help.shownOnce'].setValue(true);
+  }
+});
+
 // Open a new window
 const buttonNewWindow = utils.queryElementNonNull<HTMLButtonElement>('#button-new-window');
 buttonNewWindow.addEventListener('click', () => {
