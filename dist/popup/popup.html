@@ -27,33 +27,39 @@
   </head>
   <body>
     <!-- Keep in sync with sidebar.html -->
-    <div id='main' class='content'>
-      <div id='topbox'>
-        <div id='search-wrapper'>
-          <input type='search' id='search'/>
-        </div>
-        <button id='button-new-container'>
-          <span class='button-text'>buttonNewContainer</span>
-        </button>
-        <button id='button-settings'>
-          <span class='button-text'>buttonSettings</span>
-        </button>
-        <button id='button-sidebar'>
-          <span class='button-text'>buttonSidebar</span>
-        </button>
-        <button id='button-menu'></button>
-        <div id='top-menu' hidden=''>
-          <button id='button-panorama'>
-            <span class='button-text'>buttonPanorama</span>
-          </button>
-          <button id='button-cookies'>
-            <span class='button-text'>buttonCookies</span>
-          </button>
-          <button id='button-about-addon'>
-            <span class='button-text'>buttonAboutAddon</span>
+    <div id='topbox'>
+      <div id='topbox-content'>
+        <div id='topbox-content-main' class='content'>
+          <div id='search-wrapper'>
+            <input type='search' id='search'/>
+          </div>
+          <button id='button-new-container'>
+            <span class='button-text'>buttonNewContainer</span>
           </button>
         </div>
+        <div id='topbox-content-windows' class='content'></div>
+        <div id='topbox-content-sites' class='content'></div>
       </div>
+      <button id='button-settings'>
+        <span class='button-text'>buttonSettings</span>
+      </button>
+      <button id='button-sidebar'>
+        <span class='button-text'>buttonSidebar</span>
+      </button>
+      <button id='button-menu'></button>
+      <div id='top-menu' hidden=''>
+        <button id='button-panorama'>
+          <span class='button-text'>buttonPanorama</span>
+        </button>
+        <button id='button-cookies'>
+          <span class='button-text'>buttonCookies</span>
+        </button>
+        <button id='button-about-addon'>
+          <span class='button-text'>buttonAboutAddon</span>
+        </button>
+      </div>
+    </div>
+    <div id='main' class='content'>
       <div id='main-inner' class='menu-part'>
         <ul id='menuList' class='menu-list'></ul>
       </div>

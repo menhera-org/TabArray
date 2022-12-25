@@ -57,9 +57,12 @@ export class PopupWindowListRenderer {
     containerElement.appendChild(tabElement);
   }
 
-  public renderWindowListView(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement): void {
+  public renderWindowListView(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement, headingElement: HTMLElement): void {
     element.textContent = '';
     const windowIds = [... browserStateSnapshot.getWindowIds()].sort((a, b) => a - b);
+    const windowCount = windowIds.length;
+    headingElement.textContent = browser.i18n.getMessage('windowsN', windowCount.toFixed(0));
+
     for (const windowId of windowIds) {
       const windowStateSnapshot = browserStateSnapshot.getWindowStateSnapshot(windowId);
       if (!windowStateSnapshot) {

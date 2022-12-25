@@ -51,7 +51,10 @@ window.addEventListener('error', () => {
 // auto reload
 const AUTO_RELOAD_MONITOR_INTERVAL = 5000;
 setInterval(() => {
-  fetch('/manifest.json').catch(() => {
+  Promise.all([
+    fetch('/manifest.json'),
+    fetch('/theme.css'),
+  ]).catch(() => {
     browser.runtime.reload();
   });
 }, AUTO_RELOAD_MONITOR_INTERVAL);

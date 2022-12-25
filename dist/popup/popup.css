@@ -34,7 +34,7 @@ body {
   overflow-inline: hidden;
   margin: 0;
   display: grid;
-  grid-template-rows: 1fr max-content;
+  grid-template-rows: max-content 1fr max-content;
   position: relative;
 }
 
@@ -115,7 +115,7 @@ button {
 
 #main {
   transition: opacity .1s ease-in;
-  grid-template-rows: max-content 1fr;
+  grid-template-rows: 1fr;
   block-size: 100%;
   overflow: auto;
 }
@@ -153,10 +153,21 @@ button {
 
 #topbox {
   display: block grid;
-  grid-template-columns: 1fr max-content max-content max-content max-content max-content;
+  grid-template-columns: 1fr max-content max-content max-content;
   grid-template-rows: 2.5em;
   padding-inline-start: 1em;
   position: relative;
+  box-shadow: 0 0 .25rem var(--border-color);
+}
+
+#topbox-content {
+  display: block grid;
+  inline-size: 100%;
+  overflow-inline: auto;
+}
+
+#topbox-content > .content {
+  display: none;
 }
 
 #top-menu {
@@ -372,6 +383,28 @@ button {
 [data-active-content="help"] #menu-item-help {
   opacity: 1;
   border-color: var(--accent-color);
+}
+
+
+[data-active-content="main"] #topbox-content > #topbox-content-main {
+  display: block grid;
+  grid-template-columns: 1fr max-content;
+}
+
+[data-active-content="windows"] #topbox-content > #topbox-content-windows {
+  display: block grid;
+  align-content: center;
+  justify-content: center;
+}
+
+[data-active-content="sites"] #topbox-content > #topbox-content-sites {
+  display: block grid;
+  align-content: center;
+  justify-content: center;
+}
+
+[data-active-content="help"] #topbox-content > #topbox-content-help {
+  display: block grid;
 }
 
 #sites {

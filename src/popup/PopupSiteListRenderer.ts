@@ -19,6 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
 import { MenulistSiteButtonElement } from '../components/menulist-site-button';
 import { Tab } from '../frameworks/tabs';
 import { PopupRenderer } from './PopupRenderer';
@@ -65,12 +66,14 @@ export class PopupSiteListRenderer {
     return siteButton;
   }
 
-  public renderSiteListView(browserStateSnapshot: BrowserStateSnapshot, element: HTMLElement): void {
+  public renderSiteListView(browserStateSnapshot: BrowserStateSnapshot, element: HTMLElement, topboxElement: HTMLElement): void {
     const currentWindowId = browserStateSnapshot.currentWindowId;
     const currentWindowState = browserStateSnapshot.getWindowStateSnapshot(currentWindowId);
     const isPrivate = currentWindowState.isPrivate;
     const firstPartyState = browserStateSnapshot.getFirstPartyStateSnapshot(isPrivate);
     element.textContent = '';
+    const sitesCount = firstPartyState.size;
+    topboxElement.textContent = browser.i18n.getMessage('sitesN', sitesCount.toFixed(0));
     const firstPartyTabs: { domain: string, tabs: Tab[] }[] = [];
     for (const [domain, tabs] of firstPartyState) {
       firstPartyTabs.push({ domain, tabs: [... tabs] });

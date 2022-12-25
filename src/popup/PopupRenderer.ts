@@ -166,6 +166,8 @@ export class PopupRenderer {
 
   public async render() {
     const startTime = Date.now();
+    const topboxContentWindows = this._utils.queryElementNonNull<HTMLElement>('#topbox-content-windows');
+    const topboxContentSites = this._utils.queryElementNonNull<HTMLElement>('#topbox-content-sites');
     const currentWindowMenuList = this._utils.queryElementNonNull<HTMLElement>('#menuList');
     const windowListMenuList = this._utils.queryElementNonNull<HTMLElement>('#windowMenuList');
     const sitesMenuList = this._utils.queryElementNonNull<HTMLElement>('#sites-pane-top');
@@ -176,8 +178,8 @@ export class PopupRenderer {
     const definedUserContexts = this._userContextSortingOrderStore.sort(browserStateSnapshot.getDefinedUserContexts().map(
       (userContext) => this._userContextService.fillDefaultValues(userContext)));
     this.currentWindowRenderer.renderCurrentWindowView(browserStateSnapshot, definedUserContexts, currentWindowMenuList);
-    this.windowListRenderer.renderWindowListView(browserStateSnapshot, definedUserContexts, windowListMenuList);
-    this.siteListRenderer.renderSiteListView(browserStateSnapshot, sitesMenuList);
+    this.windowListRenderer.renderWindowListView(browserStateSnapshot, definedUserContexts, windowListMenuList, topboxContentWindows);
+    this.siteListRenderer.renderSiteListView(browserStateSnapshot, sitesMenuList, topboxContentSites);
     const elapsed = Date.now() - startTime;
     if (elapsed > 500) {
       console.debug(`rendering took ${elapsed}ms`);
