@@ -86,10 +86,19 @@ utils.queryElementNonNull<HTMLElement>('#help-banner-privacy-policy').textConten
 
 const sitesElement = utils.queryElementNonNull<HTMLElement>('#sites');
 
+const searchBox = utils.queryElementNonNull<HTMLInputElement>('#search');
+const menuListElement = utils.queryElementNonNull<HTMLElement>('#menuList');
+
 location.hash = '#main';
 document.body.dataset.activeContent = 'main';
 window.addEventListener('hashchange', () => {
-  document.body.dataset.activeContent = location.hash.slice(1);
+  const activeContent = location.hash.slice(1);
+  document.body.dataset.activeContent = activeContent;
+  if ('main' == activeContent) {
+    setTimeout(() => searchBox.focus());
+  } else if ('' == activeContent) {
+    location.hash = '#main';
+  }
 });
 
 let configPopupSize;
@@ -187,8 +196,6 @@ utils.queryElementNonNull('#help-done-button').addEventListener('click', () => {
   location.hash = '#main';
 });
 
-const searchBox = utils.queryElementNonNull<HTMLInputElement>('#search');
-const menuListElement = utils.queryElementNonNull<HTMLElement>('#menuList');
 
 searchBox.focus();
 searchBox.placeholder = browser.i18n.getMessage('searchPlaceholder');
