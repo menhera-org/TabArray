@@ -36,7 +36,7 @@ import './background/BackgroundContainerObservers';
 import './background/BackgroundMenu';
 import './background/BackgroundCookieAutoclean';
 import './api/ApiDefinitions';
-import './languages/fetch';
+import './overrides/fetch';
 import './languages/register-content-script';
 
 // watchdog

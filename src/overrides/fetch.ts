@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { OriginAttributes } from '../frameworks/tabGroups';
-import { LanguageSettings } from './LanguageSettings';
+import { LanguageSettings } from '../languages/LanguageSettings';
 
 const languageSettings = LanguageSettings.getInstance();
 

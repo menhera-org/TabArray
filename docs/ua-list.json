@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Latest Chrome",
+    "userAgent": "Mozilla/5.0 (%CHROME_UA_PLATFORM%) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%CHROME_RELEASE%.0.0.0 Safari/537.36",
+    "userAgentDataEnabled": true
+  },
+  {
+    "name": "Googlebot",
+    "userAgent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+    "userAgentDataEnabled": true
+  }
+]
