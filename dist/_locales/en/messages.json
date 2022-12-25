@@ -482,5 +482,9 @@
         "example": "3"
       }
     }
+  },
+  "buttonGetStarted": {
+    "message": "Get Started",
+    "description": "Button to get started"
   }
 }
