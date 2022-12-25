@@ -29,7 +29,7 @@ export type GroupIndexOption = 'never' | 'always' | 'collapsed';
 export const config = {
   'help.shownOnce': new StorageConfigurationOption<boolean>('help.shownOnce', false),
   'feature.languageOverrides': new StorageConfigurationOption<boolean>('feature.languageOverrides', true),
-  'feature.uaOverrides': new StorageConfigurationOption<boolean>('feature.uaOverrides', true),
+  'feature.uaOverrides': new StorageConfigurationOption<boolean>('feature.uaOverrides', false),
   'newtab.keepContainer': new StorageConfigurationOption<boolean>('newtab.keepContainer', true),
   'tab.external.containerOption': new StorageConfigurationOption<ExternalContainerOption>('tab.external.containerOption', 'choose'),
   'appearance.popupSize': new StorageConfigurationOption<PopupSize>('appearance.popupSize', 'standard'),
