@@ -27,57 +27,78 @@
   <script defer='' src='./options.js'></script>
 </head>
 <body>
-  <p id='optionalFeaturesDescription'>optionalFeaturesDescription</p>
-  <p class='browser-style'>
-    <input type='checkbox' id='input-featureLanguageOverrides'/>
-    <label class='browser-style-label' for='input-featureLanguageOverrides'>featureLanguageOverrides</label>
-  </p>
-  <p class='browser-style'>
-    <input type='checkbox' id='input-featureUaOverrides'/>
-    <label class='browser-style-label' for='input-featureUaOverrides'>featureUaOverrides</label>
-  </p>
-  <h2 id='optionsHeadingAppearance'>optionsHeadingAppearance</h2>
-  <p>
-    <label class='browser-style-label' for='select-popupSize'>labelPopupSize</label>
-    <select id='select-popupSize' class='browser-style'>
-      <option value='standard' selected=''>labelPopupSizeStandard</option>
-      <option value='large'>labelPopupSizeLarge</option>
-    </select>
-  </p>
-  <h2 id='optionsHeadingExperimental'>optionsHeadingExperimental</h2>
-  <p id='optionsDescriptionExperimental'>optionsDescriptionExperimental</p>
-  <p class='browser-style'>
-    <input type='checkbox' id='input-newtabKeepContainer'/>
-    <label class='browser-style-label' for='input-newtabKeepContainer'>labelNewTabKeepContainer</label>
-  </p>
-  <p>
-    <label class='browser-style-label' for='select-externalTabContainerOption'>labelExternalTabSelectContainerOption</label>
-    <select id='select-externalTabContainerOption' class='browser-style'>
-      <option value='choose' selected=''>labelExternalTabOptionChooseContainer</option>
-      <option value='sticky'>labelExternalTabOptionStickyContainer</option>
-      <option value='disabled'>labelExternalTabOptionDisabled</option>
-    </select>
-  </p>
-  <p>
-    <label class='browser-style-label' for='select-groupIndexOption'>labelGroupIndexOption</label>
-    <select id='select-groupIndexOption' class='browser-style'>
-      <option value='always' selected=''>labelGroupIndexOptionAlways</option>
-      <option value='collapsed'>labelGroupIndexOptionCollapsed</option>
-      <option value='never'>labelGroupIndexOptionNever</option>
-    </select>
-  </p>
-  <h2 id='optionsHeadingFirefox'>optionsHeadingFirefox</h2>
-  <p id='optionsDescriptionFirefox'>optionsDescriptionFirefox</p>
-  <p id='fpiDescription'>fpiDescription</p>
-  <p class='browser-style'>
-    <input type='checkbox' id='input-firstPartyIsolate'/>
-    <label class='browser-style-label' for='input-firstPartyIsolate'>labelFirstPartyIsolate</label>
-  </p>
-  <p class='browser-style'>
-    <input type='checkbox' id='input-resistFingerprinting'/>
-    <label class='browser-style-label' for='input-resistFingerprinting'>labelResistFingerprinting</label>
-  </p>
-  <h2 id='optionsHeadingContainerSortOrder'>optionsHeadingContainerSortOrder</h2>
-  <p id='optionsDescriptionContainerSortOrder'>optionsDescriptionContainerSortOrder</p>
+  <div id='optionsPanes'>
+    <div data-pane-name='general'>
+      <p id='optionalFeaturesDescription'>optionalFeaturesDescription</p>
+      <p class='browser-style'>
+        <input type='checkbox' id='input-featureLanguageOverrides'/>
+        <label class='browser-style-label' for='input-featureLanguageOverrides'>featureLanguageOverrides</label>
+      </p>
+      <p class='browser-style'>
+        <input type='checkbox' id='input-featureUaOverrides'/>
+        <label class='browser-style-label' for='input-featureUaOverrides'>featureUaOverrides</label>
+      </p>
+      <p>
+        <a href='#containers' id='link-containers' class='text-link'>optionsHeadingContainerSortOrder</a>
+      </p>
+      <p>
+        <a href='#container-overrides' id='link-container-overrides' class='text-link'>optionsHeadingContainerOverrides</a>
+      </p>
+      <h2 id='optionsHeadingAppearance'>optionsHeadingAppearance</h2>
+      <p>
+        <label class='browser-style-label' for='select-popupSize'>labelPopupSize</label>
+        <select id='select-popupSize' class='browser-style'>
+          <option value='standard' selected=''>labelPopupSizeStandard</option>
+          <option value='large'>labelPopupSizeLarge</option>
+        </select>
+      </p>
+      <h2 id='optionsHeadingExperimental'>optionsHeadingExperimental</h2>
+      <p id='optionsDescriptionExperimental'>optionsDescriptionExperimental</p>
+      <p class='browser-style'>
+        <input type='checkbox' id='input-newtabKeepContainer'/>
+        <label class='browser-style-label' for='input-newtabKeepContainer'>labelNewTabKeepContainer</label>
+      </p>
+      <p>
+        <label class='browser-style-label' for='select-externalTabContainerOption'>labelExternalTabSelectContainerOption</label>
+        <select id='select-externalTabContainerOption' class='browser-style'>
+          <option value='choose' selected=''>labelExternalTabOptionChooseContainer</option>
+          <option value='sticky'>labelExternalTabOptionStickyContainer</option>
+          <option value='disabled'>labelExternalTabOptionDisabled</option>
+        </select>
+      </p>
+      <p>
+        <label class='browser-style-label' for='select-groupIndexOption'>labelGroupIndexOption</label>
+        <select id='select-groupIndexOption' class='browser-style'>
+          <option value='always' selected=''>labelGroupIndexOptionAlways</option>
+          <option value='collapsed'>labelGroupIndexOptionCollapsed</option>
+          <option value='never'>labelGroupIndexOptionNever</option>
+        </select>
+      </p>
+      <h2 id='optionsHeadingFirefox'>optionsHeadingFirefox</h2>
+      <p id='optionsDescriptionFirefox'>optionsDescriptionFirefox</p>
+      <p id='fpiDescription'>fpiDescription</p>
+      <p class='browser-style'>
+        <input type='checkbox' id='input-firstPartyIsolate'/>
+        <label class='browser-style-label' for='input-firstPartyIsolate'>labelFirstPartyIsolate</label>
+      </p>
+      <p class='browser-style'>
+        <input type='checkbox' id='input-resistFingerprinting'/>
+        <label class='browser-style-label' for='input-resistFingerprinting'>labelResistFingerprinting</label>
+      </p>
+    </div>
+    <div data-pane-name='containers'>
+      <div class='pane-header'>
+        <a class='pane-back' href='#'></a>
+        <h2 id='optionsHeadingContainerSortOrder'>optionsHeadingContainerSortOrder</h2>
+      </div>
+      <p id='optionsDescriptionContainerSortOrder'>optionsDescriptionContainerSortOrder</p>
+    </div>
+    <div data-pane-name='container-overrides'>
+      <div class='pane-header'>
+        <a class='pane-back' href='#'></a>
+        <h2 id='optionsHeadingContainerOverrides'>optionsHeadingContainerOverrides</h2>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

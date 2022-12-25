@@ -502,5 +502,9 @@
   "featureUaOverrides": {
     "message": "Per-container User-Agent Overrides",
     "description": "Label text for UA overrides feature"
+  },
+  "optionsHeadingContainerOverrides": {
+    "message": "Per-container Overrides",
+    "description": "Heading text of options page for container overrides."
   }
 }

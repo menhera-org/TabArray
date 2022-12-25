@@ -64,6 +64,33 @@ const setInputChecked = (inputElement: HTMLInputElement | null | undefined, valu
   inputElement.checked = value;
 };
 
+const panes = document.querySelectorAll<HTMLElement>('#optionsPanes > div');
+const setActiveContent = (name: string) => {
+  name = name || 'general';
+  console.log('setActiveContent', name);
+  for (const pane of panes) {
+    if (pane.dataset.paneName === name) {
+      pane.classList.add('active');
+    } else {
+      pane.classList.remove('active');
+    }
+  }
+};
+
+setActiveContent(location.hash.slice(1));
+
+window.addEventListener('hashchange', () => {
+  const activeContent = location.hash.slice(1);
+  setActiveContent(activeContent);
+});
+
+const paneContainers = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="containers"]');
+
+setTextContent('#link-containers', 'optionsHeadingContainerSortOrder');
+setTextContent('#link-container-overrides', 'optionsHeadingContainerOverrides');
+
+setTextContent('#optionsHeadingContainerOverrides', 'optionsHeadingContainerOverrides');
+
 setTextContent('#optionalFeaturesDescription', 'optionalFeaturesDescription');
 
 const inputFeatureLanguageOverrides = document.querySelector<HTMLInputElement>('#input-featureLanguageOverrides');
@@ -116,7 +143,7 @@ UserContext.getAll().then(async (userContexts) => {
   const autocleanEnabledUserContextIds = await cookieAutocleanService.getAutocleanEnabledUserContexts();
   const sortedUserContext = sortingOrderStore.sort(userContexts.map((userContext) => userContextService.fillDefaultValues(userContext)));
   const containerSorter = new ContainerSorterElement(sortedUserContext, autocleanEnabledUserContextIds);
-  document.body?.appendChild(containerSorter);
+  paneContainers?.appendChild(containerSorter);
 
   const callback = async () => {
     const autocleanEnabledUserContextIds = await cookieAutocleanService.getAutocleanEnabledUserContexts();

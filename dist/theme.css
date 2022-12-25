@@ -26,6 +26,7 @@
   --hover-color: rgba(0, 0, 0, 0.1);
   --secondary-background-color: #d7d7db;
   --button-text-color: #0033cc;
+  --in-content-link-color: #0033cc;
   --accent-color: #5eaf30;
 }
 
@@ -37,5 +38,6 @@
     --hover-color: rgba(255, 255, 255, 0.1);
     --secondary-background-color: #4a4a4f;
     --button-text-color: #aae2ff;
+    --in-content-link-color: #aae2ff;
   }
 }
