@@ -52,6 +52,8 @@ utils.queryElementNonNull<HTMLElement>('#button-sidebar > .button-text').textCon
 utils.queryElementNonNull<HTMLElement>('#button-sidebar').title = browser.i18n.getMessage('buttonSidebar');
 utils.queryElementNonNull<HTMLElement>('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
 utils.queryElementNonNull<HTMLElement>('#button-new-container').title = browser.i18n.getMessage('buttonNewContainer');
+utils.queryElementNonNull<HTMLElement>('#button-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
+utils.queryElementNonNull<HTMLElement>('#button-settings').title = browser.i18n.getMessage('buttonSettings');
 utils.queryElementNonNull<HTMLElement>('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 utils.queryElementNonNull<HTMLElement>('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 
@@ -68,7 +70,7 @@ utils.queryElementNonNull<HTMLElement>('#container-menu-done-button').textConten
 utils.queryElementNonNull<HTMLElement>('#menu-item-main > .button-text').textContent = browser.i18n.getMessage('menuItemMain');
 utils.queryElementNonNull<HTMLElement>('#menu-item-windows > .button-text').textContent = browser.i18n.getMessage('menuItemWindows');
 utils.queryElementNonNull<HTMLElement>('#menu-item-sites > .button-text').textContent = browser.i18n.getMessage('menuItemSites');
-utils.queryElementNonNull<HTMLElement>('#menu-item-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
+utils.queryElementNonNull<HTMLElement>('#menu-item-help > .button-text').textContent = browser.i18n.getMessage('menuItemHelp');
 utils.queryElementNonNull<HTMLElement>('#button-new-window > .button-text').textContent = browser.i18n.getMessage('buttonNewWindow');
 utils.queryElementNonNull<HTMLElement>('#button-new-private-window > .button-text').textContent = browser.i18n.getMessage('buttonNewPrivateWindow');
 
@@ -117,7 +119,7 @@ buttonNewPrivateWindow.addEventListener('click', () => {
   utils.openNewWindow(true);
 });
 
-utils.queryElementNonNull<HTMLButtonElement>('#menu-item-settings').addEventListener('click', (ev) => {
+utils.queryElementNonNull<HTMLButtonElement>('#button-settings').addEventListener('click', (ev) => {
   ev.preventDefault();
   utils.openOptionsPage();
 });

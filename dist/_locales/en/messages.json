@@ -454,5 +454,9 @@
   "optionsLabelLanguages": {
     "message": "Languages",
     "description": "Label text for languages of a container."
+  },
+  "menuItemHelp": {
+    "message": "Help",
+    "description": "Menu item for help view"
   }
 }
