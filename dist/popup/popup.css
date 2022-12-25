@@ -731,5 +731,6 @@ body > .modal:target {
   display: block;
   margin-inline: auto;
   inline-size: 50%;
+  max-inline-size: 10em;
   margin-block: 1rem;
 }
