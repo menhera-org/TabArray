@@ -98,14 +98,18 @@ export class RegistrableDomainService {
     return this.initialized;
   }
 
-  private getDnsHostname(url: string): string {
+  private getHostname(url: string): string {
     let urlObj: URL;
     try {
       urlObj = new URL(url);
     } catch (e) {
       return '';
     }
-    const hostname = urlObj.hostname;
+    return urlObj.hostname;
+  }
+
+  private getDnsHostname(url: string): string {
+    const hostname = this.getHostname(url);
     if (RegistrableDomainService.HOSTNAME_SERVICE.isHostnameIpAddress(url)) {
       return '';
     }
@@ -166,16 +170,19 @@ export class RegistrableDomainService {
 
   /**
    * Returns the registrable domain for the given domain.
+   * This is for first party domains, so it does not fail with IP addresses.
    * @param url The URL to check. This must be encoded with Punycode.
-   * @returns The registrable domain, or the empty string if the domain is not
-   * a valid domain or is an IP address.
+   * @returns The registrable domain, or the empty string if not applicable.
    */
   public getRegistrableDomain(url: string): string {
-    const domain = this.getDnsHostname(url);
+    const domain = this.getHostname(url);
     if (domain.length === 0) {
       return '';
     }
     const publicSuffix = this.getPublicSuffix(url);
+    if ('' === publicSuffix) {
+      return domain;
+    }
     const publicSuffixNamesLength = publicSuffix.split('.').length;
     const parts = domain.split('.');
     return parts.slice(-publicSuffixNamesLength - 1).join('.');

@@ -45,7 +45,7 @@ export class FirstPartyTabMap implements ImplementedMap {
 
   private readonly urlService = UrlService.getInstance();
   private readonly hostnameService = HostnameService.getInstance();
-  private tabMap = new Map<string, Tab[]>();
+  private readonly tabMap = new Map<string, Tab[]>();
 
   private constructor(tabs: Tab[]) {
     for (const tab of tabs) {

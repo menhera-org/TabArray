@@ -21,3 +21,5 @@
 
 export * as Int32 from './Int32';
 export * as Uint32 from './Uint32';
+export { SmartSet } from './SmartSet';
+export { SetMap } from './SetMap';

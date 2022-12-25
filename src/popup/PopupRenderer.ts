@@ -19,9 +19,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import browser from 'webextension-polyfill';
-import { Tab, WindowService } from "../frameworks/tabs";
-import { FirstPartyTabMap, UserContext, WindowUserContextList } from "../frameworks/tabGroups";
+import { Tab } from "../frameworks/tabs";
+import { UserContext } from "../frameworks/tabGroups";
 import { MenulistTabElement } from "../components/menulist-tab";
 import { MenulistContainerElement } from "../components/menulist-container";
 import * as containers from '../modules/containers';
@@ -37,6 +36,7 @@ import { UserContextService } from '../userContexts/UserContextService';
 import { PopupUtils } from './PopupUtils';
 import { PopupModalRenderer } from './PopupModalRenderer';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
 
 enum ContainerTabsState {
   NO_TABS,
@@ -46,8 +46,9 @@ enum ContainerTabsState {
 
 // This needs some refactoring.
 export class PopupRenderer {
-  private _userContextVisibilityService = UserContextVisibilityService.getInstance();
-  private _userContextService = UserContextService.getInstance();
+  private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
+  private readonly _userContextService = UserContextService.getInstance();
+  private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
   private readonly _utils = new PopupUtils();
 
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
@@ -163,26 +164,18 @@ export class PopupRenderer {
 
   public async render() {
     const startTime = Date.now();
-    const browserWindow = await browser.windows.get(browser.windows.WINDOW_ID_CURRENT);
-    const windowId = browserWindow.id;
-    if (null == windowId) {
-      console.warn('windowId is null');
-      return;
-    }
     const currentWindowMenuList = this._utils.queryElementNonNull<HTMLElement>('#menuList');
     const windowListMenuList = this._utils.queryElementNonNull<HTMLElement>('#windowMenuList');
     const sitesMenuList = this._utils.queryElementNonNull<HTMLElement>('#sites-pane-top');
-    const windowService = WindowService.getInstance();
-    const [windowUserContextList, activeTabsByWindow, firstPartyTabMap] = await Promise.all([
-      WindowUserContextList.create(windowId),
-      windowService.getActiveTabsByWindow(),
-      FirstPartyTabMap.create(browserWindow.incognito),
-      UserContextSortingOrderStore.getInstance().initialized,
+    const [browserStateSnapshot] = await Promise.all([
+      BrowserStateSnapshot.create(),
       this.siteListRenderer.rerenderSiteDetailsView(),
     ]);
-    this.currentWindowRenderer.renderCurrentWindowView(windowUserContextList, currentWindowMenuList);
-    this.windowListRenderer.renderWindowListView(activeTabsByWindow, windowListMenuList);
-    this.siteListRenderer.renderSiteListView(firstPartyTabMap, sitesMenuList);
+    const definedUserContexts = this._userContextSortingOrderStore.sort(browserStateSnapshot.getDefinedUserContexts().map(
+      (userContext) => this._userContextService.fillDefaultValues(userContext)));
+    this.currentWindowRenderer.renderCurrentWindowView(browserStateSnapshot, definedUserContexts, currentWindowMenuList);
+    this.windowListRenderer.renderWindowListView(browserStateSnapshot, definedUserContexts, windowListMenuList);
+    this.siteListRenderer.renderSiteListView(browserStateSnapshot, sitesMenuList);
     const elapsed = Date.now() - startTime;
     if (elapsed > 500) {
       console.debug(`rendering took ${elapsed}ms`);

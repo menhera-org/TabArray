@@ -24,8 +24,11 @@ import { PopupRenderer } from './PopupRenderer';
 import { MenulistWindowElement } from '../components/menulist-window';
 import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
-import { WindowUserContextList } from '../frameworks/tabGroups';
+import { UserContext } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
+import { WindowStateSnapshot } from '../frameworks/tabs/WindowStateSnapshot';
+import { Uint32 } from '../frameworks/types';
 
 export class PopupCurrentWindowRenderer {
   private readonly popupRenderer: PopupRenderer;
@@ -67,15 +70,13 @@ export class PopupCurrentWindowRenderer {
 
   /**
    *
-   * @param windowUserContextList
-   * @param element
    * @returns the number of pinned tabs.
    */
-  public renderPinnedTabs(windowUserContextList: WindowUserContextList, element: HTMLElement): number {
-    const pinnedTabs = windowUserContextList.getPinnedTabs();
+  public renderPinnedTabs(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: ReadonlyMap<Uint32.Uint32, UserContext>, element: HTMLElement): number {
+    const pinnedTabs = windowStateSnapshot.pinnedTabs;
     let tabCount = 0;
     for (const tab of pinnedTabs) {
-      const tabElement = this.popupRenderer.renderTab(tab, windowUserContextList.getUserContext(tab.userContextId));
+      const tabElement = this.popupRenderer.renderTab(tab, definedUserContexts.get(tab.userContextId));
       element.appendChild(tabElement);
       tabCount++;
     }
@@ -84,41 +85,58 @@ export class PopupCurrentWindowRenderer {
 
   /**
    *
-   * @param windowUserContextList
-   * @param element
    * @returns the number of tabs.
    */
-  public renderOpenContainers(windowUserContextList: WindowUserContextList, element: HTMLElement): number {
-    const openUserContexts = this._userContextSortingOrderStore.sort([... windowUserContextList.getOpenUserContexts()]);
+  public renderOpenContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement): number {
+    const openUserContexts = definedUserContexts.filter((userContext) => {
+      return windowStateSnapshot.activeUserContexts.includes(userContext.id);
+    });
+
     let tabCount = 0;
     for (const openUserContext of openUserContexts) {
-      const tabs = [... windowUserContextList.getUserContextTabs(openUserContext.id)];
+      const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(openUserContext.id) ?? []];
       tabCount += tabs.length;
-      const containerElement = this.popupRenderer.renderContainerWithTabs(windowUserContextList.windowId, openUserContext, tabs, windowUserContextList.isPrivate);
+      const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, openUserContext, tabs, windowStateSnapshot.isPrivate);
       element.appendChild(containerElement);
     }
     return tabCount;
   }
 
-  public renderInactiveContainers(windowUserContextList: WindowUserContextList, element: HTMLElement): void {
-    const inactiveUserContexts = this._userContextSortingOrderStore.sort([... windowUserContextList.getInactiveUserContexts()]);
+  public renderInactiveContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement): void {
+    const inactiveUserContexts = definedUserContexts.filter((userContext) => {
+      return !windowStateSnapshot.activeUserContexts.includes(userContext.id);
+    });
+
     for (const inactiveUserContext of inactiveUserContexts) {
-      const containerElement = this.popupRenderer.renderContainerWithTabs(windowUserContextList.windowId, inactiveUserContext, [], windowUserContextList.isPrivate);
+      const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, inactiveUserContext, [], windowStateSnapshot.isPrivate);
       element.appendChild(containerElement);
     }
   }
 
-  public renderCurrentWindowView(windowUserContextList: WindowUserContextList, element: HTMLElement): void {
+  public renderCurrentWindowView(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement): void {
+    const currentWindowId = browserStateSnapshot.currentWindowId;
+    const currentWindowState = browserStateSnapshot.getWindowStateSnapshot(currentWindowId);
+    const userContextMap = new Map<Uint32.Uint32, UserContext>();
+    for (const userContext of definedUserContexts) {
+      userContextMap.set(userContext.id, userContext);
+    }
+    if (currentWindowState.isPrivate) {
+      definedUserContexts = definedUserContexts.filter((userContext) => {
+        return userContext.id == UserContext.ID_DEFAULT;
+      });
+    }
+
     element.textContent = '';
-    const currentWindowLabel = this.renderCurrentWindowLabel(windowUserContextList.windowId);
+    const currentWindowLabel = this.renderCurrentWindowLabel(currentWindowId);
     element.appendChild(currentWindowLabel);
+
     let tabCount = 0;
-    tabCount += this.renderPinnedTabs(windowUserContextList, element);
-    tabCount += this.renderOpenContainers(windowUserContextList, element);
-    currentWindowLabel.tabCountString = String(tabCount);
-    if (!windowUserContextList.isPrivate) {
+    tabCount += this.renderPinnedTabs(currentWindowState, userContextMap, element);
+    tabCount += this.renderOpenContainers(currentWindowState, definedUserContexts, element);
+    currentWindowLabel.tabCountString = tabCount.toFixed(0);
+    if (!currentWindowState.isPrivate) {
       element.appendChild(this.renderMoreContainersLabel());
-      this.renderInactiveContainers(windowUserContextList, element);
+      this.renderInactiveContainers(currentWindowState, definedUserContexts, element);
     }
   }
 }

@@ -24,7 +24,7 @@ import { PopupRenderer } from './PopupRenderer';
 import { MenulistWindowElement } from '../components/menulist-window';
 import { Tab } from '../frameworks/tabs';
 import { UserContext } from '../frameworks/tabGroups';
-import { ActiveTabsByWindow } from '../frameworks/tabs';
+import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
 
 export class PopupWindowListRenderer {
   private readonly _popupRenderer: PopupRenderer;
@@ -57,15 +57,21 @@ export class PopupWindowListRenderer {
     containerElement.appendChild(tabElement);
   }
 
-  public renderWindowListView(activeTabsByWindow: ActiveTabsByWindow, element: HTMLElement): void {
+  public renderWindowListView(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement): void {
     element.textContent = '';
-    const windowIds = [... activeTabsByWindow.keys()].sort((a, b) => a - b);
+    const windowIds = [... browserStateSnapshot.getWindowIds()].sort((a, b) => a - b);
     for (const windowId of windowIds) {
-      const details = activeTabsByWindow.get(windowId);
-      if (!details) {
+      const windowStateSnapshot = browserStateSnapshot.getWindowStateSnapshot(windowId);
+      if (!windowStateSnapshot) {
         continue;
       }
-      const { tab, userContext, isPrivate } = details;
+      const tab = windowStateSnapshot.activeTabs[0];
+      if (!tab) {
+        continue;
+      }
+      const isPrivate = tab.isPrivate();
+      const userContext = definedUserContexts.find((userContext) => userContext.id == tab.userContextId)
+        ?? UserContext.createIncompleteUserContext(tab.userContextId);
       this.renderWindow(windowId, tab, userContext, element, isPrivate);
     }
   }

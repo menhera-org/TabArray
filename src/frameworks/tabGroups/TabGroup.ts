@@ -58,6 +58,13 @@ export class TabGroup {
     this._watchRemovedTabs();
   }
 
+  private get matchedFirstPartyDomain(): string | undefined {
+    if (!this.originAttributes.hasFirstpartyDomain()) {
+      return undefined;
+    }
+    return this.originAttributes.firstpartyDomain == '.' ? '' : this.originAttributes.firstpartyDomain;
+  }
+
   private _watchRemovedTabs(): void {
     browser.tabs.onRemoved.addListener((tabId, /*removeInfo*/) => {
       if (this._tabIds.has(tabId)) {
@@ -79,13 +86,13 @@ export class TabGroup {
       const url = new URL(tab.url);
       const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
       if (this._tabIds.has(tabId)) {
-        if (!this._urlService.isHttpScheme(url) || firstPartyDomain !== this.originAttributes.firstpartyDomain) {
+        if (firstPartyDomain !== this.matchedFirstPartyDomain) {
           this._tabIds.delete(tabId);
           this._notifyObservers();
           return;
         }
       } else {
-        if (!this._urlService.isHttpScheme(url) || firstPartyDomain !== this.originAttributes.firstpartyDomain) {
+        if (firstPartyDomain !== this.matchedFirstPartyDomain) {
           return;
         }
         if (!this.originAttributes.hasCookieStoreId() || tab.cookieStoreId === this.originAttributes.cookieStoreId) {
@@ -112,7 +119,7 @@ export class TabGroup {
           }
           const url = new URL(tab.url);
           const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
-          if (firstPartyDomain === this.originAttributes.firstpartyDomain) {
+          if (firstPartyDomain === this.matchedFirstPartyDomain) {
             this._tabIds.add(tab.id);
             this._notifyObservers();
           }
@@ -140,7 +147,7 @@ export class TabGroup {
     if (this.originAttributes.hasCookieStoreId()) {
       query.cookieStoreId = this.originAttributes.cookieStoreId;
     }
-    if (this.originAttributes.hasFirstpartyDomain()) {
+    if (this.originAttributes.hasFirstpartyDomain() && this.matchedFirstPartyDomain !== '') {
       query.url = this.originAttributes.getUrlPattern();
     }
     const tabs = await browser.tabs.query(query);
@@ -148,6 +155,10 @@ export class TabGroup {
     for (const browserTab of tabs) {
       if (undefined === browserTab.id) {
         console.warn('Tab ID is undefined');
+        continue;
+      }
+      const tab = new Tab(browserTab);
+      if (tab.originAttributes.firstpartyDomain !== this.matchedFirstPartyDomain) {
         continue;
       }
       this._tabIds.add(browserTab.id);
@@ -174,11 +185,8 @@ export class TabGroup {
     if (!this.originAttributes.hasFirstpartyDomain()) {
       return true;
     }
-    if (!this._urlService.isHttpScheme(url)) {
-      return false;
-    }
     const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
-    return firstPartyDomain === this.originAttributes.firstpartyDomain;
+    return firstPartyDomain === this.matchedFirstPartyDomain;
   }
 
   public async openTabOnWindow(windowId: number | undefined, url: URL | null = null, active = true): Promise<Tab> {

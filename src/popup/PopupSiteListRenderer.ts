@@ -22,7 +22,9 @@
 import { MenulistSiteButtonElement } from '../components/menulist-site-button';
 import { Tab } from '../frameworks/tabs';
 import { PopupRenderer } from './PopupRenderer';
-import { FirstPartyService, FirstPartyTabMap, FirstPartyUserContextList } from '../frameworks/tabGroups';
+import { FirstPartyService, FirstPartyUserContextList } from '../frameworks/tabGroups';
+import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
+import { HostnameService } from '../frameworks/dns';
 
 export class PopupSiteListRenderer {
   private readonly _popupRenderer: PopupRenderer;
@@ -42,22 +44,32 @@ export class PopupSiteListRenderer {
       });
     });
 
-    const iconUrl = tabs[0] ? tabs[0].favIconUrl : '/img/transparent.png';
+    const lastAccessedTab = tabs.reduce((a, b) => a.lastAccessed > b.lastAccessed ? a : b);
+    const iconUrl = lastAccessedTab.favIconUrl ?? '/img/transparent.png';
     siteButton.tabIcon = iconUrl;
-    siteButton.tabLabel = tabs[0] ? tabs[0].title : '';
+    siteButton.tabLabel = lastAccessedTab.title ?? '';
     siteButton.addEventListener('click', () => {
       // render site details.
-      this.updateSiteDetailsView(siteDomain, isPrivateBrowsing).then(() => {
+      this.updateSiteDetailsView(siteDomain || '.', isPrivateBrowsing).then(() => {
         this.switchToSiteDetailsView();
       });
     });
     return siteButton;
   }
 
-  public renderSiteListView(tabMap: FirstPartyTabMap, element: HTMLElement): void {
+  public renderSiteListView(browserStateSnapshot: BrowserStateSnapshot, element: HTMLElement): void {
+    const currentWindowId = browserStateSnapshot.currentWindowId;
+    const currentWindowState = browserStateSnapshot.getWindowStateSnapshot(currentWindowId);
+    const isPrivate = currentWindowState.isPrivate;
+    const firstPartyState = browserStateSnapshot.getFirstPartyStateSnapshot(isPrivate);
     element.textContent = '';
-    for (const [domain, tabs] of tabMap) {
-      const siteButton = this.renderSiteSummary(domain, tabs);
+    const firstPartyTabs: { domain: string, tabs: Tab[] }[] = [];
+    for (const [domain, tabs] of firstPartyState) {
+      firstPartyTabs.push({ domain, tabs: [... tabs] });
+    }
+    firstPartyTabs.sort((a, b) => HostnameService.getInstance().compareDomains(a.domain, b.domain));
+    for (const {domain, tabs} of firstPartyTabs) {
+      const siteButton = this.renderSiteSummary(domain, tabs, isPrivate);
       element.appendChild(siteButton);
     }
   }
@@ -71,7 +83,7 @@ export class PopupSiteListRenderer {
       return;
     }
     const firstPartyDomain = firstPartyUserContextList.firstPartyDomain;
-    domainElement.textContent = firstPartyDomain;
+    domainElement.textContent = firstPartyDomain == '.' ? '(null)' : firstPartyDomain;
     siteMenuListElement.textContent = '';
     this._renderedSiteDetails = { domain: firstPartyDomain, isPrivate: firstPartyUserContextList.isPrivate };
     let tabCount = 0;
