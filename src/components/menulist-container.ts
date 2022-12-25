@@ -24,6 +24,7 @@ import { UserContext } from "../frameworks/tabGroups";
 import { EventSink } from '../frameworks/utils';
 
 export class MenulistContainerElement extends HTMLElement {
+  public partialContainerView = false;
   private _tabCount = 0;
   private _hidden = false;
 
@@ -171,7 +172,9 @@ export class MenulistContainerElement extends HTMLElement {
       this.containerVisibilityToggleButton.disabled = true;
       this.containerCloseButton.disabled = true;
     } else {
-      this.containerVisibilityToggleButton.disabled = false;
+      if (!this.partialContainerView) {
+        this.containerVisibilityToggleButton.disabled = false;
+      }
       this.containerCloseButton.disabled = false;
     }
   }

@@ -87,6 +87,7 @@ export class PopupRenderer {
   private renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT, isPrivate = false): MenulistContainerElement {
     const element = this.createContainerElement(userContext, isPrivate);
     element.containerVisibilityToggleButton.disabled = true;
+    element.partialContainerView = true;
     return element;
   }
 
@@ -114,6 +115,7 @@ export class PopupRenderer {
         console.error(e);
       });
     });
+    console.debug('element.containerVisibilityToggleButton.disabled', element.containerVisibilityToggleButton.disabled);
     return element;
   }
 
