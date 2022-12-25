@@ -84,15 +84,24 @@ const sortTabs = async () => {
   tabSorting = true;
   const startTime = Date.now();
   const promises: Promise<void>[] = [];
+  let success = false;
   try {
     for (const windowId of await getWindowIds()) {
       promises.push(sortTabsByWindow(windowId));
     }
     await Promise.all(promises);
-    console.debug('Tab sorting done in &d ms', Date.now() - startTime);
+    success = true;
   } catch (e) {
-    console.error('Tab sorting failed in %d ms:', Date.now() - startTime, e);
+    console.error(e);
   } finally {
+    const sortingDuration = Date.now() - startTime;
+    if (success) {
+      if (sortingDuration > 500) {
+        console.info('Tab sorting took %d ms', sortingDuration);
+      }
+    } else {
+      console.error('Tab sorting failed in %d ms', sortingDuration);
+    }
     tabSorting = false;
   }
 };
