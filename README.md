@@ -26,7 +26,7 @@ _Tab Group = Container_
     - Show/hide tabs of a container.
     - Create and delete containers as you like.
     - Switch windows.
-- Enables First-Party Isolate (privacy.firstparty.isolate; FPI) by default. (Configurable.) **This means that cookies for a different sites, even for a same container, are separated by registrable domain.** It also enables natural and flicker-free openings of new windows by websites, unlike simulated FPI by manipulating containers. This is the way Tor Browser is using.
+- Enables First-Party Isolate (privacy.firstparty.isolate; FPI) by default. (Configurable.) **This means that cookies for different sites, even for a same container, are separated by registrable domain.** It also enables natural and flicker-free openings of new windows by websites, unlike simulated FPI by manipulating containers. This is the way Tor Browser is using.
 - Allows the user to enable fingerprinting resistance (privacy.resistFingerprinting).
 
 ## Usage
