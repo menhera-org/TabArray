@@ -324,8 +324,9 @@ button {
   text-align: center;
   color: inherit;
   text-decoration: none;
-  margin-block: .5rem;
+  padding-block: .5rem;
   opacity: .5;
+  border-block-end: solid .25rem transparent;
 }
 
 #bottom-menu > .menu-item::before {
@@ -355,18 +356,22 @@ button {
 
 [data-active-content="main"] #menu-item-main {
   opacity: 1;
+  border-color: var(--accent-color);
 }
 
 [data-active-content="windows"] #menu-item-windows {
   opacity: 1;
+  border-color: var(--accent-color);
 }
 
 [data-active-content="sites"] #menu-item-sites {
   opacity: 1;
+  border-color: var(--accent-color);
 }
 
 [data-active-content="help"] #menu-item-help {
   opacity: 1;
+  border-color: var(--accent-color);
 }
 
 #sites {
