@@ -57,6 +57,8 @@ utils.queryElementNonNull<HTMLElement>('#button-settings').title = browser.i18n.
 utils.queryElementNonNull<HTMLElement>('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 utils.queryElementNonNull<HTMLElement>('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 
+utils.queryElementNonNull<HTMLElement>('#help-done-button').textContent = browser.i18n.getMessage('buttonDone');
+
 utils.queryElementNonNull<HTMLElement>('#new-container-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
 utils.queryElementNonNull<HTMLElement>('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 utils.queryElementNonNull<HTMLElement>('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
@@ -152,6 +154,10 @@ utils.queryElementNonNull('#site-pane-details-back-button').addEventListener('cl
 
 utils.queryElementNonNull('#menu-item-sites').addEventListener('click', () => {
   sitesElement.dataset.activeContent = 'sites';
+});
+
+utils.queryElementNonNull('#help-done-button').addEventListener('click', () => {
+  location.hash = '#main';
 });
 
 const searchBox = utils.queryElementNonNull<HTMLInputElement>('#search');
