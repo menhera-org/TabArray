@@ -35,6 +35,8 @@ const utils = new PopupUtils();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 const extensionService = ExtensionService.getInstance();
 
+const extensionManifest = browser.runtime.getManifest();
+
 const renderer = new PopupRenderer();
 
 const renderInBackground = () => {
@@ -75,6 +77,12 @@ utils.queryElementNonNull<HTMLElement>('#menu-item-sites > .button-text').textCo
 utils.queryElementNonNull<HTMLElement>('#menu-item-help > .button-text').textContent = browser.i18n.getMessage('menuItemHelp');
 utils.queryElementNonNull<HTMLElement>('#button-new-window > .button-text').textContent = browser.i18n.getMessage('buttonNewWindow');
 utils.queryElementNonNull<HTMLElement>('#button-new-private-window > .button-text').textContent = browser.i18n.getMessage('buttonNewPrivateWindow');
+
+utils.queryElementNonNull<HTMLElement>('#help-banner-description').textContent = browser.i18n.getMessage('extensionDescription');
+utils.queryElementNonNull<HTMLElement>('#help-banner-version').textContent = extensionManifest.version;
+utils.queryElementNonNull<HTMLElement>('#help-banner-heading').textContent = extensionManifest.name;
+utils.queryElementNonNull<HTMLElement>('#help-banner-amo-link').textContent = browser.i18n.getMessage('buttonAboutAddon');
+utils.queryElementNonNull<HTMLElement>('#help-banner-privacy-policy').textContent = browser.i18n.getMessage('privacyPolicy');
 
 const sitesElement = utils.queryElementNonNull<HTMLElement>('#sites');
 
@@ -122,6 +130,18 @@ buttonMenu.addEventListener('click', () => {
 const buttonAboutAddon = utils.queryElementNonNull<HTMLButtonElement>('#button-about-addon');
 buttonAboutAddon.addEventListener('click', () => {
   utils.openAddonPage();
+});
+
+const amoLink = utils.queryElementNonNull<HTMLElement>('#help-banner-amo-link');
+amoLink.addEventListener('click', (ev) => {
+  ev.preventDefault();
+  utils.openAddonPage();
+});
+
+const privacyPolicyLink = utils.queryElementNonNull<HTMLElement>('#help-banner-privacy-policy');
+privacyPolicyLink.addEventListener('click', (ev) => {
+  ev.preventDefault();
+  utils.openPrivacyPolicyPage();
 });
 
 buttonNewPrivateWindow.addEventListener('click', () => {

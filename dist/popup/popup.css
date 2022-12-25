@@ -108,7 +108,7 @@ button {
   display: grid;
 }
 
-#main-inner {
+#main-inner, #help-inner {
   overflow: auto;
   block-size: 100%;
 }
@@ -711,4 +711,25 @@ body > .modal:target {
 
 #confirm-message {
   margin: 1em;
+}
+
+#help {
+  grid-template-rows: 1fr;
+  block-size: 100%;
+  overflow: auto;
+}
+
+#help-banner {
+  padding-inline: 1rem;
+}
+
+#help-banner * {
+  text-align: center !important;
+}
+
+#help-banner-image {
+  display: block;
+  margin-inline: auto;
+  inline-size: 50%;
+  margin-block: 1rem;
 }

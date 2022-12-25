@@ -458,5 +458,9 @@
   "menuItemHelp": {
     "message": "Help",
     "description": "Menu item for help view"
+  },
+  "privacyPolicy": {
+    "message": "Privacy Policy",
+    "description": "Privacy Policy page"
   }
 }

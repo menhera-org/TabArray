@@ -48,6 +48,14 @@ window.addEventListener('error', () => {
   }
 });
 
+// auto reload
+const AUTO_RELOAD_MONITOR_INTERVAL = 5000;
+setInterval(() => {
+  fetch('/manifest.json').catch(() => {
+    browser.runtime.reload();
+  });
+}, AUTO_RELOAD_MONITOR_INTERVAL);
+
 const TAB_SORTING_INTERVAL = 10000;
 
 const userContextService = UserContextService.getInstance();

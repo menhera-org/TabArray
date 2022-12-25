@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { PANORAMA_PAGE, COOKIES_PAGE, ADDON_PAGE } from '../defs';
+import { PANORAMA_PAGE, COOKIES_PAGE, ADDON_PAGE, PRIVACY_POLICY_PAGE } from '../defs';
 
 export class PopupUtils {
   public getActiveElement(): HTMLElement | null {
@@ -72,6 +72,14 @@ export class PopupUtils {
       active: true,
       windowId: browser.windows.WINDOW_ID_CURRENT,
       url: browser.runtime.getURL(ADDON_PAGE),
+    }));
+  }
+
+  public openPrivacyPolicyPage() {
+    this.handlePopupClose(browser.tabs.create({
+      active: true,
+      windowId: browser.windows.WINDOW_ID_CURRENT,
+      url: browser.runtime.getURL(PRIVACY_POLICY_PAGE),
     }));
   }
 

@@ -53,7 +53,7 @@ const renderTab = (tab: Tab) => {
     tabElement.tabTitle = tab.url;
   }
   if (tab.url == 'about:addons' || tab.favIconUrl == 'chrome://mozapps/skin/extensions/extension.svg') {
-    tabElement.iconUrl = '/img/extension.svg';
+    tabElement.iconUrl = '/img/firefox-icons/extension.svg';
   } else if (tab.favIconUrl) {
     tabElement.iconUrl = tab.favIconUrl;
   }
