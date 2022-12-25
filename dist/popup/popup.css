@@ -365,6 +365,10 @@ button {
   opacity: 1;
 }
 
+[data-active-content="help"] #menu-item-help {
+  opacity: 1;
+}
+
 #sites {
   overflow: auto;
 }
