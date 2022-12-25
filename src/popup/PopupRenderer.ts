@@ -116,7 +116,7 @@ export class PopupRenderer {
         console.error(e);
       });
     });
-    console.debug('element.containerVisibilityToggleButton.disabled', element.containerVisibilityToggleButton.disabled);
+    // console.debug('element.containerVisibilityToggleButton.disabled', element.containerVisibilityToggleButton.disabled);
     return element;
   }
 
