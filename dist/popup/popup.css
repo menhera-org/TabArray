@@ -59,7 +59,7 @@ a:active, button:active {
   opacity: .75;
 }
 
-input, button, select, textarea {
+input:is([type="text"], [type="search"]), button, select, textarea {
   font: inherit;
   display: block;
   box-sizing: border-box;
@@ -750,9 +750,6 @@ body > .modal:target {
   grid-template-rows: 1fr;
   block-size: 100%;
   overflow: auto;
-}
-
-#help-banner {
   padding-inline: 1rem;
 }
 

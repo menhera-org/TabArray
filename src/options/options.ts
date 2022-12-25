@@ -64,10 +64,19 @@ const setInputChecked = (inputElement: HTMLInputElement | null | undefined, valu
   inputElement.checked = value;
 };
 
+setTextContent('#optionalFeaturesDescription', 'optionalFeaturesDescription');
+
+const inputFeatureLanguageOverrides = document.querySelector<HTMLInputElement>('#input-featureLanguageOverrides');
+setTextContent('label[for="input-featureLanguageOverrides"]', 'featureLanguageOverrides');
+
+const inputFeatureUaOverrides = document.querySelector<HTMLInputElement>('#input-featureUaOverrides');
+setTextContent('label[for="input-featureUaOverrides"]', 'featureUaOverrides');
+
 setTextContent('#optionsHeadingExperimental', 'optionsHeadingExperimental');
 setTextContent('#optionsHeadingFirefox', 'optionsHeadingFirefox');
 setTextContent('#optionsDescriptionExperimental', 'optionsDescriptionExperimental');
 setTextContent('#optionsDescriptionFirefox', 'optionsDescriptionFirefox');
+setTextContent('#fpiDescription', 'fpiDescription');
 setTextContent('#optionsHeadingContainerSortOrder', 'optionsHeadingContainerSortOrder');
 setTextContent('#optionsDescriptionContainerSortOrder', 'optionsDescriptionContainerSortOrder');
 
@@ -124,6 +133,24 @@ UserContext.getAll().then(async (userContexts) => {
   containerSorter.onChanged.addListener((sortOrder) => {
     sortingOrderStore.setOrder(sortOrder);
   });
+});
+
+// feature.languageOverrides setting
+config['feature.languageOverrides'].observe((value) => {
+  setInputChecked(inputFeatureLanguageOverrides, value);
+});
+
+inputFeatureLanguageOverrides?.addEventListener('change', () => {
+  setConfigValue(config['feature.languageOverrides'], inputFeatureLanguageOverrides.checked);
+});
+
+// feature.uaOverrides setting
+config['feature.uaOverrides'].observe((value) => {
+  setInputChecked(inputFeatureUaOverrides, value);
+});
+
+inputFeatureUaOverrides?.addEventListener('change', () => {
+  setConfigValue(config['feature.uaOverrides'], inputFeatureUaOverrides.checked);
 });
 
 // newtab.keepContainer setting

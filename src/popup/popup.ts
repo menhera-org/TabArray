@@ -21,11 +21,13 @@
 
 import browser from 'webextension-polyfill';
 import { PopupRenderer } from "./PopupRenderer";
-import { config } from '../config/config';
+import { config, privacyConfig } from '../config/config';
+import { ConfigurationOption } from '../frameworks/config';
 import { MenulistContainerElement } from '../components/menulist-container';
 import { PopupUtils } from './PopupUtils';
 import '../components/usercontext-colorpicker';
 import '../components/usercontext-iconpicker';
+import './PopupLocalizations';
 // import './PopupThemes';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { ExtensionService } from '../frameworks/extension';
@@ -35,8 +37,6 @@ const utils = new PopupUtils();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 const extensionService = ExtensionService.getInstance();
 
-const extensionManifest = browser.runtime.getManifest();
-
 const renderer = new PopupRenderer();
 
 const renderInBackground = () => {
@@ -44,45 +44,6 @@ const renderInBackground = () => {
     console.error(e);
   });
 };
-
-document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
-document.title = browser.i18n.getMessage('browserActionPopupTitle');
-utils.queryElementNonNull<HTMLElement>('#button-panorama > .button-text').textContent = browser.i18n.getMessage('buttonPanorama');
-utils.queryElementNonNull<HTMLElement>('#button-cookies > .button-text').textContent = browser.i18n.getMessage('tooltipCookies');
-utils.queryElementNonNull<HTMLElement>('#button-about-addon > .button-text').textContent = browser.i18n.getMessage('buttonAboutAddon');
-utils.queryElementNonNull<HTMLElement>('#button-sidebar > .button-text').textContent = browser.i18n.getMessage('buttonSidebar');
-utils.queryElementNonNull<HTMLElement>('#button-sidebar').title = browser.i18n.getMessage('buttonSidebar');
-utils.queryElementNonNull<HTMLElement>('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
-utils.queryElementNonNull<HTMLElement>('#button-new-container').title = browser.i18n.getMessage('buttonNewContainer');
-utils.queryElementNonNull<HTMLElement>('#button-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
-utils.queryElementNonNull<HTMLElement>('#button-settings').title = browser.i18n.getMessage('buttonSettings');
-utils.queryElementNonNull<HTMLElement>('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
-utils.queryElementNonNull<HTMLElement>('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
-
-utils.queryElementNonNull<HTMLElement>('#help-done-button').textContent = browser.i18n.getMessage('buttonGetStarted');
-
-utils.queryElementNonNull<HTMLElement>('#new-container-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
-utils.queryElementNonNull<HTMLElement>('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
-utils.queryElementNonNull<HTMLElement>('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
-utils.queryElementNonNull<HTMLInputElement>('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
-
-utils.queryElementNonNull<HTMLElement>('#container-menu-edit-button').textContent = browser.i18n.getMessage('buttonEditContainer');
-utils.queryElementNonNull<HTMLElement>('#container-menu-clear-cookie-button').textContent = browser.i18n.getMessage('buttonContainerClearCookie');
-utils.queryElementNonNull<HTMLElement>('#container-menu-delete-button').textContent = browser.i18n.getMessage('buttonDeleteContainer');
-utils.queryElementNonNull<HTMLElement>('#container-menu-done-button').textContent = browser.i18n.getMessage('buttonDone');
-
-utils.queryElementNonNull<HTMLElement>('#menu-item-main > .button-text').textContent = browser.i18n.getMessage('menuItemMain');
-utils.queryElementNonNull<HTMLElement>('#menu-item-windows > .button-text').textContent = browser.i18n.getMessage('menuItemWindows');
-utils.queryElementNonNull<HTMLElement>('#menu-item-sites > .button-text').textContent = browser.i18n.getMessage('menuItemSites');
-utils.queryElementNonNull<HTMLElement>('#menu-item-help > .button-text').textContent = browser.i18n.getMessage('menuItemHelp');
-utils.queryElementNonNull<HTMLElement>('#button-new-window > .button-text').textContent = browser.i18n.getMessage('buttonNewWindow');
-utils.queryElementNonNull<HTMLElement>('#button-new-private-window > .button-text').textContent = browser.i18n.getMessage('buttonNewPrivateWindow');
-
-utils.queryElementNonNull<HTMLElement>('#help-banner-description').textContent = browser.i18n.getMessage('extensionDescription');
-utils.queryElementNonNull<HTMLElement>('#help-banner-version').textContent = extensionManifest.version;
-utils.queryElementNonNull<HTMLElement>('#help-banner-heading').textContent = extensionManifest.name;
-utils.queryElementNonNull<HTMLElement>('#help-banner-amo-link').textContent = browser.i18n.getMessage('buttonAboutAddon');
-utils.queryElementNonNull<HTMLElement>('#help-banner-privacy-policy').textContent = browser.i18n.getMessage('privacyPolicy');
 
 const sitesElement = utils.queryElementNonNull<HTMLElement>('#sites');
 
@@ -114,6 +75,50 @@ config['help.shownOnce'].getValue().then((shownOnce) => {
     location.hash = '#help';
     config['help.shownOnce'].setValue(true);
   }
+});
+
+const setConfigValue = <T,>(option: ConfigurationOption<T>, value: T) => {
+  option.setValue(value).catch((e) => {
+    console.error(e);
+  });
+};
+
+const setInputChecked = (inputElement: HTMLInputElement | null | undefined, value: boolean) => {
+  if (!inputElement) {
+    throw new Error('Missing input element');
+  }
+  inputElement.checked = value;
+};
+
+const inputFirstPartyIsolate = utils.queryElementNonNull<HTMLInputElement>('#input-firstPartyIsolate');
+
+privacyConfig.firstPartyIsolate.observe((value) => {
+  setInputChecked(inputFirstPartyIsolate, value);
+});
+
+inputFirstPartyIsolate.addEventListener('change', () => {
+  setConfigValue(privacyConfig.firstPartyIsolate, inputFirstPartyIsolate.checked);
+});
+
+const inputFeatureLanguageOverrides = utils.queryElementNonNull<HTMLInputElement>('#input-featureLanguageOverrides');
+const inputFeatureUaOverrides = utils.queryElementNonNull<HTMLInputElement>('#input-featureUaOverrides');
+
+// feature.languageOverrides setting
+config['feature.languageOverrides'].observe((value) => {
+  setInputChecked(inputFeatureLanguageOverrides, value);
+});
+
+inputFeatureLanguageOverrides?.addEventListener('change', () => {
+  setConfigValue(config['feature.languageOverrides'], inputFeatureLanguageOverrides.checked);
+});
+
+// feature.uaOverrides setting
+config['feature.uaOverrides'].observe((value) => {
+  setInputChecked(inputFeatureUaOverrides, value);
+});
+
+inputFeatureUaOverrides?.addEventListener('change', () => {
+  setConfigValue(config['feature.uaOverrides'], inputFeatureUaOverrides.checked);
 });
 
 // Open a new window
