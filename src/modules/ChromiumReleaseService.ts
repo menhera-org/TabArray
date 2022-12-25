@@ -34,6 +34,9 @@ const OCT = 9;
 const NOV = 10;
 const DEC = 11;
 
+/**
+ * Chromium/Chrome release service.
+ */
 export class ChromiumReleaseService {
   private static readonly _ANCHOR_RELEASE_NUMBER = 108;
   private static readonly _ANCHOR_RELEASE_TIME = (new Date(2022, DEC, 1)).getTime();
@@ -44,6 +47,10 @@ export class ChromiumReleaseService {
     return this._INSTANCE;
   }
 
+  /**
+   * Calculates the approximate release number of the latest release based on the current time.
+   * @returns The approximate release number of the latest release.
+   */
   public getLatestReleaseNumber(): number {
     return Math.floor((Date.now() - ChromiumReleaseService._ANCHOR_RELEASE_TIME) / ChromiumReleaseService._RELEASE_INTERVAL) + ChromiumReleaseService._ANCHOR_RELEASE_NUMBER;
   }
