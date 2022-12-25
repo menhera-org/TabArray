@@ -93,6 +93,7 @@ export class PopupRenderer {
 
   private defineContainerCloseListenerForWindow(element: MenulistContainerElement, windowId: number, userContext: UserContext): void {
     element.onContainerClose.addListener(() => {
+      console.log('Closing all unpinned tabs of window %d in userContext %d', windowId, userContext.id);
       containers.closeAllTabsOnWindow(userContext.id, windowId).catch((e) => {
         console.error(e);
       });
