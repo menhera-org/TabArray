@@ -158,7 +158,7 @@ export class TabGroup {
         continue;
       }
       const tab = new Tab(browserTab);
-      if (tab.originAttributes.firstpartyDomain !== this.matchedFirstPartyDomain) {
+      if (this.originAttributes.hasFirstpartyDomain() && tab.originAttributes.firstpartyDomain !== this.matchedFirstPartyDomain) {
         continue;
       }
       this._tabIds.add(browserTab.id);
