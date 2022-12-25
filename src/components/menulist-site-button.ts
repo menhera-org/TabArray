@@ -24,7 +24,7 @@ import { EventSink } from '../frameworks/utils';
 export class MenulistSiteButtonElement extends HTMLButtonElement {
   private readonly _buttonTextElement: HTMLSpanElement;
   private readonly _siteCloseButton: HTMLButtonElement;
-  private readonly _tabIconElement: HTMLImageElement;
+  private readonly _tabIconElement: HTMLSpanElement;
   private readonly _tabLabelElement: HTMLSpanElement;
 
   public readonly onCloseClicked = new EventSink<void>();
@@ -48,13 +48,25 @@ export class MenulistSiteButtonElement extends HTMLButtonElement {
     siteElement.classList.add('site');
     this.appendChild(siteElement);
 
-    this._tabIconElement = document.createElement('img');
+    this._tabIconElement = document.createElement('span');
     this._tabIconElement.classList.add('tab-icon');
     siteElement.appendChild(this._tabIconElement);
 
     this._tabLabelElement = document.createElement('span');
     this._tabLabelElement.classList.add('tab-label');
     siteElement.appendChild(this._tabLabelElement);
+  }
+
+  public get iconIsMasked(): boolean {
+    return this._tabIconElement.classList.contains('masked');
+  }
+
+  public set iconIsMasked(value: boolean) {
+    if (value) {
+      this._tabIconElement.classList.add('masked');
+    } else {
+      this._tabIconElement.classList.remove('masked');
+    }
   }
 
   public get siteDomain(): string {
@@ -74,11 +86,18 @@ export class MenulistSiteButtonElement extends HTMLButtonElement {
   }
 
   public get tabIcon(): string {
-    return this._tabIconElement.src;
+    return this._tabIconElement.dataset.src || '';
   }
 
   public set tabIcon(iconUrl: string) {
-    this._tabIconElement.src = iconUrl;
+    this._tabIconElement.dataset.src = iconUrl;
+    if (this.iconIsMasked) {
+      this._tabIconElement.style.mask = `url(${iconUrl}) center center / 75% no-repeat`;
+      this._tabIconElement.style.backgroundImage = '';
+    } else {
+      this._tabIconElement.style.mask = '';
+      this._tabIconElement.style.backgroundImage = `url(${iconUrl})`;
+    }
   }
 
   public get tabLabel(): string {

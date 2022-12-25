@@ -475,9 +475,13 @@ button {
 }
 
 .tab-icon {
-  inline-size: 75%;
-  align-self: center;
-  justify-self: center;
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center center;
+}
+
+.tab-icon.masked {
+  background-color: var(--text-color);
 }
 
 .tab-icon.img-error {

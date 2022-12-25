@@ -25,10 +25,12 @@ import { PopupRenderer } from './PopupRenderer';
 import { FirstPartyService, FirstPartyUserContextList } from '../frameworks/tabGroups';
 import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
 import { HostnameService } from '../frameworks/dns';
+import { TabIconService } from '../modules/TabIconService';
 
 export class PopupSiteListRenderer {
   private readonly _popupRenderer: PopupRenderer;
   private _renderedSiteDetails: { domain: string, isPrivate: boolean } | null = null;
+  private readonly _tabIconService = TabIconService.getInstance();
 
   public constructor(popupRenderer: PopupRenderer) {
     this._popupRenderer = popupRenderer;
@@ -45,8 +47,14 @@ export class PopupSiteListRenderer {
     });
 
     const lastAccessedTab = tabs.reduce((a, b) => a.lastAccessed > b.lastAccessed ? a : b);
-    const iconUrl = lastAccessedTab.favIconUrl ?? '/img/transparent.png';
-    siteButton.tabIcon = iconUrl;
+    const iconUrl = lastAccessedTab.favIconUrl ?? '';
+    if (this._tabIconService.isMaskedIcon(iconUrl)) {
+      siteButton.iconIsMasked = true;
+      siteButton.tabIcon = this._tabIconService.getMaskedIcon(iconUrl);
+    } else {
+      siteButton.iconIsMasked = false;
+      siteButton.tabIcon = iconUrl;
+    }
     siteButton.tabLabel = lastAccessedTab.title ?? '';
     siteButton.addEventListener('click', () => {
       // render site details.

@@ -23,17 +23,11 @@ import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
 import { Tab } from "../frameworks/tabs";
 import { EventSink } from '../frameworks/utils';
+import { TabIconService } from '../modules/TabIconService';
 
 export class MenulistTabElement extends HTMLElement {
-  private static readonly MASKED_ICONS = new Map([
-    ['chrome://global/skin/icons/settings.svg', '/img/firefox-icons/settings.svg'],
-    ['chrome://global/skin/icons/developer.svg', '/img/firefox-icons/developer.svg'],
-    ['chrome://browser/skin/window.svg', '/img/firefox-icons/window.svg'],
-    ['chrome://mozapps/skin/extensions/extension.svg', '/img/firefox-icons/extension.svg'],
-    ['', '/img/firefox-icons/defaultFavicon.svg'],
-  ]);
-
   private _tabId = -1;
+  private readonly _tabIconService = TabIconService.getInstance();
 
   public readonly onTabClicked = new EventSink<number>();
   public readonly onPin = new EventSink<number>();
@@ -202,8 +196,8 @@ export class MenulistTabElement extends HTMLElement {
 
   public set iconUrl(url: string) {
     this.iconElement.dataset.iconUrl = url;
-    if (MenulistTabElement.MASKED_ICONS.has(url)) {
-      const replacedUrl = MenulistTabElement.MASKED_ICONS.get(url) ?? '';
+    if (this._tabIconService.isMaskedIcon(url)) {
+      const replacedUrl = this._tabIconService.getMaskedIcon(url);
       this.iconElement.classList.add('masked');
       this.iconElement.style.mask = `url(${replacedUrl}) center center / 75% no-repeat`;
       this.iconElement.style.backgroundImage = '';
