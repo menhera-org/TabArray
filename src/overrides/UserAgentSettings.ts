@@ -26,7 +26,7 @@ import { ChromiumReleaseService } from "../modules/ChromiumReleaseService";
 
 export type UserAgentPreset = 'default' | 'chrome' | 'googlebot' | 'custom';
 
-type UserAgentParams = {
+export type UserAgentParams = {
   preset: UserAgentPreset;
   userAgent?: string;
 };
@@ -128,5 +128,17 @@ export class UserAgentSettings {
     }
 
     return params.userAgent || '';
+  }
+
+  public getUserAgentParams(originAttributes: OriginAttributes): UserAgentParams {
+    const key = this.originAttributesToKey(originAttributes);
+    const params = this._value[key];
+    if (!params) {
+      return {
+        preset: 'default',
+      };
+    }
+
+    return params;
   }
 }

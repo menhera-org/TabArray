@@ -25,6 +25,7 @@ import { UserContext } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { UserContextService } from '../userContexts/UserContextService';
 import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
+import { ContainerOverridesElement } from '../components/container-overrides';
 
 interface HTMLFormInput extends HTMLElement {
   value: string;
@@ -85,6 +86,7 @@ window.addEventListener('hashchange', () => {
 });
 
 const paneContainers = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="containers"]');
+const paneContainerOverrides = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="container-overrides"]');
 
 setTextContent('#link-containers', 'optionsHeadingContainerSortOrder');
 setTextContent('#link-container-overrides', 'optionsHeadingContainerOverrides');
@@ -145,11 +147,15 @@ UserContext.getAll().then(async (userContexts) => {
   const containerSorter = new ContainerSorterElement(sortedUserContext, autocleanEnabledUserContextIds);
   paneContainers?.appendChild(containerSorter);
 
+  const containerOverrides = new ContainerOverridesElement(sortedUserContext);
+  paneContainerOverrides?.appendChild(containerOverrides);
+
   const callback = async () => {
     const autocleanEnabledUserContextIds = await cookieAutocleanService.getAutocleanEnabledUserContexts();
     const userContexts = (await UserContext.getAll()).map((userContext) => userContextService.fillDefaultValues(userContext));
     const sortedUserContext = sortingOrderStore.sort(userContexts);
     containerSorter.setUserContexts(sortedUserContext, autocleanEnabledUserContextIds);
+    containerOverrides.setUserContexts(sortedUserContext);
   };
 
   sortingOrderStore.onChanged.addListener(callback);
