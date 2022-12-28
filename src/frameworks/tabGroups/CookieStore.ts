@@ -31,31 +31,38 @@ export class CookieStore implements CookieStoreParams {
   public readonly userContextId: Uint32.Uint32;
   public readonly privateBrowsingId: Uint32.Uint32;
 
-  public static fromParams(params: CookieStoreParams): CookieStore {
-    if (params.privateBrowsingId !== 0) {
-      return new CookieStore(CookieStore.PRIVATE_STORE);
-    }
-    if (params.userContextId === 0) {
-      return new CookieStore(CookieStore.DEFAULT_STORE);
-    }
-    return new CookieStore(`${CookieStore.CONTAINER_STORE}${params.userContextId}`);
-  }
-
-  public constructor(cookieStoreId: string) {
-    this.id = cookieStoreId;
-
+  public static fromId(cookieStoreId: string): CookieStore  {
     if (cookieStoreId === CookieStore.DEFAULT_STORE) {
-      this.userContextId = 0 as Uint32.Uint32;
-      this.privateBrowsingId = 0 as Uint32.Uint32;
+      return new CookieStore({
+        userContextId: 0 as Uint32.Uint32,
+        privateBrowsingId: 0 as Uint32.Uint32,
+      });
     } else if (cookieStoreId === CookieStore.PRIVATE_STORE) {
-      this.userContextId = 0 as Uint32.Uint32;
-      this.privateBrowsingId = 1 as Uint32.Uint32;
+      return new CookieStore({
+        userContextId: 0 as Uint32.Uint32,
+        privateBrowsingId: 1 as Uint32.Uint32,
+      });
     } else if (cookieStoreId.startsWith(CookieStore.CONTAINER_STORE)) {
       const userContextId = Uint32.fromString(cookieStoreId.slice(CookieStore.CONTAINER_STORE.length));
-      this.userContextId = userContextId;
-      this.privateBrowsingId = 0 as Uint32.Uint32;
+      return new CookieStore({
+        userContextId,
+        privateBrowsingId: 0 as Uint32.Uint32,
+      });
     }
-    throw new Error(`CookieStore.constructor(): invalid cookieStoreId: ${cookieStoreId}`);
+    throw new Error(`CookieStore.fromId(): invalid cookieStoreId: ${cookieStoreId}`);
+  }
+
+  public constructor(params: CookieStoreParams) {
+    this.userContextId = params.userContextId;
+    this.privateBrowsingId = params.privateBrowsingId;
+
+    if (this.privateBrowsingId !== 0) {
+      this.id = CookieStore.PRIVATE_STORE;
+    } else if (this.userContextId === 0) {
+      this.id = CookieStore.DEFAULT_STORE;
+    } else {
+      this.id = `${CookieStore.CONTAINER_STORE}${this.userContextId}`;
+    }
   }
 
   public get isPrivate(): boolean {
