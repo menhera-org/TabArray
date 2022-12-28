@@ -9,8 +9,8 @@ const path = require('path');
 module.exports = {
   mode: 'production',
   context: __dirname,
-  target: ['web', 'es2020'],
-  devtool: 'inline-cheap-source-map',
+  target: ['web', 'es2021'],
+  devtool: 'source-map',
 
   resolve: {
     extensions: ['.ts', '.d.ts', '.js'],
