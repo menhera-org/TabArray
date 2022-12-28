@@ -49,39 +49,47 @@ const navigatorPrototypeWrapped = navigatorPrototype.wrappedJSObject;
 
 // const descriptors = Object.getOwnPropertyDescriptors(navigatorPrototypeWrapped);
 
-// this is configurable, so deletable
-delete navigatorPrototypeWrapped.languages;
+let setupDone = false;
+const setup = () => {
+  // this is configurable, so deletable
+  delete navigatorPrototypeWrapped.languages;
 
-// navigator.languages is a getter, so we need to define it as a getter
-Reflect.defineProperty(navigatorPrototypeWrapped, 'languages', {
-  configurable: true,
-  enumerable: true,
-  get: exportFunction(() => {
-    let languages = gLanguageStore.languageList;
-    if (languages.length < 1) {
-      languages = navigator.languages;
-    }
-    return cloneInto(languages, window);
-  }, window),
-});
+  // navigator.languages is a getter, so we need to define it as a getter
+  Reflect.defineProperty(navigatorPrototypeWrapped, 'languages', {
+    configurable: true,
+    enumerable: true,
+    get: exportFunction(() => {
+      let languages = gLanguageStore.languageList;
+      if (languages.length < 1) {
+        languages = navigator.languages;
+      }
+      return cloneInto(languages, window);
+    }, window),
+  });
 
-// this is configurable, so deletable
-delete navigatorPrototypeWrapped.language;
+  // this is configurable, so deletable
+  delete navigatorPrototypeWrapped.language;
 
-// navigator.language is a getter, so we need to define it as a getter
-Reflect.defineProperty(navigatorPrototypeWrapped, 'language', {
-  configurable: true,
-  enumerable: true,
-  get: exportFunction(() => {
-    let language = gLanguageStore.language;
-    if (language === '') {
-      language = navigator.language;
-    }
-    return cloneInto(language, window);
-  }, window),
-});
+  // navigator.language is a getter, so we need to define it as a getter
+  Reflect.defineProperty(navigatorPrototypeWrapped, 'language', {
+    configurable: true,
+    enumerable: true,
+    get: exportFunction(() => {
+      let language = gLanguageStore.language;
+      if (language === '') {
+        language = navigator.language;
+      }
+      return cloneInto(language, window);
+    }, window),
+  });
+
+  setupDone = true;
+};
 
 gLanguageStore.onLanguagesChanged.addListener(() => {
+  if (!setupDone && gLanguageStore.language !== '') {
+    setup();
+  }
   window.dispatchEvent(new Event('languagechange', {
     bubbles: false,
     cancelable: false,
@@ -96,3 +104,7 @@ browser.runtime.onMessage.addListener((message) => {
     }
   }
 });
+
+if (gLanguageStore.language !== '') {
+  setup();
+}

@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 import { LanguageSettings } from "./LanguageSettings";
 import { CookieStoreSet } from '../frameworks/tabGroups';
 import { OriginAttributes } from '../frameworks/tabGroups';
+import { config } from '../config/config';
 
 const languageSettings = LanguageSettings.getInstance();
 let languageSettingsValues = new Map<string, string>();
@@ -34,7 +35,34 @@ const unregisterContentScript = (key: string) => {
   contentScripts.delete(key);
 };
 
-languageSettings.onChanged.addListener(async () => {
+const unregisterAllContentScripts = () => {
+  for (const key of contentScripts.keys()) {
+    unregisterContentScript(key);
+  }
+};
+
+const emptyLanguageList = async () => {
+  const browserTabs = await browser.tabs.query({});
+  for (const browserTab of browserTabs) {
+    if (null == browserTab.id) continue;
+
+    browser.tabs.sendMessage(browserTab.id, {
+      type: 'language-changed',
+      languages: '',
+    }).catch(() => {
+      // ignore.
+    });
+  }
+}
+
+const update = async () => {
+  const enabled = await config['feature.languageOverrides'].getValue();
+  if (!enabled) {
+    unregisterAllContentScripts();
+    await emptyLanguageList();
+    return;
+  }
+
   const cookieStores = await cookieStoreSet.getAll();
   const newValues = new Map<string, string>();
   for (const originAttributes of cookieStores) {
@@ -89,4 +117,7 @@ languageSettings.onChanged.addListener(async () => {
       // ignore.
     });
   }
-});
+};
+
+config['feature.languageOverrides'].observe(update);
+languageSettings.onChanged.addListener(update);
