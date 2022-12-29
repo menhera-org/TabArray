@@ -9,3 +9,6 @@ clean:
 
 typedoc:
 	npm run typedoc
+
+icons:
+	cd script && ./update-contextual-identities-icons.sh
