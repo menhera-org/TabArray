@@ -39,6 +39,49 @@ config['feature.uaOverrides'].observe((newValue) => {
   featureUserAgentOverridesEnabled = newValue;
 });
 
+const getSecChUa = (cookieStoreId: string) => {
+  const userAgent = userAgentSettings.getUserAgent(cookieStoreId);
+  const chrome = userAgent.match(/Chrome\/([0-9]+)/);
+  if (!chrome) {
+    return '';
+  }
+  const chromeVersion = chrome[1] || '108';
+  const brands = [
+    {
+      "brand": "Not?A_Brand",
+      "version": Math.floor(100 * Math.random()).toFixed(0),
+    },
+    {
+      "brand": "Chromium",
+      "version": chromeVersion,
+    },
+    {
+      "brand": "Google Chrome",
+      "version": chromeVersion,
+    },
+  ];
+  const brandStrings = brands.map((brandInfo) => {
+    return `"${brandInfo.brand}";v="${brandInfo.version}"`;
+  });
+  return brandStrings.join(',');
+};
+
+const setHeader = (details: browser.WebRequest.OnBeforeSendHeadersDetailsType, headerName: string, headerValue: string) => {
+  let found = false;
+  details.requestHeaders?.forEach((header) => {
+    if (headerName === header.name.toLowerCase()) {
+      header.value = headerValue;
+      found = true;
+    }
+  });
+  if (!found) {
+    details.requestHeaders?.push({
+      name: headerName,
+      value: headerValue,
+    });
+  }
+};
+
 browser.webRequest.onBeforeSendHeaders.addListener((details) => {
   if (!details.cookieStoreId) {
     return;
@@ -46,24 +89,24 @@ browser.webRequest.onBeforeSendHeaders.addListener((details) => {
 
   const userAgent = userAgentSettings.getUserAgent(details.cookieStoreId);
   if ('' !== userAgent && featureUserAgentOverridesEnabled) {
-    details.requestHeaders?.forEach((header) => {
-      if ('user-agent' === header.name.toLowerCase()) {
-        header.value = userAgent;
-      }
-    });
+    setHeader(details, 'user-agent', userAgent);
   }
 
   const originAttributes = OriginAttributes.fromCookieStoreId(details.cookieStoreId);
   const acceptLanguages = languageSettings.getAcceptLanguages(originAttributes);
   if ('' !== acceptLanguages && featureLanguageOverridesEnabled) {
-    details.requestHeaders?.forEach((header) => {
-      if ('accept-language' === header.name.toLowerCase()) {
-        header.value = acceptLanguages;
-      }
-    });
+    setHeader(details, 'accept-language', acceptLanguages);
   }
 
-  // TODO: Sec-CH-UA-* headers.
+  // this feature is only available in secure contexts.
+  if (featureUserAgentOverridesEnabled && details.url?.startsWith('https://')) {
+    const secChUa = getSecChUa(details.cookieStoreId);
+    if ('' !== secChUa) {
+      setHeader(details, 'sec-ch-ua', secChUa);
+      const secChUaFullVersionList = secChUa.replaceAll(/v="(\d+)"/g, 'v="$1.0.0.0"');
+      setHeader(details, 'sec-ch-ua-full-version-list', secChUaFullVersionList);
+    }
+  }
 
   return { requestHeaders: details.requestHeaders };
 }, {
