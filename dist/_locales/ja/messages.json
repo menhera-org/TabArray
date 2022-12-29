@@ -454,5 +454,77 @@
   "optionsLabelLanguages": {
     "message": "言語",
     "description": "Label text for languages of a container."
+  },
+  "menuItemHelp": {
+    "message": "ヘルプ",
+    "description": "Menu item for help view"
+  },
+  "privacyPolicy": {
+    "message": "プライバシーポリシー",
+    "description": "Privacy Policy page"
+  },
+  "windowsN": {
+    "message": "ウインドウ ($COUNT$)",
+    "description": "Text for windows view heading",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "sitesN": {
+    "message": "サイト ($COUNT$)",
+    "description": "Text for sites view heading",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "buttonGetStarted": {
+    "message": "はじめる",
+    "description": "Button to get started"
+  },
+  "fpiDescription": {
+    "message": "この拡張機能はFirefoxのFirst-Party-Isolate (FPI)機能をデフォルトで有効化します。これは同じコンテナーであっても，異なるサイトへのクッキーはregistrable domainで分離されていることを意味します。ここでこれを無効化できます。",
+    "description": "Description text for FPI"
+  },
+  "optionalFeaturesDescription": {
+    "message": "矛盾する拡張機能を使用しない場合は，追加の機能を有効化できます。",
+    "description": "Description text for optional features"
+  },
+  "featureLanguageOverrides": {
+    "message": "コンテナー別の言語の上書き",
+    "description": "Label text for language overrides feature"
+  },
+  "featureUaOverrides": {
+    "message": "コンテナー別のユーザーエージェントの上書き",
+    "description": "Label text for UA overrides feature"
+  },
+  "optionsHeadingContainerOverrides": {
+    "message": "コンテナー別の上書き設定",
+    "description": "Heading text of options page for container overrides."
+  },
+  "optionsLabelUserAgent": {
+    "message": "ユーザーエージェント",
+    "description": "Label text for user agent of a container."
+  },
+  "userAgentDefault": {
+    "message": "デフォルト",
+    "description": "Default user agent"
+  },
+  "userAgentChrome": {
+    "message": "Chrome",
+    "description": "Chrome user agent"
+  },
+  "userAgentGooglebot": {
+    "message": "Googlebot",
+    "description": "Googlebot user agent"
+  },
+  "userAgentCustom": {
+    "message": "カスタム",
+    "description": "Custom user agent"
   }
 }
