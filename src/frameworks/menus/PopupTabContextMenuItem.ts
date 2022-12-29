@@ -30,7 +30,7 @@ export class PopupTabContextMenuItem extends MenuItem {
     super({
       ... createProperties,
       contexts:  ['tab'],
-      viewTypes: ['sidebar', 'popup'],
+      viewTypes: ['sidebar', 'popup', 'tab'],
       documentUrlPatterns: [`moz-extension://${location.host}/*`],
     });
   }

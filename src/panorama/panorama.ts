@@ -61,6 +61,15 @@ const renderTab = (tab: Tab) => {
   if (previewUrl) {
     tabElement.previewUrl = previewUrl;
   }
+
+  // https://qiita.com/piroor/items/44ccbc2ee918bc88c3ea
+  tabElement.addEventListener('contextmenu', () => {
+    browser.menus.overrideContext({
+      context: 'tab',
+      tabId: tab.id,
+    });
+  }, { capture: true });
+
   tabElement.addEventListener('button-tab-click', async () => {
     await tab.focus();
     window.close();
