@@ -506,5 +506,25 @@
   "optionsHeadingContainerOverrides": {
     "message": "Per-container Overrides",
     "description": "Heading text of options page for container overrides."
+  },
+  "optionsLabelUserAgent": {
+    "message": "User Agent",
+    "description": "Label text for user agent of a container."
+  },
+  "userAgentDefault": {
+    "message": "Default",
+    "description": "Default user agent"
+  },
+  "userAgentChrome": {
+    "message": "Chrome",
+    "description": "Chrome user agent"
+  },
+  "userAgentGooglebot": {
+    "message": "Googlebot",
+    "description": "Googlebot user agent"
+  },
+  "userAgentCustom": {
+    "message": "Custom",
+    "description": "Custom user agent"
   }
 }

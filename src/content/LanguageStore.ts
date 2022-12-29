@@ -31,9 +31,9 @@ export class LanguageStore {
       .map((language) => language.trim())
       .filter((language) => language.length > 0 && language.match(/^[a-z]{2,3}(?:-[a-z]{2})?$/i));
 
-    if (languageParts.length < 1) {
-      return;
-    }
+    // if (languageParts.length < 1) {
+    //   return;
+    // }
 
     this._languages.length = 0;
     this._languages.push(... languageParts);

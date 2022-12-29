@@ -54,4 +54,41 @@ export class ChromiumReleaseService {
   public getLatestReleaseNumber(): number {
     return Math.floor((Date.now() - ChromiumReleaseService._ANCHOR_RELEASE_TIME) / ChromiumReleaseService._RELEASE_INTERVAL) + ChromiumReleaseService._ANCHOR_RELEASE_NUMBER;
   }
+
+  private getOs(): string {
+    const userAgent = navigator.userAgent;
+    if (userAgent.includes('Windows')) {
+      return 'win';
+    } else if (userAgent.includes('Macintosh')) {
+      return 'mac';
+    }
+    return 'linux';
+  }
+
+  public getUserAgentPlatformString(): string {
+    const os = this.getOs();
+    let platform = 'X11; Linux x86_64';
+    switch (os) {
+      case 'win': {
+        platform = 'Windows NT 10.0; Win64; x64';
+        break;
+      }
+
+      case 'mac': {
+        platform = 'Macintosh; Intel Mac OS X 10_15_7';
+        break;
+      }
+    }
+    return platform;
+  }
+
+  /**
+   * Returns the supposed Chrome user agent string for the latest release on this platform.
+   * @returns The Chrome user agent string.
+   */
+  public getUserAgentString(): string {
+    const platform = this.getUserAgentPlatformString();
+    const releaseNumber = this.getLatestReleaseNumber();
+    return `Mozilla/5.0 (${platform}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${releaseNumber}.0.0.0 Safari/537.36`;
+  }
 }
