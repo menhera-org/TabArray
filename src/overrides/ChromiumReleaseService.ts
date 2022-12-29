@@ -21,8 +21,6 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import browser from 'webextension-polyfill';
-
 const JAN = 0;
 const FEB = 1;
 const MAR = 2;

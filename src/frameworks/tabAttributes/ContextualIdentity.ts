@@ -49,7 +49,7 @@ export class ContextualIdentity extends CookieStore implements ContextualIdentit
    * for example, the default CookieStore is not returned.
    * @returns All ContextualIdentities
    */
-  public static async getAll(): Promise<ContextualIdentity[]> {
+  public static override async getAll(): Promise<ContextualIdentity[]> {
     const identities = await browser.contextualIdentities.query({});
     return identities.map(ContextualIdentity.fromWebExtensionsContetualIdentity);
   }

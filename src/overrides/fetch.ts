@@ -22,25 +22,48 @@
 import browser from 'webextension-polyfill';
 import { OriginAttributes } from '../frameworks/tabGroups';
 import { LanguageSettings } from '../languages/LanguageSettings';
+import { UserAgentSettings } from './UserAgentSettings';
+import { config } from '../config/config';
 
 const languageSettings = LanguageSettings.getInstance();
+const userAgentSettings = UserAgentSettings.getInstance();
+
+let featureLanguageOverridesEnabled = false;
+let featureUserAgentOverridesEnabled = false;
+
+config['feature.languageOverrides'].observe((newValue) => {
+  featureLanguageOverridesEnabled = newValue;
+});
+
+config['feature.uaOverrides'].observe((newValue) => {
+  featureUserAgentOverridesEnabled = newValue;
+});
 
 browser.webRequest.onBeforeSendHeaders.addListener((details) => {
   if (!details.cookieStoreId) {
     return;
   }
 
-  const originAttributes = OriginAttributes.fromCookieStoreId(details.cookieStoreId);
-  const acceptLanguages = languageSettings.getAcceptLanguages(originAttributes);
-  if ('' === acceptLanguages) {
-    return;
+  const userAgent = userAgentSettings.getUserAgent(details.cookieStoreId);
+  if ('' !== userAgent && featureUserAgentOverridesEnabled) {
+    details.requestHeaders?.forEach((header) => {
+      if ('user-agent' === header.name.toLowerCase()) {
+        header.value = userAgent;
+      }
+    });
   }
 
-  details.requestHeaders?.forEach((header) => {
-    if ('accept-language' === header.name.toLowerCase()) {
-      header.value = acceptLanguages;
-    }
-  });
+  const originAttributes = OriginAttributes.fromCookieStoreId(details.cookieStoreId);
+  const acceptLanguages = languageSettings.getAcceptLanguages(originAttributes);
+  if ('' !== acceptLanguages && featureLanguageOverridesEnabled) {
+    details.requestHeaders?.forEach((header) => {
+      if ('accept-language' === header.name.toLowerCase()) {
+        header.value = acceptLanguages;
+      }
+    });
+  }
+
+  // TODO: Sec-CH-UA-* headers.
 
   return { requestHeaders: details.requestHeaders };
 }, {

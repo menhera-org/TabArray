@@ -21,16 +21,26 @@
 
 import { Uint32 } from "../types";
 import { CookieStoreParams } from "./CookieStoreParams";
+import { ExtensionService } from "../extension";
+
+const contextualIdentityPromise = import('./ContextualIdentity');
 
 export class CookieStore implements CookieStoreParams {
   private static readonly DEFAULT_STORE = 'firefox-default';
   private static readonly PRIVATE_STORE = 'firefox-private';
   private static readonly CONTAINER_STORE = 'firefox-container-';
 
+  private static readonly _extensionService = ExtensionService.getInstance();
+
   public readonly id: string;
   public readonly userContextId: Uint32.Uint32;
   public readonly privateBrowsingId: Uint32.Uint32;
 
+  /**
+   * Creates an instance of CookieStore from a cookie store id.
+   * @param cookieStoreId
+   * @returns
+   */
   public static fromId(cookieStoreId: string): CookieStore  {
     if (cookieStoreId === CookieStore.DEFAULT_STORE) {
       return new CookieStore({
@@ -52,6 +62,39 @@ export class CookieStore implements CookieStoreParams {
     throw new Error(`CookieStore.fromId(): invalid cookieStoreId: ${cookieStoreId}`);
   }
 
+  public static async getAll(): Promise<CookieStore[]> {
+    if (!await CookieStore._extensionService.isAllowedInPrivateBrowsing()) {
+      return CookieStore.getAllNonPrivate();
+    }
+    const { ContextualIdentity } = await contextualIdentityPromise;
+    const cookieStores = [
+      CookieStore.fromId(CookieStore.DEFAULT_STORE),
+      CookieStore.fromId(CookieStore.PRIVATE_STORE),
+      ... await ContextualIdentity.getAll(),
+    ];
+    return cookieStores;
+  }
+
+  public static async getAllNonPrivate(): Promise<CookieStore[]> {
+    const { ContextualIdentity } = await contextualIdentityPromise;
+    const cookieStores = [
+      CookieStore.fromId(CookieStore.DEFAULT_STORE),
+      ... await ContextualIdentity.getAll(),
+    ];
+    return cookieStores;
+  }
+
+  /**
+   * Use this only when this extension is allowed in private browsing.
+   * @returns Private cookie store only
+   */
+  public static async getAllPrivate(): Promise<CookieStore[]> {
+    const cookieStores = [
+      CookieStore.fromId(CookieStore.PRIVATE_STORE),
+    ];
+    return cookieStores;
+  }
+
   public constructor(params: CookieStoreParams) {
     this.userContextId = params.userContextId;
     this.privateBrowsingId = params.privateBrowsingId;
@@ -65,6 +108,9 @@ export class CookieStore implements CookieStoreParams {
     }
   }
 
+  /**
+   * true if this is a private cookie store.
+   */
   public get isPrivate(): boolean {
     return this.privateBrowsingId !== 0;
   }

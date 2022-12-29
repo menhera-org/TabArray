@@ -22,9 +22,11 @@
 import { StorageItem, StorageArea } from "../frameworks/storage";
 import { EventSink } from "../frameworks/utils";
 import { OriginAttributes } from '../frameworks/tabGroups';
-import { ChromiumReleaseService } from "../modules/ChromiumReleaseService";
+import { ChromiumReleaseService } from "./ChromiumReleaseService";
 
 export type UserAgentPreset = 'default' | 'chrome' | 'googlebot' | 'custom';
+
+export type UserAgentEmulationMode = 'none' | 'chrome';
 
 export type UserAgentParams = {
   preset: UserAgentPreset;
@@ -72,30 +74,29 @@ export class UserAgentSettings {
     };
   }
 
-  public setUserAgent(originAttributes: OriginAttributes, preset: UserAgentPreset, userAgent?: string) {
-    const key = this.originAttributesToKey(originAttributes);
+  public setUserAgent(cookieStoreId: string, preset: UserAgentPreset, userAgent?: string) {
     switch (preset) {
       case 'default': {
-        delete this._value[key];
+        delete this._value[cookieStoreId];
         break;
       }
 
       case 'chrome': {
-        this._value[key] = {
+        this._value[cookieStoreId] = {
           preset: 'chrome',
         };
         break;
       }
 
       case 'googlebot': {
-        this._value[key] = {
+        this._value[cookieStoreId] = {
           preset: 'googlebot',
         };
         break;
       }
 
       default: {
-        this._value[key] = {
+        this._value[cookieStoreId] = {
           preset: 'custom',
           userAgent,
         };
@@ -106,13 +107,12 @@ export class UserAgentSettings {
   }
 
   /**
-   * Returns the user agent string set for the given origin attributes.
-   * @param originAttributes
+   * Returns the user agent string set for the given cookie store id.
+   * @param cookieStoreId
    * @returns the user agent string, or empty string if not set
    */
-  public getUserAgent(originAttributes: OriginAttributes): string {
-    const key = this.originAttributesToKey(originAttributes);
-    const params = this._value[key];
+  public getUserAgent(cookieStoreId: string): string {
+    const params = this._value[cookieStoreId];
     if (!params) {
       return '';
     }
@@ -130,9 +130,8 @@ export class UserAgentSettings {
     return params.userAgent || '';
   }
 
-  public getUserAgentParams(originAttributes: OriginAttributes): UserAgentParams {
-    const key = this.originAttributesToKey(originAttributes);
-    const params = this._value[key];
+  public getUserAgentParams(cookieStoreId: string): UserAgentParams {
+    const params = this._value[cookieStoreId];
     if (!params) {
       return {
         preset: 'default',
@@ -140,5 +139,13 @@ export class UserAgentSettings {
     }
 
     return params;
+  }
+
+  public getEmulationMode(cookieStoreId: string): UserAgentEmulationMode {
+    const ua = this.getUserAgent(cookieStoreId);
+    if (!ua) {
+      return 'none';
+    }
+    return ua.match(/Chrome\/\d/) ? 'chrome' : 'none';
   }
 }

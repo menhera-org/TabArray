@@ -108,7 +108,6 @@ const update = async () => {
     if (!browserTab.cookieStoreId || null == browserTab.id) continue;
     const originAttributes = OriginAttributes.fromCookieStoreId(browserTab.cookieStoreId);
     const languages = languageSettings.getLanguages(originAttributes);
-    if ('' === languages) continue;
 
     browser.tabs.sendMessage(browserTab.id, {
       type: 'language-changed',

@@ -113,7 +113,7 @@ export class ContainerOverridesElement extends HTMLElement {
       // this._languageSettings.setUserAgent(originAttributes, userAgent);
     } else {
       input.readOnly = true;
-      input.value = this._userAgentSettings.getUserAgent(originAttributes) || navigator.userAgent;
+      input.value = this._userAgentSettings.getUserAgent(originAttributes.cookieStoreId) || navigator.userAgent;
     }
   }
 
@@ -122,7 +122,7 @@ export class ContainerOverridesElement extends HTMLElement {
     const userAgent = input.value.trim();
     this.setUserAgentOptions(userContext, select, input, preset as UserAgentPreset, userAgent);
     const originAttributes = userContext.toOriginAttributes();
-    this._userAgentSettings.setUserAgent(originAttributes, preset as UserAgentPreset, userAgent || undefined);
+    this._userAgentSettings.setUserAgent(originAttributes.cookieStoreId, preset as UserAgentPreset, userAgent || undefined);
   }
 
   private createUserAgentSelectElement(userContext: UserContext, input: HTMLInputElement): HTMLSelectElement {
@@ -149,7 +149,7 @@ export class ContainerOverridesElement extends HTMLElement {
 
   private createUserAgentOptionsElement(userContext: UserContext): HTMLDivElement {
     const originAttributes = userContext.toOriginAttributes();
-    const initialParams = this._userAgentSettings.getUserAgentParams(originAttributes);
+    const initialParams = this._userAgentSettings.getUserAgentParams(originAttributes.cookieStoreId);
     const element = document.createElement('div');
     element.classList.add('user-agent');
 
@@ -165,7 +165,7 @@ export class ContainerOverridesElement extends HTMLElement {
       this.handleUserAgentChange(userContext, select, input);
     });
     this._userAgentSettings.onChanged.addListener(() => {
-      const {preset, userAgent} = this._userAgentSettings.getUserAgentParams(originAttributes);
+      const {preset, userAgent} = this._userAgentSettings.getUserAgentParams(originAttributes.cookieStoreId);
       this.setUserAgentOptions(userContext, select, input, preset, userAgent);
     });
     this.setUserAgentOptions(userContext, select, input, initialParams.preset, initialParams.userAgent);

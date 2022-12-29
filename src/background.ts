@@ -38,6 +38,7 @@ import './background/BackgroundCookieAutoclean';
 import './api/ApiDefinitions';
 import './overrides/fetch';
 import './languages/register-content-script';
+import { UaContentScriptRegistrar} from './overrides/UaContentScriptRegistrar';
 
 // watchdog
 let scriptCompleted = false;
@@ -302,6 +303,8 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
 
   return true;
 });
+
+new UaContentScriptRegistrar();
 
 setTimeout(() => {
   beforeRequestHandler.startListening();

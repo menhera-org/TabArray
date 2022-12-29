@@ -43,8 +43,8 @@ module.exports = {
       filename: 'cookies/cookies.js',
     },
     'languages': {
-      import: './src/languages/content.ts',
-      filename: 'languages/content.js',
+      import: './src/content/content.ts',
+      filename: 'content/content.js',
     },
   },
 
