@@ -35,6 +35,7 @@ import './background/IndexTabHandler';
 import './background/BackgroundContainerObservers';
 import './background/BackgroundMenu';
 import './background/BackgroundCookieAutoclean';
+import './background/FramingHeadersService';
 import './api/ApiDefinitions';
 import './overrides/fetch';
 import './languages/register-content-script';
