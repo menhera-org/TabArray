@@ -454,5 +454,77 @@
   "optionsLabelLanguages": {
     "message": "Lingvoj",
     "description": "Label text for languages of a container."
+  },
+  "menuItemHelp": {
+    "message": "Helpo",
+    "description": "Menu item for help view"
+  },
+  "privacyPolicy": {
+    "message": "Privateca politiko",
+    "description": "Privacy Policy page"
+  },
+  "windowsN": {
+    "message": "Fenestroj ($COUNT$)",
+    "description": "Text for windows view heading",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "sitesN": {
+    "message": "Retejoj ($COUNT$)",
+    "description": "Text for sites view heading",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "buttonGetStarted": {
+    "message": "Komenci",
+    "description": "Button to get started"
+  },
+  "fpiDescription": {
+    "message": "This extension enables Firefox's First-Party Isolate (FPI) feature by default. This means that cookies for different sites, even for a same container, are separated by registrable domain. You can turn it off here.",
+    "description": "Description text for FPI"
+  },
+  "optionalFeaturesDescription": {
+    "message": "If you do not use any conflicting extensions, you can enable some optional features here.",
+    "description": "Description text for optional features"
+  },
+  "featureLanguageOverrides": {
+    "message": "Per-container Language Overrides",
+    "description": "Label text for language overrides feature"
+  },
+  "featureUaOverrides": {
+    "message": "Per-container User-Agent Overrides",
+    "description": "Label text for UA overrides feature"
+  },
+  "optionsHeadingContainerOverrides": {
+    "message": "Per-container Overrides",
+    "description": "Heading text of options page for container overrides."
+  },
+  "optionsLabelUserAgent": {
+    "message": "User-Agent",
+    "description": "Label text for user agent of a container."
+  },
+  "userAgentDefault": {
+    "message": "Default",
+    "description": "Default user agent"
+  },
+  "userAgentChrome": {
+    "message": "Chrome",
+    "description": "Chrome user agent"
+  },
+  "userAgentGooglebot": {
+    "message": "Googlebot",
+    "description": "Googlebot user agent"
+  },
+  "userAgentCustom": {
+    "message": "Custom",
+    "description": "Custom user agent"
   }
 }
