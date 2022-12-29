@@ -105,6 +105,9 @@ export class RegistrableDomainService {
     } catch (e) {
       return '';
     }
+    if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+      return '';
+    }
     return urlObj.hostname;
   }
 
