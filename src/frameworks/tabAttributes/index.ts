@@ -19,16 +19,11 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
-export * as config from './config';
-export * as dns from './dns';
-export * as utils from './utils';
-export * as types from './types';
-export * as tabGroups from './tabGroups';
-export * as tabs from './tabs';
-export * as extension from './extension';
-export * as cookies from './cookies';
-export * as colors from './colors';
-export * as menus from './menus';
-export * as themes from './themes';
-export * as tabAttributes from './tabAttributes';
+export { ContainerAttributes } from './ContainerAttributes';
+export { ContextualIdentity } from './ContextualIdentity';
+export { ContextualIdentityParams } from './ContextualIdentityParams';
+export { ContextualIdentityUniqueParams } from './ContextualIdentityUniqueParams';
+export { CookieStore } from './CookieStore';
+export { CookieStoreParams } from './CookieStoreParams';
+export { ExtendedCookieStore } from './ExtendedCookieStore';
+export { ExtendedCookieStoreParams } from './ExtendedCookieStoreParams';
