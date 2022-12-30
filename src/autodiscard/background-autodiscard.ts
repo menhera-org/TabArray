@@ -36,7 +36,7 @@ setInterval(async () => {
   // Filter tabs that are not discarded and are older than minAge
   const now = Date.now();
   const tabsToDiscard = tabs.filter((tab) => {
-    return !tab.discarded && !tab.active && null != tab.lastAccessed && tab.lastAccessed + minAge * 1000 < now;
+    return !tab.discarded && !tab.active && !tab.pinned && null != tab.lastAccessed && tab.lastAccessed + minAge * 1000 < now;
   });
 
   // Discard the tabs
