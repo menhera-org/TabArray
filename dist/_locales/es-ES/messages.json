@@ -475,5 +475,55 @@
     "userAgentGooglebot": {
         "message": "Googlebot",
         "description": "Googlebot user agent"
+    },
+    "sitesN": {
+        "message": "Sitios ($COUNT$)",
+        "description": "Text for sites view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "buttonGetStarted": {
+        "message": "Comenzar",
+        "description": "Button to get started"
+    },
+    "privacyPolicy": {
+        "message": "Política de privacidad",
+        "description": "Privacy Policy page"
+    },
+    "userAgentCustom": {
+        "message": "Personalizado",
+        "description": "Custom user agent"
+    },
+    "buttonNewTemporaryContainer": {
+        "message": "Nuevo contenedor temporal",
+        "description": "Button to open a new temporary container."
+    },
+    "fpiDescription": {
+        "message": "Esta extensión activa por defecto la función First-Party Isolate (FPI) de Firefox. Esto significa que las cookies para diferentes sitios, incluso para un mismo contenedor, se separan por dominio registrable. Puede desactivarla aquí.",
+        "description": "Description text for FPI"
+    },
+    "optionalFeaturesDescription": {
+        "message": "Si no utiliza ninguna extensión conflictiva, puede activar aquí algunas funciones opcionales.",
+        "description": "Description text for optional features"
+    },
+    "featureLanguageOverrides": {
+        "message": "Anulaciones de idioma por contenedor",
+        "description": "Label text for language overrides feature"
+    },
+    "featureUaOverrides": {
+        "message": "Anulaciones del agente del usuario por contenedor",
+        "description": "Label text for UA overrides feature"
+    },
+    "optionsHeadingContainerOverrides": {
+        "message": "Anulaciones por contenedor",
+        "description": "Heading text of options page for container overrides."
+    },
+    "focusToThisContainer": {
+        "message": "Centrarse en este contenedor",
+        "description": "Button to focus to this container."
     }
 }
