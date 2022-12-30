@@ -176,10 +176,6 @@
         "message": "Activez la fonction de résistance aux empreintes digitales de Firefox (privacy.resistFingerprinting)",
         "description": "Option to enable privacy.resistFingerprinting."
     },
-    "labelDragTabToChangeContainer": {
-        "message": "Déplacer un onglet entre les conteneurs",
-        "description": "Option to enable the user to drag a tab to move between containers."
-    },
     "optionsHeadingExperimental": {
         "message": "Fonctions Expérimentales",
         "description": "Heading text of options page for experimental addon features."
