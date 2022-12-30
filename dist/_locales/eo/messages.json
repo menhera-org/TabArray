@@ -565,5 +565,9 @@
     "labelAutoDiscard86400": {
         "message": "1 tago",
         "description": "Label text for autodiscard in 86400 seconds."
+    },
+    "headingReopen": {
+        "message": "Remalfermi al ujo",
+        "description": "Heading text for reopen in container."
     }
 }
