@@ -83,6 +83,26 @@ export class PopupCurrentWindowRenderer {
     return tabCount;
   }
 
+  private async focusContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
+    const tabGroup = await UserContext.createIncompleteUserContext(userContextId).getTabGroup();
+    const tabList = tabGroup.tabList;
+    const tabs = (await tabList.getTabs()).filter((tab) => {
+      return tab.windowId === windowId;
+    });
+    if (tabs.length === 0) {
+      return;
+    }
+    const lastAccessedTab = tabs.reduce((a, b) => {
+      if (a.pinned && !b.pinned) {
+        return b;
+      } else if (!a.pinned && b.pinned) {
+        return a;
+      }
+      return a.lastAccessed > b.lastAccessed ? a : b;
+    });
+    lastAccessedTab.focus();
+  }
+
   /**
    *
    * @returns the number of tabs.
@@ -97,6 +117,11 @@ export class PopupCurrentWindowRenderer {
       const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(openUserContext.id) ?? []];
       tabCount += tabs.length;
       const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, openUserContext, tabs, windowStateSnapshot.isPrivate);
+      containerElement.containerHighlightButtonEnabled = true;
+      containerElement.onContainerHighlight.addListener(async () => {
+        await this.focusContainerOnWindow(windowStateSnapshot.id, openUserContext.id);
+        await containers.hideAll(windowStateSnapshot.id);
+      });
       element.appendChild(containerElement);
     }
     return tabCount;

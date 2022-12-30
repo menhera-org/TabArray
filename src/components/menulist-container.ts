@@ -33,6 +33,7 @@ export class MenulistContainerElement extends HTMLElement {
   public readonly onContainerClick = new EventSink<void>();
   public readonly onContainerClose = new EventSink<void>();
   public readonly onContainerOptionsClick = new EventSink<void>();
+  public readonly onContainerHighlight = new EventSink<void>();
 
   // unused.
   public readonly onContainerEdit = new EventSink<void>();
@@ -84,6 +85,11 @@ export class MenulistContainerElement extends HTMLElement {
     containerNameElement.id = 'container-name';
     containerButton.appendChild(containerNameElement);
 
+    const containerHighlightButton = document.createElement('button');
+    containerHighlightButton.id = 'container-highlight-button';
+    containerHighlightButton.disabled = true;
+    containerHeaderElement.appendChild(containerHighlightButton);
+
     const containerOptionsButton = document.createElement('button');
     containerOptionsButton.id = 'container-options-button';
     containerHeaderElement.appendChild(containerOptionsButton);
@@ -116,6 +122,9 @@ export class MenulistContainerElement extends HTMLElement {
     };
     this.containerOptionsButton.onclick = () => {
       this.onContainerOptionsClick.dispatch();
+    };
+    this.containerHighlightButton.onclick = () => {
+      this.onContainerHighlight.dispatch();
     };
   }
 
@@ -153,8 +162,20 @@ export class MenulistContainerElement extends HTMLElement {
     return this.shadowRoot?.querySelector('#container-options-button') as HTMLButtonElement;
   }
 
+  private get containerHighlightButton(): HTMLButtonElement {
+    return this.shadowRoot?.querySelector('#container-highlight-button') as HTMLButtonElement;
+  }
+
   public get containerVisibilityToggleButton(): HTMLButtonElement {
     return this.shadowRoot?.querySelector('#container-visibility-toggle') as HTMLButtonElement;
+  }
+
+  public get containerHighlightButtonEnabled(): boolean {
+    return !this.containerHighlightButton.disabled;
+  }
+
+  public set containerHighlightButtonEnabled(enabled: boolean) {
+    this.containerHighlightButton.disabled = !enabled;
   }
 
   public get containerName(): string {

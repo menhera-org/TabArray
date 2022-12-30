@@ -52,7 +52,7 @@ button:focus {
 
 #container-header {
   display: block grid;
-  grid-template-columns: 2em 1fr 2em 2em;
+  grid-template-columns: 2em 1fr max-content max-content max-content;
   padding-inline-end: 1em;
 }
 
@@ -81,6 +81,18 @@ button[disabled] {
 
 #container-header > button:not(#container-button):hover, #container-header > button:not(#container-button):focus {
   opacity: 1;
+}
+
+#container-close-button, #container-options-button, #container-highlight-button {
+  inline-size: 2em;
+}
+
+#container-highlight-button {
+  mask: url(/img/material-icons/star_border.svg) center center/75% no-repeat;
+}
+
+#container-highlight-button:disabled {
+  display: none;
 }
 
 #container-close-button {
