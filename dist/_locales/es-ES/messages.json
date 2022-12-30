@@ -176,10 +176,6 @@
         "message": "Activar la función de resistencia a las huellas dactilares de Firefox (privacy.resistFingerprinting)",
         "description": "Option to enable privacy.resistFingerprinting."
     },
-    "labelDragTabToChangeContainer": {
-        "message": "Arrastre una pestaña para moverse entre contenedores",
-        "description": "Option to enable the user to drag a tab to move between containers."
-    },
     "optionsHeadingExperimental": {
         "message": "Funciones experimentales",
         "description": "Heading text of options page for experimental addon features."
