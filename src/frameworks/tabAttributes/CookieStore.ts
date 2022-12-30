@@ -32,6 +32,9 @@ export class CookieStore implements CookieStoreParams {
 
   private static readonly _extensionService = ExtensionService.getInstance();
 
+  public static readonly DEFAULT = CookieStore.fromId(CookieStore.DEFAULT_STORE);
+  public static readonly PRIVATE = CookieStore.fromId(CookieStore.PRIVATE_STORE);
+
   public readonly id: string;
   public readonly userContextId: Uint32.Uint32;
   public readonly privateBrowsingId: Uint32.Uint32;

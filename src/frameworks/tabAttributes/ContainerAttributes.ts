@@ -54,7 +54,12 @@ export class ContainerAttributes extends ContextualIdentity {
     return new ContainerAttributes(cookieStore, name);
   }
 
+  // TODO: move to non-framework code
   public static getIconUrl(icon: string, color: string): string {
+    if (color == 'toolbar') {
+      const isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      color = isDarkTheme ? 'toolbar-dark' : 'toolbar-light';
+    }
     return browser.runtime.getURL(`/img/contextual-identities/${icon}.svg#${color}`);
   }
 

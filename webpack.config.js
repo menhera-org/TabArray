@@ -46,6 +46,10 @@ module.exports = {
       import: './src/content/content.ts',
       filename: 'content/content.js',
     },
+    'page-action': {
+      import: './src/page-action/page-action.ts',
+      filename: 'page-action/page-action.js',
+    },
   },
 
   output: {
