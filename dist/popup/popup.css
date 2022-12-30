@@ -716,12 +716,15 @@ body > .modal:target {
 
 .modal-content {
   background-color: var(--background-color);
+  overflow: hidden;
 }
 
 .modal-title {
   margin-block: 1rem;
   margin-inline: 1rem;
   padding: 0;
+  overflow-wrap: break-word;
+  overflow: hidden;
 }
 
 .modal-actions {
@@ -754,6 +757,8 @@ body > .modal:target {
 
 #confirm-message {
   margin: 1em;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 #help {
