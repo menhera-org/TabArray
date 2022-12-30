@@ -34,6 +34,7 @@ export const config = {
   'tab.external.containerOption': new StorageConfigurationOption<ExternalContainerOption>('tab.external.containerOption', 'choose'),
   'appearance.popupSize': new StorageConfigurationOption<PopupSize>('appearance.popupSize', 'standard'),
   'tab.groups.indexOption': new StorageConfigurationOption<GroupIndexOption>('tab.groups.indexOption', 'never'),
+  'tab.autoDiscard.minAge': new StorageConfigurationOption<number>('tab.autoDiscard.minAge', -1),
 };
 
 
