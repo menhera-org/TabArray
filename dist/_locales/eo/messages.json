@@ -492,7 +492,7 @@
     "description": "Description text for FPI"
   },
   "optionalFeaturesDescription": {
-    "message": "If you do not use any conflicting extensions, you can enable some optional features here.",
+    "message": "Se vi ne uzas konfliktajn etendaĵojn, vi povas ebligi iujn laŭvolajn funkciojn ĉi tie.",
     "description": "Description text for optional features"
   },
   "featureLanguageOverrides": {
