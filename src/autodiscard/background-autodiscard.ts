@@ -44,6 +44,10 @@ setInterval(async () => {
   if (tabIdsToDiscard.length == 0) {
     return;
   }
-  await browser.tabs.discard(tabIdsToDiscard);
-  console.debug(`Discarded ${tabIdsToDiscard.length} tabs`);
+  try {
+    await browser.tabs.discard(tabIdsToDiscard);
+    console.debug(`Discarded ${tabIdsToDiscard.length} tabs`);
+  } catch (e) {
+    console.error(e);
+  }
 }, AUTODISCARD_INTERVAL);
