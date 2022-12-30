@@ -460,10 +460,6 @@
             }
         }
     },
-    "optionalFeaturesDescription": {
-        "message": "",
-        "description": "Description text for optional features"
-    },
     "optionsLabelUserAgent": {
         "message": "User Agent",
         "description": "Label text for user agent of a container."
