@@ -176,10 +176,6 @@
         "message": "Включить функцию защиты от отпечатков пальцев в Firefox (privacy.resistFingerprinting)",
         "description": "Option to enable privacy.resistFingerprinting."
     },
-    "labelDragTabToChangeContainer": {
-        "message": "Перетащить вкладку для перемещения между контейнерами",
-        "description": "Option to enable the user to drag a tab to move between containers."
-    },
     "optionsHeadingExperimental": {
         "message": "Экспериментальные функции",
         "description": "Heading text of options page for experimental addon features."
