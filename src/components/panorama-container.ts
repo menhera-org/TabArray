@@ -21,6 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
+import { Uint32 } from '../frameworks/types';
 import { EventSink } from '../frameworks/utils';
 
 /**
@@ -31,6 +32,7 @@ export class PanoramaContainerElement extends HTMLElement {
   private _containerHeadingElement: HTMLDivElement;
   private _containerIconElement: HTMLDivElement;
   private _containerLabelElement: HTMLDivElement;
+  private _containerCloseButtonElement: HTMLButtonElement;
   private _containerTabsElement: HTMLDivElement;
   private _newTabButtonElement: HTMLButtonElement;
 
@@ -50,6 +52,15 @@ export class PanoramaContainerElement extends HTMLElement {
     this._containerLabelElement = document.createElement('div');
     this._containerHeadingElement.append(this._containerLabelElement);
     this._containerLabelElement.classList.add('container-label');
+
+    this._containerCloseButtonElement = document.createElement('button');
+    this._containerHeadingElement.append(this._containerCloseButtonElement);
+    this._containerCloseButtonElement.classList.add('container-close');
+    this._containerCloseButtonElement.title = browser.i18n.getMessage('tooltipContainerCloseAll');
+    this._containerCloseButtonElement.addEventListener('click', async () => {
+      const tabGroup = await UserContext.createIncompleteUserContext(this._userContextId as Uint32.Uint32).getTabGroup();
+      await tabGroup.tabList.closeTabs();
+    });
 
     this._containerTabsElement = document.createElement('div');
     this.append(this._containerTabsElement);
