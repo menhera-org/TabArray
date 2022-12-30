@@ -6,6 +6,7 @@
 [![Made in TypeScript](https://img.shields.io/badge/Made%20in-TypeScript-%233178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/github/license/menhera-org/TabArray)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Maintainability](https://api.codeclimate.com/v1/badges/80a4d073dd8edce17391/maintainability)](https://codeclimate.com/github/menhera-org/TabArray/maintainability)
+[![Translation status](https://hosted.weblate.org/widgets/container-tab-groups/-/svg-badge.svg)](https://hosted.weblate.org/engage/container-tab-groups/)
 
 Chrome-like tab groups using isolated containers: The ultimate tab manager and groups for Firefox.
 
