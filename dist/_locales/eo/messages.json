@@ -231,7 +231,7 @@
         }
     },
     "promptSelectContainer": {
-        "message": "Elektu ujon:",
+        "message": "Elektu ujon.",
         "description": "Message asking the user to select a container for a new tab."
     },
     "labelSelectContainerExternalTabs": {
