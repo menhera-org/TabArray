@@ -227,6 +227,7 @@ export class PopupModalRenderer {
       userContext.remove().catch((e) => {
         console.error(e);
       });
+      location.hash = '';
     });
   }
 
