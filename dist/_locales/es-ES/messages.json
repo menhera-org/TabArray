@@ -460,17 +460,9 @@
             }
         }
     },
-    "buttonGetStarted": {
-        "message": "",
-        "description": "Button to get started"
-    },
     "optionalFeaturesDescription": {
         "message": "",
         "description": "Description text for optional features"
-    },
-    "featureUaOverrides": {
-        "message": "",
-        "description": "Label text for UA overrides feature"
     },
     "optionsLabelUserAgent": {
         "message": "User Agent",
@@ -487,9 +479,5 @@
     "userAgentGooglebot": {
         "message": "Googlebot",
         "description": "Googlebot user agent"
-    },
-    "buttonNewTemporaryContainer": {
-        "message": "",
-        "description": "Button to open a new temporary container."
     }
 }
