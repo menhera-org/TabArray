@@ -496,15 +496,15 @@
     "description": "Description text for optional features"
   },
   "featureLanguageOverrides": {
-    "message": "Per-container Language Overrides",
+    "message": "Po-ujo lingvaj transpasoj",
     "description": "Label text for language overrides feature"
   },
   "featureUaOverrides": {
-    "message": "Per-container User-Agent Overrides",
+    "message": "Po-ujo User-Agent transpasoj",
     "description": "Label text for UA overrides feature"
   },
   "optionsHeadingContainerOverrides": {
-    "message": "Per-container Overrides",
+    "message": "Po-ujo transpasoj",
     "description": "Heading text of options page for container overrides."
   },
   "optionsLabelUserAgent": {
@@ -512,7 +512,7 @@
     "description": "Label text for user agent of a container."
   },
   "userAgentDefault": {
-    "message": "Default",
+    "message": "Defaŭlto",
     "description": "Default user agent"
   },
   "userAgentChrome": {
@@ -524,15 +524,15 @@
     "description": "Googlebot user agent"
   },
   "userAgentCustom": {
-    "message": "Custom",
+    "message": "Propra",
     "description": "Custom user agent"
   },
   "buttonNewTemporaryContainer": {
-    "message": "New Temporary Container",
+    "message": "Nova provizora ujo",
     "description": "Button to open a new temporary container."
   },
   "focusToThisContainer": {
-    "message": "Focus to this container",
+    "message": "Fokusi al ĉi tiu ujo",
     "description": "Button to focus to this container."
   }
 }
