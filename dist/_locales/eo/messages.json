@@ -176,10 +176,6 @@
         "message": "Ŝalti la fingrospuran rezistan funkcion de Firefox (privacy.resistFingerprinting)",
         "description": "Option to enable privacy.resistFingerprinting."
     },
-    "labelDragTabToChangeContainer": {
-        "message": "Drag a Tab to move between containers",
-        "description": "Option to enable the user to drag a tab to move between containers."
-    },
     "optionsHeadingExperimental": {
         "message": "Eksperimentaj agordoj",
         "description": "Heading text of options page for experimental addon features."
