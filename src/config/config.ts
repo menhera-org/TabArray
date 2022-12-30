@@ -62,7 +62,28 @@ export class BrowserBooleanSetting implements ConfigurationOption<boolean> {
   }
 }
 
+export class CookieBahavorSetting implements ConfigurationOption<string> {
+  private readonly setting = browser.privacy.websites.cookieConfig;
+
+  public async getValue(): Promise<string> {
+    const details = await this.setting.get({});
+    return details.value.behavior;
+  }
+
+  public async setValue(value: string): Promise<void> {
+    await this.setting.set({ value: { behavior: value } });
+  }
+
+  public observe(callback: (newValue: string) => void): void {
+    this.getValue().then(callback);
+    this.setting.onChange.addListener((details) => {
+      callback(details.value.behavior);
+    });
+  }
+}
+
 export const privacyConfig = {
   firstPartyIsolate: new BrowserBooleanSetting(browser.privacy.websites.firstPartyIsolate),
   resistFingerprinting: new BrowserBooleanSetting(browser.privacy.websites.resistFingerprinting),
+  cookieConfigBehavior: new CookieBahavorSetting(),
 };

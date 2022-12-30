@@ -24,7 +24,7 @@ import { ADDON_PAGE } from './defs';
  * Codes to run on first installation.
  */
 
-browser.runtime.onInstalled.addListener((details) => {
+/* browser.runtime.onInstalled.addListener((details) => {
   // Enable FPI by defailt on installation
   const previousMajorVersion = parseInt((details.previousVersion ?? '0').split('.')[0] ?? '0', 10);
   if ('install' == details.reason || 'update' == details.reason && 3 > previousMajorVersion) {
@@ -37,6 +37,6 @@ browser.runtime.onInstalled.addListener((details) => {
       }
     });
   }
-});
+}); */
 
 browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));

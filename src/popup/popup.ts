@@ -33,6 +33,7 @@ import { UserContextSortingOrderStore } from '../userContexts/UserContextSorting
 import { ExtensionService } from '../frameworks/extension';
 import { cancelHandler, okHandler, keyHandler } from './PopupKeyHandlers';
 import { TemporaryContainerService } from '../containers/TemporaryContainerService';
+import { StorageArea } from '../frameworks/storage';
 
 const utils = new PopupUtils();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
@@ -72,10 +73,13 @@ config['appearance.popupSize'].observe((value) => {
   }
 });
 
+let firstRun = false;
 config['help.shownOnce'].getValue().then((shownOnce) => {
   if (!shownOnce) {
     location.hash = '#help';
-    config['help.shownOnce'].setValue(true);
+    config['help.shownOnce'].setValue(true, StorageArea.LOCAL);
+    firstRun = true;
+    initializeHelp();
   }
 });
 
@@ -94,12 +98,34 @@ const setInputChecked = (inputElement: HTMLInputElement | null | undefined, valu
 
 const inputFirstPartyIsolate = utils.queryElementNonNull<HTMLInputElement>('#input-firstPartyIsolate');
 
+const initializeHelp = () => {
+  setInputChecked(inputFirstPartyIsolate, true);
+};
+
+const setFirstPartyIsolate = (value: boolean) => {
+  (async () => {
+    if (value) {
+      const cookieBehavior = await privacyConfig.cookieConfigBehavior.getValue();
+      if (cookieBehavior == 'reject_trackers_and_partition_foreign') {
+        await privacyConfig.cookieConfigBehavior.setValue('reject_trackers');
+      }
+    }
+    setConfigValue(privacyConfig.firstPartyIsolate, value);
+  })().catch((e) => {
+    console.error(e);
+  });
+};
+
 privacyConfig.firstPartyIsolate.observe((value) => {
+  if (firstRun) {
+    initializeHelp();
+    return;
+  }
   setInputChecked(inputFirstPartyIsolate, value);
 });
 
 inputFirstPartyIsolate.addEventListener('change', () => {
-  setConfigValue(privacyConfig.firstPartyIsolate, inputFirstPartyIsolate.checked);
+  setFirstPartyIsolate(inputFirstPartyIsolate.checked);
 });
 
 const inputFeatureLanguageOverrides = utils.queryElementNonNull<HTMLInputElement>('#input-featureLanguageOverrides');
@@ -208,6 +234,8 @@ utils.queryElementNonNull('#menu-item-sites').addEventListener('click', () => {
 });
 
 utils.queryElementNonNull('#help-done-button').addEventListener('click', () => {
+  setFirstPartyIsolate(inputFirstPartyIsolate.checked);
+  renderInBackground();
   location.hash = '#main';
 });
 
