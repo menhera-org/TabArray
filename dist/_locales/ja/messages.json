@@ -176,10 +176,6 @@
         "message": "Firefoxのフィンガープリント防止機能を有効化する (privacy.resistFingerprinting)",
         "description": "Option to enable privacy.resistFingerprinting."
     },
-    "labelDragTabToChangeContainer": {
-        "message": "タブをドラッグしてコンテナーに移動する",
-        "description": "Option to enable the user to drag a tab to move between containers."
-    },
     "optionsHeadingExperimental": {
         "message": "実験的な機能",
         "description": "Heading text of options page for experimental addon features."
