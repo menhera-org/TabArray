@@ -91,7 +91,7 @@ button[disabled] {
   mask: url(/img/material-icons/star_border.svg) center center/75% no-repeat;
 }
 
-#container-highlight-button:disabled {
+:is(#container-highlight-button, #container-close-button):disabled {
   display: none;
 }
 
