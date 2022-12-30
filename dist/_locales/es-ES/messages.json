@@ -525,5 +525,45 @@
     "focusToThisContainer": {
         "message": "Centrarse en este contenedor",
         "description": "Button to focus to this container."
+    },
+    "optionsHeadingGeneral": {
+        "message": "Configuración general",
+        "description": "Heading text of options page for general settings."
+    },
+    "labelAutoDiscardMinAge": {
+        "message": "Memoria libre de las pestañas tras la inactividad para:",
+        "description": "Label text for autodiscard min age."
+    },
+    "labelAutoDiscardDisabled": {
+        "message": "Desactivado",
+        "description": "Label text for autodiscard disabled."
+    },
+    "labelAutoDiscard900": {
+        "message": "15 minutos",
+        "description": "Label text for autodiscard in 900 seconds."
+    },
+    "labelAutoDiscard1800": {
+        "message": "30 minutos",
+        "description": "Label text for autodiscard in 1800 seconds."
+    },
+    "labelAutoDiscard3600": {
+        "message": "1 hora",
+        "description": "Label text for autodiscard in 3600 seconds."
+    },
+    "labelAutoDiscard10800": {
+        "message": "3 horas",
+        "description": "Label text for autodiscard in 10800 seconds."
+    },
+    "labelAutoDiscard21600": {
+        "message": "6 horas",
+        "description": "Label text for autodiscard in 21600 seconds."
+    },
+    "labelAutoDiscard43200": {
+        "message": "12 horas",
+        "description": "Label text for autodiscard in 43200 seconds."
+    },
+    "labelAutoDiscard86400": {
+        "message": "1 día",
+        "description": "Label text for autodiscard in 86400 seconds."
     }
 }
