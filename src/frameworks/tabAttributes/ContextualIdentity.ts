@@ -78,7 +78,7 @@ export class ContextualIdentity extends CookieStore implements ContextualIdentit
     });
   }
 
-  constructor(params: ContextualIdentityParams) {
+  public constructor(params: ContextualIdentityParams) {
     super(params);
     this.name = params.name;
     this.icon = params.icon;
