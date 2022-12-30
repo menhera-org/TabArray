@@ -185,11 +185,11 @@
         "description": "Heading text of options page for changing Firefox settings."
     },
     "optionsDescriptionExperimental": {
-        "message": "これらのオプションの一部を無効にすることでバグっぽい動作がみられる場合に対処することができる場合があります．",
+        "message": "これらのオプションの一部を無効にすることでバグっぽい動作がみられる場合に対処することができる場合があります。",
         "description": "Description text for experimental features options."
     },
     "optionsDescriptionFirefox": {
-        "message": "ここでプライバシー関連の隠された Firefox 設定の一部を変更することができます．",
+        "message": "ここでプライバシー関連の隠された Firefox 設定の一部を変更することができます。",
         "description": "Description text for Firefox settings options."
     },
     "panoramaGrid": {
@@ -221,7 +221,7 @@
         "description": "Title of the popup asking the user to choose a container to open a new tab in."
     },
     "descriptionSelectContainer": {
-        "message": "あなたは以下の新しいタブを開こうとしています：$URL$．",
+        "message": "あなたは以下の新しいタブを開こうとしています：$URL$。",
         "description": "Confirmation message before the user chooses a container to open a new tab in.",
         "placeholders": {
             "url": {
@@ -231,7 +231,7 @@
         }
     },
     "promptSelectContainer": {
-        "message": "このタブを開くコンテナーを選択してください．",
+        "message": "このタブを開くコンテナーを選択してください。",
         "description": "Message asking the user to select a container for a new tab."
     },
     "labelSelectContainerExternalTabs": {
