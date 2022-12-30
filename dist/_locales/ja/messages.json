@@ -526,5 +526,13 @@
   "userAgentCustom": {
     "message": "カスタム",
     "description": "Custom user agent"
+  },
+  "buttonNewTemporaryContainer": {
+    "message": "New Temporary Container",
+    "description": "Button to open a new temporary container."
+  },
+  "focusToThisContainer": {
+    "message": "Focus to this container",
+    "description": "Button to focus to this container."
   }
 }
