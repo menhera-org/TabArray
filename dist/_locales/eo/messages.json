@@ -525,5 +525,45 @@
     "focusToThisContainer": {
         "message": "Fokusi al ĉi tiu ujo",
         "description": "Button to focus to this container."
+    },
+    "optionsHeadingGeneral": {
+        "message": "Universalaj agordoj",
+        "description": "Heading text of options page for general settings."
+    },
+    "labelAutoDiscardMinAge": {
+        "message": "Liberigi memorilo de langetoj post neaktiveco dum:",
+        "description": "Label text for autodiscard min age."
+    },
+    "labelAutoDiscardDisabled": {
+        "message": "Malŝalti",
+        "description": "Label text for autodiscard disabled."
+    },
+    "labelAutoDiscard900": {
+        "message": "15 minutoj",
+        "description": "Label text for autodiscard in 900 seconds."
+    },
+    "labelAutoDiscard1800": {
+        "message": "30 minutoj",
+        "description": "Label text for autodiscard in 1800 seconds."
+    },
+    "labelAutoDiscard3600": {
+        "message": "1 horo",
+        "description": "Label text for autodiscard in 3600 seconds."
+    },
+    "labelAutoDiscard10800": {
+        "message": "3 horoj",
+        "description": "Label text for autodiscard in 10800 seconds."
+    },
+    "labelAutoDiscard21600": {
+        "message": "6 horoj",
+        "description": "Label text for autodiscard in 21600 seconds."
+    },
+    "labelAutoDiscard43200": {
+        "message": "12 horoj",
+        "description": "Label text for autodiscard in 43200 seconds."
+    },
+    "labelAutoDiscard86400": {
+        "message": "1 tago",
+        "description": "Label text for autodiscard in 86400 seconds."
     }
 }
