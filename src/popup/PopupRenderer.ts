@@ -37,6 +37,7 @@ import { PopupUtils } from './PopupUtils';
 import { PopupModalRenderer } from './PopupModalRenderer';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
+import { PromiseUtils } from "../frameworks/utils";
 
 enum ContainerTabsState {
   NO_TABS,
@@ -50,6 +51,9 @@ export class PopupRenderer {
   private readonly _userContextService = UserContextService.getInstance();
   private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
   private readonly _utils = new PopupUtils();
+
+  private _rendering = false;
+  private _rerenderRequested = false;
 
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly windowListRenderer = new PopupWindowListRenderer(this);
@@ -165,25 +169,58 @@ export class PopupRenderer {
     return element;
   }
 
-  public async render() {
-    const startTime = Date.now();
+  private async renderInner() {
     const topboxContentWindows = this._utils.queryElementNonNull<HTMLElement>('#topbox-content-windows');
     const topboxContentSites = this._utils.queryElementNonNull<HTMLElement>('#topbox-content-sites');
     const currentWindowMenuList = this._utils.queryElementNonNull<HTMLElement>('#menuList');
     const windowListMenuList = this._utils.queryElementNonNull<HTMLElement>('#windowMenuList');
     const sitesMenuList = this._utils.queryElementNonNull<HTMLElement>('#sites-pane-top');
+
     const [browserStateSnapshot] = await Promise.all([
       BrowserStateSnapshot.create(),
       this.siteListRenderer.rerenderSiteDetailsView(),
     ]);
     const definedUserContexts = this._userContextSortingOrderStore.sort(browserStateSnapshot.getDefinedUserContexts().map(
       (userContext) => this._userContextService.fillDefaultValues(userContext)));
+
     this.currentWindowRenderer.renderCurrentWindowView(browserStateSnapshot, definedUserContexts, currentWindowMenuList);
     this.windowListRenderer.renderWindowListView(browserStateSnapshot, definedUserContexts, windowListMenuList, topboxContentWindows);
     this.siteListRenderer.renderSiteListView(browserStateSnapshot, sitesMenuList, topboxContentSites);
-    const elapsed = Date.now() - startTime;
-    if (elapsed > 500) {
-      console.debug(`rendering took ${elapsed}ms`);
+  }
+
+  public async render() {
+    for (;;) {
+      if (this._rendering) {
+        console.debug('Already rendering.');
+        this._rerenderRequested = true;
+        return;
+      }
+      this._rendering = true;
+      const startTime = Date.now();
+      const timer = setTimeout(() => {
+        console.warn('Rendering unfinished after 10 seconds.');
+      }, 10000);
+
+      try {
+        await this.renderInner();
+      } catch (e) {
+        console.error('rendering failed');
+        throw e;
+      } finally {
+        this._rendering = false;
+        clearTimeout(timer);
+        const elapsed = Date.now() - startTime;
+        if (elapsed > 500) {
+          console.debug(`rendering took ${elapsed}ms`);
+        }
+      }
+      if (this._rerenderRequested) {
+        this._rerenderRequested = false;
+        console.debug('rerender requested');
+        await PromiseUtils.sleep(100);
+        continue;
+      }
+      break;
     }
   }
 }
