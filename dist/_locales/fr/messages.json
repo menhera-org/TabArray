@@ -450,23 +450,9 @@
         "message": "Help",
         "description": "Menu item for help view"
     },
-    "privacyPolicy": {
-        "message": "",
-        "description": "Privacy Policy page"
-    },
     "windowsN": {
         "message": "Windows ($COUNT$)",
         "description": "Text for windows view heading",
-        "placeholders": {
-            "count": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
-    "sitesN": {
-        "message": "",
-        "description": "Text for sites view heading",
         "placeholders": {
             "count": {
                 "content": "$1",
@@ -478,25 +464,13 @@
         "message": "",
         "description": "Button to get started"
     },
-    "fpiDescription": {
-        "message": "",
-        "description": "Description text for FPI"
-    },
     "optionalFeaturesDescription": {
         "message": "",
         "description": "Description text for optional features"
     },
-    "featureLanguageOverrides": {
-        "message": "",
-        "description": "Label text for language overrides feature"
-    },
     "featureUaOverrides": {
         "message": "",
         "description": "Label text for UA overrides feature"
-    },
-    "optionsHeadingContainerOverrides": {
-        "message": "",
-        "description": "Heading text of options page for container overrides."
     },
     "optionsLabelUserAgent": {
         "message": "User Agent",
@@ -514,16 +488,8 @@
         "message": "Googlebot",
         "description": "Googlebot user agent"
     },
-    "userAgentCustom": {
-        "message": "",
-        "description": "Custom user agent"
-    },
     "buttonNewTemporaryContainer": {
         "message": "",
         "description": "Button to open a new temporary container."
-    },
-    "focusToThisContainer": {
-        "message": "",
-        "description": "Button to focus to this container."
     }
 }
