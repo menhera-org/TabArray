@@ -565,5 +565,9 @@
     "labelAutoDiscard86400": {
         "message": "1日",
         "description": "Label text for autodiscard in 86400 seconds."
+    },
+    "headingReopen": {
+        "message": "コンテナーで開き直す",
+        "description": "Heading text for reopen in container."
     }
 }
