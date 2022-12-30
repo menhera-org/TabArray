@@ -488,7 +488,7 @@
     "description": "Button to get started"
   },
   "fpiDescription": {
-    "message": "This extension enables Firefox's First-Party Isolate (FPI) feature by default. This means that cookies for different sites, even for a same container, are separated by registrable domain. You can turn it off here.",
+    "message": "Ĉi tiu etendajo ŝaltas First-Party Isolate (FPI) trajton de Firefox, aŭtomate. Tio signifas, ke kuketoj por malsamaj retejoj eĉ por sama ujo, estas dividita per registrable domain. Vi povas malŝalti ĝin ĉi tie.",
     "description": "Description text for FPI"
   },
   "optionalFeaturesDescription": {
