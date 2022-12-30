@@ -29,6 +29,21 @@
 <body>
   <div id='optionsPanes'>
     <div data-pane-name='general'>
+      <h2 id='optionsHeadingGeneral'>optionsHeadingGeneral</h2>
+      <p>
+        <label class='browser-style-label' for='select-autoDiscardMinAge'>labelAutoDiscardMinAge</label>
+        <select id='select-autoDiscardMinAge' class='browser-style'>
+          <option value='-1' selected=''>labelAutoDiscardDisabled</option>
+          <option value='900'>labelAutoDiscard900</option>
+          <option value='1800'>labelAutoDiscard1800</option>
+          <option value='3600'>labelAutoDiscard3600</option>
+          <option value='10800'>labelAutoDiscard10800</option>
+          <option value='21600'>labelAutoDiscard21600</option>
+          <option value='43200'>labelAutoDiscard43200</option>
+          <option value='86400'>labelAutoDiscard86400</option>
+        </select>
+      </p>
+      <hr/>
       <p id='optionalFeaturesDescription'>optionalFeaturesDescription</p>
       <p class='browser-style'>
         <input type='checkbox' id='input-featureLanguageOverrides'/>

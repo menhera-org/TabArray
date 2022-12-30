@@ -92,6 +92,8 @@ const selectExternalTabContainerOption = document.querySelector<HTMLSelectElemen
 const selectGroupIndexOption = document.querySelector<HTMLSelectElement>('#select-groupIndexOption');
 const selectPopupSize = document.querySelector<HTMLSelectElement>('#select-popupSize');
 
+const selectAutoDiscardMinAge = document.querySelector<HTMLSelectElement>('#select-autoDiscardMinAge');
+
 UserContext.getAll().then(async (userContexts) => {
   const autocleanEnabledUserContextIds = await cookieAutocleanService.getAutocleanEnabledUserContexts();
   const sortedUserContext = sortingOrderStore.sort(userContexts.map((userContext) => userContextService.fillDefaultValues(userContext)));
@@ -187,4 +189,13 @@ privacyConfig.resistFingerprinting.observe((value) => {
 
 inputResistFingerprinting?.addEventListener('change', () => {
   setConfigValue(privacyConfig.resistFingerprinting, inputResistFingerprinting.checked);
+});
+
+// tab.autoDiscard.minAge setting
+config['tab.autoDiscard.minAge'].observe((value) => {
+  setFormInputValue(selectAutoDiscardMinAge, value.toFixed(0));
+});
+
+selectAutoDiscardMinAge?.addEventListener('change', () => {
+  setConfigValue(config['tab.autoDiscard.minAge'], parseInt(selectAutoDiscardMinAge.value, 10));
 });

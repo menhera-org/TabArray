@@ -30,6 +30,18 @@ const setTextContent = (query: string, message: string) => {
   element.textContent = browser.i18n.getMessage(message);
 };
 
+setTextContent('#optionsHeadingGeneral', 'optionsHeadingGeneral');
+
+setTextContent('label[for="select-autoDiscardMinAge"]', 'labelAutoDiscardMinAge');
+setTextContent('#select-autoDiscardMinAge > option[value="-1"]', 'labelAutoDiscardDisabled');
+setTextContent('#select-autoDiscardMinAge > option[value="900"]', 'labelAutoDiscard900');
+setTextContent('#select-autoDiscardMinAge > option[value="1800"]', 'labelAutoDiscard1800');
+setTextContent('#select-autoDiscardMinAge > option[value="3600"]', 'labelAutoDiscard3600');
+setTextContent('#select-autoDiscardMinAge > option[value="10800"]', 'labelAutoDiscard10800');
+setTextContent('#select-autoDiscardMinAge > option[value="21600"]', 'labelAutoDiscard21600');
+setTextContent('#select-autoDiscardMinAge > option[value="43200"]', 'labelAutoDiscard43200');
+setTextContent('#select-autoDiscardMinAge > option[value="86400"]', 'labelAutoDiscard86400');
+
 setTextContent('#link-containers', 'optionsHeadingContainerSortOrder');
 setTextContent('#link-container-overrides', 'optionsHeadingContainerOverrides');
 
