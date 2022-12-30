@@ -237,13 +237,18 @@ button {
 }
 
 #button-new-container {
-  background-repeat: no-repeat;
-  background-size: 1.5em;
-  background-position: center center;
   block-size: 100%;
-  inline-size: 2.5em;
+  inline-size: 2em;
   color: inherit;
-  mask: url(/img/firefox-icons/add.svg) center center / 50% no-repeat;
+  mask: url(/img/firefox-icons/add.svg) center center / 67% no-repeat;
+  background-color: var(--text-color);
+}
+
+#button-new-temporary-container {
+  block-size: 100%;
+  inline-size: 2em;
+  color: inherit;
+  mask: url(/img/material-icons/timelapse.svg) center center / 67% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -252,13 +257,13 @@ button {
   background-size: 1.5em;
   background-position: center center;
   block-size: 100%;
-  inline-size: 2.5em;
+  inline-size: 2em;
   color: inherit;
-  mask: url(/img/firefox-icons/settings.svg) center center / 50% no-repeat;
+  mask: url(/img/firefox-icons/settings.svg) center center / 67% no-repeat;
   background-color: var(--text-color);
 }
 
-:is(#button-new-container, #button-settings, #button-sidebar) > .button-text {
+:is(#button-new-container, #button-settings, #button-sidebar, #button-new-temporary-container) > .button-text {
   display: none;
 }
 
@@ -388,7 +393,7 @@ button {
 
 [data-active-content="main"] #topbox-content > #topbox-content-main {
   display: block grid;
-  grid-template-columns: 1fr max-content;
+  grid-template-columns: 1fr max-content max-content;
 }
 
 [data-active-content="windows"] #topbox-content > #topbox-content-windows {

@@ -32,10 +32,12 @@ import './PopupLocalizations';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { ExtensionService } from '../frameworks/extension';
 import { cancelHandler, okHandler, keyHandler } from './PopupKeyHandlers';
+import { TemporaryContainerService } from '../containers/TemporaryContainerService';
 
 const utils = new PopupUtils();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 const extensionService = ExtensionService.getInstance();
+const temporaryContainerService = TemporaryContainerService.getInstance();
 
 const renderer = new PopupRenderer();
 
@@ -186,6 +188,14 @@ utils.queryElementNonNull<HTMLButtonElement>('#button-new-container').addEventLi
   renderer.modalRenderer.showNewContainerPanelAsync().then((result) => {
     if (!result) return;
     console.log('Created new container', result);
+  });
+});
+
+utils.queryElementNonNull<HTMLButtonElement>('#button-new-temporary-container').addEventListener('click', () => {
+  temporaryContainerService.createTemporaryContainer().then((identity) => {
+    console.debug('Created temporary container', identity);
+  }).catch((e) => {
+    console.error(e);
   });
 });
 

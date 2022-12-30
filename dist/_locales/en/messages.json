@@ -526,5 +526,9 @@
   "userAgentCustom": {
     "message": "Custom",
     "description": "Custom user agent"
+  },
+  "buttonNewTemporaryContainer": {
+    "message": "New Temporary Container",
+    "description": "Button to open a new temporary container."
   }
 }

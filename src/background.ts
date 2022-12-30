@@ -39,6 +39,7 @@ import './background/FramingHeadersService';
 import './api/ApiDefinitions';
 import './overrides/fetch';
 import './languages/register-content-script';
+import './containers/background-temporary-containers';
 import { UaContentScriptRegistrar} from './overrides/UaContentScriptRegistrar';
 
 // watchdog

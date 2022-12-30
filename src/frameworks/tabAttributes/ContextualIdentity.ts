@@ -23,8 +23,13 @@ import browser from 'webextension-polyfill';
 import { ContextualIdentityParams } from "./ContextualIdentityParams";
 import { ContextualIdentityUniqueParams } from "./ContextualIdentityUniqueParams";
 import { CookieStore } from "./CookieStore";
+import { EventSink } from '../utils';
 
 export class ContextualIdentity extends CookieStore implements ContextualIdentityParams {
+  public static readonly onCreated = new EventSink<ContextualIdentity>();
+  public static readonly onRemoved = new EventSink<ContextualIdentity>();
+  public static readonly onUpdated = new EventSink<ContextualIdentity>();
+
   public readonly name: string;
   public readonly icon: string;
   public readonly color: string;
@@ -59,6 +64,20 @@ export class ContextualIdentity extends CookieStore implements ContextualIdentit
     return ContextualIdentity.fromWebExtensionsContetualIdentity(identity);
   }
 
+  public static async remove(cookieStoreId: string): Promise<void> {
+    await browser.contextualIdentities.remove(cookieStoreId);
+  }
+
+  public static async removeBrowsingData(cookieStoreId: string): Promise<void> {
+    await browser.browsingData.remove({
+      cookieStoreId: cookieStoreId,
+    }, {
+      cookies: true,
+      localStorage: true, // not supported on old Firefox
+      indexedDB: true,
+    });
+  }
+
   constructor(params: ContextualIdentityParams) {
     super(params);
     this.name = params.name;
@@ -71,5 +90,19 @@ export class ContextualIdentity extends CookieStore implements ContextualIdentit
     const updated = await browser.contextualIdentities.update(this.id, params);
     return ContextualIdentity.fromWebExtensionsContetualIdentity(updated);
   }
-
 }
+
+browser.contextualIdentities.onCreated.addListener((changeInfo) => {
+  const created = ContextualIdentity.fromWebExtensionsContetualIdentity(changeInfo.contextualIdentity);
+  ContextualIdentity.onCreated.dispatch(created);
+});
+
+browser.contextualIdentities.onRemoved.addListener((changeInfo) => {
+  const removed = ContextualIdentity.fromWebExtensionsContetualIdentity(changeInfo.contextualIdentity);
+  ContextualIdentity.onRemoved.dispatch(removed);
+});
+
+browser.contextualIdentities.onUpdated.addListener((changeInfo) => {
+  const updated = ContextualIdentity.fromWebExtensionsContetualIdentity(changeInfo.contextualIdentity);
+  ContextualIdentity.onUpdated.dispatch(updated);
+});

@@ -36,6 +36,8 @@ utils.queryElementNonNull<HTMLElement>('#button-sidebar > .button-text').textCon
 utils.queryElementNonNull<HTMLElement>('#button-sidebar').title = browser.i18n.getMessage('buttonSidebar');
 utils.queryElementNonNull<HTMLElement>('#button-new-container > .button-text').textContent = browser.i18n.getMessage('buttonNewContainer');
 utils.queryElementNonNull<HTMLElement>('#button-new-container').title = browser.i18n.getMessage('buttonNewContainer');
+utils.queryElementNonNull<HTMLElement>('#button-new-temporary-container > .button-text').textContent = browser.i18n.getMessage('buttonNewTemporaryContainer');
+utils.queryElementNonNull<HTMLElement>('#button-new-temporary-container').title = browser.i18n.getMessage('buttonNewTemporaryContainer');
 utils.queryElementNonNull<HTMLElement>('#button-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
 utils.queryElementNonNull<HTMLElement>('#button-settings').title = browser.i18n.getMessage('buttonSettings');
 utils.queryElementNonNull<HTMLElement>('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
