@@ -1,538 +1,533 @@
 {
-  "effectiveLocale": {
-    "message": "es-ES",
-    "description": "Locale of this messages.json."
-  },
-  "extensionDescription": {
-    "message": "Grupos de pestañas similares a los de Chrome utilizando contenedores privados y aislados: El gestor de pestañas y grupos definitivo para Firefox.",
-    "description": "Description of the extension."
-  },
-  "browserActionPopupTitle": {
-    "message": "Container Tab Groups: Página de pop-up",
-    "description": "Title of the popup page for browserAction."
-  },
-  "buttonHideInactiveContainers": {
-    "message": "Minimizar otros contenedores",
-    "description": "Button label to hide inactive containers on a window."
-  },
-  "buttonNewContainer": {
-    "message": "Crear un nuevo contenedor…",
-    "description": "Button label to create a new container."
-  },
-  "buttonCancel": {
-    "message": "Cancelar",
-    "description": "Button label to cancel an action."
-  },
-  "buttonOk": {
-    "message": "OK",
-    "description": "Button label to confirm an action."
-  },
-  "newContainerNameLabel": {
-    "message": "Nombre",
-    "description": "Label for inputting the name of a new container."
-  },
-  "newContainerNamePlaceholder": {
-    "message": "Nombre del contenedor",
-    "description": "Placeholder for the input field of the name of a new container."
-  },
-  "newContainerDialogTitle": {
-    "message": "Crear un nuevo contenedor",
-    "description": "Title of the dialog prompting for creating a new container."
-  },
-  "editContainerDialogTitle": {
-    "message": "Editar un contenedor",
-    "description": "Title of the dialog prompting for editting a container."
-  },
-  "contextMenuHideSelectedContainer": {
-    "message": "Ocultar este contenedor",
-    "description": "Context menu item text for hiding the container of the selected tab."
-  },
-  "tooltipTabPinButton": {
-    "message": "Anclar esta pestaña",
-    "description": "Tooltip for the button to pin a tab."
-  },
-  "tooltipTabUnpinButton": {
-    "message": "Desenganchar esta pestaña",
-    "description": "Tooltip for the button to unpin a tab."
-  },
-  "tooltipHideContainerButton": {
-    "message": "Ocultar las pestañas de este contenedor",
-    "description": "Tooltip for the button to hide the tabs of a container."
-  },
-  "tooltipUnhideContainerButton": {
-    "message": "Mostrar las pestañas de este contenedor",
-    "description": "Tooltip for the button to unhide the tabs of a container."
-  },
-  "tooltipEditContainerButton": {
-    "message": "Editar este contenedor",
-    "description": "Tooltip for the button to edit a container."
-  },
-  "currentWindow": {
-    "message": "Esta ventana (#$ID$)",
-    "description": "Title of popup section for the current window.",
-    "placeholders": {
-      "id": {
-        "content": "$1",
-        "example": "2"
-      }
+    "effectiveLocale": {
+        "message": "es-ES",
+        "description": "Locale of this messages.json."
+    },
+    "extensionDescription": {
+        "message": "Grupos de pestañas similares a los de Chrome utilizando contenedores privados y aislados: El gestor de pestañas y grupos definitivo para Firefox.",
+        "description": "Description of the extension."
+    },
+    "browserActionPopupTitle": {
+        "message": "Container Tab Groups: Página de pop-up",
+        "description": "Title of the popup page for browserAction."
+    },
+    "buttonHideInactiveContainers": {
+        "message": "Minimizar otros contenedores",
+        "description": "Button label to hide inactive containers on a window."
+    },
+    "buttonNewContainer": {
+        "message": "Crear un nuevo contenedor…",
+        "description": "Button label to create a new container."
+    },
+    "buttonCancel": {
+        "message": "Cancelar",
+        "description": "Button label to cancel an action."
+    },
+    "buttonOk": {
+        "message": "OK",
+        "description": "Button label to confirm an action."
+    },
+    "newContainerNameLabel": {
+        "message": "Nombre",
+        "description": "Label for inputting the name of a new container."
+    },
+    "newContainerNamePlaceholder": {
+        "message": "Nombre del contenedor",
+        "description": "Placeholder for the input field of the name of a new container."
+    },
+    "newContainerDialogTitle": {
+        "message": "Crear un nuevo contenedor",
+        "description": "Title of the dialog prompting for creating a new container."
+    },
+    "editContainerDialogTitle": {
+        "message": "Editar un contenedor",
+        "description": "Title of the dialog prompting for editting a container."
+    },
+    "contextMenuHideSelectedContainer": {
+        "message": "Ocultar este contenedor",
+        "description": "Context menu item text for hiding the container of the selected tab."
+    },
+    "tooltipTabPinButton": {
+        "message": "Anclar esta pestaña",
+        "description": "Tooltip for the button to pin a tab."
+    },
+    "tooltipTabUnpinButton": {
+        "message": "Desenganchar esta pestaña",
+        "description": "Tooltip for the button to unpin a tab."
+    },
+    "tooltipHideContainerButton": {
+        "message": "Ocultar las pestañas de este contenedor",
+        "description": "Tooltip for the button to hide the tabs of a container."
+    },
+    "tooltipUnhideContainerButton": {
+        "message": "Mostrar las pestañas de este contenedor",
+        "description": "Tooltip for the button to unhide the tabs of a container."
+    },
+    "tooltipEditContainerButton": {
+        "message": "Editar este contenedor",
+        "description": "Tooltip for the button to edit a container."
+    },
+    "currentWindow": {
+        "message": "Esta ventana (#$ID$)",
+        "description": "Title of popup section for the current window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "2"
+            }
+        }
+    },
+    "currentWindowMoreContainers": {
+        "message": "Más contenedores para esta ventana"
+    },
+    "windowLabel": {
+        "message": "Ventana #$ID$",
+        "description": "Label for a window with ID.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "tooltipWindowLabel": {
+        "message": "Pasar a la ventana #$ID$",
+        "description": "Tooltip for a menu item representing a window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "tooltipContainerCloseAll": {
+        "message": "Cerrar todas las pestañas de este contenedor",
+        "description": "Tooltip for a button to close all tabs of a container."
+    },
+    "tooltipContainerDelete": {
+        "message": "Eliminar permanentemente este contenedor",
+        "description": "Tooltip for a button to permanently delete a container."
+    },
+    "confirmContainerDelete": {
+        "message": "¿Desea eliminar permanentemente este contenedor: $NAME$?",
+        "description": "Confirmation message before deleting a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "defaultContainerName": {
+        "message": "Contenedor #$ID$",
+        "description": "Descriptive default name of a container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "invalidContainerName": {
+        "message": "Contenedor no disponible $ID$",
+        "description": "Name shown for an unavailable container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "noContainer": {
+        "message": "Sin contenedor",
+        "description": "Virtual container name for tabs with no container."
+    },
+    "browserActionTitle": {
+        "message": "Pestañas y grupos",
+        "description": "Title of browserAction about tabs and container-based groups."
+    },
+    "labelNewTabKeepContainer": {
+        "message": "Abrir una nueva pestaña en el contenedor actual (contenedor pegajoso)",
+        "description": "Title of option to always open new tab in current container."
+    },
+    "labelFirstPartyIsolate": {
+        "message": "Activar First-Party Isolate (FPI)",
+        "description": "Option to enable first-party isolation."
+    },
+    "buttonAboutAddon": {
+        "message": "Más información sobre Container Tab Groups y opiniones…",
+        "description": "Menu item to open the extension's addons.mozilla.org page."
+    },
+    "windowTitlePrefaceTemplate": {
+        "message": "($CONTAINER$)",
+        "description": "String to add before window title",
+        "placeholders": {
+            "container": {
+                "content": "$1",
+                "example": "Container 1"
+            }
+        }
+    },
+    "buttonSettings": {
+        "message": "Ajustes",
+        "description": "Menu item to open the extensions's settings."
+    },
+    "labelResistFingerprinting": {
+        "message": "Activar la función de resistencia a las huellas dactilares de Firefox (privacy.resistFingerprinting)",
+        "description": "Option to enable privacy.resistFingerprinting."
+    },
+    "labelDragTabToChangeContainer": {
+        "message": "Arrastre una pestaña para moverse entre contenedores",
+        "description": "Option to enable the user to drag a tab to move between containers."
+    },
+    "optionsHeadingExperimental": {
+        "message": "Funciones experimentales",
+        "description": "Heading text of options page for experimental addon features."
+    },
+    "optionsHeadingFirefox": {
+        "message": "Ajustes de Firefox",
+        "description": "Heading text of options page for changing Firefox settings."
+    },
+    "optionsDescriptionExperimental": {
+        "message": "Desactivar algunas de estas opciones puede resolver comportamientos erróneos cuando se observan.",
+        "description": "Description text for experimental features options."
+    },
+    "optionsDescriptionFirefox": {
+        "message": "Aquí puedes cambiar algunos ajustes ocultos de Firefox relacionados con la privacidad.",
+        "description": "Description text for Firefox settings options."
+    },
+    "panoramaGrid": {
+        "message": "Rejilla panorámica",
+        "description": "Panorama Grid page (grid view of container and tabs)"
+    },
+    "buttonPanorama": {
+        "message": "Abrir rejilla panorámica",
+        "description": "Button label to open Panorama Grid"
+    },
+    "buttonOpenTabInContainer": {
+        "message": "Abrir nueva pestaña",
+        "description": "Button label to open a new tab in the specified container"
+    },
+    "buttonTabClose": {
+        "message": "Cerrar esta pestaña",
+        "description": "Button label to close a tab."
+    },
+    "tooltipCollapseContainers": {
+        "message": "Minimizar los contenedores",
+        "description": "Tooltip for the button to collapse inactive containers."
+    },
+    "tooltipExpandContainers": {
+        "message": "Expandir los contenedores",
+        "description": "Tooltip for the button to expand containers."
+    },
+    "titleSelectContainer": {
+        "message": "Elegir un contenedor",
+        "description": "Title of the popup asking the user to choose a container to open a new tab in."
+    },
+    "descriptionSelectContainer": {
+        "message": "Está a punto de abrir una nueva pestaña: $URL$.",
+        "description": "Confirmation message before the user chooses a container to open a new tab in.",
+        "placeholders": {
+            "url": {
+                "content": "$1",
+                "example": "https://example.com/"
+            }
+        }
+    },
+    "promptSelectContainer": {
+        "message": "Por favor, seleccione un contenedor para abrir esta pestaña.",
+        "description": "Message asking the user to select a container for a new tab."
+    },
+    "labelSelectContainerExternalTabs": {
+        "message": "Seleccionar un contenedor cuando una aplicación externa abre una pestaña",
+        "description": "Option to enable container selection on externally opened tabs."
+    },
+    "labelExternalTabSelectContainerOption": {
+        "message": "Cuando una aplicación externa abre una pestaña:",
+        "description": "Label for option for handling of externally opened tabs"
+    },
+    "labelExternalTabOptionChooseContainer": {
+        "message": "Elegir un contenedor cada vez",
+        "description": "Option to choose a container every time an external application opens a tab."
+    },
+    "labelExternalTabOptionStickyContainer": {
+        "message": "Abrir en el último contenedor activo",
+        "description": "Option to use the last active container for externally opened tabs."
+    },
+    "labelExternalTabOptionDisabled": {
+        "message": "Abrir en el contenedor por defecto (Sin contenedor)",
+        "description": "Option to disable handling of externally opened tabs."
+    },
+    "labelGroupIndexOption": {
+        "message": "Mostrar una pestaña de índice para cada contenedor",
+        "description": "Option to show index tabs for containers."
+    },
+    "labelGroupIndexOptionAlways": {
+        "message": "Todos los contenedores",
+        "description": "Option to show index tabs for all containers."
+    },
+    "labelGroupIndexOptionCollapsed": {
+        "message": "Contenedores minimizados",
+        "description": "Option to show index tabs for collapsed containers."
+    },
+    "labelGroupIndexOptionNever": {
+        "message": "Nunca",
+        "description": "Option to show index tabs for no containers."
+    },
+    "optionsHeadingAppearance": {
+        "message": "Opciones de apariencia",
+        "description": "Heading text of options page for changing appearance settings."
+    },
+    "labelPopupSize": {
+        "message": "Tamaño del pop-up",
+        "description": "Prompt for changing popup size."
+    },
+    "labelPopupSizeStandard": {
+        "message": "Estándar",
+        "description": "Label text for standard popup size."
+    },
+    "labelPopupSizeLarge": {
+        "message": "Grande",
+        "description": "Label text for large popup size."
+    },
+    "searchPlaceholder": {
+        "message": "Buscar contenedores",
+        "description": "Placeholder text for searching containers."
+    },
+    "menuItemMain": {
+        "message": "Contenedores",
+        "description": "Menu item for containers view."
+    },
+    "menuItemWindows": {
+        "message": "Ventanas",
+        "description": "Menu item for windows view"
+    },
+    "menuItemSites": {
+        "message": "Sitios",
+        "description": "Menu item for sites view"
+    },
+    "tooltipCloseWindow": {
+        "message": "Cerrar ventana",
+        "description": "Tooltip for a button to close all tabs of a window."
+    },
+    "buttonNewWindow": {
+        "message": "Nueva ventana",
+        "description": "Button to open a new window."
+    },
+    "buttonSidebar": {
+        "message": "Abrir la barra lateral",
+        "description": "Button to open Sidebar."
+    },
+    "optionsHeadingUserData": {
+        "message": "Sus datos",
+        "description": "Heading text of options page for managing user data."
+    },
+    "buttonClear": {
+        "message": "Borrar",
+        "description": "Button to clear data."
+    },
+    "privateBrowsing": {
+        "message": "Navegación privada",
+        "description": "Private Browsing page"
+    },
+    "confirmContainerClearCookie": {
+        "message": "¿Desea borrar las cookies de este contenedor: $NAME$?",
+        "description": "Confirmation message before clearing cookies in a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "tooltipContainerClearCookie": {
+        "message": "Borrar todas las cookies de este contenedor",
+        "description": "Tooltip for a button to clear all cookies in a container."
+    },
+    "confirmPrivateBrowsingClearCookie": {
+        "message": "¿Desea borrar las cookies para la navegación privada?",
+        "description": "Confirmation message before clearing cookies for private browsing."
+    },
+    "buttonEditContainer": {
+        "message": "Editar contenedor…",
+        "description": "Button to edit a container."
+    },
+    "buttonContainerClearCookie": {
+        "message": "Borrar cookies…",
+        "description": "Button to clear cookies in a container."
+    },
+    "buttonDeleteContainer": {
+        "message": "Eliminar contenedor…",
+        "description": "Button to delete a container."
+    },
+    "buttonDone": {
+        "message": "Completo",
+        "description": "Button to complete an action."
+    },
+    "containerOptions": {
+        "message": "Opciones de contenedores para: $NAME$",
+        "description": "Menu title for container options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "optionsHeadingContainerSortOrder": {
+        "message": "Clasificar los contenedores",
+        "description": "Heading text of options page for changing container order."
+    },
+    "optionsDescriptionContainerSortOrder": {
+        "message": "Este ajuste no afecta a otras extensiones.",
+        "description": "Description text for changing container order."
+    },
+    "commandOpenPopup": {
+        "message": "Abrir el pop-up",
+        "description": "Description text for using command to open popup."
+    },
+    "commandOpenSidebar": {
+        "message": "Abrir la barra lateral",
+        "description": "Description text for using command to open sidebar."
+    },
+    "buttonNewPrivateWindow": {
+        "message": "Nueva ventana privada",
+        "description": "Button to open a new private window."
+    },
+    "headingCookies": {
+        "message": "Cookies",
+        "description": "Heading text of cookies page."
+    },
+    "cookiesHeadingDomain": {
+        "message": "Dominio",
+        "description": "Heading text for domains in cookies table."
+    },
+    "cookiesHeadingActions": {
+        "message": "Acciones",
+        "description": "Heading text for action buttons in cookies table."
+    },
+    "tooltipCookies": {
+        "message": "Ver Cookies",
+        "description": "Tooltip for a button to view cookies."
+    },
+    "enableCookiesAutoclean": {
+        "message": "Borrar automáticamente las Cookies",
+        "description": "Label text for enabling autoclean of cookies."
+    },
+    "contextMenuNewTab": {
+        "message": "Nueva pestaña",
+        "description": "New Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuReloadTab": {
+        "message": "Recargar pestaña",
+        "description": "Reload Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuMuteTab": {
+        "message": "Silenciar pestaña",
+        "description": "Mute Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuUnmuteTab": {
+        "message": "Restaurar sonido en pestaña",
+        "description": "Unmute Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuPinTab": {
+        "message": "Fijar pestaña",
+        "description": "Pin Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuUnpinTab": {
+        "message": "Soltar pestaña",
+        "description": "Unpin Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuDuplicateTab": {
+        "message": "DDuplicar pestaña",
+        "description": "Duplicate Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuCloseTab": {
+        "message": "Cerrar pestaña",
+        "description": "Close Tab menu (same as browser's tab menu)"
+    },
+    "optionsLabelLanguages": {
+        "message": "Idiomas",
+        "description": "Label text for languages of a container."
+    },
+    "menuItemHelp": {
+        "message": "Help",
+        "description": "Menu item for help view"
+    },
+    "privacyPolicy": {
+        "message": "Privacy Policy",
+        "description": "Privacy Policy page"
+    },
+    "windowsN": {
+        "message": "Windows ($COUNT$)",
+        "description": "Text for windows view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "sitesN": {
+        "message": "Sites ($COUNT$)",
+        "description": "Text for sites view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "buttonGetStarted": {
+        "message": "Get Started",
+        "description": "Button to get started"
+    },
+    "fpiDescription": {
+        "message": "This extension enables Firefox's First-Party Isolate (FPI) feature by default. This means that cookies for different sites, even for a same container, are separated by registrable domain. You can turn it off here.",
+        "description": "Description text for FPI"
+    },
+    "optionalFeaturesDescription": {
+        "message": "If you do not use any conflicting extensions, you can enable some optional features here.",
+        "description": "Description text for optional features"
+    },
+    "featureLanguageOverrides": {
+        "message": "Per-container Language Overrides",
+        "description": "Label text for language overrides feature"
+    },
+    "featureUaOverrides": {
+        "message": "Per-container User-Agent Overrides",
+        "description": "Label text for UA overrides feature"
+    },
+    "optionsHeadingContainerOverrides": {
+        "message": "Per-container Overrides",
+        "description": "Heading text of options page for container overrides."
+    },
+    "optionsLabelUserAgent": {
+        "message": "User Agent",
+        "description": "Label text for user agent of a container."
+    },
+    "userAgentDefault": {
+        "message": "Default",
+        "description": "Default user agent"
+    },
+    "userAgentChrome": {
+        "message": "Chrome",
+        "description": "Chrome user agent"
+    },
+    "userAgentGooglebot": {
+        "message": "Googlebot",
+        "description": "Googlebot user agent"
+    },
+    "userAgentCustom": {
+        "message": "Custom",
+        "description": "Custom user agent"
+    },
+    "buttonNewTemporaryContainer": {
+        "message": "New Temporary Container",
+        "description": "Button to open a new temporary container."
+    },
+    "focusToThisContainer": {
+        "message": "Focus to this container",
+        "description": "Button to focus to this container."
     }
-  },
-  "currentWindowMoreContainers": {
-    "message": "Más contenedores para esta ventana",
-    "desciption": "Title for section listing unused containers for a window."
-  },
-  "windowLabel": {
-    "message": "Ventana #$ID$",
-    "description": "Label for a window with ID.",
-    "placeholders": {
-      "id": {
-        "content": "$1",
-        "example": "1"
-      }
-    }
-  },
-  "tooltipWindowLabel": {
-    "message": "Pasar a la ventana #$ID$",
-    "description": "Tooltip for a menu item representing a window.",
-    "placeholders": {
-      "id": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
-  },
-  "tooltipContainerCloseAll": {
-    "message": "Cerrar todas las pestañas de este contenedor",
-    "description": "Tooltip for a button to close all tabs of a container."
-  },
-  "tooltipContainerDelete": {
-    "message": "Eliminar permanentemente este contenedor",
-    "description": "Tooltip for a button to permanently delete a container."
-  },
-  "confirmContainerDelete": {
-    "message": "¿Desea eliminar permanentemente este contenedor: $NAME$?",
-    "description": "Confirmation message before deleting a container.",
-    "placeholders": {
-      "name": {
-        "content": "$1",
-        "example": "Container 3"
-      }
-    }
-  },
-  "defaultContainerName": {
-    "message": "Contenedor #$ID$",
-    "description": "Descriptive default name of a container.",
-    "placeholders": {
-      "id": {
-        "content": "$1",
-        "example": "443"
-      }
-    }
-  },
-  "invalidContainerName": {
-    "message": "Contenedor no disponible $ID$",
-    "description": "Name shown for an unavailable container.",
-    "placeholders": {
-      "id": {
-        "content": "$1",
-        "example": "443"
-      }
-    }
-  },
-  "noContainer": {
-    "message": "Sin contenedor",
-    "description": "Virtual container name for tabs with no container."
-  },
-  "browserActionTitle": {
-    "message": "Pestañas y grupos",
-    "description": "Title of browserAction about tabs and container-based groups."
-  },
-  "labelNewTabKeepContainer": {
-    "message": "Abrir una nueva pestaña en el contenedor actual (contenedor pegajoso)",
-    "description": "Title of option to always open new tab in current container."
-  },
-  "labelFirstPartyIsolate": {
-    "message": "Activar First-Party Isolate (FPI)",
-    "description": "Option to enable first-party isolation."
-  },
-  "buttonAboutAddon": {
-    "message": "Más información sobre Container Tab Groups y opiniones…",
-    "description": "Menu item to open the extension's addons.mozilla.org page."
-  },
-  "windowTitlePrefaceTemplate": {
-    "message": "($CONTAINER$)",
-    "description": "String to add before window title",
-    "placeholders": {
-      "container": {
-        "content": "$1",
-        "example": "Container 1"
-      }
-    }
-  },
-  "buttonSettings": {
-    "message": "Ajustes",
-    "description": "Menu item to open the extensions's settings."
-  },
-  "labelResistFingerprinting": {
-    "message": "Activar la función de resistencia a las huellas dactilares de Firefox (privacy.resistFingerprinting)",
-    "description": "Option to enable privacy.resistFingerprinting."
-  },
-  "labelDragTabToChangeContainer": {
-    "message": "Arrastre una pestaña para moverse entre contenedores",
-    "description": "Option to enable the user to drag a tab to move between containers."
-  },
-  "optionsHeadingExperimental": {
-    "message": "Funciones experimentales",
-    "description": "Heading text of options page for experimental addon features."
-  },
-  "optionsHeadingFirefox": {
-    "message": "Ajustes de Firefox",
-    "description": "Heading text of options page for changing Firefox settings."
-  },
-  "optionsDescriptionExperimental": {
-    "message": "Desactivar algunas de estas opciones puede resolver comportamientos erróneos cuando se observan.",
-    "description": "Description text for experimental features options."
-  },
-  "optionsDescriptionFirefox": {
-    "message": "Aquí puedes cambiar algunos ajustes ocultos de Firefox relacionados con la privacidad.",
-    "description": "Description text for Firefox settings options."
-  },
-  "panoramaGrid": {
-    "message": "Rejilla panorámica",
-    "description": "Panorama Grid page (grid view of container and tabs)"
-  },
-  "buttonPanorama": {
-    "message": "Abrir rejilla panorámica",
-    "description": "Button label to open Panorama Grid"
-  },
-  "buttonOpenTabInContainer": {
-    "message": "Abrir nueva pestaña",
-    "description": "Button label to open a new tab in the specified container"
-  },
-  "buttonTabClose": {
-    "message": "Cerrar esta pestaña",
-    "description": "Button label to close a tab."
-  },
-  "tooltipCollapseContainers": {
-    "message": "Minimizar los contenedores",
-    "description": "Tooltip for the button to collapse inactive containers."
-  },
-  "tooltipExpandContainers": {
-    "message": "Expandir los contenedores",
-    "description": "Tooltip for the button to expand containers."
-  },
-  "titleSelectContainer": {
-    "message": "Elegir un contenedor",
-    "description": "Title of the popup asking the user to choose a container to open a new tab in."
-  },
-  "descriptionSelectContainer": {
-    "message": "Está a punto de abrir una nueva pestaña: $URL$.",
-    "description": "Confirmation message before the user chooses a container to open a new tab in.",
-    "placeholders": {
-      "url": {
-        "content": "$1",
-        "example": "https://example.com/"
-      }
-    }
-  },
-  "promptSelectContainer": {
-    "message": "Por favor, seleccione un contenedor para abrir esta pestaña.",
-    "description": "Message asking the user to select a container for a new tab."
-  },
-  "labelSelectContainerExternalTabs": {
-    "message": "Seleccionar un contenedor cuando una aplicación externa abre una pestaña",
-    "description": "Option to enable container selection on externally opened tabs."
-  },
-  "labelExternalTabSelectContainerOption": {
-    "message": "Cuando una aplicación externa abre una pestaña:",
-    "description": "Label for option for handling of externally opened tabs"
-  },
-  "labelExternalTabOptionChooseContainer": {
-    "message": "Elegir un contenedor cada vez",
-    "description": "Option to choose a container every time an external application opens a tab."
-  },
-  "labelExternalTabOptionStickyContainer": {
-    "message": "Abrir en el último contenedor activo",
-    "description": "Option to use the last active container for externally opened tabs."
-  },
-  "labelExternalTabOptionDisabled": {
-    "message": "Abrir en el contenedor por defecto (Sin contenedor)",
-    "description": "Option to disable handling of externally opened tabs."
-  },
-  "labelGroupIndexOption": {
-    "message": "Mostrar una pestaña de índice para cada contenedor",
-    "description": "Option to show index tabs for containers."
-  },
-  "labelGroupIndexOptionAlways": {
-    "message": "Todos los contenedores",
-    "description": "Option to show index tabs for all containers."
-  },
-  "labelGroupIndexOptionCollapsed": {
-    "message": "Contenedores minimizados",
-    "description": "Option to show index tabs for collapsed containers."
-  },
-  "labelGroupIndexOptionNever": {
-    "message": "Nunca",
-    "description": "Option to show index tabs for no containers."
-  },
-  "optionsHeadingAppearance": {
-    "message": "Opciones de apariencia",
-    "description": "Heading text of options page for changing appearance settings."
-  },
-  "labelPopupSize": {
-    "message": "Tamaño del pop-up",
-    "description": "Prompt for changing popup size."
-  },
-  "labelPopupSizeStandard": {
-    "message": "Estándar",
-    "description": "Label text for standard popup size."
-  },
-  "labelPopupSizeLarge": {
-    "message": "Grande",
-    "description": "Label text for large popup size."
-  },
-  "searchPlaceholder": {
-    "message": "Buscar contenedores",
-    "description": "Placeholder text for searching containers."
-  },
-  "menuItemMain": {
-    "message": "Contenedores",
-    "description": "Menu item for containers view."
-  },
-  "menuItemWindows": {
-    "message": "Ventanas",
-    "description": "Menu item for windows view"
-  },
-  "menuItemSites": {
-    "message": "Sitios",
-    "description": "Menu item for sites view"
-  },
-  "tooltipCloseWindow": {
-    "message": "Cerrar ventana",
-    "description": "Tooltip for a button to close all tabs of a window."
-  },
-  "buttonNewWindow": {
-    "message": "Nueva ventana",
-    "description": "Button to open a new window."
-  },
-  "buttonSidebar": {
-    "message": "Abrir la barra lateral",
-    "description": "Button to open Sidebar."
-  },
-  "optionsHeadingUserData": {
-    "message": "Sus datos",
-    "description": "Heading text of options page for managing user data."
-  },
-  "labelClearRecentSites": {
-    "message": "Borrar la lista de sitios visitados recientemente",
-    "description": "Label text for clearing the list of visited sites"
-  },
-  "buttonClear": {
-    "message": "Borrar",
-    "description": "Button to clear data."
-  },
-  "privateBrowsing": {
-    "message": "Navegación privada",
-    "description": "Private Browsing page"
-  },
-  "confirmContainerClearCookie": {
-    "message": "¿Desea borrar las cookies de este contenedor: $NAME$?",
-    "description": "Confirmation message before clearing cookies in a container.",
-    "placeholders": {
-      "name": {
-        "content": "$1",
-        "example": "Container 3"
-      }
-    }
-  },
-  "tooltipContainerClearCookie": {
-    "message": "Borrar todas las cookies de este contenedor",
-    "description": "Tooltip for a button to clear all cookies in a container."
-  },
-  "confirmPrivateBrowsingClearCookie": {
-    "message": "¿Desea borrar las cookies para la navegación privada?",
-    "description": "Confirmation message before clearing cookies for private browsing."
-  },
-  "buttonEditContainer": {
-    "message": "Editar contenedor…",
-    "description": "Button to edit a container."
-  },
-  "buttonContainerClearCookie": {
-    "message": "Borrar cookies…",
-    "description": "Button to clear cookies in a container."
-  },
-  "buttonDeleteContainer": {
-    "message": "Eliminar contenedor…",
-    "description": "Button to delete a container."
-  },
-  "buttonDone": {
-    "message": "Completo",
-    "description": "Button to complete an action."
-  },
-  "containerOptions": {
-    "message": "Opciones de contenedores para: $NAME$",
-    "description": "Menu title for container options.",
-    "placeholders": {
-      "name": {
-        "content": "$1",
-        "example": "Container 3"
-      }
-    }
-  },
-  "optionsHeadingContainerSortOrder": {
-    "message": "Clasificar los contenedores",
-    "description": "Heading text of options page for changing container order."
-  },
-  "optionsDescriptionContainerSortOrder": {
-    "message": "Este ajuste no afecta a otras extensiones.",
-    "description": "Description text for changing container order."
-  },
-  "commandOpenPopup": {
-    "message": "Abrir el pop-up",
-    "description": "Description text for using command to open popup."
-  },
-  "commandOpenSidebar": {
-    "message": "Abrir la barra lateral",
-    "description": "Description text for using command to open sidebar."
-  },
-  "buttonNewPrivateWindow": {
-    "message": "Nueva ventana privada",
-    "description": "Button to open a new private window."
-  },
-  "headingCookies": {
-    "message": "Cookies",
-    "description": "Heading text of cookies page."
-  },
-  "cookiesHeadingDomain": {
-    "message": "Dominio",
-    "description": "Heading text for domains in cookies table."
-  },
-  "cookiesHeadingActions": {
-    "message": "Acciones",
-    "description": "Heading text for action buttons in cookies table."
-  },
-  "tooltipCookies": {
-    "message": "Ver Cookies",
-    "description": "Tooltip for a button to view cookies."
-  },
-  "enableCookiesAutoclean": {
-    "message": "Borrar automáticamente las Cookies",
-    "description": "Label text for enabling autoclean of cookies."
-  },
-  "contextMenuNewTab": {
-    "message": "Nueva pestaña",
-    "description": "New Tab menu (same as browser's tab menu)"
-  },
-  "contextMenuReloadTab": {
-    "message": "Recargar pestaña",
-    "description": "Reload Tab menu (same as browser's tab menu)"
-  },
-  "contextMenuMuteTab": {
-    "message": "Silenciar pestaña",
-    "description": "Mute Tab menu (same as browser's tab menu)"
-  },
-  "contextMenuUnmuteTab": {
-    "message": "Restaurar sonido en pestaña",
-    "description": "Unmute Tab menu (same as browser's tab menu)"
-  },
-  "contextMenuPinTab": {
-    "message": "Fijar pestaña",
-    "description": "Pin Tab menu (same as browser's tab menu)"
-  },
-  "contextMenuUnpinTab": {
-    "message": "Soltar pestaña",
-    "description": "Unpin Tab menu (same as browser's tab menu)"
-  },
-  "contextMenuDuplicateTab": {
-    "message": "DDuplicar pestaña",
-    "description": "Duplicate Tab menu (same as browser's tab menu)"
-  },
-  "contextMenuCloseTab": {
-    "message": "Cerrar pestaña",
-    "description": "Close Tab menu (same as browser's tab menu)"
-  },
-  "optionsLabelLanguages": {
-    "message": "Idiomas",
-    "description": "Label text for languages of a container."
-  },
-  "menuItemHelp": {
-    "message": "Help",
-    "description": "Menu item for help view"
-  },
-  "privacyPolicy": {
-    "message": "Privacy Policy",
-    "description": "Privacy Policy page"
-  },
-  "windowsN": {
-    "message": "Windows ($COUNT$)",
-    "description": "Text for windows view heading",
-    "placeholders": {
-      "count": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
-  },
-  "sitesN": {
-    "message": "Sites ($COUNT$)",
-    "description": "Text for sites view heading",
-    "placeholders": {
-      "count": {
-        "content": "$1",
-        "example": "3"
-      }
-    }
-  },
-  "buttonGetStarted": {
-    "message": "Get Started",
-    "description": "Button to get started"
-  },
-  "fpiDescription": {
-    "message": "This extension enables Firefox's First-Party Isolate (FPI) feature by default. This means that cookies for different sites, even for a same container, are separated by registrable domain. You can turn it off here.",
-    "description": "Description text for FPI"
-  },
-  "optionalFeaturesDescription": {
-    "message": "If you do not use any conflicting extensions, you can enable some optional features here.",
-    "description": "Description text for optional features"
-  },
-  "featureLanguageOverrides": {
-    "message": "Per-container Language Overrides",
-    "description": "Label text for language overrides feature"
-  },
-  "featureUaOverrides": {
-    "message": "Per-container User-Agent Overrides",
-    "description": "Label text for UA overrides feature"
-  },
-  "optionsHeadingContainerOverrides": {
-    "message": "Per-container Overrides",
-    "description": "Heading text of options page for container overrides."
-  },
-  "optionsLabelUserAgent": {
-    "message": "User Agent",
-    "description": "Label text for user agent of a container."
-  },
-  "userAgentDefault": {
-    "message": "Default",
-    "description": "Default user agent"
-  },
-  "userAgentChrome": {
-    "message": "Chrome",
-    "description": "Chrome user agent"
-  },
-  "userAgentGooglebot": {
-    "message": "Googlebot",
-    "description": "Googlebot user agent"
-  },
-  "userAgentCustom": {
-    "message": "Custom",
-    "description": "Custom user agent"
-  },
-  "buttonNewTemporaryContainer": {
-    "message": "New Temporary Container",
-    "description": "Button to open a new temporary container."
-  },
-  "focusToThisContainer": {
-    "message": "Focus to this container",
-    "description": "Button to focus to this container."
-  }
 }
