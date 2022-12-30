@@ -120,7 +120,7 @@ export class FramingHeadersService {
       console.log('removed x-frame-options for %s on %s', details.url, parentUrl);
     }
     if (this.removeCspFrameAncestors(details)) {
-      console.log('removed csp frame ancestors for %s on %s', details.url, parentUrl);
+      console.log('removed csp frame-ancestors for %s on %s', details.url, parentUrl);
     }
     return { responseHeaders: details.responseHeaders };
   }
