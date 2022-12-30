@@ -16,7 +16,7 @@
         "description": "Button label to hide inactive containers on a window."
     },
     "buttonNewContainer": {
-        "message": "Créer un nouveau conteneur...",
+        "message": "Créer un nouveau conteneur…",
         "description": "Button label to create a new container."
     },
     "buttonCancel": {
@@ -109,7 +109,7 @@
         "description": "Tooltip for a button to permanently delete a container."
     },
     "confirmContainerDelete": {
-        "message": "Voulez-vous supprimer définitivement ce conteneur: $NAME$?",
+        "message": "Voulez-vous supprimer définitivement ce conteneur : $NAME$ ?",
         "description": "Confirmation message before deleting a container.",
         "placeholders": {
             "name": {
@@ -155,7 +155,7 @@
         "description": "Option to enable first-party isolation."
     },
     "buttonAboutAddon": {
-        "message": "En savoir plus sur Container Tab Groups et les commentaires...",
+        "message": "En savoir plus sur Container Tab Groups et les commentaires…",
         "description": "Menu item to open the extension's addons.mozilla.org page."
     },
     "windowTitlePrefaceTemplate": {
@@ -221,7 +221,7 @@
         "description": "Title of the popup asking the user to choose a container to open a new tab in."
     },
     "descriptionSelectContainer": {
-        "message": "Vous allez ouvrir un nouvel onglet: $URL$.",
+        "message": "Vous allez ouvrir un nouvel onglet : $URL$.",
         "description": "Confirmation message before the user chooses a container to open a new tab in.",
         "placeholders": {
             "url": {
@@ -239,7 +239,7 @@
         "description": "Option to enable container selection on externally opened tabs."
     },
     "labelExternalTabSelectContainerOption": {
-        "message": "Lorsqu'une application externe ouvre un onglet:",
+        "message": "Lorsqu'une application externe ouvre un onglet :",
         "description": "Label for option for handling of externally opened tabs"
     },
     "labelExternalTabOptionChooseContainer": {
@@ -327,7 +327,7 @@
         "description": "Private Browsing page"
     },
     "confirmContainerClearCookie": {
-        "message": "Voulez-vous effacer les cookies pour ce conteneur: $NAME$?",
+        "message": "Voulez-vous effacer les cookies pour ce conteneur : $NAME$ ?",
         "description": "Confirmation message before clearing cookies in a container.",
         "placeholders": {
             "name": {
@@ -345,15 +345,15 @@
         "description": "Confirmation message before clearing cookies for private browsing."
     },
     "buttonEditContainer": {
-        "message": "Modifier le conteneur...",
+        "message": "Modifier le conteneur…",
         "description": "Button to edit a container."
     },
     "buttonContainerClearCookie": {
-        "message": "Effacer les cookies...",
+        "message": "Effacer les cookies…",
         "description": "Button to clear cookies in a container."
     },
     "buttonDeleteContainer": {
-        "message": "Supprimer le conteneur...",
+        "message": "Supprimer le conteneur…",
         "description": "Button to delete a container."
     },
     "buttonDone": {
@@ -361,7 +361,7 @@
         "description": "Button to complete an action."
     },
     "containerOptions": {
-        "message": "Options de conteneur pour: $NAME$",
+        "message": "Options de conteneur pour : $NAME$",
         "description": "Menu title for container options.",
         "placeholders": {
             "name": {
@@ -451,7 +451,7 @@
         "description": "Menu item for help view"
     },
     "privacyPolicy": {
-        "message": "Privacy Policy",
+        "message": "",
         "description": "Privacy Policy page"
     },
     "windowsN": {
@@ -465,7 +465,7 @@
         }
     },
     "sitesN": {
-        "message": "Sites ($COUNT$)",
+        "message": "",
         "description": "Text for sites view heading",
         "placeholders": {
             "count": {
@@ -475,27 +475,27 @@
         }
     },
     "buttonGetStarted": {
-        "message": "Get Started",
+        "message": "",
         "description": "Button to get started"
     },
     "fpiDescription": {
-        "message": "This extension enables Firefox's First-Party Isolate (FPI) feature by default. This means that cookies for different sites, even for a same container, are separated by registrable domain. You can turn it off here.",
+        "message": "",
         "description": "Description text for FPI"
     },
     "optionalFeaturesDescription": {
-        "message": "If you do not use any conflicting extensions, you can enable some optional features here.",
+        "message": "",
         "description": "Description text for optional features"
     },
     "featureLanguageOverrides": {
-        "message": "Per-container Language Overrides",
+        "message": "",
         "description": "Label text for language overrides feature"
     },
     "featureUaOverrides": {
-        "message": "Per-container User-Agent Overrides",
+        "message": "",
         "description": "Label text for UA overrides feature"
     },
     "optionsHeadingContainerOverrides": {
-        "message": "Per-container Overrides",
+        "message": "",
         "description": "Heading text of options page for container overrides."
     },
     "optionsLabelUserAgent": {
@@ -515,15 +515,15 @@
         "description": "Googlebot user agent"
     },
     "userAgentCustom": {
-        "message": "Custom",
+        "message": "",
         "description": "Custom user agent"
     },
     "buttonNewTemporaryContainer": {
-        "message": "New Temporary Container",
+        "message": "",
         "description": "Button to open a new temporary container."
     },
     "focusToThisContainer": {
-        "message": "Focus to this container",
+        "message": "",
         "description": "Button to focus to this container."
     }
 }
