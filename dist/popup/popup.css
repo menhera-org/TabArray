@@ -100,8 +100,13 @@ button {
   outline: none;
 }
 
+body.transparent > .content {
+  opacity: 0;
+}
+
 .content {
   display: none;
+  transition: opacity .5s ease-in;
 }
 
 .content:target {

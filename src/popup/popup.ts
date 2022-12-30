@@ -42,6 +42,10 @@ const temporaryContainerService = TemporaryContainerService.getInstance();
 
 const renderer = new PopupRenderer();
 
+renderer.firstRenderingDone.then(() => {
+  document.body.classList.remove('transparent');
+});
+
 const renderInBackground = () => {
   renderer.render().catch((e) => {
     console.error(e);

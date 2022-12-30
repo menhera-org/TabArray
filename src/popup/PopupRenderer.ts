@@ -54,6 +54,7 @@ export class PopupRenderer {
 
   private _rendering = false;
   private _rerenderRequested = false;
+  private _firstRenderingPromise = PromiseUtils.createPromise<void>();
 
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly windowListRenderer = new PopupWindowListRenderer(this);
@@ -208,6 +209,7 @@ export class PopupRenderer {
         throw e;
       } finally {
         this._rendering = false;
+        this._firstRenderingPromise.resolve();
         clearTimeout(timer);
         const elapsed = Date.now() - startTime;
         if (elapsed > 500) {
@@ -222,5 +224,9 @@ export class PopupRenderer {
       }
       break;
     }
+  }
+
+  public get firstRenderingDone(): Promise<void> {
+    return this._firstRenderingPromise.promise;
   }
 }
