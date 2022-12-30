@@ -26,6 +26,7 @@ import { UserContextSortingOrderStore } from '../userContexts/UserContextSorting
 import { UserContextService } from '../userContexts/UserContextService';
 import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
 import { ContainerOverridesElement } from '../components/container-overrides';
+import './options-i18n';
 
 interface HTMLFormInput extends HTMLElement {
   value: string;
@@ -36,14 +37,6 @@ const userContextService = UserContextService.getInstance();
 const cookieAutocleanService = CookieAutocleanService.getInstance();
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
-
-const setTextContent = (query: string, message: string) => {
-  const element = document.querySelector(query);
-  if (!element) {
-    throw new Error(`Missing element: ${query}`);
-  }
-  element.textContent = browser.i18n.getMessage(message);
-};
 
 const setConfigValue = <T,>(option: ConfigurationOption<T>, value: T) => {
   option.setValue(value).catch((e) => {
@@ -88,58 +81,16 @@ window.addEventListener('hashchange', () => {
 const paneContainers = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="containers"]');
 const paneContainerOverrides = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="container-overrides"]');
 
-setTextContent('#link-containers', 'optionsHeadingContainerSortOrder');
-setTextContent('#link-container-overrides', 'optionsHeadingContainerOverrides');
-
-setTextContent('#optionsHeadingContainerOverrides', 'optionsHeadingContainerOverrides');
-
-setTextContent('#optionalFeaturesDescription', 'optionalFeaturesDescription');
-
 const inputFeatureLanguageOverrides = document.querySelector<HTMLInputElement>('#input-featureLanguageOverrides');
-setTextContent('label[for="input-featureLanguageOverrides"]', 'featureLanguageOverrides');
-
 const inputFeatureUaOverrides = document.querySelector<HTMLInputElement>('#input-featureUaOverrides');
-setTextContent('label[for="input-featureUaOverrides"]', 'featureUaOverrides');
-
-setTextContent('#optionsHeadingExperimental', 'optionsHeadingExperimental');
-setTextContent('#optionsHeadingFirefox', 'optionsHeadingFirefox');
-setTextContent('#optionsDescriptionExperimental', 'optionsDescriptionExperimental');
-setTextContent('#optionsDescriptionFirefox', 'optionsDescriptionFirefox');
-setTextContent('#fpiDescription', 'fpiDescription');
-setTextContent('#optionsHeadingContainerSortOrder', 'optionsHeadingContainerSortOrder');
-setTextContent('#optionsDescriptionContainerSortOrder', 'optionsDescriptionContainerSortOrder');
 
 const inputNewTabKeepContainer = document.querySelector<HTMLInputElement>('#input-newtabKeepContainer');
-setTextContent('label[for="input-newtabKeepContainer"]', 'labelNewTabKeepContainer');
-
 const inputFirstPartyIsolate = document.querySelector<HTMLInputElement>('#input-firstPartyIsolate');
-setTextContent('label[for="input-firstPartyIsolate"]', 'labelFirstPartyIsolate');
-
 const inputResistFingerprinting = document.querySelector<HTMLInputElement>('#input-resistFingerprinting');
-setTextContent('label[for="input-resistFingerprinting"]', 'labelResistFingerprinting');
 
 const selectExternalTabContainerOption = document.querySelector<HTMLSelectElement>('#select-externalTabContainerOption');
-setTextContent('label[for="select-externalTabContainerOption"]', 'labelExternalTabSelectContainerOption');
-
-setTextContent('#select-externalTabContainerOption > option[value="choose"]', 'labelExternalTabOptionChooseContainer');
-setTextContent('#select-externalTabContainerOption > option[value="sticky"]', 'labelExternalTabOptionStickyContainer');
-setTextContent('#select-externalTabContainerOption > option[value="disabled"]', 'labelExternalTabOptionDisabled');
-
 const selectGroupIndexOption = document.querySelector<HTMLSelectElement>('#select-groupIndexOption');
-setTextContent('label[for="select-groupIndexOption"]', 'labelGroupIndexOption');
-
-setTextContent('#select-groupIndexOption > option[value="always"]', 'labelGroupIndexOptionAlways');
-setTextContent('#select-groupIndexOption > option[value="collapsed"]', 'labelGroupIndexOptionCollapsed');
-setTextContent('#select-groupIndexOption > option[value="never"]', 'labelGroupIndexOptionNever');
-
-
-setTextContent('#optionsHeadingAppearance', 'optionsHeadingAppearance');
-
 const selectPopupSize = document.querySelector<HTMLSelectElement>('#select-popupSize');
-setTextContent('label[for="select-popupSize"]', 'labelPopupSize');
-
-setTextContent('#select-popupSize > option[value="standard"]', 'labelPopupSizeStandard');
-setTextContent('#select-popupSize > option[value="large"]', 'labelPopupSizeLarge');
 
 UserContext.getAll().then(async (userContexts) => {
   const autocleanEnabledUserContextIds = await cookieAutocleanService.getAutocleanEnabledUserContexts();
