@@ -51,6 +51,7 @@ export class MenulistContainerElement extends HTMLElement {
     this.containerCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
     this.containerOptionsButton.title = browser.i18n.getMessage('containerOptions', userContext.name);
     this.containerVisibilityToggleButton.title = browser.i18n.getMessage('tooltipHideContainerButton');
+    this.containerHighlightButton.title = browser.i18n.getMessage('focusToThisContainer');
     this.tabCount = 0;
     this.registerEventListeners();
   }
