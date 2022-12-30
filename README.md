@@ -90,6 +90,12 @@ enough to unnecessitate Simple Tab Groups.
 - Español
 - Русский
 
+This project uses Hosted Weblate for translation.
+
+[![Translation status](https://hosted.weblate.org/widgets/container-tab-groups/-/messages-json/multi-auto.svg)](https://hosted.weblate.org/engage/container-tab-groups/)
+
+[Translate to your language](https://hosted.weblate.org/engage/container-tab-groups/)
+
 ### Translators
 
 - metastable-void (ja, eo)
