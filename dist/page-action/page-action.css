@@ -27,21 +27,26 @@
 }
 
 body {
-  margin: .5rem;
   max-inline-size: 30rem;
   color: inherit !important;
 }
 
 h3 {
   margin-block: .25rem;
-  padding-inline: .5rem;
+  margin-block-start: .5rem;
+  padding-inline: 1rem;
 }
 
 hr {
   border: none;
   block-size: 2px;
-  inline-size: 100%;
+  margin-inline: .5rem;
   background-color: var(--accent-color);
+}
+
+#main {
+  margin-inline: .5rem;
+  margin-block-end: .5rem;
 }
 
 .container-button {
