@@ -23,6 +23,7 @@ import { UserContext } from '../frameworks/tabGroups';
 import { Uint32 } from '../frameworks/types';
 import { UserContextService } from '../userContexts/UserContextService';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { ExtensionService } from '../frameworks/extension';
 
 type ContainerInfo = {
   cookieStoreId: string;
@@ -32,6 +33,7 @@ type ContainerInfo = {
 
 const userContextService = UserContextService.getInstance();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+const extensionService = ExtensionService.getInstance();
 
 const mainElement = document.querySelector('#main');
 
@@ -56,6 +58,13 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
   const sortedUserContext = userContextSortingOrderStore.sort(filledUserContexts).filter((userContext) => userContext.id !== UserContext.ID_DEFAULT);
   const defaultContainer = CookieStore.DEFAULT;
   const privateBrowsingContainer = CookieStore.PRIVATE;
+  const privateBrowsingContainerInfos = await extensionService.isAllowedInPrivateBrowsing() ? [
+    {
+      cookieStoreId: privateBrowsingContainer.id,
+      name: browser.i18n.getMessage('privateBrowsing'),
+      iconUrl: '/img/firefox-icons/private-browsing-icon.svg',
+    },
+  ] : [];
   const containerInfos: ContainerInfo[] = [
     {
       cookieStoreId: defaultContainer.id,
@@ -77,13 +86,48 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
         iconUrl: containerAttributes.iconUrl,
       };
     }),
-    {
-      cookieStoreId: privateBrowsingContainer.id,
-      name: browser.i18n.getMessage('privateBrowsing'),
-      iconUrl: '/img/firefox-icons/private-browsing-icon.svg',
-    },
+    ... privateBrowsingContainerInfos,
   ];
   return containerInfos.filter((containerInfo) => containerInfo.cookieStoreId !== currentCookieStoreId);
+};
+
+const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number) => {
+  await Promise.all([
+    browser.tabs.create({
+      url,
+      cookieStoreId,
+      windowId,
+      active: true,
+    }),
+    browser.tabs.remove(currentTabId),
+  ]);
+};
+
+const reopenTab = async (targetCookieStoreId: string, currentBrowserTab: browser.Tabs.Tab) => {
+  if (currentBrowserTab.url == null || currentBrowserTab.id == null) return;
+  const url = currentBrowserTab.url;
+  const cookieStore = CookieStore.fromId(targetCookieStoreId);
+
+  // private and non-private tabs can't be on the same window
+  const windowId = cookieStore.isPrivate == currentBrowserTab.incognito ? currentBrowserTab.windowId : undefined;
+  if (windowId != null) {
+    return openTabAndCloseCurrent(url, targetCookieStoreId, windowId, currentBrowserTab.id);
+  }
+
+  const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => cookieStore.isPrivate == browserWindow.incognito);
+  for (const browserWindow of browserWindows) {
+    if (browserWindow.id == null) continue;
+    return openTabAndCloseCurrent(url, targetCookieStoreId, browserWindow.id, currentBrowserTab.id);
+  }
+
+  Promise.all([
+    await browser.windows.create({
+      url,
+      cookieStoreId: targetCookieStoreId,
+      incognito: cookieStore.isPrivate,
+    }),
+    await browser.tabs.remove(currentBrowserTab.id),
+  ]);
 };
 
 (async () => {
@@ -107,18 +151,7 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
       }
 
       // this menu is never shown on non-HTTP tabs
-      const url = browserTab.url;
-      const newBrowserTab = await browser.tabs.create({
-        url,
-        cookieStoreId: containerInfo.cookieStoreId,
-        windowId: browserTab.windowId,
-        active: false,
-      });
-
-      await Promise.all([
-        browser.tabs.remove(browserTab.id),
-        browser.tabs.update(newBrowserTab.id, {active: true}),
-      ]);
+      await reopenTab(containerInfo.cookieStoreId, browserTab);
     });
     mainElement?.appendChild(containerButton);
   }
