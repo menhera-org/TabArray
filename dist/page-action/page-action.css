@@ -29,6 +29,7 @@
 body {
   margin: .5rem;
   max-inline-size: 30rem;
+  color: inherit !important;
 }
 
 h3 {
@@ -49,8 +50,8 @@ hr {
   appearance: none;
   border: none;
   background-color: transparent;
-  font: inherit;
-  color: inherit;
+  font: inherit !important;
+  color: var(--text-color) !important;
   border-radius: .25rem;
   box-sizing: border-box;
   inline-size: 100%;
