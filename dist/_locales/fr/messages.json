@@ -193,11 +193,11 @@
         "description": "Description text for Firefox settings options."
     },
     "panoramaGrid": {
-        "message": "Grille Panoramique",
+        "message": "Grille panoramique",
         "description": "Panorama Grid page (grid view of container and tabs)"
     },
     "buttonPanorama": {
-        "message": "Ouvrir Grille Panoramique",
+        "message": "Ouvrir grille panoramique",
         "description": "Button label to open Panorama Grid"
     },
     "buttonOpenTabInContainer": {
@@ -447,7 +447,7 @@
         "description": "Label text for languages of a container."
     },
     "menuItemHelp": {
-        "message": "Help",
+        "message": "Aide",
         "description": "Menu item for help view"
     },
     "windowsN": {
@@ -475,5 +475,23 @@
     "userAgentGooglebot": {
         "message": "Googlebot",
         "description": "Googlebot user agent"
+    },
+    "sitesN": {
+        "message": "Sites ($COUNT$)",
+        "description": "Text for sites view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "buttonGetStarted": {
+        "message": "Commencer",
+        "description": "Button to get started"
+    },
+    "privacyPolicy": {
+        "message": "Politique de confidentialité",
+        "description": "Privacy Policy page"
     }
 }
