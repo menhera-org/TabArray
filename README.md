@@ -91,13 +91,13 @@ enough to unnecessitate Simple Tab Groups.
 - Español
 - Русский
 
-This project uses Hosted Weblate for translation.
+This project uses Hosted Weblate for translation. You can contribute translations at Hosted Weblate.
 
 [![Translation status](https://hosted.weblate.org/widgets/container-tab-groups/-/messages-json/multi-auto.svg)](https://hosted.weblate.org/engage/container-tab-groups/)
 
 [Translate to your language](https://hosted.weblate.org/engage/container-tab-groups/)
 
-### Translators
+### Translation Managers
 
 - metastable-void (ja, eo)
 - 佐々木Alex🐇 (Sasaki Alex🐇) (fr, es-ES, ru)
