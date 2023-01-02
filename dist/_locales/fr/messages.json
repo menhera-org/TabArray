@@ -493,5 +493,81 @@
     "privacyPolicy": {
         "message": "Politique de confidentialité",
         "description": "Privacy Policy page"
+    },
+    "headingReopen": {
+        "message": "Rouvrir dans le conteneur",
+        "description": "Heading text for reopen in container."
+    },
+    "optionalFeaturesDescription": {
+        "message": "Si vous n'utilisez pas d'extensions conflictuelles, vous pouvez activer certaines fonctions optionnelles ici.",
+        "description": "Description text for optional features"
+    },
+    "featureLanguageOverrides": {
+        "message": "Remplacements de langue par conteneur",
+        "description": "Label text for language overrides feature"
+    },
+    "featureUaOverrides": {
+        "message": "Remplacements d'agent utilisateur par conteneur",
+        "description": "Label text for UA overrides feature"
+    },
+    "fpiDescription": {
+        "message": "Cette extension active par défaut la fonction First-Party Isolate (FPI) de Firefox. Cela signifie que les cookies de différents sites, même pour un même conteneur, sont séparés par domaine enregistrable. Vous pouvez la désactiver ici.",
+        "description": "Description text for FPI"
+    },
+    "optionsHeadingContainerOverrides": {
+        "message": "Remplacements par conteneur",
+        "description": "Heading text of options page for container overrides."
+    },
+    "userAgentCustom": {
+        "message": "Personnalisation",
+        "description": "Custom user agent"
+    },
+    "buttonNewTemporaryContainer": {
+        "message": "Nouveau conteneur temporaire",
+        "description": "Button to open a new temporary container."
+    },
+    "focusToThisContainer": {
+        "message": "Focus sur ce conteneur",
+        "description": "Button to focus to this container."
+    },
+    "optionsHeadingGeneral": {
+        "message": "Réglages généraux",
+        "description": "Heading text of options page for general settings."
+    },
+    "labelAutoDiscardMinAge": {
+        "message": "Libérer la mémoire des onglets après inactivité pour :",
+        "description": "Label text for autodiscard min age."
+    },
+    "labelAutoDiscardDisabled": {
+        "message": "Désactivé",
+        "description": "Label text for autodiscard disabled."
+    },
+    "labelAutoDiscard900": {
+        "message": "15 minutes",
+        "description": "Label text for autodiscard in 900 seconds."
+    },
+    "labelAutoDiscard1800": {
+        "message": "30 minutes",
+        "description": "Label text for autodiscard in 1800 seconds."
+    },
+    "labelAutoDiscard3600": {
+        "message": "1 heure",
+        "description": "Label text for autodiscard in 3600 seconds."
+    },
+    "labelAutoDiscard10800": {
+        "message": "3 heures",
+        "description": "Label text for autodiscard in 10800 seconds."
+    },
+    "labelAutoDiscard21600": {
+        "message": "6 heures",
+        "description": "Label text for autodiscard in 21600 seconds."
+    },
+    "labelAutoDiscard43200": {
+        "message": "12 heures",
+        "description": "Label text for autodiscard in 43200 seconds."
+    },
+    "labelAutoDiscard86400": {
+        "message": "1 jour",
+        "description": "Label text for autodiscard in 86400 seconds."
     }
 }
