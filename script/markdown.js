@@ -40,6 +40,7 @@ const result = md.render(source);
 const replaced = result.replaceAll('<p>', '\n')
   .replaceAll('</p>', '\n')
   .replace(/<h([1-6])>/g, '\n<strong>')
-  .replace(/<\/h([1-6])>/g, '</strong>\n');
+  .replace(/<\/h([1-6])>/g, '</strong>\n')
+  .replaceAll('\n\n\n', '\n\n');
 
 fs.writeFileSync(process.argv[3] ?? input.replace(/\.md$/i, '.html'), replaced);
