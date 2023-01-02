@@ -475,5 +475,99 @@
     "userAgentGooglebot": {
         "message": "Googlebot",
         "description": "Googlebot user agent"
+    },
+    "sitesN": {
+        "message": "Сайты ($COUNT$)",
+        "description": "Text for sites view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "buttonGetStarted": {
+        "message": "Приступить",
+        "description": "Button to get started"
+    },
+    "fpiDescription": {
+        "message": "Это расширение по умолчанию включает функцию First-Party Isolate (FPI) в Firefox. Это означает, что файлы cookie для разных сайтов, даже для одного и того же контейнера, разделяются по регистрируемому домену. Вы можете отключить эту функцию здесь.",
+        "description": "Description text for FPI"
+    },
+    "optionalFeaturesDescription": {
+        "message": "Если вы не используете никаких конфликтующих расширений, вы можете включить некоторые дополнительные функции здесь.",
+        "description": "Description text for optional features"
+    },
+    "featureLanguageOverrides": {
+        "message": "Переопределения языка для каждого контейнера",
+        "description": "Label text for language overrides feature"
+    },
+    "featureUaOverrides": {
+        "message": "Переопределения User-Agent для каждого контейнера",
+        "description": "Label text for UA overrides feature"
+    },
+    "optionsHeadingContainerOverrides": {
+        "message": "Переопределения для каждого контейнера",
+        "description": "Heading text of options page for container overrides."
+    },
+    "userAgentCustom": {
+        "message": "Персонализация",
+        "description": "Custom user agent"
+    },
+    "buttonNewTemporaryContainer": {
+        "message": "Новый временный контейнер",
+        "description": "Button to open a new temporary container."
+    },
+    "focusToThisContainer": {
+        "message": "Сосредоточьтесь на этом контейнере",
+        "description": "Button to focus to this container."
+    },
+    "privacyPolicy": {
+        "message": "Политика конфиденциальности",
+        "description": "Privacy Policy page"
+    },
+    "optionsHeadingGeneral": {
+        "message": "Общие настройки",
+        "description": "Heading text of options page for general settings."
+    },
+    "labelAutoDiscardMinAge": {
+        "message": "Освободить память вкладок после бездействия для:",
+        "description": "Label text for autodiscard min age."
+    },
+    "labelAutoDiscardDisabled": {
+        "message": "Отключено",
+        "description": "Label text for autodiscard disabled."
+    },
+    "labelAutoDiscard900": {
+        "message": "15 минут",
+        "description": "Label text for autodiscard in 900 seconds."
+    },
+    "labelAutoDiscard1800": {
+        "message": "30 минут",
+        "description": "Label text for autodiscard in 1800 seconds."
+    },
+    "labelAutoDiscard3600": {
+        "message": "1 час",
+        "description": "Label text for autodiscard in 3600 seconds."
+    },
+    "labelAutoDiscard10800": {
+        "message": "3 часа",
+        "description": "Label text for autodiscard in 10800 seconds."
+    },
+    "labelAutoDiscard21600": {
+        "message": "6 часов",
+        "description": "Label text for autodiscard in 21600 seconds."
+    },
+    "labelAutoDiscard43200": {
+        "message": "12 часов",
+        "description": "Label text for autodiscard in 43200 seconds."
+    },
+    "labelAutoDiscard86400": {
+        "message": "1 день",
+        "description": "Label text for autodiscard in 86400 seconds."
+    },
+    "headingReopen": {
+        "message": "Снова открыть в контейнере",
+        "description": "Heading text for reopen in container."
     }
 }
