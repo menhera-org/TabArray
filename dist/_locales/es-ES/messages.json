@@ -435,7 +435,7 @@
         "description": "Unpin Tab menu (same as browser's tab menu)"
     },
     "contextMenuDuplicateTab": {
-        "message": "DDuplicar pestaña",
+        "message": "Duplicar pestaña",
         "description": "Duplicate Tab menu (same as browser's tab menu)"
     },
     "contextMenuCloseTab": {
@@ -447,7 +447,7 @@
         "description": "Label text for languages of a container."
     },
     "menuItemHelp": {
-        "message": "Help",
+        "message": "Ayuda",
         "description": "Menu item for help view"
     },
     "windowsN": {
