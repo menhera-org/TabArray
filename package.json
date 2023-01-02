@@ -4,7 +4,7 @@
   "description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "node script/clean.js ; eslint . ; webpack ; web-ext build --source-dir ./dist/ --artifacts-dir ./builds/ --overwrite-dest --filename container-tab-groups.prod.xpi",
+    "build": "node script/clean.js ; eslint . ; webpack ; node script/build.js",
     "dev": "node script/clean.js ; eslint . ; webpack --mode=development ; web-ext build --source-dir ./dist/ --artifacts-dir ./builds/ --overwrite-dest --filename container-tab-groups.dev.xpi",
     "watch": "webpack -w",
     "clean": "node script/clean.js ; node script/clean-builds.js",
