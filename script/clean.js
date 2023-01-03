@@ -51,6 +51,7 @@ const findAndClear = function find(startPath, filter) {
 
 const distDir = path.join(__dirname, '../dist');
 findAndClear(distDir, '.js');
+findAndClear(distDir, '.js.map');
 
 // const buildsDir = path.join(__dirname, '../builds');
 // fs.rmSync(buildsDir, { recursive: true, force: true });
