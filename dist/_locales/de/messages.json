@@ -1,1 +1,42 @@
-{}
+{
+    "buttonCancel": {
+        "message": "Abbrechen",
+        "description": "Button label to cancel an action."
+    },
+    "tooltipTabPinButton": {
+        "message": "Diesen Tab anheften",
+        "description": "Tooltip for the button to pin a tab."
+    },
+    "newContainerNamePlaceholder": {
+        "message": "Name des Containers",
+        "description": "Placeholder for the input field of the name of a new container."
+    },
+    "buttonNewContainer": {
+        "message": "Einen neuen Container erstellen…",
+        "description": "Button label to create a new container."
+    },
+    "contextMenuHideSelectedContainer": {
+        "message": "Diesen Container ausblenden",
+        "description": "Context menu item text for hiding the container of the selected tab."
+    },
+    "buttonOk": {
+        "message": "OK",
+        "description": "Button label to confirm an action."
+    },
+    "editContainerDialogTitle": {
+        "message": "Einen Container bearbeiten",
+        "description": "Title of the dialog prompting for editting a container."
+    },
+    "newContainerNameLabel": {
+        "message": "Name",
+        "description": "Label for inputting the name of a new container."
+    },
+    "newContainerDialogTitle": {
+        "message": "Einen neuen Container erstellen",
+        "description": "Title of the dialog prompting for creating a new container."
+    },
+    "buttonHideInactiveContainers": {
+        "message": "Andere Container einklappen",
+        "description": "Button label to hide inactive containers on a window."
+    }
+}
