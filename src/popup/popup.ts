@@ -211,7 +211,7 @@ utils.queryElementNonNull<HTMLButtonElement>('#button-cookies').addEventListener
 
 utils.queryElementNonNull<HTMLButtonElement>('#button-sidebar').addEventListener('click', (ev) => {
   ev.preventDefault();
-  utils.openSidebar();
+  utils.toggleSidebar();
 });
 
 utils.queryElementNonNull<HTMLButtonElement>('#button-new-container').addEventListener('click', () => {

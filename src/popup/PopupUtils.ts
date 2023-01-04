@@ -105,10 +105,8 @@ export class PopupUtils {
     }));
   }
 
-  public openSidebar() {
-    browser.sidebarAction.open().catch((e) => {
-      console.error(e);
-    });
+  public toggleSidebar() {
+    browser.sidebarAction.toggle();
   }
 
   public openNewWindow(isPrivate: boolean) {
