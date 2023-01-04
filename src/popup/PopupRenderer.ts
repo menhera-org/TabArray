@@ -171,7 +171,7 @@ export class PopupRenderer {
   }
 
   private async renderInner() {
-    const topboxContentWindows = this._utils.queryElementNonNull<HTMLElement>('#topbox-content-windows');
+    const topboxContentWindows = this._utils.queryElementNonNull<HTMLElement>('#topbox-content-windows-title');
     const topboxContentSites = this._utils.queryElementNonNull<HTMLElement>('#topbox-content-sites');
     const currentWindowMenuList = this._utils.queryElementNonNull<HTMLElement>('#menuList');
     const windowListMenuList = this._utils.queryElementNonNull<HTMLElement>('#windowMenuList');

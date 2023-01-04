@@ -290,14 +290,23 @@ body.transparent > .content {
   background-color: var(--text-color);
 }
 
-#button-new-window::before, #button-new-private-window::before {
+#button-new-window, #button-new-private-window {
+  display: block;
+  inline-size: 2em;
+  block-size: 100%;
+}
+
+#button-new-window {
   mask: url(/img/firefox-icons/add.svg) center center / 60% no-repeat;
   background-color: var(--text-color);
 }
 
-#button-new-window:focus, #button-new-private-window:focus {
-  box-shadow: inset 0 0 .25rem .25rem var(--accent-color);
-  outline: none;
+#button-new-private-window {
+  background: url(/img/firefox-icons/private-browsing-icon.svg) center center / 75% no-repeat;
+}
+
+:is(#button-new-window, #button-new-private-window) > .button-text {
+  display: none;
 }
 
 #button-new-private-window:disabled {
@@ -403,8 +412,12 @@ body.transparent > .content {
 
 [data-active-content="windows"] #topbox-content > #topbox-content-windows {
   display: block grid;
-  align-content: center;
-  justify-content: center;
+  align-items: center;
+  grid-template-columns: 1fr max-content max-content;
+}
+
+#topbox-content-windows-title {
+  text-align: center;
 }
 
 [data-active-content="sites"] #topbox-content > #topbox-content-sites {

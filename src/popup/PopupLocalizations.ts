@@ -59,8 +59,9 @@ utils.queryElementNonNull<HTMLElement>('#menu-item-main > .button-text').textCon
 utils.queryElementNonNull<HTMLElement>('#menu-item-windows > .button-text').textContent = browser.i18n.getMessage('menuItemWindows');
 utils.queryElementNonNull<HTMLElement>('#menu-item-sites > .button-text').textContent = browser.i18n.getMessage('menuItemSites');
 utils.queryElementNonNull<HTMLElement>('#menu-item-help > .button-text').textContent = browser.i18n.getMessage('menuItemHelp');
-utils.queryElementNonNull<HTMLElement>('#button-new-window > .button-text').textContent = browser.i18n.getMessage('buttonNewWindow');
-utils.queryElementNonNull<HTMLElement>('#button-new-private-window > .button-text').textContent = browser.i18n.getMessage('buttonNewPrivateWindow');
+
+utils.queryElementNonNull<HTMLElement>('#button-new-window').title = browser.i18n.getMessage('buttonNewWindow');
+utils.queryElementNonNull<HTMLElement>('#button-new-private-window').title = browser.i18n.getMessage('buttonNewPrivateWindow');
 
 utils.queryElementNonNull<HTMLElement>('#help-banner-description').textContent = browser.i18n.getMessage('extensionDescription');
 utils.queryElementNonNull<HTMLElement>('#help-banner-version').textContent = extensionManifest.version;
