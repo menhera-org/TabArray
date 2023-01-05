@@ -27,6 +27,7 @@ import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { ContentStorageStatistics } from './ContentStorageStatistics';
+import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
 
 const userContextService = UserContextService.getInstance();
 const privateBrowsingService = PrivateBrowsingService.getInstance();
@@ -76,7 +77,7 @@ const render = async () => {
   }
 
   const selectedOriginAttributes = getSelectedOriginAttributes();
-  renderContainer(selectedOriginAttributes);
+  await containerViewRefreshHandler.render(selectedOriginAttributes);
 };
 
 const renderContainer = async (originAttributes: OriginAttributes) => {
@@ -107,6 +108,8 @@ const renderContainer = async (originAttributes: OriginAttributes) => {
       button.classList.add('delete');
       button.addEventListener('click', async () => {
         await cookieProvider.removeDataForDomain(originAttributes.cookieStoreId, domain);
+        await contentStorageStatistics.removeOriginStatistics(originAttributes.cookieStoreId, firstPartyDomain, `http://${domain}`);
+        await contentStorageStatistics.removeOriginStatistics(originAttributes.cookieStoreId, firstPartyDomain, `https://${domain}`);
         console.log(`Removed browsing data for: *://${domain}^userContextId=${originAttributes.userContextId}&privateBrowsingId=${originAttributes.privateBrowsingId}`);
         renderContainer(originAttributes);
       });
@@ -118,9 +121,11 @@ const renderContainer = async (originAttributes: OriginAttributes) => {
   }
 };
 
+const containerViewRefreshHandler = new ViewRefreshHandler(renderContainer);
+
 selectContainers.addEventListener('change', () => {
   const selectedOriginAttributes = getSelectedOriginAttributes();
-  renderContainer(selectedOriginAttributes);
+  containerViewRefreshHandler.renderInBackground(selectedOriginAttributes);
 });
 
 buttonContainerClearCookie.addEventListener('click', async () => {
@@ -131,7 +136,14 @@ buttonContainerClearCookie.addEventListener('click', async () => {
     const userContext = UserContext.createIncompleteUserContext(selectedOriginAttributes.userContextId);
     await userContext.removeBrowsingData();
   }
-  await renderContainer(selectedOriginAttributes);
+  containerViewRefreshHandler.renderInBackground(selectedOriginAttributes);
 });
 
-render();
+contentStorageStatistics.onChanged.addListener(() => {
+  const selectedOriginAttributes = getSelectedOriginAttributes();
+  containerViewRefreshHandler.renderInBackground(selectedOriginAttributes);
+});
+
+render().catch((e) => {
+  console.error(e);
+});

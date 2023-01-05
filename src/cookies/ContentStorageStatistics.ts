@@ -24,6 +24,7 @@ import { EventSink } from "../frameworks/utils";
 import { CookieProvider } from "../frameworks/cookies";
 import { FirstPartyService } from "../frameworks/tabGroups";
 import { HostnameService } from "../frameworks/dns";
+import { ContextualIdentity } from "../frameworks/tabAttributes";
 
 export type OriginStorageStatistics = {
   origin: string;
@@ -58,6 +59,10 @@ export class ContentStorageStatistics {
     this._storageItem.observe(() => {
       this.onChanged.dispatch();
     }, false);
+
+    ContextualIdentity.onRemoved.addListener((contextualIdentity: ContextualIdentity) => {
+      this.removeCookieStore(contextualIdentity.id);
+    });
   }
 
   public async getStorageFirstPartyDomainList(cookieStoreId: string): Promise<string[]> {
@@ -76,7 +81,13 @@ export class ContentStorageStatistics {
     if (!cookieStoreStorage) return [];
     const firstPartyStorage = cookieStoreStorage[firstPartyDomain];
     if (!firstPartyStorage) return [];
-    return Object.keys(firstPartyStorage);
+    const origins = [];
+    for (const origin in firstPartyStorage) {
+      if (firstPartyStorage[origin]?.hasLocalStorage) {
+        origins.push(origin);
+      }
+    }
+    return origins;
   }
 
   public async getOriginStatistics(cookieStoreId: string, firstPartyDomain: string, origin: string): Promise<OriginStorageStatistics | undefined> {
@@ -89,6 +100,12 @@ export class ContentStorageStatistics {
   }
 
   public async setOriginStatistics(cookieStoreId: string, firstPartyDomain: string, origin: string, statistics: OriginStorageStatistics): Promise<void> {
+    // TODO: if statistics model is extended, this should be updated to only remove the origin if it has no data.
+    if (statistics.hasLocalStorage === false) {
+      await this.removeOriginStatistics(cookieStoreId, firstPartyDomain, origin);
+      return;
+    }
+
     const storage = await this._storageItem.getValue();
     let cookieStoreStorage = storage[cookieStoreId];
     if (!cookieStoreStorage) {
@@ -101,6 +118,25 @@ export class ContentStorageStatistics {
       cookieStoreStorage[firstPartyDomain] = firstPartyStorage;
     }
     firstPartyStorage[origin] = statistics;
+    await this._storageItem.setValue(storage);
+  }
+
+  public async removeOriginStatistics(cookieStoreId: string, firstPartyDomain: string, origin: string): Promise<void> {
+    const storage = await this._storageItem.getValue();
+    const cookieStoreStorage = storage[cookieStoreId];
+    if (!cookieStoreStorage) return;
+    const firstPartyStorage = cookieStoreStorage[firstPartyDomain];
+    if (!firstPartyStorage) return;
+    delete firstPartyStorage[origin];
+    if (Object.keys(firstPartyStorage).length === 0) {
+      delete cookieStoreStorage[firstPartyDomain];
+    }
+    await this._storageItem.setValue(storage);
+  }
+
+  private async removeCookieStore(cookieStoreId: string): Promise<void> {
+    const storage = await this._storageItem.getValue();
+    delete storage[cookieStoreId];
     await this._storageItem.setValue(storage);
   }
 
