@@ -20,6 +20,7 @@ _Tab Group = Container_
 - Requires no setup before/after installation.
 - Isolated cookies/logins for each of tab groups because they are containers.
 - Per-window container management.
+- Temporary containers and auto-cookie-discarding containers.
 - Automatically sorts tabs based on containers.
 - Manage tabs based on the domains of websites.
 - Provides you with a menu where you can do the following actions:
@@ -29,6 +30,7 @@ _Tab Group = Container_
     - Switch windows.
 - Enables First-Party Isolate (privacy.firstparty.isolate; FPI) by default. (Configurable.) **This means that cookies for different sites, even for a same container, are separated by registrable domain.** It also enables natural and flicker-free openings of new windows by websites, unlike simulated FPI by manipulating containers. This is the way Tor Browser is using.
 - Allows the user to enable fingerprinting resistance (privacy.resistFingerprinting).
+- Per-container overrides of the language and the user agent settings.
 
 ## Usage
 
