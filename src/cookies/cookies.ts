@@ -20,18 +20,19 @@
 */
 
 import browser from 'webextension-polyfill';
-import { CookieProvider } from '../frameworks/cookies';
 import { OriginAttributes } from '../frameworks/tabGroups';
 import { UserContext } from '../frameworks/tabGroups';
 import { Uint32 } from '../frameworks/types';
 import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { ContentStorageStatistics } from './ContentStorageStatistics';
 
-const cookieProvider = new CookieProvider();
 const userContextService = UserContextService.getInstance();
 const privateBrowsingService = PrivateBrowsingService.getInstance();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+const contentStorageStatistics = new ContentStorageStatistics();
+const cookieProvider = contentStorageStatistics.cookieProvider;
 
 const selectContainers = document.querySelector('#selectContainers') as HTMLSelectElement;
 const cookieDomains = document.querySelector('#cookieDomains') as HTMLTableSectionElement;
@@ -79,12 +80,11 @@ const render = async () => {
 };
 
 const renderContainer = async (originAttributes: OriginAttributes) => {
-  const firstPartyDomains = await cookieProvider.getFirstPartyDomainsForOriginAttributes(originAttributes);
+  const firstPartyDomains = await contentStorageStatistics.getFirstPartyDomainList(originAttributes.cookieStoreId);
   cookieDomains.textContent = '';
 
   for (const firstPartyDomain of firstPartyDomains) {
-    const domains = await cookieProvider.getCookieRegistrableDomainsForFirstPartyDomain(
-      new OriginAttributes(firstPartyDomain, originAttributes.userContextId, originAttributes.privateBrowsingId));
+    const domains = await contentStorageStatistics.getDomainList(originAttributes.cookieStoreId, firstPartyDomain);
 
     {
       const tr = document.createElement('tr');
@@ -106,9 +106,8 @@ const renderContainer = async (originAttributes: OriginAttributes) => {
       const button = document.createElement('button');
       button.classList.add('delete');
       button.addEventListener('click', async () => {
-        const removedOriginAttributes = new OriginAttributes(domain, originAttributes.userContextId, originAttributes.privateBrowsingId);
-        await cookieProvider.removeDataForOriginAttributes(removedOriginAttributes);
-        console.log('Removed browsing data for:', removedOriginAttributes);
+        await cookieProvider.removeDataForDomain(originAttributes.cookieStoreId, domain);
+        console.log(`Removed browsing data for: *://${domain}^userContextId=${originAttributes.userContextId}&privateBrowsingId=${originAttributes.privateBrowsingId}`);
         renderContainer(originAttributes);
       });
       td2.appendChild(button);

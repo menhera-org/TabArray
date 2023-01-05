@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 import { LanguageStore } from './LanguageStore';
 import { UaStore } from './UaStore';
 import './content-interfaces';
+import './content-localstorage';
 
 declare global {
   // eslint-disable-next-line no-var

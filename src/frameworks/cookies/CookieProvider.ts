@@ -25,8 +25,8 @@ import { FirstPartyService } from '../tabGroups';
 import { HostnameService } from '../dns';
 
 export class CookieProvider {
-  private _firstPartyService = FirstPartyService.getInstance();
-  private _hostnameService = HostnameService.getInstance();
+  private readonly _firstPartyService = FirstPartyService.getInstance();
+  private readonly _hostnameService = HostnameService.getInstance();
 
   private validateOriginAttributes(originAttributes: OriginAttributes): void {
     if (!originAttributes.hasCookieStoreId()) {
@@ -43,9 +43,7 @@ export class CookieProvider {
     return this._hostnameService.sortDomains(domains);
   }
 
-  public async getCookiesForFirstPartyDomain(originAttributes: OriginAttributes): Promise<browser.Cookies.Cookie[]> {
-    const firstPartyDomain = originAttributes.firstpartyDomain;
-    const cookieStoreId = originAttributes.cookieStoreId;
+  private async getCookiesForFirstPartyDomain(cookieStoreId: string, firstPartyDomain: string): Promise<browser.Cookies.Cookie[]> {
     const partitionKey = {};
     return await browser.cookies.getAll({
       firstPartyDomain,
@@ -54,18 +52,18 @@ export class CookieProvider {
     });
   }
 
-  public async getCookieDomainsForFirstPartyDomain(originAttributes: OriginAttributes): Promise<string[]> {
-    const cookies = await this.getCookiesForFirstPartyDomain(originAttributes);
+  public async getCookieDomainsForFirstPartyDomain(cookieStoreId: string, firstPartyDomain: string): Promise<string[]> {
+    const cookies = await this.getCookiesForFirstPartyDomain(cookieStoreId, firstPartyDomain);
     return this.getDomainsForCookies(cookies);
   }
 
-  public async getCookieRegistrableDomainsForFirstPartyDomain(originAttributes: OriginAttributes): Promise<string[]> {
+  public async getCookieRegistrableDomainsForFirstPartyDomain(cookieStoreId: string, firstPartyDomain: string): Promise<string[]> {
     await this._firstPartyService.initialized;
-    const domains = await this.getCookieDomainsForFirstPartyDomain(originAttributes);
+    const domains = await this.getCookieDomainsForFirstPartyDomain(cookieStoreId, firstPartyDomain);
     return this._firstPartyService.getUniqueFirstPartyDomains(domains);
   }
 
-  public async getCookiesForOriginAttributes(originAttributes: OriginAttributes): Promise<browser.Cookies.Cookie[]> {
+  private async getCookiesForOriginAttributes(originAttributes: OriginAttributes): Promise<browser.Cookies.Cookie[]> {
     this.validateOriginAttributes(originAttributes);
     const domain = originAttributes.hasFirstpartyDomain() ? originAttributes.firstpartyDomain : undefined;
     const cookieStoreId = originAttributes.cookieStoreId;
@@ -79,9 +77,8 @@ export class CookieProvider {
     });
   }
 
-  public async getFirstPartyDomainsForOriginAttributes(originAttributes: OriginAttributes): Promise<string[]> {
+  public async getFirstPartyDomainsForCookieStoreId(cookieStoreId: string): Promise<string[]> {
     const partitionKey = {};
-    const cookieStoreId = originAttributes.cookieStoreId;
     const cookies = await browser.cookies.getAll({
       storeId: cookieStoreId,
       firstPartyDomain: null,
@@ -94,15 +91,24 @@ export class CookieProvider {
     return this._hostnameService.sortDomains(domains);
   }
 
-  public async getCookieDomainsForOriginAttributes(originAttributes: OriginAttributes): Promise<string[]> {
+  private async getCookieDomainsForOriginAttributes(originAttributes: OriginAttributes): Promise<string[]> {
     const cookies = await this.getCookiesForOriginAttributes(originAttributes);
     return this.getDomainsForCookies(cookies);
   }
 
-  public async getCookieRegistrableDomainsForOriginAttributes(originAttributes: OriginAttributes): Promise<string[]> {
-    await this._firstPartyService.initialized;
-    const domains = await this.getCookieDomainsForOriginAttributes(originAttributes);
-    return this._firstPartyService.getUniqueFirstPartyDomains(domains);
+  public async removeDataForDomain(cookieStoreId: string, domain: string): Promise<void> {
+    const hostnames = [domain];
+    await browser.browsingData.remove({
+      hostnames,
+      originTypes: {
+        unprotectedWeb: true,
+      },
+      cookieStoreId,
+    }, {
+      cookies: true,
+      localStorage: true,
+      indexedDB: true,
+    });
   }
 
   public async removeDataForOriginAttributes(originAttributes: OriginAttributes): Promise<void> {
