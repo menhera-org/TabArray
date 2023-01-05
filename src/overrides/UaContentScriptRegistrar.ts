@@ -48,7 +48,7 @@ export class UaContentScriptRegistrar extends ContentScriptRegistrar {
     return `
       globalThis.gUaStore = globalThis.gUaStore || {};
       gUaStore.userAgent = ${JSON.stringify(ua)};
-      gUaStore.emulateMode = ${JSON.stringify(emulationMode)};
+      gUaStore.emulationMode = ${JSON.stringify(emulationMode)};
     `;
   }
 
