@@ -10,7 +10,7 @@ _Tab group = Container_
 **Per-container overrides available for:**
 
 - Preferred languages
-- User agent strings (Chrome emulation included) (coming in 11.4.0 release)
+- User agent strings (Chrome UAData/Sec-CH-UA emulation included) (coming in 11.4.0 release)
 
 **Uses:**
 
