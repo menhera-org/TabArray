@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/node": "^18.11.18",
     "@types/webextension-polyfill": "^0.10.0",
-    "@typescript-eslint/eslint-plugin": "^5.47.1",
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.1",
     "eslint": "^8.32.0",
     "markdown-it": "^13.0.1",
