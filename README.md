@@ -92,6 +92,7 @@ enough to unnecessitate Simple Tab Groups.
 - Esperanto
 - Español
 - Русский
+- Deutsch
 
 This project uses Hosted Weblate for translation. You can contribute translations at Hosted Weblate.
 
