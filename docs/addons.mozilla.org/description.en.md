@@ -51,7 +51,7 @@ This add-on is probably compatible with the Firefox Multi-Account Containers add
 
 _This may not be compatible with our previous add-on "Site-based Tabs." Please disable the old one if you find any problems._
 
-This extension is compatible most tab management extension such as Tree Style Tab extension. See more compatibility information (additions welcome) at https://github.com/menhera-org/TabArray#compatiblity .
+This extension is compatible with most tab management extension such as Tree Style Tab extension. See more compatibility information (additions welcome) at https://github.com/menhera-org/TabArray#compatiblity .
 
 _Perfect replacement for Chrome's tab groups and the discontinued add-on Conex._
 
