@@ -2,5 +2,572 @@
     "effectiveLocale": {
         "message": "cz",
         "description": "Locale of this messages.json."
+    },
+    "tooltipContainerDelete": {
+        "message": "Trvale odstranit tento kontejner",
+        "description": "Tooltip for a button to permanently delete a container."
+    },
+    "noContainer": {
+        "message": "žádný kontejner",
+        "description": "Virtual container name for tabs with no container."
+    },
+    "promptSelectContainer": {
+        "message": "Vyberte kontejner, ve kterém chcete tuto kartu otevřít.",
+        "description": "Message asking the user to select a container for a new tab."
+    },
+    "labelSelectContainerExternalTabs": {
+        "message": "Vybrat kontejner při otevření karty externí aplikací",
+        "description": "Option to enable container selection on externally opened tabs."
+    },
+    "labelExternalTabSelectContainerOption": {
+        "message": "Když externí aplikace otevře kartu:",
+        "description": "Label for option for handling of externally opened tabs"
+    },
+    "containerOptions": {
+        "message": "Možnosti kontejnerů pro: $NAME$",
+        "description": "Menu title for container options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "optionsHeadingContainerSortOrder": {
+        "message": "Seřadit kontejnery",
+        "description": "Heading text of options page for changing container order."
+    },
+    "optionsDescriptionContainerSortOrder": {
+        "message": "Toto nastavení nemá vliv na jiná rozšíření.",
+        "description": "Description text for changing container order."
+    },
+    "commandOpenPopup": {
+        "message": "Otevřít vyskakovací okno",
+        "description": "Description text for using command to open popup."
+    },
+    "commandOpenSidebar": {
+        "message": "Otevřít boční panel",
+        "description": "Description text for using command to open sidebar."
+    },
+    "featureUaOverrides": {
+        "message": "Přepínání uživatelských agentů v kontejnerech",
+        "description": "Label text for UA overrides feature"
+    },
+    "optionsHeadingContainerOverrides": {
+        "message": "Předvolby v kontejnerech",
+        "description": "Heading text of options page for container overrides."
+    },
+    "userAgentDefault": {
+        "message": "Výchozí",
+        "description": "Default user agent"
+    },
+    "userAgentChrome": {
+        "message": "Chrome",
+        "description": "Chrome user agent"
+    },
+    "userAgentGooglebot": {
+        "message": "Googlebot",
+        "description": "Googlebot user agent"
+    },
+    "userAgentCustom": {
+        "message": "Vlastní",
+        "description": "Custom user agent"
+    },
+    "buttonNewTemporaryContainer": {
+        "message": "Nový dočasný kontejner",
+        "description": "Button to open a new temporary container."
+    },
+    "focusToThisContainer": {
+        "message": "Zaměřit na tento kontejner",
+        "description": "Button to focus to this container."
+    },
+    "optionsHeadingGeneral": {
+        "message": "Obecná nastavení",
+        "description": "Heading text of options page for general settings."
+    },
+    "labelAutoDiscardMinAge": {
+        "message": "Uvolnit paměť karet po nečinnosti za:",
+        "description": "Label text for autodiscard min age."
+    },
+    "labelAutoDiscardDisabled": {
+        "message": "Vypnut",
+        "description": "Label text for autodiscard disabled."
+    },
+    "labelAutoDiscard900": {
+        "message": "15 minut",
+        "description": "Label text for autodiscard in 900 seconds."
+    },
+    "labelAutoDiscard1800": {
+        "message": "30 minut",
+        "description": "Label text for autodiscard in 1800 seconds."
+    },
+    "labelAutoDiscard3600": {
+        "message": "1 hodina",
+        "description": "Label text for autodiscard in 3600 seconds."
+    },
+    "labelAutoDiscard10800": {
+        "message": "3 hodiny",
+        "description": "Label text for autodiscard in 10800 seconds."
+    },
+    "labelAutoDiscard21600": {
+        "message": "6 hodin",
+        "description": "Label text for autodiscard in 21600 seconds."
+    },
+    "labelAutoDiscard43200": {
+        "message": "12 hodin",
+        "description": "Label text for autodiscard in 43200 seconds."
+    },
+    "newContainerDialogTitle": {
+        "message": "Vytvořit nový kontejner",
+        "description": "Title of the dialog prompting for creating a new container."
+    },
+    "labelNewTabKeepContainer": {
+        "message": "Otevřít novou kartu v aktuálním kontejneru (lepivý kontejner)",
+        "description": "Title of option to always open new tab in current container."
+    },
+    "windowLabel": {
+        "message": "Okno #$ID$",
+        "description": "Label for a window with ID.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "buttonHideInactiveContainers": {
+        "message": "Sbalit ostatní kontejnery",
+        "description": "Button label to hide inactive containers on a window."
+    },
+    "buttonNewContainer": {
+        "message": "Vytvořit nový kontejner…",
+        "description": "Button label to create a new container."
+    },
+    "buttonOk": {
+        "message": "OK",
+        "description": "Button label to confirm an action."
+    },
+    "tooltipTabPinButton": {
+        "message": "Připnout tuto kartu",
+        "description": "Tooltip for the button to pin a tab."
+    },
+    "tooltipTabUnpinButton": {
+        "message": "Odepnout tuto kartu",
+        "description": "Tooltip for the button to unpin a tab."
+    },
+    "tooltipHideContainerButton": {
+        "message": "Skrýt karty tohoto kontejneru",
+        "description": "Tooltip for the button to hide the tabs of a container."
+    },
+    "tooltipUnhideContainerButton": {
+        "message": "Zobrazit karty tohoto kontejneru",
+        "description": "Tooltip for the button to unhide the tabs of a container."
+    },
+    "newContainerNamePlaceholder": {
+        "message": "Název kontejneru",
+        "description": "Placeholder for the input field of the name of a new container."
+    },
+    "browserActionPopupTitle": {
+        "message": "Skupiny karet kontejnerů: Vyskakovací stránka",
+        "description": "Title of the popup page for browserAction."
+    },
+    "buttonCancel": {
+        "message": "Zrušit",
+        "description": "Button label to cancel an action."
+    },
+    "newContainerNameLabel": {
+        "message": "Název",
+        "description": "Label for inputting the name of a new container."
+    },
+    "editContainerDialogTitle": {
+        "message": "Upravit kontejner",
+        "description": "Title of the dialog prompting for editting a container."
+    },
+    "contextMenuHideSelectedContainer": {
+        "message": "Skrýt tento kontejner",
+        "description": "Context menu item text for hiding the container of the selected tab."
+    },
+    "tooltipEditContainerButton": {
+        "message": "Upravit tento kontejner",
+        "description": "Tooltip for the button to edit a container."
+    },
+    "currentWindow": {
+        "message": "Toto okno (#$ID$)",
+        "description": "Title of popup section for the current window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "2"
+            }
+        }
+    },
+    "currentWindowMoreContainers": {
+        "message": "Další kontejnery pro toto okno"
+    },
+    "tooltipWindowLabel": {
+        "message": "Přepnout na okno #$ID$",
+        "description": "Tooltip for a menu item representing a window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "tooltipContainerCloseAll": {
+        "message": "Zavřít všechny karty v tomto kontejneru",
+        "description": "Tooltip for a button to close all tabs of a container."
+    },
+    "confirmContainerDelete": {
+        "message": "Chcete trvale odstranit tento kontejner: $NAME$?",
+        "description": "Confirmation message before deleting a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "defaultContainerName": {
+        "message": "Kontejner #$ID$",
+        "description": "Descriptive default name of a container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "invalidContainerName": {
+        "message": "Nedostupný kontejner $ID$",
+        "description": "Name shown for an unavailable container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "browserActionTitle": {
+        "message": "Karty a skupiny",
+        "description": "Title of browserAction about tabs and container-based groups."
+    },
+    "windowTitlePrefaceTemplate": {
+        "message": "($CONTAINER$)",
+        "description": "String to add before window title",
+        "placeholders": {
+            "container": {
+                "content": "$1",
+                "example": "Container 1"
+            }
+        }
+    },
+    "buttonTabClose": {
+        "message": "Zavřít tuto kartu",
+        "description": "Button label to close a tab."
+    },
+    "buttonAboutAddon": {
+        "message": "Další informace o Container Tab Groups a recenze…",
+        "description": "Menu item to open the extension's addons.mozilla.org page."
+    },
+    "optionsHeadingExperimental": {
+        "message": "Pokusné funkce",
+        "description": "Heading text of options page for experimental addon features."
+    },
+    "optionsHeadingFirefox": {
+        "message": "Nastavení Firefoxu",
+        "description": "Heading text of options page for changing Firefox settings."
+    },
+    "optionsDescriptionFirefox": {
+        "message": "Zde můžete změnit některá skrytá nastavení Firefoxu týkající se soukromí.",
+        "description": "Description text for Firefox settings options."
+    },
+    "buttonPanorama": {
+        "message": "Otevřená panoramatická mřížka",
+        "description": "Button label to open Panorama Grid"
+    },
+    "panoramaGrid": {
+        "message": "Panoramatická mřížka",
+        "description": "Panorama Grid page (grid view of container and tabs)"
+    },
+    "extensionDescription": {
+        "message": "Skupiny karet podobné systému Chrome využívající soukromé a izolované kontejnery: Dokonalý správce karet a skupin pro Firefox.",
+        "description": "Description of the extension."
+    },
+    "titleSelectContainer": {
+        "message": "Vybrat Kontejner",
+        "description": "Title of the popup asking the user to choose a container to open a new tab in."
+    },
+    "tooltipExpandContainers": {
+        "message": "Rozbalit kontejnery",
+        "description": "Tooltip for the button to expand containers."
+    },
+    "descriptionSelectContainer": {
+        "message": "Chystáte se otevřít v nové kartě: $URL$.",
+        "description": "Confirmation message before the user chooses a container to open a new tab in.",
+        "placeholders": {
+            "url": {
+                "content": "$1",
+                "example": "https://example.com/"
+            }
+        }
+    },
+    "labelExternalTabOptionDisabled": {
+        "message": "Otevřít ve výchozím kontejneru (Bez kontejneru)",
+        "description": "Option to disable handling of externally opened tabs."
+    },
+    "labelExternalTabOptionStickyContainer": {
+        "message": "Otevřít v posledním aktivním kontejneru",
+        "description": "Option to use the last active container for externally opened tabs."
+    },
+    "menuItemWindows": {
+        "message": "Okna",
+        "description": "Menu item for windows view"
+    },
+    "tooltipContainerClearCookie": {
+        "message": "Vymazat všechny soubory cookie v tomto kontejneru",
+        "description": "Tooltip for a button to clear all cookies in a container."
+    },
+    "labelExternalTabOptionChooseContainer": {
+        "message": "Pokaždé zvolte kontejner",
+        "description": "Option to choose a container every time an external application opens a tab."
+    },
+    "labelGroupIndexOption": {
+        "message": "Zobrazit kartu indexu pro každý kontejner",
+        "description": "Option to show index tabs for containers."
+    },
+    "labelGroupIndexOptionCollapsed": {
+        "message": "Sbalené kontejnery",
+        "description": "Option to show index tabs for collapsed containers."
+    },
+    "labelGroupIndexOptionAlways": {
+        "message": "Všechny kontejnery",
+        "description": "Option to show index tabs for all containers."
+    },
+    "labelPopupSizeLarge": {
+        "message": "Velký",
+        "description": "Label text for large popup size."
+    },
+    "menuItemMain": {
+        "message": "Kontejnery",
+        "description": "Menu item for containers view."
+    },
+    "optionsHeadingUserData": {
+        "message": "Vaše data",
+        "description": "Heading text of options page for managing user data."
+    },
+    "buttonContainerClearCookie": {
+        "message": "Vymazat cookies…",
+        "description": "Button to clear cookies in a container."
+    },
+    "headingCookies": {
+        "message": "Cookies",
+        "description": "Heading text of cookies page."
+    },
+    "searchPlaceholder": {
+        "message": "Hledat kontejnery",
+        "description": "Placeholder text for searching containers."
+    },
+    "tooltipCloseWindow": {
+        "message": "Zavřít okno",
+        "description": "Tooltip for a button to close all tabs of a window."
+    },
+    "buttonNewWindow": {
+        "message": "Nové okno",
+        "description": "Button to open a new window."
+    },
+    "cookiesHeadingDomain": {
+        "message": "Doména",
+        "description": "Heading text for domains in cookies table."
+    },
+    "tooltipCookies": {
+        "message": "Zobrazit Cookies",
+        "description": "Tooltip for a button to view cookies."
+    },
+    "enableCookiesAutoclean": {
+        "message": "Automaticky čistit cookies",
+        "description": "Label text for enabling autoclean of cookies."
+    },
+    "contextMenuNewTab": {
+        "message": "Nová karta",
+        "description": "New Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuMuteTab": {
+        "message": "Ztišit kartu",
+        "description": "Mute Tab menu (same as browser's tab menu)"
+    },
+    "buttonSidebar": {
+        "message": "Otevřít boční panel",
+        "description": "Button to open Sidebar."
+    },
+    "buttonClear": {
+        "message": "Vyčistit",
+        "description": "Button to clear data."
+    },
+    "confirmContainerClearCookie": {
+        "message": "Chcete vymazat soubory cookie pro tento kontejner: $NAME$?",
+        "description": "Confirmation message before clearing cookies in a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "confirmPrivateBrowsingClearCookie": {
+        "message": "Chcete vymazat soubory cookie pro soukromé prohlížení?",
+        "description": "Confirmation message before clearing cookies for private browsing."
+    },
+    "buttonEditContainer": {
+        "message": "Upravit kontejner…",
+        "description": "Button to edit a container."
+    },
+    "cookiesHeadingActions": {
+        "message": "Akce",
+        "description": "Heading text for action buttons in cookies table."
+    },
+    "menuItemHelp": {
+        "message": "Pomoc",
+        "description": "Menu item for help view"
+    },
+    "contextMenuPinTab": {
+        "message": "Připnout kartu",
+        "description": "Pin Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuDuplicateTab": {
+        "message": "Duplikovat kartu",
+        "description": "Duplicate Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuCloseTab": {
+        "message": "Zavřít kartu",
+        "description": "Close Tab menu (same as browser's tab menu)"
+    },
+    "optionsLabelLanguages": {
+        "message": "Jazyky",
+        "description": "Label text for languages of a container."
+    },
+    "privacyPolicy": {
+        "message": "Ochrana soukromí",
+        "description": "Privacy Policy page"
+    },
+    "windowsN": {
+        "message": "Okna ($COUNT$)",
+        "description": "Text for windows view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "sitesN": {
+        "message": "Stránky ($COUNT$)",
+        "description": "Text for sites view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "fpiDescription": {
+        "message": "Toto rozšíření ve výchozím nastavení zapíná funkci Izolace první strany (FPI) prohlížeče Firefox. To znamená, že soubory cookie pro různé weby, dokonce i pro stejný kontejner, jsou odděleny podle registrované domény. Zde to můžete vypnout.",
+        "description": "Description text for FPI"
+    },
+    "featureLanguageOverrides": {
+        "message": "Přepínání jazyků v kontejnerech",
+        "description": "Label text for language overrides feature"
+    },
+    "optionalFeaturesDescription": {
+        "message": "Pokud nepoužíváte žádná konfliktní rozšíření, můžete zde povolit některé volitelné funkce.",
+        "description": "Description text for optional features"
+    },
+    "labelAutoDiscard86400": {
+        "message": "1 den",
+        "description": "Label text for autodiscard in 86400 seconds."
+    },
+    "headingReopen": {
+        "message": "Znovu otevřít v kontejneru",
+        "description": "Heading text for reopen in container."
+    },
+    "optionsLabelUserAgent": {
+        "message": "User Agent",
+        "description": "Label text for user agent of a container."
+    },
+    "labelGroupIndexOptionNever": {
+        "message": "Nikdy",
+        "description": "Option to show index tabs for no containers."
+    },
+    "optionsHeadingAppearance": {
+        "message": "Možnosti vzhledu",
+        "description": "Heading text of options page for changing appearance settings."
+    },
+    "labelPopupSize": {
+        "message": "Velikost vyskakovacího okna",
+        "description": "Prompt for changing popup size."
+    },
+    "labelPopupSizeStandard": {
+        "message": "Standard",
+        "description": "Label text for standard popup size."
+    },
+    "menuItemSites": {
+        "message": "Stránky",
+        "description": "Menu item for sites view"
+    },
+    "privateBrowsing": {
+        "message": "Soukromé procházení",
+        "description": "Private Browsing page"
+    },
+    "contextMenuReloadTab": {
+        "message": "Znovu načíst kartu",
+        "description": "Reload Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuUnmuteTab": {
+        "message": "Zrušit ztišení karty",
+        "description": "Unmute Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuUnpinTab": {
+        "message": "Odepnout kartu",
+        "description": "Unpin Tab menu (same as browser's tab menu)"
+    },
+    "buttonGetStarted": {
+        "message": "Začít",
+        "description": "Button to get started"
+    },
+    "labelFirstPartyIsolate": {
+        "message": "Povolení izolace první strany (FPI)",
+        "description": "Option to enable first-party isolation."
+    },
+    "buttonSettings": {
+        "message": "Nastavení",
+        "description": "Menu item to open the extensions's settings."
+    },
+    "labelResistFingerprinting": {
+        "message": "Povolit funkci odolnosti Firefoxu proti otiskům prstů (privacy.resistFingerprinting)",
+        "description": "Option to enable privacy.resistFingerprinting."
+    },
+    "buttonOpenTabInContainer": {
+        "message": "Otevřít novou kartu",
+        "description": "Button label to open a new tab in the specified container"
+    },
+    "tooltipCollapseContainers": {
+        "message": "Sbalit kontejnery",
+        "description": "Tooltip for the button to collapse inactive containers."
+    },
+    "buttonNewPrivateWindow": {
+        "message": "Nové soukromé okno",
+        "description": "Button to open a new private window."
+    },
+    "optionsDescriptionExperimental": {
+        "message": "Zakázáním některých z těchto možností lze vyřešit pozorované chybné chování.",
+        "description": "Description text for experimental features options."
+    },
+    "buttonDeleteContainer": {
+        "message": "Smazat kontejner…",
+        "description": "Button to delete a container."
+    },
+    "buttonDone": {
+        "message": "Hotovo",
+        "description": "Button to complete an action."
     }
 }
