@@ -1,1 +1,6 @@
-{}
+{
+    "effectiveLocale": {
+        "message": "cz",
+        "description": "Locale of this messages.json."
+    }
+}
