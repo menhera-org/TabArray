@@ -531,7 +531,7 @@
         "description": "Heading text of options page for general settings."
     },
     "labelAutoDiscardMinAge": {
-        "message": "Memoria libre de las pestañas tras la inactividad para:",
+        "message": "Liberar la memoria de las pestañas tras inactividad por:",
         "description": "Label text for autodiscard min age."
     },
     "labelAutoDiscardDisabled": {
@@ -567,7 +567,7 @@
         "description": "Label text for autodiscard in 86400 seconds."
     },
     "headingReopen": {
-        "message": "Reabrir el contenedor",
+        "message": "Reabrir en el contenedor",
         "description": "Heading text for reopen in container."
     }
 }
