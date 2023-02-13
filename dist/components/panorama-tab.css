@@ -49,6 +49,7 @@
 
 #tab-preview-img {
   inline-size: 100%;
+  user-select: none;
 }
 
 #tab-info {
