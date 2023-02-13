@@ -158,7 +158,7 @@ body.transparent > .content {
 
 #topbox {
   display: block grid;
-  grid-template-columns: 1fr max-content max-content max-content;
+  grid-template-columns: 1fr max-content max-content max-content max-content;
   grid-template-rows: 2.5em;
   padding-inline-start: 1em;
   position: relative;
@@ -268,8 +268,16 @@ body.transparent > .content {
   background-color: var(--text-color);
 }
 
-:is(#button-new-container, #button-settings, #button-sidebar, #button-new-temporary-container) > .button-text {
+:is(#button-new-container, #button-settings, #button-sidebar, #button-new-temporary-container, #button-panorama) > .button-text {
   display: none;
+}
+
+#button-panorama {
+  block-size: 100%;
+  inline-size: 2em;
+  color: inherit;
+  mask: url(/img/material-icons/grid_view.svg) center center / 67% no-repeat;
+  background-color: var(--text-color);
 }
 
 #button-hide-inactive::before {

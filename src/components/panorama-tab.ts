@@ -26,6 +26,7 @@ export class PanoramaTabElement extends HTMLElement {
 
   constructor() {
     super();
+    this.draggable = true;
     this.attachShadow({mode: 'open'});
     if (!this.shadowRoot) {
       throw new Error('shadowRoot is null');
@@ -43,6 +44,7 @@ export class PanoramaTabElement extends HTMLElement {
     });
     const tabPreviewImg = document.createElement('img');
     tabPreviewImg.id = 'tab-preview-img';
+    tabPreview.draggable = false;
     tabPreview.append(tabPreviewImg);
     this._tabPreviewImg = tabPreviewImg;
     const controls = document.createElement('div');
