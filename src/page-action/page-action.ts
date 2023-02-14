@@ -91,43 +91,12 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
   return containerInfos.filter((containerInfo) => containerInfo.cookieStoreId !== currentCookieStoreId);
 };
 
-const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number) => {
-  await Promise.all([
-    browser.tabs.create({
-      url,
-      cookieStoreId,
-      windowId,
-      active: true,
-    }),
-    browser.tabs.remove(currentTabId),
-  ]);
-};
-
 const reopenTab = async (targetCookieStoreId: string, currentBrowserTab: browser.Tabs.Tab) => {
-  if (currentBrowserTab.url == null || currentBrowserTab.id == null) return;
-  const url = currentBrowserTab.url;
-  const cookieStore = CookieStore.fromId(targetCookieStoreId);
-
-  // private and non-private tabs can't be on the same window
-  const windowId = cookieStore.isPrivate == currentBrowserTab.incognito ? currentBrowserTab.windowId : undefined;
-  if (windowId != null) {
-    return openTabAndCloseCurrent(url, targetCookieStoreId, windowId, currentBrowserTab.id);
-  }
-
-  const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => cookieStore.isPrivate == browserWindow.incognito);
-  for (const browserWindow of browserWindows) {
-    if (browserWindow.id == null) continue;
-    return openTabAndCloseCurrent(url, targetCookieStoreId, browserWindow.id, currentBrowserTab.id);
-  }
-
-  Promise.all([
-    await browser.windows.create({
-      url,
-      cookieStoreId: targetCookieStoreId,
-      incognito: cookieStore.isPrivate,
-    }),
-    await browser.tabs.remove(currentBrowserTab.id),
-  ]);
+  browser.runtime.sendMessage({
+    type: 'reopen_tab_in_container',
+    tabId: currentBrowserTab.id,
+    cookieStoreId: targetCookieStoreId,
+  });
 };
 
 (async () => {
