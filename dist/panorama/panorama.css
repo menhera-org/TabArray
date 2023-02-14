@@ -63,7 +63,7 @@ button {
   background-color: var(--secondary-background-color);
   overflow: auto;
   column-gap: 2rem;
-  box-shadow: inset 0 0 1rem var(--border-color);
+  /* box-shadow: inset 0 0 1rem var(--border-color); */
   border: solid .125rem var(--border-color);
 }
 
