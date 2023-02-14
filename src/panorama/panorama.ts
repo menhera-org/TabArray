@@ -32,6 +32,7 @@ import * as i18n from '../modules/i18n';
 import { WindowService } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { CookieStore, ContextualIdentity } from '../frameworks/tabAttributes';
 
 const panoramaStateStore = new PanoramaStateStore();
 const userContextService = UserContextService.getInstance();
@@ -99,6 +100,7 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
   if (isPrivate) {
     console.assert(userContextId == 0);
   }
+  const cookieStore = isPrivate ? CookieStore.PRIVATE : CookieStore.fromId(userContext.cookieStoreId);
   const containerElement = new PanoramaContainerElement(userContext);
   const tabGroup = await (isPrivate ? tabGroupService.getPrivateBrowsingTabGroup() : userContext.getTabGroup());
   const tabs = (await tabGroup.tabList.getTabs()).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
@@ -123,7 +125,12 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
     try {
       const data = JSON.parse(json || '');
       if (!data.id) return;
-      console.log('drop', data.id, userContextId);
+      console.log('drop', data.id, cookieStore.id);
+      browser.runtime.sendMessage({
+        type: 'reopen_tab_in_container',
+        tabId: data.id,
+        cookieStoreId: cookieStore.id,
+      });
     } catch (e) {
       // ignore
     }
@@ -153,6 +160,9 @@ render().catch((e) => {
   console.error(e);
 });
 
+ContextualIdentity.onCreated.addListener(() => render());
+ContextualIdentity.onRemoved.addListener(() => render());
+ContextualIdentity.onUpdated.addListener(() => render());
 browser.tabs.onRemoved.addListener(() => render());
 browser.tabs.onUpdated.addListener(() => render(), { properties: ['favIconUrl', 'title', 'url'] });
 browser.tabs.onCreated.addListener(() => render());

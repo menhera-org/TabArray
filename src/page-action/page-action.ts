@@ -96,6 +96,7 @@ const reopenTab = async (targetCookieStoreId: string, currentBrowserTab: browser
     type: 'reopen_tab_in_container',
     tabId: currentBrowserTab.id,
     cookieStoreId: targetCookieStoreId,
+    active: true,
   });
 };
 

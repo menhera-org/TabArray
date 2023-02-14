@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { CookieStore } from '../frameworks/tabAttributes';
 
-const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number) => {
+const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number, active: boolean) => {
   const browserTab = await browser.tabs.create({
     url,
     cookieStoreId,
@@ -31,7 +31,7 @@ const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, window
   });
   if (!browserTab.id) return;
   await Promise.all([
-    browser.tabs.update(browserTab.id, {active: true}),
+    browser.tabs.update(browserTab.id, {active}),
     browser.tabs.remove(currentTabId),
   ]);
 };
@@ -42,32 +42,38 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
   switch (message.type) {
     case 'reopen_tab_in_container': {
       if (!message.tabId || !message.cookieStoreId) return;
-      const {tabId, cookieStoreId} = message;
-      console.debug('reopen_tab_in_container: tabId=%d, cookieStoreId=%s', tabId, cookieStoreId);
-      const browserTab = await browser.tabs.get(tabId);
-      if (!browserTab.url || browserTab.url === 'about:blank' || !browserTab.cookieStoreId || !browserTab.windowId) {
-        console.debug('reopen_tab_in_container: tabId=%d is incomplete, ignoring', tabId);
-        return;
-      }
-      const currentCookieStore = CookieStore.fromId(browserTab.cookieStoreId);
-      const targetCookieStore = CookieStore.fromId(cookieStoreId);
-      if (currentCookieStore.isPrivate != targetCookieStore.isPrivate) {
-        const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => targetCookieStore.isPrivate == browserWindow.incognito);
-        for (const browserWindow of browserWindows) {
-          if (browserWindow.id == null) continue;
-          await openTabAndCloseCurrent(browserTab.url, targetCookieStore.id, browserWindow.id, tabId);
+      const active = !!message.active;
+      try {
+        const {tabId, cookieStoreId} = message;
+        console.debug('reopen_tab_in_container: tabId=%d, cookieStoreId=%s', tabId, cookieStoreId);
+        const browserTab = await browser.tabs.get(tabId);
+        if (!browserTab.url || browserTab.url === 'about:blank' || !browserTab.cookieStoreId || !browserTab.windowId) {
+          console.debug('reopen_tab_in_container: tabId=%d is incomplete, ignoring', tabId);
           return;
         }
-        Promise.all([
-          browser.windows.create({
+        const currentCookieStore = CookieStore.fromId(browserTab.cookieStoreId);
+        const targetCookieStore = CookieStore.fromId(cookieStoreId);
+        if (currentCookieStore.id === targetCookieStore.id) return;
+        if (currentCookieStore.isPrivate != targetCookieStore.isPrivate) {
+          const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => targetCookieStore.isPrivate == browserWindow.incognito);
+          for (const browserWindow of browserWindows) {
+            if (browserWindow.id == null) continue;
+            await openTabAndCloseCurrent(browserTab.url, targetCookieStore.id, browserWindow.id, tabId, active);
+            return;
+          }
+          await browser.windows.create({
             url: browserTab.url,
             cookieStoreId: targetCookieStore.id,
             incognito: targetCookieStore.isPrivate,
-          }),
-          browser.tabs.remove(tabId),
-        ]);
-      } else {
-        await openTabAndCloseCurrent(browserTab.url, targetCookieStore.id, browserTab.windowId, tabId);
+            focused: active,
+          });
+          await browser.tabs.remove(tabId);
+        } else {
+          await openTabAndCloseCurrent(browserTab.url, targetCookieStore.id, browserTab.windowId, tabId, active);
+        }
+      } catch (e) {
+        // this happens when the tab is privileged
+        console.warn(e);
       }
       break;
     }
