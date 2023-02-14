@@ -20,7 +20,7 @@
 :host {
   position: relative;
   box-sizing: border-box;
-  inline-size: 16rem;
+  inline-size: 8rem;
   display: grid;
   grid-template-rows: minmax(max-content, 1fr) max-content;
 }
@@ -37,7 +37,7 @@
 }
 
 #tab-preview {
-  min-block-size: 4rem;
+  min-block-size: 2rem;
   background-color: #fff;
   display: grid;
   align-content: center;

@@ -93,8 +93,8 @@ button {
   content: '';
 	mask: url(/img/firefox-icons/add.svg) center center/40% no-repeat;
 	background-color: var(--text-color);
-  inline-size: 16rem;
-  min-block-size: 9rem;
+  inline-size: 8rem;
+  min-block-size: 4.5rem;
   box-sizing: border-box;
 }
 
