@@ -45,7 +45,7 @@ export class PanoramaTabElement extends HTMLElement {
     const tabPreviewImg = document.createElement('img');
     tabPreviewImg.id = 'tab-preview-img';
     tabPreviewImg.draggable = false;
-    tabPreview.draggable = false;
+    // tabPreview.draggable = false;
     tabPreview.append(tabPreviewImg);
     this._tabPreviewImg = tabPreviewImg;
     const controls = document.createElement('div');

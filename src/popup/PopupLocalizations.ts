@@ -30,6 +30,7 @@ document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
 
 utils.queryElementNonNull<HTMLElement>('#button-panorama > .button-text').textContent = browser.i18n.getMessage('buttonPanorama');
+utils.queryElementNonNull<HTMLElement>('#button-panorama').title = browser.i18n.getMessage('buttonPanorama');
 utils.queryElementNonNull<HTMLElement>('#button-cookies > .button-text').textContent = browser.i18n.getMessage('tooltipCookies');
 utils.queryElementNonNull<HTMLElement>('#button-about-addon > .button-text').textContent = browser.i18n.getMessage('buttonAboutAddon');
 utils.queryElementNonNull<HTMLElement>('#button-sidebar > .button-text').textContent = browser.i18n.getMessage('buttonSidebar');

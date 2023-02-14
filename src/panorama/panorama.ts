@@ -60,6 +60,8 @@ const renderTab = (tab: Tab) => {
   const previewUrl = panoramaStateStore.getPreviewUrl(tab.id);
   if (previewUrl) {
     tabElement.previewUrl = previewUrl;
+  } else {
+    tabElement.previewUrl = '/img/firefox-icons/defaultPreview.svg';
   }
 
   // https://qiita.com/piroor/items/44ccbc2ee918bc88c3ea
@@ -77,6 +79,17 @@ const renderTab = (tab: Tab) => {
   tabElement.addEventListener('button-tab-close', async () => {
     await browser.tabs.remove(tab.id);
     await render();
+  });
+
+  tabElement.addEventListener('dragstart', (ev) => {
+    if (!ev.dataTransfer) return;
+    ev.dataTransfer.setData('application/json', JSON.stringify({
+      id: tab.id,
+    }));
+    const img = new Image();
+    img.src = previewUrl;
+    // ev.dataTransfer?.setDragImage(img, 16, 16);
+    ev.dataTransfer.dropEffect = 'move';
   });
   return tabElement;
 };
@@ -101,6 +114,20 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
       console.error(e);
     });
   });
+  containerElement.addEventListener('dragover', (ev) => {
+    ev.preventDefault();
+  });
+  containerElement.addEventListener('drop', (ev) => {
+    ev.preventDefault();
+    const json = ev.dataTransfer?.getData('application/json');
+    try {
+      const data = JSON.parse(json || '');
+      if (!data.id) return;
+      console.log('drop', data.id, userContextId);
+    } catch (e) {
+      // ignore
+    }
+  })
   return containerElement;
 };
 
