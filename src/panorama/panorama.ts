@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2022 Menhera.org
+  Copyright (C) 2023 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import { WindowService } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { CookieStore, ContextualIdentity } from '../frameworks/tabAttributes';
+import { ContainerEditorElement } from '../components/container-editor';
 
 const panoramaStateStore = new PanoramaStateStore();
 const userContextService = UserContextService.getInstance();
@@ -42,6 +43,28 @@ const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
+
+const newContainerButtonElement = document.getElementById('button-new-container') as HTMLButtonElement;
+newContainerButtonElement.title = i18n.getMessage('buttonNewContainer');
+
+let containerEditorElement: ContainerEditorElement | null = null;
+newContainerButtonElement.addEventListener('click', () => {
+  if (containerEditorElement) {
+    containerEditorElement.remove();
+  }
+  containerEditorElement = new ContainerEditorElement();
+  document.body.appendChild(containerEditorElement);
+  containerEditorElement.onContainerCreated.addListener(async (cookieStoreId) => {
+    await render();
+    containerEditorElement?.remove();
+    containerEditorElement = null;
+    location.hash = `#${cookieStoreId}`;
+  });
+  containerEditorElement.onCancel.addListener(() => {
+    containerEditorElement?.remove();
+    containerEditorElement = null;
+  });
+});
 
 const renderTab = (tab: Tab) => {
   const tabElement = new PanoramaTabElement();
@@ -102,6 +125,7 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
   }
   const cookieStore = isPrivate ? CookieStore.PRIVATE : CookieStore.fromId(userContext.cookieStoreId);
   const containerElement = new PanoramaContainerElement(userContext);
+  containerElement.targetId = cookieStore.id;
   const tabGroup = await (isPrivate ? tabGroupService.getPrivateBrowsingTabGroup() : userContext.getTabGroup());
   const tabs = (await tabGroup.tabList.getTabs()).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
   containerElement.tabCount = tabs.length;

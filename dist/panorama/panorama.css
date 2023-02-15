@@ -55,6 +55,12 @@ button {
   grid-column: 3 / 4;
 }
 
+.container-label {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 .container-tabs {
   position: relative;
   display: flex;
@@ -109,4 +115,32 @@ button {
 
 .container-close:is(:focus, :hover, :active) {
   opacity: 1;
+}
+
+#topbar {
+  position: sticky;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  padding: .5rem;
+  background-color: var(--background-color);
+  border-bottom: solid .125rem var(--border-color);
+  z-index: 3;
+}
+
+#button-new-container {
+  block-size: 2em;
+  inline-size: 2em;
+  color: inherit;
+  mask: url(/img/firefox-icons/add.svg) center center / 67% no-repeat;
+  background-color: var(--text-color);
+  opacity: .5;
+}
+
+#button-new-container:is(:focus, :hover, :active) {
+  opacity: 1;
+}
+
+:is(#button-new-container) > .button-text {
+  display: none;
 }

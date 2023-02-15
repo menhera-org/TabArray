@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2022 Menhera.org
+  Copyright (C) 2023 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ export class PanoramaContainerElement extends HTMLElement {
   private _userContextId = 0;
   private _containerHeadingElement: HTMLDivElement;
   private _containerIconElement: HTMLDivElement;
-  private _containerLabelElement: HTMLDivElement;
+  private _containerLabelElement: HTMLAnchorElement;
   private _containerCloseButtonElement: HTMLButtonElement;
   private _containerTabsElement: HTMLDivElement;
   private _newTabButtonElement: HTMLButtonElement;
@@ -49,7 +49,7 @@ export class PanoramaContainerElement extends HTMLElement {
     this._containerHeadingElement.append(this._containerIconElement);
     this._containerIconElement.classList.add('container-icon');
 
-    this._containerLabelElement = document.createElement('div');
+    this._containerLabelElement = document.createElement('a');
     this._containerHeadingElement.append(this._containerLabelElement);
     this._containerLabelElement.classList.add('container-label');
 
@@ -102,6 +102,15 @@ export class PanoramaContainerElement extends HTMLElement {
 
   public get containerName(): string {
     return this._containerLabelElement.textContent ?? '';
+  }
+
+  public get targetId(): string {
+    return this.id;
+  }
+
+  public set targetId(targetId: string) {
+    this.id = targetId;
+    this._containerLabelElement.href = `#${targetId}`;
   }
 }
 
