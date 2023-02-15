@@ -19,35 +19,36 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import browser from 'webextension-polyfill';
 import { ContentStorageStatistics } from './ContentStorageStatistics';
 import { CookieStore } from '../frameworks/tabAttributes';
 import { FirstPartyService } from '../frameworks/tabGroups';
+import { MessagingService } from '../frameworks/extension/MessagingService';
 
 const statistics = new ContentStorageStatistics();
 const firstPartyService = FirstPartyService.getInstance();
+const messagingService = MessagingService.getInstance();
 
-browser.runtime.onMessage.addListener(async (message, sender) => {
+messagingService.addListener('content-localstorage-statistics', async (message, sender) => {
   if (!sender.tab) return;
   if (!sender.tab.cookieStoreId) return;
+  if (null == message || typeof message != 'object' || !('origin' in message) || !('localStorageLength' in message)) return;
+
   const { cookieStoreId } = sender.tab;
 
   // Ignore private tabs so that we don't leak data from the private browsing
   if (cookieStoreId == CookieStore.PRIVATE.id) return;
 
-  if (message.type === 'content-localstorage-statistics') {
-    // Top frame URL can be about:blank for popups. This is the limitation of the API.
-    const topFrameUrl = sender.frameId == 0
-      ? message.origin
-      : (sender.tab.url || 'about:blank');
+  // Top frame URL can be about:blank for popups. This is the limitation of the API.
+  const topFrameUrl = sender.frameId == 0
+    ? message.origin as string
+    : (sender.tab.url || 'about:blank');
 
-    await firstPartyService.initialized;
-    const firstPartyDomain = firstPartyService.getRegistrableDomain(new URL(topFrameUrl));
+  await firstPartyService.initialized;
+  const firstPartyDomain = firstPartyService.getRegistrableDomain(new URL(topFrameUrl));
 
-    const origin = message.origin;
-    statistics.setOriginStatistics(sender.tab.cookieStoreId, firstPartyDomain, origin, {
-      origin,
-      hasLocalStorage: 0 < message.localStorageLengh,
-    });
-  }
+  const origin = message.origin as string;
+  statistics.setOriginStatistics(cookieStoreId, firstPartyDomain, origin, {
+    origin,
+    hasLocalStorage: 0 < (message.localStorageLength as number),
+  });
 });

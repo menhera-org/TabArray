@@ -21,6 +21,9 @@
 
 import browser from 'webextension-polyfill';
 import { CookieStore, ContextualIdentity } from '../frameworks/tabAttributes';
+import { MessagingService } from '../frameworks/extension/MessagingService';
+
+const messagingService = MessagingService.getInstance();
 
 const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number, active: boolean) => {
   const browserTab = await browser.tabs.create({
@@ -82,30 +85,23 @@ const containerUpdate = async (name: string, color: string, icon: string, cookie
   await contextualIdentity.setParams({name, color, icon});
 };
 
-browser.runtime.onMessage.addListener(async (message, sender) => {
-  if (!message || !message.type) return;
-  console.log('onMessage', message, sender);
-  switch (message.type) {
-    case 'reopen_tab_in_container': {
-      if (!message.tabId || !message.cookieStoreId) return;
-      const active = !!message.active;
-      const {tabId, cookieStoreId} = message;
-      await reopenTabInContainer(tabId, cookieStoreId, active);
-      break;
-    }
+messagingService.addListener('reopen_tab_in_container', async (message) => {
+  if (null == message || typeof message != 'object' || !('tabId' in message) || !('cookieStoreId' in message)) return;
+  const active = ('active' in message) ? !!message.active : false;
+  const {tabId, cookieStoreId} = message;
+  await reopenTabInContainer(tabId as number, cookieStoreId as string, active);
+});
 
-    case 'container_create': {
-      if (!message.name || !message.color || !message.icon) return;
-      const {name, color, icon} = message;
-      const cookieStoreId = await containerCreate(name, color, icon);
-      return cookieStoreId;
-    }
+messagingService.addListener('container_create', async (message) => {
+  if (null == message || typeof message != 'object' || !('name' in message) || !('color' in message) || !('icon' in message)) return;
+  const {name, color, icon} = message;
+  const cookieStoreId = await containerCreate(name as string, color as string, icon as string);
+  return cookieStoreId;
+});
 
-    case 'container_update': {
-      if (!message.name || !message.color || !message.icon || !message.cookieStoreId) return;
-      const {name, color, icon, cookieStoreId} = message;
-      await containerUpdate(name, color, icon, cookieStoreId);
-      return cookieStoreId;
-    }
-  }
+messagingService.addListener('container_update', async (message) => {
+  if (null == message || typeof message != 'object' || !('name' in message) || !('color' in message) || !('icon' in message) || !('cookieStoreId' in message)) return;
+  const {name, color, icon, cookieStoreId} = message;
+  await containerUpdate(name as string, color as string, icon as string, cookieStoreId as string);
+  return cookieStoreId;
 });

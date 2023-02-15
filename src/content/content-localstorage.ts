@@ -24,9 +24,11 @@ import browser from 'webextension-polyfill';
 const notifyStorageData = () => {
   browser.runtime.sendMessage({
     type: 'content-localstorage-statistics',
-    origin: window.location.origin,
-    url: window.location.href,
-    localStorageLengh: window.localStorage.length,
+    payload: {
+      origin: window.location.origin,
+      url: window.location.href,
+      localStorageLength: window.localStorage.length,
+    },
   }).catch(() => {
     // ignore.
   });

@@ -24,6 +24,7 @@ import { Uint32 } from '../frameworks/types';
 import { UserContextService } from '../userContexts/UserContextService';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { ExtensionService } from '../frameworks/extension';
+import { MessagingService } from '../frameworks/extension/MessagingService';
 
 type ContainerInfo = {
   cookieStoreId: string;
@@ -34,6 +35,7 @@ type ContainerInfo = {
 const userContextService = UserContextService.getInstance();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 const extensionService = ExtensionService.getInstance();
+const messagingService = MessagingService.getInstance();
 
 const mainElement = document.querySelector('#main');
 
@@ -92,8 +94,7 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
 };
 
 const reopenTab = async (targetCookieStoreId: string, currentBrowserTab: browser.Tabs.Tab) => {
-  browser.runtime.sendMessage({
-    type: 'reopen_tab_in_container',
+  await messagingService.sendMessage('reopen_tab_in_container', {
     tabId: currentBrowserTab.id,
     cookieStoreId: targetCookieStoreId,
     active: true,

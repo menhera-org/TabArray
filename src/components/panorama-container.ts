@@ -36,6 +36,7 @@ export class PanoramaContainerElement extends HTMLElement {
   private _containerTabsElement: HTMLDivElement;
   private _newTabButtonElement: HTMLButtonElement;
 
+  public readonly onContainerEditButtonClick = new EventSink<void>();
   public readonly onNewTabButtonClick = new EventSink<number>();
 
   public constructor(userContext: UserContext = UserContext.DEFAULT) {
@@ -52,6 +53,17 @@ export class PanoramaContainerElement extends HTMLElement {
     this._containerLabelElement = document.createElement('a');
     this._containerHeadingElement.append(this._containerLabelElement);
     this._containerLabelElement.classList.add('container-label');
+
+    const containerEditButton = document.createElement('button');
+    this._containerHeadingElement.append(containerEditButton);
+    if (userContext.id == 0) {
+      containerEditButton.disabled = true;
+    }
+    containerEditButton.classList.add('container-edit');
+    containerEditButton.title = browser.i18n.getMessage('buttonEditContainer');
+    containerEditButton.addEventListener('click', () => {
+      this.onContainerEditButtonClick.dispatch();
+    });
 
     this._containerCloseButtonElement = document.createElement('button');
     this._containerHeadingElement.append(this._containerCloseButtonElement);

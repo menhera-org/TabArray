@@ -24,12 +24,14 @@ import { ContainerAttributes } from '../frameworks/tabAttributes';
 import { ColorPickerElement } from './usercontext-colorpicker';
 import { IconPickerElement } from './usercontext-iconpicker';
 import { EventSink } from '../frameworks/utils';
+import { MessagingService } from '../frameworks/extension/MessagingService';
 
 export type EditorMode = 'create' | 'edit';
 
 export class ContainerEditorElement extends HTMLElement {
   private _mode: EditorMode;
   private _containerAttributes: ContainerAttributes | undefined;
+  private readonly _messagingService = MessagingService.getInstance();
 
   public readonly onContainerCreated = new EventSink<string>();
   public readonly onContainerUpdated = new EventSink<string>();
@@ -105,24 +107,22 @@ export class ContainerEditorElement extends HTMLElement {
       const icon = iconPicker.value;
       const color = colorPicker.value;
       if (this._mode === 'create') {
-        const cookieStoreId: string = await browser.runtime.sendMessage({
-          type: 'container_create',
+        const cookieStoreId = await this._messagingService.sendMessage('container_create', {
           name,
           icon,
           color,
-        });
+        }) as string;
         this.onContainerCreated.dispatch(cookieStoreId);
       } else if (this._mode === 'edit') {
         if (!this._containerAttributes) {
           throw new Error('Container attributes is null');
         }
-        const cookieStoreId: string = await browser.runtime.sendMessage({
-          type: 'container_update',
+        const cookieStoreId = await this._messagingService.sendMessage('container_update', {
           cookieStoreId: this._containerAttributes.id,
           name,
           icon,
           color,
-        });
+        }) as string;
         this.onContainerUpdated.dispatch(cookieStoreId);
       }
       this.remove();

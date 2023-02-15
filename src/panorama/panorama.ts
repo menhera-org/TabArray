@@ -32,14 +32,18 @@ import * as i18n from '../modules/i18n';
 import { WindowService } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
-import { CookieStore, ContextualIdentity } from '../frameworks/tabAttributes';
+import { CookieStore, ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
 import { ContainerEditorElement } from '../components/container-editor';
+import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
+import { MessagingService } from '../frameworks/extension/MessagingService';
+import { PromiseUtils } from '../frameworks/utils';
 
 const panoramaStateStore = new PanoramaStateStore();
 const userContextService = UserContextService.getInstance();
 const windowService = WindowService.getInstance();
 const tabGroupService = TabGroupService.getInstance();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+const messagingService = MessagingService.getInstance();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -55,10 +59,12 @@ newContainerButtonElement.addEventListener('click', () => {
   containerEditorElement = new ContainerEditorElement();
   document.body.appendChild(containerEditorElement);
   containerEditorElement.onContainerCreated.addListener(async (cookieStoreId) => {
-    await render();
     containerEditorElement?.remove();
     containerEditorElement = null;
-    location.hash = `#${cookieStoreId}`;
+    for (let i = 0; i < 10; i++) {
+      await PromiseUtils.sleep(100);
+      location.hash = `#${cookieStoreId}`;
+    }
   });
   containerEditorElement.onCancel.addListener(() => {
     containerEditorElement?.remove();
@@ -102,7 +108,7 @@ const renderTab = (tab: Tab) => {
   });
   tabElement.addEventListener('button-tab-close', async () => {
     await browser.tabs.remove(tab.id);
-    await render();
+    await handler.render();
   });
 
   tabElement.addEventListener('dragstart', (ev) => {
@@ -140,21 +146,53 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
       console.error(e);
     });
   });
+  if (0 != userContextId) {
+    containerElement.onContainerEditButtonClick.addListener(async () => {
+      if (containerEditorElement) {
+        containerEditorElement.remove();
+      }
+      const contextualIdentity = await ContextualIdentity.get(cookieStore.id);
+      const containerAttributes = ContainerAttributes.fromContextualIdentity(contextualIdentity);
+      containerEditorElement = new ContainerEditorElement(containerAttributes);
+      document.body.appendChild(containerEditorElement);
+      containerEditorElement.onContainerUpdated.addListener(async (cookieStoreId) => {
+        containerEditorElement?.remove();
+        containerEditorElement = null;
+        for (let i = 0; i < 10; i++) {
+          await PromiseUtils.sleep(100);
+          location.hash = `#${cookieStoreId}`;
+        }
+      });
+      containerEditorElement.onCancel.addListener(() => {
+        containerEditorElement?.remove();
+        containerEditorElement = null;
+      });
+    });
+  }
   containerElement.addEventListener('dragover', (ev) => {
     ev.preventDefault();
   });
-  containerElement.addEventListener('drop', (ev) => {
+  containerElement.addEventListener('drop', async (ev) => {
     ev.preventDefault();
     const json = ev.dataTransfer?.getData('application/json');
     try {
       const data = JSON.parse(json || '');
       if (!data.id) return;
       console.log('drop', data.id, cookieStore.id);
-      browser.runtime.sendMessage({
-        type: 'reopen_tab_in_container',
+      await messagingService.sendMessage('reopen_tab_in_container', {
         tabId: data.id,
         cookieStoreId: cookieStore.id,
       });
+
+      let count = 0;
+      const intervalId = setInterval(() => {
+        count++;
+        if (count > 20) {
+          clearInterval(intervalId);
+          return;
+        }
+        location.hash = `#${cookieStore.id}`;
+      }, 100);
     } catch (e) {
       // ignore
     }
@@ -180,20 +218,22 @@ const render = async () => {
   console.log('render(): finished');
 };
 
-render().catch((e) => {
+const handler = new ViewRefreshHandler(render);
+
+handler.render().catch((e) => {
   console.error(e);
 });
 
-ContextualIdentity.onCreated.addListener(() => render());
-ContextualIdentity.onRemoved.addListener(() => render());
-ContextualIdentity.onUpdated.addListener(() => render());
-browser.tabs.onRemoved.addListener(() => render());
-browser.tabs.onUpdated.addListener(() => render(), { properties: ['favIconUrl', 'title', 'url'] });
-browser.tabs.onCreated.addListener(() => render());
+ContextualIdentity.onCreated.addListener(() => handler.render());
+ContextualIdentity.onRemoved.addListener(() => handler.render());
+ContextualIdentity.onUpdated.addListener(() => handler.render());
+browser.tabs.onRemoved.addListener(() => handler.render());
+browser.tabs.onUpdated.addListener(() => handler.render(), { properties: ['favIconUrl', 'title', 'url'] });
+browser.tabs.onCreated.addListener(() => handler.render());
 browser.tabs.query({}).then((browserTabs) => {
   const tabs = browserTabs.map((browserTab) => new Tab(browserTab));
   panoramaStateStore.updatePreviewUrls(tabs.map((tab) => tab.id)).then(() => {
-    render().catch((e) => {
+    handler.render().catch((e) => {
       console.error(e);
     });
   });

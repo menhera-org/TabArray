@@ -19,9 +19,11 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import browser from 'webextension-polyfill';
+import { MessagingService } from '../frameworks/extension/MessagingService';
 
+const messagingService = MessagingService.getInstance();
 const shadows = new WeakMap;
+
 export class WebExtensionsBroadcastChannel extends EventTarget {
   constructor(channel) {
     super();
@@ -41,7 +43,7 @@ export class WebExtensionsBroadcastChannel extends EventTarget {
       closed: false,
     });
     const shadow = shadows.get(this);
-    browser.runtime.onMessage.addListener(shadow.internalHandler);
+    messagingService.addListener('broadcastChannel', shadow.internalHandler);
   }
 
   get onmessage() {
@@ -65,7 +67,7 @@ export class WebExtensionsBroadcastChannel extends EventTarget {
   close() {
     const shadow = shadows.get(this);
     shadow.closed = true;
-    browser.runtime.onMessage.removeListener(shadow.internalHandler);
+    messagingService.removeListener('broadcastChannel', shadow.internalHandler);
   }
 
   postMessage(msg) {
@@ -79,7 +81,7 @@ export class WebExtensionsBroadcastChannel extends EventTarget {
         message: msg,
       }
     };
-    browser.runtime.sendMessage(message).catch((e) => {
+    messagingService.sendMessage('broadcastChannel', message).catch((e) => {
       console.debug(e);
     });
     shadow.internalHandler(message);

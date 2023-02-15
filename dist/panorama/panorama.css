@@ -19,7 +19,16 @@
 
 @import url(/theme.css);
 
+:root {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100%;
+}
+
 body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
   background-color: var(--background-color);
   color: var(--text-color);
 }
@@ -29,6 +38,7 @@ button {
 }
 
 #containers {
+  flex-grow: 1;
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -37,8 +47,26 @@ button {
 
 .container-heading {
   display: grid;
-  grid-template-columns: 2rem max-content max-content 1fr max-content;
+  grid-template-columns: 2rem max-content max-content 2rem 1fr max-content;
   padding-inline: 1rem;
+}
+
+.container-edit {
+  appearance: none;
+  border: none;
+  padding: 0 !important;
+  color: inherit;
+  mask: url(/img/material-icons/edit.svg) center center / 67% no-repeat;
+  background-color: var(--text-color);
+  opacity: .5;
+}
+
+.container-edit:disabled {
+  visibility: hidden;
+}
+
+.container-edit:not(:disabled):is(:focus, :hover, :active) {
+  opacity: 1;
 }
 
 .container-heading > *, .container-heading::after {
@@ -119,12 +147,12 @@ button {
 
 #topbar {
   position: sticky;
-  inset-block-start: 0;
+  inset-block-end: 0;
   inset-inline-start: 0;
   inline-size: 100%;
   padding: .5rem;
   background-color: var(--background-color);
-  border-bottom: solid .125rem var(--border-color);
+  border-block-start: solid .125rem var(--border-color);
   z-index: 3;
 }
 
