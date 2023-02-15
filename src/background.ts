@@ -42,7 +42,7 @@ import './languages/register-content-script';
 import './containers/background-temporary-containers';
 import './autodiscard/background-autodiscard';
 import './cookies/background-storage-observer';
-import './background/BackgroundCommandListener';
+import './background/BackgroundMessageListeners';
 import { UaContentScriptRegistrar} from './overrides/UaContentScriptRegistrar';
 
 // watchdog
