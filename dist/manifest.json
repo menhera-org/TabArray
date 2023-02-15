@@ -86,6 +86,12 @@
         "default": "Ctrl+Alt+S"
       },
       "description": "__MSG_commandOpenSidebar__"
+    },
+    "open_panorama_grid": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+P"
+      },
+      "description": "__MSG_buttonPanorama__"
     }
   },
   "content_scripts": [
