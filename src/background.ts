@@ -43,6 +43,7 @@ import './containers/background-temporary-containers';
 import './autodiscard/background-autodiscard';
 import './cookies/background-storage-observer';
 import './background/BackgroundMessageListeners';
+import './background/KeyboardShortcurListeners';
 import { UaContentScriptRegistrar} from './overrides/UaContentScriptRegistrar';
 
 // watchdog
