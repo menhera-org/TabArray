@@ -47,7 +47,7 @@ button {
 
 .container-heading {
   display: grid;
-  grid-template-columns: 2rem max-content max-content 2rem 1fr max-content;
+  grid-template-columns: 2rem max-content max-content 2rem 2rem 1fr max-content;
   padding-inline: 1rem;
 }
 
@@ -61,11 +61,21 @@ button {
   opacity: .5;
 }
 
-.container-edit:disabled {
+.container-delete {
+  appearance: none;
+  border: none;
+  padding: 0 !important;
+  color: inherit;
+  mask: url(/img/material-icons/delete_forever.svg) center center / 67% no-repeat;
+  background-color: var(--text-color);
+  opacity: .5;
+}
+
+:is(.container-edit, .container-delete):disabled {
   visibility: hidden;
 }
 
-.container-edit:not(:disabled):is(:focus, :hover, :active) {
+:is(.container-edit, .container-delete):not(:disabled):is(:focus, :hover, :active) {
   opacity: 1;
 }
 

@@ -34,6 +34,7 @@ import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { CookieStore, ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
 import { ContainerEditorElement } from '../components/container-editor';
+import { ModalConfirmElement } from '../components/modal-confirm';
 import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
 import { MessagingService } from '../frameworks/extension/MessagingService';
 import { PromiseUtils } from '../frameworks/utils';
@@ -167,6 +168,16 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
         containerEditorElement?.remove();
         containerEditorElement = null;
       });
+    });
+
+    containerElement.onContainerDeleteButtonClick.addListener(async () => {
+      const contextualIdentity = await ContextualIdentity.get(cookieStore.id);
+      if (!contextualIdentity) return;
+      const confirmElement = new ModalConfirmElement(browser.i18n.getMessage('confirmContainerDelete', contextualIdentity.name));
+      confirmElement.onOk.addListener(async () => {
+        await ContextualIdentity.remove(cookieStore.id);
+      });
+      document.body.appendChild(confirmElement);
     });
   }
   containerElement.addEventListener('dragover', (ev) => {

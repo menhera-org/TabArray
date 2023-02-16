@@ -37,6 +37,7 @@ export class PanoramaContainerElement extends HTMLElement {
   private _newTabButtonElement: HTMLButtonElement;
 
   public readonly onContainerEditButtonClick = new EventSink<void>();
+  public readonly onContainerDeleteButtonClick = new EventSink<void>();
   public readonly onNewTabButtonClick = new EventSink<number>();
 
   public constructor(userContext: UserContext = UserContext.DEFAULT) {
@@ -63,6 +64,17 @@ export class PanoramaContainerElement extends HTMLElement {
     containerEditButton.title = browser.i18n.getMessage('buttonEditContainer');
     containerEditButton.addEventListener('click', () => {
       this.onContainerEditButtonClick.dispatch();
+    });
+
+    const containerDeleteButton = document.createElement('button');
+    this._containerHeadingElement.append(containerDeleteButton);
+    if (userContext.id == 0) {
+      containerDeleteButton.disabled = true;
+    }
+    containerDeleteButton.classList.add('container-delete');
+    containerDeleteButton.title = browser.i18n.getMessage('buttonDeleteContainer');
+    containerDeleteButton.addEventListener('click', async () => {
+      this.onContainerDeleteButtonClick.dispatch();
     });
 
     this._containerCloseButtonElement = document.createElement('button');
