@@ -52,6 +52,9 @@ document.documentElement.lang = i18n.getEffectiveLocale();
 const newContainerButtonElement = document.getElementById('button-new-container') as HTMLButtonElement;
 newContainerButtonElement.title = i18n.getMessage('buttonNewContainer');
 
+const settingsButtonElement = document.getElementById('button-settings') as HTMLButtonElement;
+settingsButtonElement.title = i18n.getMessage('buttonSettings');
+
 let containerEditorElement: ContainerEditorElement | null = null;
 newContainerButtonElement.addEventListener('click', () => {
   if (containerEditorElement) {
@@ -247,5 +250,11 @@ browser.tabs.query({}).then((browserTabs) => {
     handler.render().catch((e) => {
       console.error(e);
     });
+  });
+});
+
+settingsButtonElement.addEventListener('click', () => {
+  browser.runtime.openOptionsPage().then(() => {
+    window.close();
   });
 });

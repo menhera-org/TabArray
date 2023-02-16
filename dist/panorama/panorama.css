@@ -175,10 +175,19 @@ button {
   opacity: .5;
 }
 
-#button-new-container:is(:focus, :hover, :active) {
+#button-settings {
+  block-size: 2em;
+  inline-size: 2em;
+  color: inherit;
+  mask: url(/img/firefox-icons/settings.svg) center center / 67% no-repeat;
+  background-color: var(--text-color);
+  opacity: .5;
+}
+
+:is(#button-new-container, #button-settings):is(:focus, :hover, :active) {
   opacity: 1;
 }
 
-:is(#button-new-container) > .button-text {
+:is(#button-new-container, #button-settings) > .button-text {
   display: none;
 }
