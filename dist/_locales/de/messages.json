@@ -44,11 +44,11 @@
         "description": "Tooltip for the button to unpin a tab."
     },
     "tooltipHideContainerButton": {
-        "message": "Tabs dieses Containers ausblenden",
+        "message": "Die Registerkarten dieses Containers ausblenden",
         "description": "Tooltip for the button to hide the tabs of a container."
     },
     "tooltipUnhideContainerButton": {
-        "message": "Tabs dieses Containers anzeigen",
+        "message": "Die Registerkarten dieses Containers anzeigen",
         "description": "Tooltip for the button to unhide the tabs of a container."
     },
     "tooltipEditContainerButton": {
@@ -89,7 +89,7 @@
         }
     },
     "tooltipContainerCloseAll": {
-        "message": "Alle Tabs in diesem Container schließen",
+        "message": "Alle Registerkarten in diesem Container schließen",
         "description": "Tooltip for a button to close all tabs of a container."
     },
     "tooltipContainerDelete": {
@@ -131,7 +131,7 @@
         "description": "Virtual container name for tabs with no container."
     },
     "browserActionTitle": {
-        "message": "Tabs und Gruppen",
+        "message": "Registerkarten und Gruppen",
         "description": "Title of browserAction about tabs and container-based groups."
     },
     "windowTitlePrefaceTemplate": {
@@ -499,7 +499,7 @@
         "description": "Button to clear data."
     },
     "privateBrowsing": {
-        "message": "Privates Browsing",
+        "message": "Privatesbrowsing",
         "description": "Private Browsing page"
     },
     "confirmContainerClearCookie": {
@@ -511,5 +511,63 @@
                 "example": "Container 3"
             }
         }
+    },
+    "confirmPrivateBrowsingClearCookie": {
+        "message": "Möchten Sie Cookies für Privatesbrowsing löschen?",
+        "description": "Confirmation message before clearing cookies for private browsing."
+    },
+    "fpiDescription": {
+        "message": "Diese Erweiterung aktiviert standardmäßig die First-Party-Isolate-Funktion (FPI) von Firefox. Das bedeutet, dass Cookies für verschiedene Websites, sogar für denselben Container, nach registrierbarer Domain getrennt werden. Sie können diese Funktion hier deaktivieren.",
+        "description": "Description text for FPI"
+    },
+    "labelSelectContainerExternalTabs": {
+        "message": "Einen Container auswählen, wenn eine externe Anwendung eine Registerkarte öffnet",
+        "description": "Option to enable container selection on externally opened tabs."
+    },
+    "commandOpenPopup": {
+        "message": "Das Popup öffnen",
+        "description": "Description text for using command to open popup."
+    },
+    "commandOpenSidebar": {
+        "message": "Die Sidebar öffnen",
+        "description": "Description text for using command to open sidebar."
+    },
+    "cookiesHeadingDomain": {
+        "message": "Domain",
+        "description": "Heading text for domains in cookies table."
+    },
+    "contextMenuUnmuteTab": {
+        "message": "Registerkarten aufheben",
+        "description": "Unmute Tab menu (same as browser's tab menu)"
+    },
+    "sitesN": {
+        "message": "Sites ($COUNT$)",
+        "description": "Text for sites view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "optionalFeaturesDescription": {
+        "message": "Wenn Sie keine kollidierenden Erweiterungen verwenden, können Sie hier einige optionale Funktionen aktivieren.",
+        "description": "Description text for optional features"
+    },
+    "featureLanguageOverrides": {
+        "message": "Sprachüberschreibungen pro Container",
+        "description": "Label text for language overrides feature"
+    },
+    "featureUaOverrides": {
+        "message": "Überschreibungen des Benutzer-Agenten pro Container",
+        "description": "Label text for UA overrides feature"
+    },
+    "optionsHeadingContainerOverrides": {
+        "message": "Übersteuerungen pro Container",
+        "description": "Heading text of options page for container overrides."
+    },
+    "labelAutoDiscardMinAge": {
+        "message": "Speicher der Registerkarten nach Inaktivität freigeben für:",
+        "description": "Label text for autodiscard min age."
     }
 }
