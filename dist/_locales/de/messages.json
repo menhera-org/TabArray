@@ -445,5 +445,71 @@
     "titleSelectContainer": {
         "message": "Wählen Sie einen Container aus",
         "description": "Title of the popup asking the user to choose a container to open a new tab in."
+    },
+    "browserActionPopupTitle": {
+        "message": "Container Tab Groups: Popup page",
+        "description": "Title of the popup page for browserAction."
+    },
+    "extensionDescription": {
+        "message": "Chrome-ähnliche Registerkartengruppen mit privaten und isolierten Containern: Der ultimative Registerkartenmanager und Gruppen für Firefox.",
+        "description": "Description of the extension."
+    },
+    "labelNewTabKeepContainer": {
+        "message": "Neue Registerkarte im aktuellen Container öffnen (Klebriger Container)",
+        "description": "Title of option to always open new tab in current container."
+    },
+    "labelFirstPartyIsolate": {
+        "message": "First-Party Isolate (FPI) aktivieren",
+        "description": "Option to enable first-party isolation."
+    },
+    "buttonAboutAddon": {
+        "message": "Mehr über Container Tab Group & Bewertungen…",
+        "description": "Menu item to open the extension's addons.mozilla.org page."
+    },
+    "labelResistFingerprinting": {
+        "message": "der Fingerabdruck-Resistenzfunktion von Firefox aktivieren (privacy.resistFingerprinting)",
+        "description": "Option to enable privacy.resistFingerprinting."
+    },
+    "panoramaGrid": {
+        "message": "Panorama Gitter",
+        "description": "Panorama Grid page (grid view of container and tabs)"
+    },
+    "buttonPanorama": {
+        "message": "Panorama Gitter öffnen",
+        "description": "Button label to open Panorama Grid"
+    },
+    "labelExternalTabOptionChooseContainer": {
+        "message": "Jedes Mal einen Container wählen",
+        "description": "Option to choose a container every time an external application opens a tab."
+    },
+    "labelPopupSize": {
+        "message": "Popup Größe",
+        "description": "Prompt for changing popup size."
+    },
+    "menuItemSites": {
+        "message": "Sites",
+        "description": "Menu item for sites view"
+    },
+    "buttonSidebar": {
+        "message": "Sidebar öffnen",
+        "description": "Button to open Sidebar."
+    },
+    "buttonClear": {
+        "message": "Löschen",
+        "description": "Button to clear data."
+    },
+    "privateBrowsing": {
+        "message": "Privates Browsing",
+        "description": "Private Browsing page"
+    },
+    "confirmContainerClearCookie": {
+        "message": "Möchten Sie die Cookies für diesen Container löschen: $NAME$?",
+        "description": "Confirmation message before clearing cookies in a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
     }
 }
