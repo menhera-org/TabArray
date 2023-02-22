@@ -547,5 +547,15 @@
     "buttonContainerClearCookie": {
         "message": "Vacuar cookies…",
         "description": "Button to clear cookies in a container."
+    },
+    "confirmContainerDelete": {
+        "message": "Vole tu deler permanentemente iste contentor: $NAME$?",
+        "description": "Confirmation message before deleting a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
     }
 }
