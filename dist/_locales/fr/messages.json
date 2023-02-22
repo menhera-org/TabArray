@@ -235,7 +235,7 @@
         "description": "Message asking the user to select a container for a new tab."
     },
     "labelSelectContainerExternalTabs": {
-        "message": "Choisir un conteneur lorsqu'une application externe ouvre un onglet",
+        "message": "Choisir un conteneur quand une application externe ouvre un onglet",
         "description": "Option to enable container selection on externally opened tabs."
     },
     "labelExternalTabSelectContainerOption": {
