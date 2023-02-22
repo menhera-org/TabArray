@@ -93,6 +93,9 @@ enough to unnecessitate Simple Tab Groups.
 - Español
 - Русский
 - Deutsch
+- Čeština
+- Galego
+- Interlingua
 
 This project uses Hosted Weblate for translation. You can contribute translations at Hosted Weblate.
 
@@ -102,7 +105,7 @@ This project uses Hosted Weblate for translation. You can contribute translation
 
 ### Translation Managers
 
-- metastable-void (ja, eo)
+- metastable-void (ja, eo, ia)
 - 佐々木Alex🐇 (Sasaki Alex🐇) (fr, es-ES, ru)
 
 ## About the project
