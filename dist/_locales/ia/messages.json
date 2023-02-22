@@ -1,1 +1,551 @@
-{}
+{
+    "contextMenuUnpinTab": {
+        "message": "Disclavar le scheda",
+        "description": "Unpin Tab menu (same as browser's tab menu)"
+    },
+    "extensionDescription": {
+        "message": "Chrome-como scheda gruppos usante un private e isolate contentor. Le ultimate scheda administrator e gruppos por Firefox.",
+        "description": "Description of the extension."
+    },
+    "buttonCancel": {
+        "message": "Cancellar",
+        "description": "Button label to cancel an action."
+    },
+    "newContainerNamePlaceholder": {
+        "message": "Nomine del contentor",
+        "description": "Placeholder for the input field of the name of a new container."
+    },
+    "tooltipTabPinButton": {
+        "message": "Clavar le scheda",
+        "description": "Tooltip for the button to pin a tab."
+    },
+    "tooltipUnhideContainerButton": {
+        "message": "Monstrar le schedas del contentor",
+        "description": "Tooltip for the button to unhide the tabs of a container."
+    },
+    "optionsHeadingExperimental": {
+        "message": "Experimental parametros",
+        "description": "Heading text of options page for experimental addon features."
+    },
+    "optionsHeadingFirefox": {
+        "message": "Parametros de Firefox",
+        "description": "Heading text of options page for changing Firefox settings."
+    },
+    "buttonPanorama": {
+        "message": "Aperir grillia panoramic",
+        "description": "Button label to open Panorama Grid"
+    },
+    "tooltipCollapseContainers": {
+        "message": "Celar le contentores",
+        "description": "Tooltip for the button to collapse inactive containers."
+    },
+    "labelSelectContainerExternalTabs": {
+        "message": "Selectionar un contentor quando un externe application aperi un scheda",
+        "description": "Option to enable container selection on externally opened tabs."
+    },
+    "labelExternalTabSelectContainerOption": {
+        "message": "Quando un externe application aperi un shceda:",
+        "description": "Label for option for handling of externally opened tabs"
+    },
+    "labelExternalTabOptionDisabled": {
+        "message": "Aperir in le contentor predefinite (Nulle Contentor)",
+        "description": "Option to disable handling of externally opened tabs."
+    },
+    "labelGroupIndexOptionAlways": {
+        "message": "Tote contentores",
+        "description": "Option to show index tabs for all containers."
+    },
+    "labelPopupSize": {
+        "message": "Dimension de fenestra emergente",
+        "description": "Prompt for changing popup size."
+    },
+    "labelPopupSizeStandard": {
+        "message": "Norma",
+        "description": "Label text for standard popup size."
+    },
+    "menuItemSites": {
+        "message": "Sitos",
+        "description": "Menu item for sites view"
+    },
+    "buttonNewWindow": {
+        "message": "Nove fenestra",
+        "description": "Button to open a new window."
+    },
+    "buttonClear": {
+        "message": "Vacuar",
+        "description": "Button to clear data."
+    },
+    "buttonEditContainer": {
+        "message": "Modificar contentor…",
+        "description": "Button to edit a container."
+    },
+    "buttonDone": {
+        "message": "Complete",
+        "description": "Button to complete an action."
+    },
+    "buttonNewPrivateWindow": {
+        "message": "Nove fenestra private",
+        "description": "Button to open a new private window."
+    },
+    "headingCookies": {
+        "message": "Cookies",
+        "description": "Heading text of cookies page."
+    },
+    "menuItemHelp": {
+        "message": "Adjuta",
+        "description": "Menu item for help view"
+    },
+    "sitesN": {
+        "message": "Sitos ($COUNT$)",
+        "description": "Text for sites view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "featureUaOverrides": {
+        "message": "Per-contentor supplantationes de User-Agent",
+        "description": "Label text for UA overrides feature"
+    },
+    "optionsLabelUserAgent": {
+        "message": "User Agent",
+        "description": "Label text for user agent of a container."
+    },
+    "userAgentChrome": {
+        "message": "Chrome",
+        "description": "Chrome user agent"
+    },
+    "userAgentCustom": {
+        "message": "Personalisate",
+        "description": "Custom user agent"
+    },
+    "labelAutoDiscardMinAge": {
+        "message": "Liberar le memoria de le schedas post inactivessa por:",
+        "description": "Label text for autodiscard min age."
+    },
+    "labelAutoDiscard900": {
+        "message": "15 minutas",
+        "description": "Label text for autodiscard in 900 seconds."
+    },
+    "labelAutoDiscard3600": {
+        "message": "1 hora",
+        "description": "Label text for autodiscard in 3600 seconds."
+    },
+    "labelAutoDiscard86400": {
+        "message": "1 die",
+        "description": "Label text for autodiscard in 86400 seconds."
+    },
+    "headingReopen": {
+        "message": "Reaperir in le contentor",
+        "description": "Heading text for reopen in container."
+    },
+    "effectiveLocale": {
+        "message": "ia",
+        "description": "Locale of this messages.json."
+    },
+    "buttonHideInactiveContainers": {
+        "message": "Collaber alle contentores",
+        "description": "Button label to hide inactive containers on a window."
+    },
+    "invalidContainerName": {
+        "message": "Inaccessibile contentor $ID$",
+        "description": "Name shown for an unavailable container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "contextMenuHideSelectedContainer": {
+        "message": "Celar iste contentor",
+        "description": "Context menu item text for hiding the container of the selected tab."
+    },
+    "labelFirstPartyIsolate": {
+        "message": "Activar First-Party Isolate (FPI)",
+        "description": "Option to enable first-party isolation."
+    },
+    "labelNewTabKeepContainer": {
+        "message": "Aperir un nove scheda in le currente contentor (collose contentor)",
+        "description": "Title of option to always open new tab in current container."
+    },
+    "buttonSettings": {
+        "message": "Parametros",
+        "description": "Menu item to open the extensions's settings."
+    },
+    "confirmContainerClearCookie": {
+        "message": "Vole tu vacuar cookies de iste contentor: $NAME$?",
+        "description": "Confirmation message before clearing cookies in a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "tooltipContainerClearCookie": {
+        "message": "Vacuar tote cookies in iste contentor",
+        "description": "Tooltip for a button to clear all cookies in a container."
+    },
+    "confirmPrivateBrowsingClearCookie": {
+        "message": "Vole tu vacuar le cookies de navigation private?",
+        "description": "Confirmation message before clearing cookies for private browsing."
+    },
+    "commandOpenSidebar": {
+        "message": "Aperir le barra lateral",
+        "description": "Description text for using command to open sidebar."
+    },
+    "enableCookiesAutoclean": {
+        "message": "Vacuar automaticamente cookies",
+        "description": "Label text for enabling autoclean of cookies."
+    },
+    "contextMenuCloseTab": {
+        "message": "Clauder le scheda",
+        "description": "Close Tab menu (same as browser's tab menu)"
+    },
+    "windowsN": {
+        "message": "Fenestras ($COUNT$)",
+        "description": "Text for windows view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "titleSelectContainer": {
+        "message": "Selectionar un contentor",
+        "description": "Title of the popup asking the user to choose a container to open a new tab in."
+    },
+    "descriptionSelectContainer": {
+        "message": "Tu exactemente es aperiente un nove scheda: $URL$.",
+        "description": "Confirmation message before the user chooses a container to open a new tab in.",
+        "placeholders": {
+            "url": {
+                "content": "$1",
+                "example": "https://example.com/"
+            }
+        }
+    },
+    "featureLanguageOverrides": {
+        "message": "Per-contentor supplantationes de linguas",
+        "description": "Label text for language overrides feature"
+    },
+    "optionsHeadingContainerOverrides": {
+        "message": "Per-contentor supplantationes",
+        "description": "Heading text of options page for container overrides."
+    },
+    "userAgentGooglebot": {
+        "message": "Googlebot",
+        "description": "Googlebot user agent"
+    },
+    "labelAutoDiscard21600": {
+        "message": "6 horas",
+        "description": "Label text for autodiscard in 21600 seconds."
+    },
+    "labelAutoDiscard1800": {
+        "message": "30 minutas",
+        "description": "Label text for autodiscard in 1800 seconds."
+    },
+    "containerOptions": {
+        "message": "Optiones de contentores por: $NAME$",
+        "description": "Menu title for container options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "cookiesHeadingActions": {
+        "message": "Actiones",
+        "description": "Heading text for action buttons in cookies table."
+    },
+    "focusToThisContainer": {
+        "message": "Focalisar a iste contentor",
+        "description": "Button to focus to this container."
+    },
+    "labelGroupIndexOption": {
+        "message": "Monstrar un indice shceda por cata contentores",
+        "description": "Option to show index tabs for containers."
+    },
+    "menuItemWindows": {
+        "message": "Fenestras",
+        "description": "Menu item for windows view"
+    },
+    "labelGroupIndexOptionNever": {
+        "message": "Nunquam",
+        "description": "Option to show index tabs for no containers."
+    },
+    "browserActionPopupTitle": {
+        "message": "Container Tab Groups: Fenestra emergente",
+        "description": "Title of the popup page for browserAction."
+    },
+    "buttonOk": {
+        "message": "OK",
+        "description": "Button label to confirm an action."
+    },
+    "tooltipTabUnpinButton": {
+        "message": "Disclavar le scheda",
+        "description": "Tooltip for the button to unpin a tab."
+    },
+    "tooltipHideContainerButton": {
+        "message": "Celar le schedas del contentor",
+        "description": "Tooltip for the button to hide the tabs of a container."
+    },
+    "tooltipEditContainerButton": {
+        "message": "Modificar le contentor",
+        "description": "Tooltip for the button to edit a container."
+    },
+    "currentWindow": {
+        "message": "Iste fenestra (#$ID$)",
+        "description": "Title of popup section for the current window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "2"
+            }
+        }
+    },
+    "currentWindowMoreContainers": {
+        "message": "Plus contentores por iste fenestra"
+    },
+    "windowLabel": {
+        "message": "Fenestra #$ID$",
+        "description": "Label for a window with ID.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "tooltipContainerCloseAll": {
+        "message": "Clauder tote le schedas de iste contentor",
+        "description": "Tooltip for a button to close all tabs of a container."
+    },
+    "tooltipContainerDelete": {
+        "message": "Remover permanentemente iste contentor",
+        "description": "Tooltip for a button to permanently delete a container."
+    },
+    "noContainer": {
+        "message": "Nulle contentor",
+        "description": "Virtual container name for tabs with no container."
+    },
+    "buttonAboutAddon": {
+        "message": "Plus re Container Tab Groups e le recensiones…",
+        "description": "Menu item to open the extension's addons.mozilla.org page."
+    },
+    "windowTitlePrefaceTemplate": {
+        "message": "($CONTAINER$)",
+        "description": "String to add before window title",
+        "placeholders": {
+            "container": {
+                "content": "$1",
+                "example": "Container 1"
+            }
+        }
+    },
+    "labelResistFingerprinting": {
+        "message": "Activar le resistentia contra impression digital de Firefox (privacy.resistFingerprinting)",
+        "description": "Option to enable privacy.resistFingerprinting."
+    },
+    "buttonTabClose": {
+        "message": "Clauder iste scheda",
+        "description": "Button label to close a tab."
+    },
+    "promptSelectContainer": {
+        "message": "Si il tu place, selectiona un contentor ubi tu aperi le scheda.",
+        "description": "Message asking the user to select a container for a new tab."
+    },
+    "labelExternalTabOptionChooseContainer": {
+        "message": "Selectionar un contentor sempre",
+        "description": "Option to choose a container every time an external application opens a tab."
+    },
+    "labelExternalTabOptionStickyContainer": {
+        "message": "Aperir in le contentor active antea",
+        "description": "Option to use the last active container for externally opened tabs."
+    },
+    "labelGroupIndexOptionCollapsed": {
+        "message": "Celate contentores",
+        "description": "Option to show index tabs for collapsed containers."
+    },
+    "optionsHeadingAppearance": {
+        "message": "Parametros de apparentia",
+        "description": "Heading text of options page for changing appearance settings."
+    },
+    "labelPopupSizeLarge": {
+        "message": "Grande",
+        "description": "Label text for large popup size."
+    },
+    "searchPlaceholder": {
+        "message": "Perquirer contentores",
+        "description": "Placeholder text for searching containers."
+    },
+    "buttonSidebar": {
+        "message": "Aperir le barra lateral",
+        "description": "Button to open Sidebar."
+    },
+    "privateBrowsing": {
+        "message": "Navigation private",
+        "description": "Private Browsing page"
+    },
+    "buttonDeleteContainer": {
+        "message": "Deler le contentor…",
+        "description": "Button to delete a container."
+    },
+    "optionsDescriptionContainerSortOrder": {
+        "message": "Iste parametro non affecta altere extensiones.",
+        "description": "Description text for changing container order."
+    },
+    "cookiesHeadingDomain": {
+        "message": "Dominio",
+        "description": "Heading text for domains in cookies table."
+    },
+    "tooltipCookies": {
+        "message": "Vider le cookies",
+        "description": "Tooltip for a button to view cookies."
+    },
+    "contextMenuNewTab": {
+        "message": "Nove scheda",
+        "description": "New Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuDuplicateTab": {
+        "message": "Duplicar le scheda",
+        "description": "Duplicate Tab menu (same as browser's tab menu)"
+    },
+    "optionsLabelLanguages": {
+        "message": "Linguas",
+        "description": "Label text for languages of a container."
+    },
+    "buttonGetStarted": {
+        "message": "Comenciar",
+        "description": "Button to get started"
+    },
+    "userAgentDefault": {
+        "message": "Predefinite",
+        "description": "Default user agent"
+    },
+    "buttonNewTemporaryContainer": {
+        "message": "Nove contentor temporanee",
+        "description": "Button to open a new temporary container."
+    },
+    "labelAutoDiscard43200": {
+        "message": "12 horas",
+        "description": "Label text for autodiscard in 43200 seconds."
+    },
+    "buttonNewContainer": {
+        "message": "Crear un nove contentor…",
+        "description": "Button label to create a new container."
+    },
+    "newContainerDialogTitle": {
+        "message": "Crear un nove contentor",
+        "description": "Title of the dialog prompting for creating a new container."
+    },
+    "editContainerDialogTitle": {
+        "message": "Modificar un contentor",
+        "description": "Title of the dialog prompting for editting a container."
+    },
+    "tooltipWindowLabel": {
+        "message": "Cambiar al fenestra #$ID$",
+        "description": "Tooltip for a menu item representing a window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "defaultContainerName": {
+        "message": "Contentor #$ID$",
+        "description": "Descriptive default name of a container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "browserActionTitle": {
+        "message": "Schedas e Gruppos",
+        "description": "Title of browserAction about tabs and container-based groups."
+    },
+    "tooltipExpandContainers": {
+        "message": "Monstrar contentores",
+        "description": "Tooltip for the button to expand containers."
+    },
+    "panoramaGrid": {
+        "message": "Grillia panoramic",
+        "description": "Panorama Grid page (grid view of container and tabs)"
+    },
+    "privacyPolicy": {
+        "message": "Politica de privatessa",
+        "description": "Privacy Policy page"
+    },
+    "optionsHeadingUserData": {
+        "message": "Tu dato",
+        "description": "Heading text of options page for managing user data."
+    },
+    "optionsHeadingContainerSortOrder": {
+        "message": "Assortir le contentores",
+        "description": "Heading text of options page for changing container order."
+    },
+    "commandOpenPopup": {
+        "message": "Aperir le fenestra emergente",
+        "description": "Description text for using command to open popup."
+    },
+    "contextMenuReloadTab": {
+        "message": "Recargar le scheda",
+        "description": "Reload Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuMuteTab": {
+        "message": "Silentiar le scheda",
+        "description": "Mute Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuPinTab": {
+        "message": "Clavar le scheda",
+        "description": "Pin Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuUnmuteTab": {
+        "message": "Sonar le scheda",
+        "description": "Unmute Tab menu (same as browser's tab menu)"
+    },
+    "labelAutoDiscard10800": {
+        "message": "3 horas",
+        "description": "Label text for autodiscard in 10800 seconds."
+    },
+    "labelAutoDiscardDisabled": {
+        "message": "Inactive",
+        "description": "Label text for autodiscard disabled."
+    },
+    "buttonOpenTabInContainer": {
+        "message": "Aperir un nove scheda",
+        "description": "Button label to open a new tab in the specified container"
+    },
+    "optionsDescriptionExperimental": {
+        "message": "Disactivar alicun de iste optiones pote solver comportamento rupte quando observate.",
+        "description": "Description text for experimental features options."
+    },
+    "menuItemMain": {
+        "message": "Contentores",
+        "description": "Menu item for containers view."
+    },
+    "tooltipCloseWindow": {
+        "message": "Clauder le fenestra",
+        "description": "Tooltip for a button to close all tabs of a window."
+    },
+    "newContainerNameLabel": {
+        "message": "Nomine",
+        "description": "Label for inputting the name of a new container."
+    },
+    "optionsHeadingGeneral": {
+        "message": "Parametros general",
+        "description": "Heading text of options page for general settings."
+    },
+    "buttonContainerClearCookie": {
+        "message": "Vacuar cookies…",
+        "description": "Button to clear cookies in a container."
+    }
+}
