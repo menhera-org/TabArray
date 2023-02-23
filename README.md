@@ -13,6 +13,8 @@ Chrome-like tab groups using isolated containers: The ultimate tab manager and g
 [![Extension icon](TabArray.png)](https://addons.mozilla.org/firefox/addon/container-tab-groups/)  
 [Download for Firefox](https://addons.mozilla.org/firefox/addon/container-tab-groups/)
 
+[About Container Tab Groups](https://www.menhera.org/container-tab-groups/)
+
 ## Features
 
 _Tab Group = Container_
