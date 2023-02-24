@@ -30,21 +30,28 @@ ContextualIdentity.onRemoved.addListener(async (identity) => {
 });
 
 browser.tabs.onRemoved.addListener(async () => {
-  const identities = await ContextualIdentity.getAll();
-  const cookieStoreIds = new Set(identities.map((identity) => identity.id));
-  const browserTabs = await browser.tabs.query({});
-  for (const browserTab of browserTabs) {
-    if (!browserTab.cookieStoreId) {
-      continue;
-    }
-    cookieStoreIds.delete(browserTab.cookieStoreId);
-  }
-
-  for (const cookieStoreId of cookieStoreIds) {
-    if (!await temporatyContainerService.isTemporaryContainer(cookieStoreId)) {
-      continue;
+  try {
+    const identities = await ContextualIdentity.getAll();
+    const cookieStoreIds = new Set(identities.map((identity) => identity.id));
+    const browserTabs = await browser.tabs.query({});
+    for (const browserTab of browserTabs) {
+      if (!browserTab.cookieStoreId) {
+        continue;
+      }
+      cookieStoreIds.delete(browserTab.cookieStoreId);
     }
 
-    temporatyContainerService.removeTemporaryContainer(cookieStoreId);
+    const promises: Promise<void>[] = [];
+    for (const cookieStoreId of cookieStoreIds) {
+      if (!await temporatyContainerService.isTemporaryContainer(cookieStoreId)) {
+        continue;
+      }
+
+      promises.push(temporatyContainerService.removeTemporaryContainer(cookieStoreId));
+    }
+
+    await Promise.all(promises);
+  } catch (e) {
+    console.warn(e);
   }
 });
