@@ -29,10 +29,13 @@ import { UserContextService } from '../userContexts/UserContextService';
 import { ExtensionService } from '../frameworks/extension';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { ContainerEditorElement } from '../components/container-editor';
+import { TemporaryContainerService } from '../containers/TemporaryContainerService';
 
 const extensionService = ExtensionService.getInstance();
 const privateBrowsingService = PrivateBrowsingService.getInstance();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+const temporaryContainerService = TemporaryContainerService.getInstance();
 
 const params = new URLSearchParams(location.search);
 
@@ -71,6 +74,25 @@ settingsButton.addEventListener('click', () => {
   });
 });
 
+const reopenInContainer = (cookieStoreId: string) => {
+  Promise.all([
+    browser.tabs.getCurrent(),
+    browser.tabs.create({
+      active: true,
+      windowId: browser.windows.WINDOW_ID_CURRENT,
+      cookieStoreId,
+      url,
+    }),
+  ]).then(([currentTabObj, createdTabObj]) => {
+    console.debug('Created tab', createdTabObj);
+    if (undefined == currentTabObj.id) {
+      throw new Error('Current tab has no ID');
+    }
+    return browser.tabs.remove(currentTabObj.id);
+  }).catch((e) => {
+    console.error(e);
+  });
+};
 
 const renderButton = (tooltipText: string, name: string, iconUrl: string, useIconMask: boolean, maskColor = '#000000', aUserContextElement: HTMLButtonElement | null = null) => {
   const userContextElement = aUserContextElement ?? document.createElement('button');
@@ -111,28 +133,28 @@ const createPrivateBrowsingButton = () => {
   return button;
 };
 
+const createCreateContainerButton = () => {
+  const tooltipText = i18n.getMessage('buttonNewContainer');
+  const name = tooltipText;
+  const iconUrl = '/img/firefox-icons/add.svg';
+  const button = renderButton(tooltipText, name, iconUrl, false);
+  return button;
+};
+
+const createTemporaryContainerButton = () => {
+  const tooltipText = i18n.getMessage('buttonNewTemporaryContainer');
+  const name = tooltipText;
+  const iconUrl = '/img/material-icons/timelapse.svg';
+  const button = renderButton(tooltipText, name, iconUrl, false);
+  return button;
+};
+
 const createUserContextElement = (userContext: UserContext) => {
   const userContextElement = renderUserContext(userContext);
   const cookieStoreId = userContext.cookieStoreId;
   containersElement.append(userContextElement);
   userContextElement.addEventListener('click', () => {
-    Promise.all([
-      browser.tabs.getCurrent(),
-      browser.tabs.create({
-        active: true,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        cookieStoreId,
-        url,
-      }),
-    ]).then(([currentTabObj, createdTabObj]) => {
-      console.debug('Created tab', createdTabObj);
-      if (undefined == currentTabObj.id) {
-        throw new Error('Current tab has no ID');
-      }
-      return browser.tabs.remove(currentTabObj.id);
-    }).catch((e) => {
-      console.error(e);
-    });
+    reopenInContainer(cookieStoreId);
   });
   UserContext.onRemoved.addListener((removedUserContext) => {
     if (removedUserContext == userContext.id) {
@@ -164,6 +186,20 @@ UserContext.getAll().then(async (userContexts) => {
       });
     });
   }
+
+  const createContainerButton = createCreateContainerButton();
+  containersElement.append(createContainerButton);
+  createContainerButton.addEventListener('click', () => {
+    const containerEditorElement = new ContainerEditorElement();
+    document.body.append(containerEditorElement);
+  });
+
+  const temporaryContainerButton = createTemporaryContainerButton();
+  containersElement.append(temporaryContainerButton);
+  temporaryContainerButton.addEventListener('click', async () => {
+    const identity = await temporaryContainerService.createTemporaryContainer();
+    reopenInContainer(identity.id);
+  });
   userContextSortingOrderStore.sort(userContexts).forEach(createUserContextElement);
 });
 
