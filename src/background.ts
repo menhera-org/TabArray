@@ -181,15 +181,22 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
     return;
   }
   if (tabObj.url && tabObj.url != 'about:blank' && tabObj.status != 'loading') {
-    console.log('Manually opened tab: %d', tabObj.id);
-    openTabs.add(tabObj.id);
+    if (!openTabs.has(tabObj.id)) {
+      console.log('Manually opened tab: %d', tabObj.id);
+      openTabs.add(tabObj.id);
+    }
   } else if (tabObj.pinned) {
-    console.log('Pinned tab: %d', tabObj.id);
-    openTabs.add(tabObj.id);
+    if (!openTabs.has(tabObj.id)) {
+      console.log('Pinned tab: %d', tabObj.id);
+      openTabs.add(tabObj.id);
+    }
   }
   if (tabObj.url != 'about:blank' && tabObj.status != 'loading' && tabObj.active) {
-    console.log('setActiveUserContext for window %d and user context %d', tabObj.windowId, userContextId);
-    setActiveUserContext(tabObj.windowId, userContextId);
+    const activeUserContextId: number = getActiveUserContext(tabObj.windowId);
+    if (activeUserContextId != userContextId) {
+      console.log('setActiveUserContext for window %d and user context %d', tabObj.windowId, userContextId);
+      setActiveUserContext(tabObj.windowId, userContextId);
+    }
   }
 }, {
   properties: [
