@@ -46,7 +46,7 @@ setInterval(async () => {
   }
   try {
     await browser.tabs.discard(tabIdsToDiscard);
-    console.debug(`Discarded ${tabIdsToDiscard.length} tabs`);
+    console.debug(`Discarded ${tabIdsToDiscard.length} tab(s)`);
   } catch (e) {
     console.error(e);
   }
