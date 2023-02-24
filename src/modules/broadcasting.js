@@ -82,7 +82,11 @@ export class WebExtensionsBroadcastChannel extends EventTarget {
       }
     };
     messagingService.sendMessage('broadcastChannel', message).catch((e) => {
-      console.debug(e);
+      if (e instanceof Error) {
+        console.debug(e.message);
+      } else {
+        console.debug(e);
+      }
     });
     shadow.internalHandler(message);
   }
