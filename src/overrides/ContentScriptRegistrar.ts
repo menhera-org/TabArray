@@ -40,7 +40,7 @@ export abstract class ContentScriptRegistrar {
 
   public async register(cookieStoreId: string): Promise<void> {
     const cookieStore = CookieStore.fromId(cookieStoreId);
-    this.unregister(cookieStoreId);
+    await this.unregister(cookieStoreId);
     this.contentScripts.set(cookieStoreId, await browser.contentScripts.register({
       js: [{ code: this.getContentScriptString(cookieStore) }],
       matches: ['<all_urls>'],
