@@ -51,6 +51,7 @@ export abstract class ContentScriptRegistrar {
   }
 
   public async registerAll(): Promise<void> {
+    console.debug(`${this.constructor.name}.registerAll()`);
     const cookieStores = await CookieStore.getAll();
     const cookieStoreIds = cookieStores.map(cookieStore => cookieStore.id);
     const previousCookieStoreIds = Array.from(this.contentScripts.keys());
