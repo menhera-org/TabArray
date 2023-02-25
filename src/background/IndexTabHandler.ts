@@ -29,9 +29,11 @@ import { config } from '../config/config';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { PromiseUtils } from '../frameworks/utils';
 import { Uint32 } from '../frameworks/types';
+import { InitialWindowsService } from './InitialWindowsService';
 
 const tabGroupService = TabGroupService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
+const initialWindowsService = InitialWindowsService.getInstance();
 const indexTabUserContextMap = new Map<number, Uint32.Uint32>();
 
 browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) => {
@@ -96,10 +98,7 @@ browser.tabs.query({}).then(async (browserTabs) => {
   }
 });
 
-browser.windows.getAll({
-  populate: false,
-  windowTypes: ['normal'],
-}).then(async (browserWindows) => {
+initialWindowsService.getInitialWindows().then(async (browserWindows) => {
   const indexTabOption = await config['tab.groups.indexOption'].getValue();
   if (indexTabOption == 'never') return;
   for (const browserWindow of browserWindows) {
