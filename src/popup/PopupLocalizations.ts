@@ -71,6 +71,8 @@ utils.queryElementNonNull<HTMLElement>('#help-banner-heading').textContent = ext
 utils.queryElementNonNull<HTMLElement>('#help-banner-amo-link').textContent = browser.i18n.getMessage('buttonAboutAddon');
 utils.queryElementNonNull<HTMLElement>('#help-banner-privacy-policy').textContent = browser.i18n.getMessage('privacyPolicy');
 
+utils.queryElementNonNull<HTMLElement>('#button-privacy-policy > .button-text').textContent = browser.i18n.getMessage('privacyPolicy');
+
 utils.queryElementNonNull<HTMLElement>('#fpiDescription').textContent = browser.i18n.getMessage('fpiDescription');
 utils.queryElementNonNull<HTMLElement>('label[for="input-firstPartyIsolate"]').textContent = browser.i18n.getMessage('labelFirstPartyIsolate');
 

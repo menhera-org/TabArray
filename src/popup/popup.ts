@@ -249,6 +249,10 @@ utils.queryElementNonNull('#button-popup').addEventListener('click', () => {
   });
 });
 
+utils.queryElementNonNull('#button-privacy-policy').addEventListener('click', () => {
+  utils.openPrivacyPolicyPage();
+});
+
 searchBox.focus();
 searchBox.placeholder = browser.i18n.getMessage('searchPlaceholder');
 searchBox.addEventListener('input', () => {

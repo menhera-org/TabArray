@@ -293,9 +293,9 @@ body.transparent > .content {
   background-color: var(--text-color);
 }
 
-#button-about-addon {
+/* #button-about-addon {
   border-block-start: solid .125rem var(--border-color);
-}
+} */
 
 #button-about-addon::before {
   background-image: url(/icon.svg);
