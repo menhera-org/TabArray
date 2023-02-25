@@ -42,8 +42,6 @@ utils.queryElementNonNull<HTMLElement>('#button-new-temporary-container > .butto
 utils.queryElementNonNull<HTMLElement>('#button-new-temporary-container').title = browser.i18n.getMessage('buttonNewTemporaryContainer');
 utils.queryElementNonNull<HTMLElement>('#button-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
 utils.queryElementNonNull<HTMLElement>('#button-settings').title = browser.i18n.getMessage('buttonSettings');
-utils.queryElementNonNull<HTMLElement>('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
-utils.queryElementNonNull<HTMLElement>('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 
 utils.queryElementNonNull<HTMLElement>('#help-done-button').textContent = browser.i18n.getMessage('buttonGetStarted');
 

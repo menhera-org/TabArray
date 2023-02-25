@@ -28,6 +28,7 @@ import { ColorPickerElement } from '../components/usercontext-colorpicker';
 import { IconPickerElement } from '../components/usercontext-iconpicker';
 import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
+import { ModalConfirmElement } from '../components/modal-confirm';
 
 type NewContainerPanelResult = {
   name: string;
@@ -146,11 +147,16 @@ export class PopupModalRenderer {
   }
 
   public async confirmAsync(message: string): Promise<boolean> {
-    const confirmMessageElement = this._utils.queryElementNonNull<HTMLElement>('#confirm-message');
-    const cancelButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-cancel-button');
-    const okButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-ok-button');
-    const result = await this.showModal(message, confirmMessageElement, okButton, cancelButton, '#confirm');
-    return result;
+    const confirmElement = new ModalConfirmElement(message);
+    document.body.appendChild(confirmElement);
+    return new Promise((resolve) => {
+      confirmElement.onCancel.addListener(() => {
+        resolve(false);
+      });
+      confirmElement.onOk.addListener(() => {
+        resolve(true);
+      });
+    });
   }
 
   private async showContainerManipulationPanelAsync(dialogTitle: string, userContext?: UserContext): Promise<NewContainerPanelResult> {
