@@ -45,11 +45,6 @@ utils.queryElementNonNull<HTMLElement>('#button-settings').title = browser.i18n.
 
 utils.queryElementNonNull<HTMLElement>('#help-done-button').textContent = browser.i18n.getMessage('buttonGetStarted');
 
-utils.queryElementNonNull<HTMLElement>('#new-container-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
-utils.queryElementNonNull<HTMLElement>('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
-utils.queryElementNonNull<HTMLElement>('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
-utils.queryElementNonNull<HTMLInputElement>('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
-
 utils.queryElementNonNull<HTMLElement>('#container-menu-edit-button').textContent = browser.i18n.getMessage('buttonEditContainer');
 utils.queryElementNonNull<HTMLElement>('#container-menu-clear-cookie-button').textContent = browser.i18n.getMessage('buttonContainerClearCookie');
 utils.queryElementNonNull<HTMLElement>('#container-menu-delete-button').textContent = browser.i18n.getMessage('buttonDeleteContainer');

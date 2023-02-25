@@ -29,6 +29,8 @@ import { IconPickerElement } from '../components/usercontext-iconpicker';
 import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { ModalConfirmElement } from '../components/modal-confirm';
+import { ContainerEditorElement } from '../components/container-editor';
+import { CookieStore, ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
 
 type NewContainerPanelResult = {
   name: string;
@@ -186,20 +188,42 @@ export class PopupModalRenderer {
   }
 
   public async showNewContainerPanelAsync(): Promise<UserContext | null> {
-    try {
-      const { name, icon, color } = await this.showContainerManipulationPanelAsync(browser.i18n.getMessage('newContainerDialogTitle'));
-      return await this._userContextService.create(name, color, icon);
-    } catch (e) {
-      return null;
-    }
+    const editorElement = new ContainerEditorElement();
+    document.body.appendChild(editorElement);
+    return new Promise((res) => {
+      editorElement.onCancel.addListener(() => {
+        res(null);
+      });
+      editorElement.onContainerCreated.addListener((cookieStoreId) => {
+        const cookieStore = CookieStore.fromId(cookieStoreId);
+        UserContext.get(cookieStore.userContextId).then((userContext) => {
+          res(userContext);
+        }).catch(() => {
+          res(null);
+        });
+      });
+    });
   }
 
   public async showEditContainerPanelAsync(userContext: UserContext): Promise<UserContext> {
     try {
-      const { name, icon, color } = await this.showContainerManipulationPanelAsync(browser.i18n.getMessage('editContainerDialogTitle'), userContext);
-      const updateUserContext = await this._userContextService.updateProperties(userContext, name, color, icon);
-      console.log('Container updated', updateUserContext);
-      return updateUserContext;
+      const contextualIdentity = await ContextualIdentity.get(userContext.cookieStoreId);
+      const containerAttributes = ContainerAttributes.fromContextualIdentity(contextualIdentity);
+      const editorElement = new ContainerEditorElement(containerAttributes);
+      document.body.appendChild(editorElement);
+      return await new Promise((res) => {
+        editorElement.onCancel.addListener(() => {
+          res(userContext);
+        });
+        editorElement.onContainerUpdated.addListener((cookieStoreId) => {
+          const cookieStore = CookieStore.fromId(cookieStoreId);
+          UserContext.get(cookieStore.userContextId).then((userContext) => {
+            res(userContext);
+          }).catch(() => {
+            res(userContext);
+          });
+        });
+      });
     } catch (e) {
       return userContext;
     }
