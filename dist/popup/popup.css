@@ -169,6 +169,8 @@ body.transparent > .content {
   display: block grid;
   inline-size: 100%;
   overflow-inline: auto;
+  box-sizing: border-box;
+  border-inline-end: solid 1px var(--border-color);
 }
 
 #topbox-content > .content {
@@ -245,7 +247,7 @@ body.transparent > .content {
   block-size: 100%;
   inline-size: 2em;
   color: inherit;
-  mask: url(/img/firefox-icons/add.svg) center center / 67% no-repeat;
+  mask: url(/img/material-icons/create_new_folder.svg) center center / 75% no-repeat;
   background-color: var(--text-color);
 }
 
