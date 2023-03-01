@@ -15,6 +15,8 @@ Chrome-like tab groups using isolated containers: The ultimate tab manager and g
 
 [About Container Tab Groups](https://www.menhera.org/container-tab-groups/)
 
+![Screenshot](./social-image.png)
+
 ## Features
 
 _Tab Group = Container_
