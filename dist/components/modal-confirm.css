@@ -33,7 +33,8 @@
   align-content: center;
   justify-items: center;
   z-index: 100;
-  background-color: var(--secondary-background-color);
+  background-color: var(--hover-color);
+  backdrop-filter: blur(.5rem);
 }
 
 a, button {
