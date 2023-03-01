@@ -24,6 +24,7 @@ import { CookieStore } from "../frameworks/tabAttributes/CookieStore";
 
 export abstract class ContentScriptRegistrar {
   protected readonly contentScripts = new Map<string, browser.ContentScripts.RegisteredContentScript>();
+  private _registerAllRunning = false;
 
   public async unregister(cookieStoreId: string): Promise<void> {
     await this.contentScripts.get(cookieStoreId)?.unregister();
@@ -51,24 +52,32 @@ export abstract class ContentScriptRegistrar {
   }
 
   public async registerAll(): Promise<void> {
-    console.debug(`${this.constructor.name}.registerAll()`);
-    const cookieStores = await CookieStore.getAll();
-    const cookieStoreIds = cookieStores.map(cookieStore => cookieStore.id);
-    const previousCookieStoreIds = Array.from(this.contentScripts.keys());
+    if (this._registerAllRunning) {
+      return;
+    }
+    this._registerAllRunning = true;
+    try {
+      console.debug(`${this.constructor.name}.registerAll()`);
+      const cookieStores = await CookieStore.getAll();
+      const cookieStoreIds = cookieStores.map(cookieStore => cookieStore.id);
+      const previousCookieStoreIds = Array.from(this.contentScripts.keys());
 
-    const unregisterPromises: Promise<void>[] = [];
-    for (const cookieStoreId of previousCookieStoreIds) {
-      if (!cookieStoreIds.includes(cookieStoreId)) {
-        unregisterPromises.push(this.unregister(cookieStoreId));
+      const unregisterPromises: Promise<void>[] = [];
+      for (const cookieStoreId of previousCookieStoreIds) {
+        if (!cookieStoreIds.includes(cookieStoreId)) {
+          unregisterPromises.push(this.unregister(cookieStoreId));
+        }
       }
-    }
-    await Promise.all(unregisterPromises);
+      await Promise.all(unregisterPromises);
 
-    const registerPromises: Promise<void>[] = [];
-    for (const cookieStoreId of cookieStoreIds) {
-      registerPromises.push(this.register(cookieStoreId));
+      const registerPromises: Promise<void>[] = [];
+      for (const cookieStoreId of cookieStoreIds) {
+        registerPromises.push(this.register(cookieStoreId));
+      }
+      await Promise.all(registerPromises);
+    } finally {
+      this._registerAllRunning = false;
     }
-    await Promise.all(registerPromises);
   }
 
   public abstract getContentScriptString(cookieStore: CookieStore): string;
