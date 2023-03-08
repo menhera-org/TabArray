@@ -196,7 +196,11 @@ export class PanelWindowsElement extends HTMLElement {
 
     const windowSelect = this.shadowRoot.querySelector('.window-select') as HTMLSelectElement;
     windowSelect.textContent = '';
-    for (const windowId of browserStateSnapshot.getWindowIds()) {
+    const windowIds = browserStateSnapshot.getWindowIds();
+    if (!windowIds.includes(this._selectedWindowId)) {
+      this._selectedWindowId = browserStateSnapshot.currentWindowId;
+    }
+    for (const windowId of windowIds) {
       const option = document.createElement('option');
       option.value = windowId.toString();
       if (windowId == browserStateSnapshot.currentWindowId) {
