@@ -27,6 +27,7 @@ export class MenulistContainerElement extends HTMLElement {
   public partialContainerView = false;
   private _tabCount = 0;
   private _hidden = false;
+  private readonly _isPrivate;
 
   public readonly onContainerHide = new EventSink<void>();
   public readonly onContainerUnhide = new EventSink<void>();
@@ -40,12 +41,13 @@ export class MenulistContainerElement extends HTMLElement {
   public readonly onContainerDelete = new EventSink<void>();
   public readonly onContainerClearCookie = new EventSink<void>();
 
-  public constructor(userContext: UserContext = UserContext.DEFAULT) {
+  public constructor(userContext: UserContext = UserContext.DEFAULT, isPrivate = false) {
     super();
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
       throw new Error("Shadow root is null");
     }
+    this._isPrivate = isPrivate;
     this.buildElement();
     this.setUserContext(userContext);
     this.containerCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
@@ -130,7 +132,12 @@ export class MenulistContainerElement extends HTMLElement {
   }
 
   public setUserContext(userContext: UserContext) {
-    this.containerNameElement.textContent = userContext.name;
+    if (this._isPrivate) {
+      console.assert(userContext.id == 0, "Private window should have default container only");
+      this.containerNameElement.textContent = browser.i18n.getMessage('privateBrowsing');
+    } else {
+      this.containerNameElement.textContent = userContext.name;
+    }
     this.containerIconElement.style.backgroundColor = userContext.colorCode;
     this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(userContext.id));
     const iconUrl = userContext.iconUrl;
