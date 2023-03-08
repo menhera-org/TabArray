@@ -23,8 +23,12 @@ import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import browser from "webextension-polyfill";
+import { PopupUtils } from "../../popup/PopupUtils";
+import { HelpBannerElement } from "../../components/help-banner";
 
 export class HelpFragmentBuilder extends AbstractFragmentBuilder {
+  private readonly _popupUtils = new PopupUtils();
+
   public getFragmentId(): string {
     return 'fragment-help';
   }
@@ -40,9 +44,12 @@ export class HelpFragmentBuilder extends AbstractFragmentBuilder {
   public build(): CtgFragmentElement {
     const fragment = document.createElement('ctg-fragment') as CtgFragmentElement;
     fragment.id = this.getFragmentId();
-    const paragraph = document.createElement('p');
-    paragraph.textContent = 'Help';
-    fragment.appendChild(paragraph);
+
+    const helpBanner = new HelpBannerElement();
+    fragment.appendChild(helpBanner);
+
+    fragment.appendChild(document.createElement('hr'));
+
     return fragment;
   }
 

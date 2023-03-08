@@ -21,6 +21,11 @@
 
 @import url(../theme.css);
 
+a {
+  text-decoration: none;
+  color: var(--accent-color);
+}
+
 :root {
   inline-size: 100%;
   block-size: 100%;
@@ -81,4 +86,10 @@ body > ctg-vertical-layout {
   overflow-block: auto;
   min-block-size: 0;
   flex: 1;
+}
+
+#fragment-help {
+  padding-inline: 1rem;
+  max-inline-size: 32rem;
+  align-self: center;
 }
