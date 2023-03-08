@@ -26,6 +26,32 @@ a {
   color: var(--accent-color);
 }
 
+button {
+  color: var(--button-text-color);
+  background-color: transparent;
+  border: none;
+  appearance: none;
+}
+
+a:active, button:active {
+  opacity: .75;
+}
+
+input:is([type="text"], [type="search"]), button, select, textarea {
+  font: inherit;
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+button {
+  padding-inline: 1em;
+  padding-block: .5em;
+  text-align: start;
+}
+
 :root {
   inline-size: 100%;
   block-size: 100%;
@@ -92,4 +118,32 @@ body > ctg-vertical-layout {
   padding-inline: 1rem;
   max-inline-size: 32rem;
   align-self: center;
+}
+
+.modal-actions {
+  margin-block: 1em;
+  display: block flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  row-gap: 1em;
+}
+
+.modal-actions > button {
+  inline-size: max-content;
+  border-radius: .25em;
+}
+
+.modal-actions > button:focus {
+  box-shadow: 0 0 .25rem .25rem var(--accent-color);
+  outline: none;
+}
+
+.modal-actions > button:disabled {
+  display: none;
+}
+
+.modal-actions > button.button-default {
+  background-color: #0033cc;
+  color: #fff;
 }

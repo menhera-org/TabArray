@@ -50,6 +50,72 @@ export class HelpFragmentBuilder extends AbstractFragmentBuilder {
 
     fragment.appendChild(document.createElement('hr'));
 
+    const helpSettings = document.createElement('div');
+    helpSettings.classList.add('help-settings');
+    fragment.appendChild(helpSettings);
+
+    const fpiDescription = document.createElement('p');
+    fpiDescription.textContent = browser.i18n.getMessage('fpiDescription');
+    helpSettings.appendChild(fpiDescription);
+
+    const fpiParagraph = document.createElement('p');
+    fpiParagraph.classList.add('browser-style');
+    helpSettings.appendChild(fpiParagraph);
+
+    const inputFirstPartyIsolate = document.createElement('input');
+    inputFirstPartyIsolate.type = 'checkbox';
+    inputFirstPartyIsolate.id = 'input-firstPartyIsolate';
+    fpiParagraph.appendChild(inputFirstPartyIsolate);
+
+    const labelFirstPartyIsolate = document.createElement('label');
+    labelFirstPartyIsolate.htmlFor = 'input-firstPartyIsolate';
+    labelFirstPartyIsolate.textContent = browser.i18n.getMessage('labelFirstPartyIsolate');
+    labelFirstPartyIsolate.classList.add('browser-style-label');
+    fpiParagraph.appendChild(labelFirstPartyIsolate);
+
+    const optionalFeaturesDescription = document.createElement('p');
+    optionalFeaturesDescription.textContent = browser.i18n.getMessage('optionalFeaturesDescription');
+    helpSettings.appendChild(optionalFeaturesDescription);
+
+    const languageOverridesParagraph = document.createElement('p');
+    languageOverridesParagraph.classList.add('browser-style');
+    helpSettings.appendChild(languageOverridesParagraph);
+
+    const inputFeatureLanguageOverrides = document.createElement('input');
+    inputFeatureLanguageOverrides.type = 'checkbox';
+    inputFeatureLanguageOverrides.id = 'input-featureLanguageOverrides';
+    languageOverridesParagraph.appendChild(inputFeatureLanguageOverrides);
+
+    const labelFeatureLanguageOverrides = document.createElement('label');
+    labelFeatureLanguageOverrides.htmlFor = 'input-featureLanguageOverrides';
+    labelFeatureLanguageOverrides.textContent = browser.i18n.getMessage('featureLanguageOverrides');
+    labelFeatureLanguageOverrides.classList.add('browser-style-label');
+    languageOverridesParagraph.appendChild(labelFeatureLanguageOverrides);
+
+    const uaOverridesParagraph = document.createElement('p');
+    uaOverridesParagraph.classList.add('browser-style');
+    helpSettings.appendChild(uaOverridesParagraph);
+
+    const inputFeatureUaOverrides = document.createElement('input');
+    inputFeatureUaOverrides.type = 'checkbox';
+    inputFeatureUaOverrides.id = 'input-featureUaOverrides';
+    uaOverridesParagraph.appendChild(inputFeatureUaOverrides);
+
+    const labelFeatureUaOverrides = document.createElement('label');
+    labelFeatureUaOverrides.htmlFor = 'input-featureUaOverrides';
+    labelFeatureUaOverrides.textContent = browser.i18n.getMessage('featureUaOverrides');
+    labelFeatureUaOverrides.classList.add('browser-style-label');
+    uaOverridesParagraph.appendChild(labelFeatureUaOverrides);
+
+    const modalActions = document.createElement('div');
+    modalActions.classList.add('modal-actions');
+    fragment.appendChild(modalActions);
+
+    const buttonGetStarted = document.createElement('button');
+    buttonGetStarted.classList.add('button-default');
+    buttonGetStarted.textContent = browser.i18n.getMessage('buttonGetStarted');
+    modalActions.appendChild(buttonGetStarted);
+
     return fragment;
   }
 
