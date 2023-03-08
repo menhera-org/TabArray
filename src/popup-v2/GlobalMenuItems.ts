@@ -66,7 +66,7 @@ export class GlobalMenuItems {
     const settingsMenuItem = new CtgMenuItemElement();
     settingsMenuItem.labelText = browser.i18n.getMessage('buttonSettings');
     settingsMenuItem.iconSrc = '/img/firefox-icons/settings.svg';
-    topBarElement.addOverflowMenuItem('settings', settingsMenuItem);
+    topBarElement.addMenuItem('settings', settingsMenuItem);
 
     this.defineEventHandlers(topBarElement);
   }
@@ -111,7 +111,7 @@ export class GlobalMenuItems {
       this._popupUtils.openPrivacyPolicyPage();
     });
 
-    const settingsMenuItem = topbarElement.getOverflowMenuItem('settings') as CtgMenuItemElement;
+    const settingsMenuItem = topbarElement.getMenuItem('settings') as CtgMenuItemElement;
     settingsMenuItem.addEventListener('click', () => {
       this._popupUtils.openOptionsPage();
     });
