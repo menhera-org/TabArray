@@ -75,19 +75,40 @@ export class CtgMenuItemElement extends HTMLElement {
           menuItems.style.maxInlineSize = window.innerWidth + 'px';
         }
       } else {
-        menuItems.hidden = true;
+        this.closeMenu();
       }
     });
 
     this._bodyOnClick = () => {
-      menuItems.hidden = true;
+      this.closeMenu();
     };
 
     this.addEventListener('click', (event) => {
       event.stopPropagation();
     });
 
+    document.body.addEventListener('ctg-menu-item-click', (event) => {
+      const detail = (event as CustomEvent).detail;
+      if (detail.element !== this) {
+        this.closeMenu();
+      }
+    });
+
     this._renderIcon();
+  }
+
+  public closeMenu() {
+    const menuItems = this.shadowRoot?.getElementById('menu-items');
+    if (!menuItems) return;
+    menuItems.hidden = true;
+  }
+
+  public broadcastClickEvent() {
+    document.body.dispatchEvent(new CustomEvent('ctg-menu-item-click', {
+      detail: {
+        element: this,
+      },
+    }));
   }
 
   public connectedCallback() {
