@@ -184,10 +184,19 @@ button {
   opacity: .5;
 }
 
-:is(#button-new-container, #button-settings):is(:focus, :hover, :active) {
+#button-help {
+  block-size: 2em;
+  inline-size: 2em;
+  color: inherit;
+  mask: url(/img/firefox-icons/help.svg) center center / 67% no-repeat;
+  background-color: var(--text-color);
+  opacity: .5;
+}
+
+:is(#button-new-container, #button-settings, #button-help):is(:focus, :hover, :active) {
   opacity: 1;
 }
 
-:is(#button-new-container, #button-settings) > .button-text {
+:is(#button-new-container, #button-settings, #button-help) > .button-text {
   display: none;
 }

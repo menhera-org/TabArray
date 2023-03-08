@@ -38,6 +38,8 @@ import { ModalConfirmElement } from '../components/modal-confirm';
 import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
 import { MessagingService } from '../frameworks/extension/MessagingService';
 import { PromiseUtils } from '../frameworks/utils';
+import { ModalFrameElement } from '../components/modal-frame';
+import { HelpBannerElement } from '../components/help-banner';
 
 const panoramaStateStore = new PanoramaStateStore();
 const userContextService = UserContextService.getInstance();
@@ -54,6 +56,9 @@ newContainerButtonElement.title = i18n.getMessage('buttonNewContainer');
 
 const settingsButtonElement = document.getElementById('button-settings') as HTMLButtonElement;
 settingsButtonElement.title = i18n.getMessage('buttonSettings');
+
+const helpButtonElement = document.getElementById('button-help') as HTMLButtonElement;
+helpButtonElement.title = i18n.getMessage('menuItemHelp');
 
 let containerEditorElement: ContainerEditorElement | null = null;
 newContainerButtonElement.addEventListener('click', () => {
@@ -257,4 +262,11 @@ settingsButtonElement.addEventListener('click', () => {
   browser.runtime.openOptionsPage().then(() => {
     window.close();
   });
+});
+
+helpButtonElement.addEventListener('click', () => {
+  const modalFrame = new ModalFrameElement();
+  const helpBanner = new HelpBannerElement();
+  modalFrame.appendChild(helpBanner);
+  document.body.appendChild(modalFrame);
 });
