@@ -65,6 +65,7 @@ export class CtgMenuItemElement extends HTMLElement {
     menuItems.appendChild(slot);
 
     button.addEventListener('click', () => {
+      this.broadcastClickEvent();
       if (this.children.length > 0) {
         menuItems.hidden = !menuItems.hidden;
         if (!menuItems.hidden) {
