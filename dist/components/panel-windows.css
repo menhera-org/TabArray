@@ -114,3 +114,7 @@ select.window-select.browser-style {
 .inactive-containers:empty {
   border-block-start: none;
 }
+
+.search-results-containers {
+  border-block-end: solid 1px var(--border-color);
+}
