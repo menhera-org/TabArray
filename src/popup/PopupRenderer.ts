@@ -80,7 +80,7 @@ export class PopupRenderer {
 
   private createContainerElement(userContext: UserContext, isPrivate = false): MenulistContainerElement {
     userContext = this._userContextService.fillDefaultValues(userContext);
-    const element = new MenulistContainerElement(userContext);
+    const element = new MenulistContainerElement(userContext, isPrivate);
 
     element.onContainerOptionsClick.addListener(async () => {
       this.modalRenderer.showContainerOptionsPanelAsync(userContext, isPrivate);
