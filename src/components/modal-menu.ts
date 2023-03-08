@@ -19,12 +19,10 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import browser from 'webextension-polyfill';
 import { EventSink } from '../frameworks/utils';
 
-export class ModalConfirmElement extends HTMLElement {
-  public readonly onCancel = new EventSink<void>();
-  public readonly onOk = new EventSink<void>();
+export class ModalMenuElement extends HTMLElement {
+  public readonly onActionClicked = new EventSink<string>();
 
   public constructor(title: string) {
     super();
@@ -35,7 +33,7 @@ export class ModalConfirmElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/modal-confirm.css';
+    styleSheet.href = '/components/modal-menu.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const modalContent = document.createElement('div');
@@ -47,29 +45,25 @@ export class ModalConfirmElement extends HTMLElement {
 
     const modalActions = document.createElement('div');
     modalActions.id = 'modal-actions';
-    const cancelButton = document.createElement('button');
-    cancelButton.id = 'cancel-button';
-    cancelButton.textContent = browser.i18n.getMessage('buttonCancel');
-    modalActions.appendChild(cancelButton);
-    const okButton = document.createElement('button');
-    okButton.id = 'ok-button';
-    okButton.textContent = browser.i18n.getMessage('buttonOk');
-    okButton.classList.add('button-default');
-    modalActions.appendChild(okButton);
     modalContent.appendChild(modalActions);
 
     this.shadowRoot.appendChild(modalContent);
+  }
 
-    cancelButton.addEventListener('click', () => {
-      this.onCancel.dispatch();
+  public defineAction(id: string, label: string, isDefault = false) {
+    if (!this.shadowRoot) return;
+    const modalActions = this.shadowRoot.getElementById('modal-actions') as HTMLDivElement;
+    const actionButton = document.createElement('button');
+    if (isDefault) {
+      actionButton.classList.add('button-default');
+    }
+    actionButton.textContent = label;
+    modalActions.appendChild(actionButton);
+    actionButton.addEventListener('click', () => {
       this.remove();
-    });
-
-    okButton.addEventListener('click', () => {
-      this.onOk.dispatch();
-      this.remove();
+      this.onActionClicked.dispatch(id);
     });
   }
 }
 
-customElements.define('modal-confirm', ModalConfirmElement);
+customElements.define('modal-menu', ModalMenuElement);

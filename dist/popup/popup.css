@@ -65,6 +65,7 @@ input:is([type="text"], [type="search"]), button, select, textarea {
   box-sizing: border-box;
   margin: 0;
   inline-size: 100%;
+  min-inline-size: 0;
 }
 
 button {

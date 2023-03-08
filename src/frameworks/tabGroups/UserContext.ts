@@ -24,6 +24,7 @@ import { Uint32 } from '../types';
 import { EventSink } from '../utils';
 import { OriginAttributes } from './OriginAttributes';
 import { TabGroup } from './TabGroup';
+import { ContainerAttributes } from '../tabAttributes';
 
 /**
  * Represents a user context (contextual identity or container).
@@ -284,6 +285,10 @@ export class UserContext {
 
   public getTabGroup(): Promise<TabGroup> {
     return TabGroup.createTabGroup(this.toOriginAttributes());
+  }
+
+  public toContainerAttributes(): ContainerAttributes {
+    return new ContainerAttributes({ userContextId: this.id, privateBrowsingId: 0 as Uint32.Uint32 }, this.name, this.color, this.icon);
   }
 }
 

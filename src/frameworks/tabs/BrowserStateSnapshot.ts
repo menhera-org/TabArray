@@ -24,28 +24,48 @@ import { UserContext } from '../tabGroups';
 import { Tab } from './Tab';
 import { WindowStateSnapshot } from './WindowStateSnapshot';
 import { FirstPartyService } from '../tabGroups';
+import { ContainerAttributes, ContextualIdentity, CookieStore } from '../tabAttributes';
+import { ExtensionService } from '../extension';
 import { SetMap } from '../types';
+import { ContainersStateSnapshot } from './ContainersStateSnapshot';
 
 const firstPartyService = FirstPartyService.getInstance();
+const extensionService = ExtensionService.getInstance();
 
 export class BrowserStateSnapshot {
+  private static async getContainers(): Promise<ContainerAttributes[]> {
+    const contextualIdentities = await ContextualIdentity.getAll();
+    const containerAttributes = [
+      ContainerAttributes.fromCookieStore(CookieStore.DEFAULT),
+      ... contextualIdentities.map((contextualIdentity) => ContainerAttributes.fromContextualIdentity(contextualIdentity)),
+    ];
+    if (await extensionService.isAllowedInPrivateBrowsing()) {
+      containerAttributes.push(ContainerAttributes.fromCookieStore(CookieStore.PRIVATE));
+    }
+    return containerAttributes;
+  }
+
   public static async create(): Promise<BrowserStateSnapshot> {
-    const [userContexts, browserWindows, currentBrowserWindow] = await Promise.all([
+    const [userContexts, browserWindows, currentBrowserWindow, containerAttributesList, enabledInPrivateBrowsing] = await Promise.all([
       UserContext.getAll(),
       browser.windows.getAll({
         populate: true,
         windowTypes: ['normal'],
       }),
       browser.windows.get(browser.windows.WINDOW_ID_CURRENT),
+      BrowserStateSnapshot.getContainers(),
+      extensionService.isAllowedInPrivateBrowsing(),
       firstPartyService.initialized,
     ]);
     if (null == currentBrowserWindow.id) {
       throw new Error('currentBrowserWindow.id is null');
     }
-    return new BrowserStateSnapshot(userContexts, browserWindows, currentBrowserWindow.id);
+    return new BrowserStateSnapshot(userContexts, browserWindows, currentBrowserWindow.id, containerAttributesList, enabledInPrivateBrowsing);
   }
 
   public readonly currentWindowId: number;
+  public readonly enabledInPrivateBrowsing;
+
   private readonly _tabMap: Map<number, Tab> = new Map();
   private readonly _tabIds: number[];
   private readonly _tabsByWindow: Map<number, Tab[]> = new Map();
@@ -53,10 +73,13 @@ export class BrowserStateSnapshot {
   private readonly _windowIds = new Set<number>();
   private readonly _windowStateSnapshots: Map<number, WindowStateSnapshot> = new Map();
   private readonly _definedUserContexts: readonly UserContext[];
+  private readonly _containersStateSnapshot: ContainersStateSnapshot;
 
-  public constructor(userContexts: UserContext[], browserWindows: browser.Windows.Window[], currentWindowId: number) {
+  public constructor(userContexts: UserContext[], browserWindows: browser.Windows.Window[], currentWindowId: number, containerAttributesList: ContainerAttributes[], enabledInPrivateBrowsing: boolean) {
     this.currentWindowId = currentWindowId;
     this._definedUserContexts = userContexts;
+    this.enabledInPrivateBrowsing = enabledInPrivateBrowsing;
+    const tabs: Tab[] = [];
     for (const browserWindow of browserWindows) {
       if (browserWindow.tabs == null || browserWindow.id == null) {
         throw new Error('Invalid browserWindow');
@@ -71,9 +94,11 @@ export class BrowserStateSnapshot {
         const tab = new Tab(browserTab);
         this._tabMap.set(tab.id, tab);
         windowTabs.push(tab);
+        tabs.push(tab);
       }
     }
     this._tabIds = Array.from(this._tabMap.keys()).sort((a, b) => a - b);
+    this._containersStateSnapshot = new ContainersStateSnapshot(containerAttributesList, tabs);
   }
 
   public getWindowIds(): number[] {
@@ -105,5 +130,9 @@ export class BrowserStateSnapshot {
 
   public getDefinedUserContexts(): readonly UserContext[] {
     return this._definedUserContexts;
+  }
+
+  public getContainersStateSnapshot(): ContainersStateSnapshot {
+    return this._containersStateSnapshot;
   }
 }

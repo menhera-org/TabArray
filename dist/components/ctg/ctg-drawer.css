@@ -1,0 +1,110 @@
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+
+/*
+  Container Tab Groups
+  Copyright (C) 2023 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+@import '/theme.css';
+
+@namespace url(http://www.w3.org/1999/xhtml);
+
+:host {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+:host([hidden]) {
+  display: none;
+}
+
+#scrim {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  background-color: var(--hover-color);
+  backdrop-filter: blur(.5rem);
+  z-index: 50;
+}
+
+#main {
+  display: block flex;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 90%;
+  max-inline-size: 20rem;
+  block-size: 100%;
+  z-index: 51;
+  flex-direction: column;
+  background-color: var(--background-color);
+}
+
+#header {
+  display: block flex;
+  flex-direction: row;
+  column-gap: .5em;
+  padding-inline: 1em;
+  padding-block-start: .5em;
+  padding-block-end: .5em;
+  align-items: center;
+}
+
+#close-button {
+  display: block;
+  margin: 0;
+  appearance: none;
+  border: none;
+  background-color: var(--text-color);
+  inline-size: 2em;
+  block-size: 2em;
+  mask: url(/img/firefox-icons/close.svg) center / 75% no-repeat;
+  opacity: .5;
+}
+
+#close-button:is(:hover, :active, :focus) {
+  opacity: 1;
+}
+
+#heading {
+  display: block;
+  margin: 0;
+  padding-inline: 1em;
+  padding-block: .5em;
+  flex: 1;
+  font-size: 100%;
+  min-inline-size: 0;
+  font-weight: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#content {
+  display: block flex;
+  flex-direction: column;
+  flex: 1;
+  min-block-size: 0;
+  overflow: auto;
+}

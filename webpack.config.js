@@ -50,6 +50,10 @@ module.exports = {
       import: './src/page-action/page-action.ts',
       filename: 'page-action/page-action.js',
     },
+    'popup-v2': {
+      import: './src/popup-v2/popup-v2.ts',
+      filename: 'popup-v2/popup-v2.js',
+    },
   },
 
   output: {

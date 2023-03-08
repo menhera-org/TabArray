@@ -19,27 +19,11 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-:root {
-  --text-color: #222;
-  --background-color: #fff;
-  --border-color: #888;
-  --hover-color: rgba(0, 0, 0, 0.1);
-  --secondary-background-color: #d7d7db;
-  --button-text-color: #0033cc;
-  --in-content-link-color: #0033cc;
-  --accent-color: #5eaf30;
-  --overlay-color: rgba(255, 255, 255, .2);
-}
+/* @import '/theme.css'; */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text-color: #fff;
-    --background-color: #0c0c0d;
-    --border-color: #999;
-    --hover-color: rgba(255, 255, 255, 0.1);
-    --secondary-background-color: #4a4a4f;
-    --button-text-color: #aae2ff;
-    --in-content-link-color: #aae2ff;
-    --overlay-color: rgba(0, 0, 0, .2);
-  }
+@namespace url(http://www.w3.org/1999/xhtml);
+
+:host {
+  display: block flex;
+  flex-direction: column;
 }

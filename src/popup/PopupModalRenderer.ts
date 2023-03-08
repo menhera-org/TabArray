@@ -29,6 +29,7 @@ import { IconPickerElement } from '../components/usercontext-iconpicker';
 import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { ModalConfirmElement } from '../components/modal-confirm';
+import { ModalMenuElement } from '../components/modal-menu';
 import { ContainerEditorElement } from '../components/container-editor';
 import { CookieStore, ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
 
@@ -262,42 +263,44 @@ export class PopupModalRenderer {
   }
 
   public async showContainerOptionsPanelAsync(userContext: UserContext, isPrivate = false): Promise<void> {
-    const messageElement = this._utils.queryElementNonNull<HTMLElement>('#container-menu .modal-title');
-    const doneButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-done-button');
     const message = browser.i18n.getMessage('containerOptions', isPrivate ? browser.i18n.getMessage('privateBrowsing') : userContext.name);
 
-    const editButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-edit-button');
-    const clearCookie = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-clear-cookie-button');
-    const deleteButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-delete-button');
+    const modalMenuElement = new ModalMenuElement(message);
+    document.body.appendChild(modalMenuElement);
 
-    if (isPrivate || userContext.id == 0) {
-      editButton.disabled = true;
-      deleteButton.disabled = true;
-    } else {
-      editButton.disabled = false;
-      deleteButton.disabled = false;
+    if (!isPrivate && userContext.id != 0) {
+      modalMenuElement.defineAction('edit', browser.i18n.getMessage('buttonEditContainer'), false);
+      modalMenuElement.defineAction('delete', browser.i18n.getMessage('buttonDeleteContainer'), false);
     }
 
-    const editHandler = async () => {
-      await this.showEditContainerPanelAsync(userContext);
-    };
+    modalMenuElement.defineAction('clearCookie', browser.i18n.getMessage('buttonContainerClearCookie'), false);
+    modalMenuElement.defineAction('done', browser.i18n.getMessage('buttonDone'), true);
 
-    const clearCookieHandler = () => {
-      this.showContainerClearCookieModal(userContext, isPrivate);
-    };
+    await new Promise<void>((res) => {
+      const actionHandler = (action: string) => {
+        modalMenuElement.onActionClicked.removeListener(actionHandler);
+        switch (action) {
+          case 'edit': {
+            this.showEditContainerPanelAsync(userContext).catch((e) => {
+              console.error(e);
+            });
+            break;
+          }
 
-    const deleteHandler = () => {
-      this.showDeleteContainerModal(userContext);
-    };
+          case 'clearCookie': {
+            this.showContainerClearCookieModal(userContext, isPrivate);
+            break;
+          }
 
-    editButton.addEventListener('click', editHandler);
-    clearCookie.addEventListener('click', clearCookieHandler);
-    deleteButton.addEventListener('click', deleteHandler);
+          case 'delete': {
+            this.showDeleteContainerModal(userContext);
+            break;
+          }
+        }
+        res();
+      };
 
-    await this.showModal(message, messageElement, doneButton, doneButton, '#container-menu');
-
-    editButton.removeEventListener('click', editHandler);
-    clearCookie.removeEventListener('click', clearCookieHandler);
-    deleteButton.removeEventListener('click', deleteHandler);
+      modalMenuElement.onActionClicked.addListener(actionHandler);
+    });
   }
 }
