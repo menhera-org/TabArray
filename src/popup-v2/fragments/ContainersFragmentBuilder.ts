@@ -25,9 +25,17 @@ import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../components/ctg/ctg-menu-item";
 import browser from "webextension-polyfill";
 import { ContainersStateSnapshot } from "../../frameworks/tabs/ContainersStateSnapshot";
+import { PopupRenderer } from "../../popup/PopupRenderer";
+import { OriginAttributes, TabGroup, UserContext } from "../../frameworks/tabGroups";
+import { UserContextSortingOrderStore } from "../../userContexts/UserContextSortingOrderStore";
+import { EventSink } from "../../frameworks/utils";
 
 export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
+  public readonly onContainerSelected = new EventSink<string>();
+
   private _containerCount = 0;
+  private readonly _popupRenderer = new PopupRenderer();
+  private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
   public getFragmentId(): string {
     return 'fragment-containers';
@@ -44,9 +52,6 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public build(): CtgFragmentElement {
     const fragment = document.createElement('ctg-fragment') as CtgFragmentElement;
     fragment.id = this.getFragmentId();
-    const paragraph = document.createElement('p');
-    paragraph.textContent = 'Containers';
-    fragment.appendChild(paragraph);
     return fragment;
   }
 
@@ -75,9 +80,34 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   }
 
   public render(containersStateSnapshot: ContainersStateSnapshot): void {
-    this._containerCount = containersStateSnapshot.containerAttributes.length;
+    this._containerCount = containersStateSnapshot.containerAttributesList.length;
     if (this.active) {
       this.renderTopBarWithGlobalItems();
+    }
+    const fragment = this.getFragment();
+    fragment.textContent = '';
+    const privateContainers = containersStateSnapshot.containerAttributesList.filter((container) => container.isPrivate);
+    const normalContainers = containersStateSnapshot.containerAttributesList.filter((container) => !container.isPrivate);
+    const privateUserContexts = privateContainers.map((container) => UserContext.fromContainerAttributes(container));
+    const normalUserContexts = this._userContextSortingOrderStore.sort(normalContainers.map((container) => UserContext.fromContainerAttributes(container)));
+    const userContexts = [... privateUserContexts, ... normalUserContexts];
+    for (const userContext of userContexts) {
+      const isPrivate = userContext.markedAsPrivate;
+      const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
+      const containerElement = this._popupRenderer.renderPartialContainerElement(userContext, isPrivate);
+      containerElement.tabCount = tabs.length;
+      fragment.appendChild(containerElement);
+
+      containerElement.onContainerClose.addListener(async () => {
+        const cookieStoreId = userContext.cookieStoreId;
+        const originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId);
+        const tabGroup = await TabGroup.createTabGroup(originAttributes);
+        tabGroup.tabList.closeUnpinnedTabs();
+      });
+
+      containerElement.onContainerClick.addListener(() => {
+        this.onContainerSelected.dispatch(userContext.cookieStoreId);
+      });
     }
   }
 }

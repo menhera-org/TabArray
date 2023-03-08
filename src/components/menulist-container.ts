@@ -47,7 +47,7 @@ export class MenulistContainerElement extends HTMLElement {
     if (!this.shadowRoot) {
       throw new Error("Shadow root is null");
     }
-    this._isPrivate = isPrivate;
+    this._isPrivate = isPrivate || userContext.markedAsPrivate;
     this.buildElement();
     this.setUserContext(userContext);
     this.containerCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
@@ -135,14 +135,17 @@ export class MenulistContainerElement extends HTMLElement {
     if (this._isPrivate) {
       console.assert(userContext.id == 0, "Private window should have default container only");
       this.containerNameElement.textContent = browser.i18n.getMessage('privateBrowsing');
+      this.containerButton.title = browser.i18n.getMessage('privateBrowsing');
+      this.containerIconElement.style.background = 'url(/img/firefox-icons/private-browsing-icon.svg) center center / contain no-repeat';
+      this.containerIconElement.style.backgroundColor = 'transparent';
     } else {
       this.containerNameElement.textContent = userContext.name;
-    }
-    this.containerIconElement.style.backgroundColor = userContext.colorCode;
-    this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(userContext.id));
-    const iconUrl = userContext.iconUrl;
-    if (!iconUrl.includes(')')) {
-      this.containerIconElement.style.mask = `url(${iconUrl}) center center / contain no-repeat`;
+      this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(userContext.id));
+      this.containerIconElement.style.backgroundColor = userContext.colorCode;
+      const iconUrl = userContext.iconUrl;
+      if (!iconUrl.includes(')')) {
+        this.containerIconElement.style.mask = `url(${iconUrl}) center center / contain no-repeat`;
+      }
     }
   }
 

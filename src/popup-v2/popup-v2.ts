@@ -33,10 +33,13 @@ import { CtgBottomNavigationElement } from "../components/ctg/ctg-bottom-navigat
 import { CtgFragmentElement } from "../components/ctg/ctg-fragment";
 import browser from "webextension-polyfill";
 import { GlobalMenuItems } from "./GlobalMenuItems";
+
 import { WindowsFragmentBuilder } from "./fragments/WindowsFragmentBuilder";
 import { ContainersFragmentBuilder } from "./fragments/ContainersFragmentBuilder";
 import { SitesFragmentBuilder } from "./fragments/SitesFragmentBuilder";
 import { HelpFragmentBuilder } from "./fragments/HelpFragmentBuilder";
+import { ContainerDetailsFragmentBuilder } from "./fragments/ContainerDetailsFragmentBuilder";
+
 import { ViewRefreshHandler } from "../frameworks/rendering/ViewRefreshHandler";
 import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
 import { UserContextSortingOrderStore } from "../userContexts/UserContextSortingOrderStore";
@@ -79,16 +82,25 @@ const containersBuilder = new ContainersFragmentBuilder(frameLayout, topBarEleme
 const sitesBuilder = new SitesFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 const helpBuilder = new HelpFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 
+const containerDetailsBuilder = new ContainerDetailsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
+
 fragments.push(windowsBuilder.getFragment());
 fragments.push(containersBuilder.getFragment());
 fragments.push(sitesBuilder.getFragment());
 fragments.push(helpBuilder.getFragment());
+fragments.push(containerDetailsBuilder.getFragment());
 
 const defaultFragment = fragments[0] as CtgFragmentElement;
 frameLayout.activateFragment(defaultFragment.id);
 
 bottomNavigationElement.onTargetClicked.addListener((target) => {
   frameLayout.activateFragment(target);
+});
+
+topBarElement.onBackButtonClicked.addListener(() => {
+  const parentFragmentId = frameLayout.getActiveFragment()?.navigationGroup ?? null;
+  if (!parentFragmentId) return;
+  frameLayout.activateFragment(parentFragmentId);
 });
 
 // not used
@@ -100,6 +112,9 @@ const renderer = new ViewRefreshHandler(async () => {
   containersBuilder.render(browserStateSnapshot.getContainersStateSnapshot());
   const currentWindowSnapshot = browserStateSnapshot.getWindowStateSnapshot(browserStateSnapshot.currentWindowId);
   sitesBuilder.render(browserStateSnapshot.getFirstPartyStateSnapshot(currentWindowSnapshot.isPrivate));
+
+  containerDetailsBuilder.render(browserStateSnapshot);
+
   console.debug('rendering done');
 });
 
@@ -122,6 +137,14 @@ browser.contextualIdentities.onRemoved.addListener(renderInBackground);
 userContextSortingOrderStore.onChanged.addListener(renderInBackground);
 
 renderer.renderInBackground();
+
+// Containers view
+
+containersBuilder.onContainerSelected.addListener((cookieStoreId) => {
+  containerDetailsBuilder.activate(cookieStoreId);
+});
+
+// Help view
 
 const setConfigValue = <T,>(option: ConfigurationOption<T>, value: T) => {
   option.setValue(value).catch((e) => {

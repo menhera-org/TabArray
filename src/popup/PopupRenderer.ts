@@ -89,7 +89,7 @@ export class PopupRenderer {
     return element;
   }
 
-  private renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT, isPrivate = false): MenulistContainerElement {
+  public renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT, isPrivate = false): MenulistContainerElement {
     const element = this.createContainerElement(userContext, isPrivate);
     element.containerVisibilityToggleButton.disabled = true;
     element.partialContainerView = true;

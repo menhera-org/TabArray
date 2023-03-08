@@ -51,6 +51,8 @@ export class CtgFrameLayoutElement extends HTMLElement {
   }
 
   public activateFragment(id: string) {
+    let fragmentToActivate: CtgFragmentElement | null = null;
+    let fragmentToDeactivate: CtgFragmentElement | null = null;
     for (const child of this.children) {
       if (!(child instanceof CtgFragmentElement)) {
         continue;
@@ -59,12 +61,21 @@ export class CtgFrameLayoutElement extends HTMLElement {
         if (child.slot == 'active') {
           return;
         }
-        child.slot = 'active';
-        child.onActivated.dispatch();
+        fragmentToActivate = child;
       } else if (child.slot == 'active') {
-        child.slot = '';
-        child.onDeactivated.dispatch();
+        fragmentToDeactivate = child;
       }
+    }
+
+    // deactivate and activate in this order
+    if (fragmentToDeactivate) {
+      fragmentToDeactivate.slot = '';
+      fragmentToDeactivate.onDeactivated.dispatch();
+    }
+
+    if (fragmentToActivate) {
+      fragmentToActivate.slot = 'active';
+      fragmentToActivate.onActivated.dispatch();
     }
   }
 

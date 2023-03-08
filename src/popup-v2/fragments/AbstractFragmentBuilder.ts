@@ -27,6 +27,8 @@ import { CtgBottomNavigationElement } from "../../components/ctg/ctg-bottom-navi
 import { GlobalMenuItems } from "../GlobalMenuItems";
 
 export abstract class AbstractFragmentBuilder implements FragmentBuilder {
+  protected static readonly suppressBottomNavigation: boolean = false;
+
   private _fragment: CtgFragmentElement;
   private _isActive = false;
   private _frameLayoutElement: CtgFrameLayoutElement;
@@ -43,7 +45,11 @@ export abstract class AbstractFragmentBuilder implements FragmentBuilder {
     const fragment = this.build();
     this._fragment = fragment;
     frameLayoutElement.addFragment(fragment);
-    bottomNavigationElement.defineNavigationTarget(fragment.id, this.getIconUrl(), this.getLabelText());
+
+    const thisClass = this.constructor as typeof AbstractFragmentBuilder;
+    if (!thisClass.suppressBottomNavigation) {
+      bottomNavigationElement.defineNavigationTarget(fragment.id, this.getIconUrl(), this.getLabelText());
+    }
 
     fragment.onActivated.addListener(() => {
       this._isActive = true;

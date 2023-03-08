@@ -23,11 +23,11 @@ import { Tab } from "./Tab";
 */
 
 export class ContainersStateSnapshot {
-  public readonly containerAttributes: readonly ContainerAttributes[];
+  public readonly containerAttributesList: readonly ContainerAttributes[];
   private readonly _tabsByContainer = new Map<string, Tab[]>();
 
   public constructor(containerAttributesList: ContainerAttributes[], tabs: Tab[]) {
-    this.containerAttributes = containerAttributesList;
+    this.containerAttributesList = containerAttributesList;
     tabs.sort((a, b) => {
       if (a.windowId == b.windowId) {
         return a.index - b.index;
