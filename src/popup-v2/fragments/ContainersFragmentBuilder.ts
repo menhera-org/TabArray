@@ -29,6 +29,7 @@ import { PopupRenderer } from "../../popup/PopupRenderer";
 import { OriginAttributes, TabGroup, UserContext } from "../../frameworks/tabGroups";
 import { UserContextSortingOrderStore } from "../../userContexts/UserContextSortingOrderStore";
 import { EventSink } from "../../frameworks/utils";
+import { TemporaryContainerService } from "../../containers/TemporaryContainerService";
 
 export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onContainerSelected = new EventSink<string>();
@@ -36,6 +37,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   private _containerCount = 0;
   private readonly _popupRenderer = new PopupRenderer();
   private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+  private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
 
   public getFragmentId(): string {
     return 'fragment-containers';
@@ -73,6 +75,23 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     newTemporaryContainerMenuItem.labelText = browser.i18n.getMessage('buttonNewTemporaryContainer');
     newTemporaryContainerMenuItem.iconSrc = '/img/material-icons/timelapse.svg';
     newContainerMenuItem.appendChild(newTemporaryContainerMenuItem);
+
+    newNormalContainerMenuItem.addEventListener('click', () => {
+      this._popupRenderer.modalRenderer.showNewContainerPanelAsync().then((result) => {
+        if (!result) return;
+        console.log('Created new container', result);
+      }).catch((e) => {
+        console.error(e);
+      });
+    });
+
+    newTemporaryContainerMenuItem.addEventListener('click', () => {
+      this._temporaryContainerService.createTemporaryContainer().then((identity) => {
+        console.debug('Created temporary container', identity);
+      }).catch((e) => {
+        console.error(e);
+      });
+    });
 
     // TODO: add i18n string
     const labelText = this.getLabelText();
