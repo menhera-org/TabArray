@@ -48,6 +48,8 @@ export abstract class AbstractFragmentBuilder implements FragmentBuilder {
     fragment.onActivated.addListener(() => {
       this._isActive = true;
       this.renderTopBarWithGlobalItems();
+      const navigationGroup = fragment.navigationGroup ?? fragment.id;
+      bottomNavigationElement.selectTarget(navigationGroup);
     });
 
     fragment.onDeactivated.addListener(() => {

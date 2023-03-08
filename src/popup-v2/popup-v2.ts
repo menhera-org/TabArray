@@ -40,6 +40,9 @@ import { HelpFragmentBuilder } from "./fragments/HelpFragmentBuilder";
 import { ViewRefreshHandler } from "../frameworks/rendering/ViewRefreshHandler";
 import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
 import { UserContextSortingOrderStore } from "../userContexts/UserContextSortingOrderStore";
+import { config, privacyConfig } from '../config/config';
+import { ConfigurationOption } from '../frameworks/config';
+import { StorageArea } from "../frameworks/storage";
 
 const searchParams = new URLSearchParams(window.location.search);
 if (searchParams.get('popup') == '1') {
@@ -74,18 +77,17 @@ const fragments: CtgFragmentElement[] = [];
 const windowsBuilder = new WindowsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 const containersBuilder = new ContainersFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 const sitesBuilder = new SitesFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
+const helpBuilder = new HelpFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 
 fragments.push(windowsBuilder.getFragment());
 fragments.push(containersBuilder.getFragment());
 fragments.push(sitesBuilder.getFragment());
-fragments.push((new HelpFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems)).getFragment());
+fragments.push(helpBuilder.getFragment());
 
 const defaultFragment = fragments[0] as CtgFragmentElement;
 frameLayout.activateFragment(defaultFragment.id);
-bottomNavigationElement.selectTarget(defaultFragment.id);
 
 bottomNavigationElement.onTargetClicked.addListener((target) => {
-  bottomNavigationElement.selectTarget(target);
   frameLayout.activateFragment(target);
 });
 
@@ -120,3 +122,84 @@ browser.contextualIdentities.onRemoved.addListener(renderInBackground);
 userContextSortingOrderStore.onChanged.addListener(renderInBackground);
 
 renderer.renderInBackground();
+
+const setConfigValue = <T,>(option: ConfigurationOption<T>, value: T) => {
+  option.setValue(value).catch((e) => {
+    console.error(e);
+  });
+};
+
+const setFirstPartyIsolate = (value: boolean) => {
+  (async () => {
+    if (value) {
+      const cookieBehavior = await privacyConfig.cookieConfigBehavior.getValue();
+      if (cookieBehavior == 'reject_trackers_and_partition_foreign') {
+        await privacyConfig.cookieConfigBehavior.setValue('reject_trackers');
+      }
+    }
+    console.debug('setting firstPartyIsolate to ' + value);
+    setConfigValue(privacyConfig.firstPartyIsolate, value);
+  })().catch((e) => {
+    console.error(e);
+  });
+};
+
+const helpFragment = helpBuilder.getFragment();
+
+let firstRun = false;
+config['help.shownOnce'].getValue().then((shownOnce) => {
+  if (!shownOnce) {
+    frameLayout.activateFragment(helpFragment.id);
+    firstRun = true;
+    initializeHelp();
+  }
+});
+
+const initializeHelp = () => {
+  helpBuilder.fpiChecked = true;
+};
+
+const setHelpShownOnce = () => {
+  config['help.shownOnce'].setValue(true, StorageArea.LOCAL).catch((e) => {
+    console.error(e);
+  });
+};
+
+privacyConfig.firstPartyIsolate.observe((value) => {
+  if (firstRun) {
+    initializeHelp();
+    return;
+  }
+  helpBuilder.fpiChecked = value;
+});
+
+helpBuilder.onFpiCheckedChanged.addListener((checked) => {
+  setFirstPartyIsolate(checked);
+});
+
+// feature.languageOverrides setting
+config['feature.languageOverrides'].observe((value) => {
+  helpBuilder.languageOverridesChecked = value;
+});
+
+helpBuilder.onLanguageOverridesCheckedChanged.addListener((checked) => {
+  setConfigValue(config['feature.languageOverrides'], checked);
+});
+
+// feature.uaOverrides setting
+config['feature.uaOverrides'].observe((value) => {
+  helpBuilder.uaOverridesChecked = value;
+});
+
+helpBuilder.onUaOverridesCheckedChanged.addListener((checked) => {
+  setConfigValue(config['feature.uaOverrides'], checked);
+});
+
+helpFragment.onDeactivated.addListener(() => {
+  setFirstPartyIsolate(helpBuilder.fpiChecked);
+  setHelpShownOnce();
+});
+
+helpBuilder.onGetStartedClicked.addListener(() => {
+  frameLayout.activateFragment(defaultFragment.id);
+});

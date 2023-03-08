@@ -25,8 +25,14 @@ import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import browser from "webextension-polyfill";
 import { PopupUtils } from "../../popup/PopupUtils";
 import { HelpBannerElement } from "../../components/help-banner";
+import { EventSink } from "../../frameworks/utils";
 
 export class HelpFragmentBuilder extends AbstractFragmentBuilder {
+  public readonly onFpiCheckedChanged = new EventSink<boolean>();
+  public readonly onLanguageOverridesCheckedChanged = new EventSink<boolean>();
+  public readonly onUaOverridesCheckedChanged = new EventSink<boolean>();
+  public readonly onGetStartedClicked = new EventSink<void>();
+
   private readonly _popupUtils = new PopupUtils();
 
   public getFragmentId(): string {
@@ -67,6 +73,10 @@ export class HelpFragmentBuilder extends AbstractFragmentBuilder {
     inputFirstPartyIsolate.id = 'input-firstPartyIsolate';
     fpiParagraph.appendChild(inputFirstPartyIsolate);
 
+    inputFirstPartyIsolate.addEventListener('change', () => {
+      this.onFpiCheckedChanged.dispatch(inputFirstPartyIsolate.checked);
+    });
+
     const labelFirstPartyIsolate = document.createElement('label');
     labelFirstPartyIsolate.htmlFor = 'input-firstPartyIsolate';
     labelFirstPartyIsolate.textContent = browser.i18n.getMessage('labelFirstPartyIsolate');
@@ -86,6 +96,10 @@ export class HelpFragmentBuilder extends AbstractFragmentBuilder {
     inputFeatureLanguageOverrides.id = 'input-featureLanguageOverrides';
     languageOverridesParagraph.appendChild(inputFeatureLanguageOverrides);
 
+    inputFeatureLanguageOverrides.addEventListener('change', () => {
+      this.onLanguageOverridesCheckedChanged.dispatch(inputFeatureLanguageOverrides.checked);
+    });
+
     const labelFeatureLanguageOverrides = document.createElement('label');
     labelFeatureLanguageOverrides.htmlFor = 'input-featureLanguageOverrides';
     labelFeatureLanguageOverrides.textContent = browser.i18n.getMessage('featureLanguageOverrides');
@@ -100,6 +114,10 @@ export class HelpFragmentBuilder extends AbstractFragmentBuilder {
     inputFeatureUaOverrides.type = 'checkbox';
     inputFeatureUaOverrides.id = 'input-featureUaOverrides';
     uaOverridesParagraph.appendChild(inputFeatureUaOverrides);
+
+    inputFeatureUaOverrides.addEventListener('change', () => {
+      this.onUaOverridesCheckedChanged.dispatch(inputFeatureUaOverrides.checked);
+    });
 
     const labelFeatureUaOverrides = document.createElement('label');
     labelFeatureUaOverrides.htmlFor = 'input-featureUaOverrides';
@@ -116,6 +134,10 @@ export class HelpFragmentBuilder extends AbstractFragmentBuilder {
     buttonGetStarted.textContent = browser.i18n.getMessage('buttonGetStarted');
     modalActions.appendChild(buttonGetStarted);
 
+    buttonGetStarted.addEventListener('click', () => {
+      this.onGetStartedClicked.dispatch();
+    });
+
     return fragment;
   }
 
@@ -124,5 +146,41 @@ export class HelpFragmentBuilder extends AbstractFragmentBuilder {
     topBarElement.clearOverflowMenuItems();
 
     topBarElement.headingText = this.getLabelText();
+  }
+
+  public get fpiChecked(): boolean {
+    const fragment = this.getFragment();
+    const inputFirstPartyIsolate = fragment.querySelector('#input-firstPartyIsolate') as HTMLInputElement;
+    return inputFirstPartyIsolate.checked;
+  }
+
+  public set fpiChecked(value: boolean) {
+    const fragment = this.getFragment();
+    const inputFirstPartyIsolate = fragment.querySelector('#input-firstPartyIsolate') as HTMLInputElement;
+    inputFirstPartyIsolate.checked = value;
+  }
+
+  public get languageOverridesChecked(): boolean {
+    const fragment = this.getFragment();
+    const inputFeatureLanguageOverrides = fragment.querySelector('#input-featureLanguageOverrides') as HTMLInputElement;
+    return inputFeatureLanguageOverrides.checked;
+  }
+
+  public set languageOverridesChecked(value: boolean) {
+    const fragment = this.getFragment();
+    const inputFeatureLanguageOverrides = fragment.querySelector('#input-featureLanguageOverrides') as HTMLInputElement;
+    inputFeatureLanguageOverrides.checked = value;
+  }
+
+  public get uaOverridesChecked(): boolean {
+    const fragment = this.getFragment();
+    const inputFeatureUaOverrides = fragment.querySelector('#input-featureUaOverrides') as HTMLInputElement;
+    return inputFeatureUaOverrides.checked;
+  }
+
+  public set uaOverridesChecked(value: boolean) {
+    const fragment = this.getFragment();
+    const inputFeatureUaOverrides = fragment.querySelector('#input-featureUaOverrides') as HTMLInputElement;
+    inputFeatureUaOverrides.checked = value;
   }
 }
