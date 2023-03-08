@@ -47,6 +47,7 @@ export class PanelWindowsElement extends HTMLElement {
   private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
   private _isSearching = false;
   private _browserStateSnapshot: BrowserStateSnapshot | null = null;
+  private _searchString = '';
 
   public constructor() {
     super();
@@ -218,6 +219,7 @@ export class PanelWindowsElement extends HTMLElement {
       this.renderWindow(browserStateSnapshot);
     });
 
+    this.rerenderSearchView();
   }
 
   public renderWindow(browserStateSnapshot: BrowserStateSnapshot) {
@@ -309,8 +311,17 @@ export class PanelWindowsElement extends HTMLElement {
     return element;
   }
 
+  public get searchString(): string {
+    return this._searchString;
+  }
+
+  public rerenderSearchView() {
+    this.searchForString(this._searchString);
+  }
+
   public searchForString(searchString = '') {
     searchString = searchString.trim();
+    this._searchString = searchString;
     this._isSearching = searchString.length > 0;
     // todo
     if (!this.shadowRoot) return;
@@ -359,7 +370,10 @@ export class PanelWindowsElement extends HTMLElement {
     }
 
     for (const userContext of userContexts) {
+      const tabs = windowStateSnapshot.userContextUnpinnedTabMap.get(userContext.id) || [];
       const containerElement = this._popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, [], windowStateSnapshot.isPrivate);
+      containerElement.tabCount = tabs.length;
+      containerElement.containerVisibilityToggleButton.disabled = true;
       searchResultsContainersElement.appendChild(containerElement);
     }
     for (const tab of tabs) {
