@@ -57,6 +57,17 @@ export class HelpBannerElement extends HTMLElement {
     helpBannerVersion.textContent = manifest.version;
     helpBanner.appendChild(helpBannerVersion);
 
+    const helpBannerPlatformVersion = document.createElement('p');
+    helpBannerPlatformVersion.textContent = 'Firefox';
+    helpBanner.appendChild(helpBannerPlatformVersion);
+
+    Promise.all([
+      browser.runtime.getBrowserInfo(),
+      browser.runtime.getPlatformInfo(),
+    ]).then(([browserInfo, platformInfo]) => {
+      helpBannerPlatformVersion.textContent = `${browserInfo.name} ${browserInfo.version} (${platformInfo.os})`;
+    });
+
     const helpBannerDescription = document.createElement('p');
     helpBannerDescription.textContent = manifest.description ?? '';
     helpBanner.appendChild(helpBannerDescription);
