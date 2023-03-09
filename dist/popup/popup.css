@@ -374,7 +374,7 @@ body.transparent > .content {
   color: inherit;
   text-decoration: none;
   padding-block: .5rem;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   border-block-end: solid .25rem transparent;
 }
 
@@ -467,7 +467,7 @@ body.transparent > .content {
 
 #sites > * > button > .button-text {
   display: block;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   grid-row: 1;
   grid-column: 1;
 }
@@ -481,7 +481,7 @@ body.transparent > .content {
   grid-row: 1;
   grid-column: 2;
   inline-size: 2rem;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   background-color: var(--text-color);
   mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
 }
@@ -588,7 +588,7 @@ body.transparent > .content {
 }
 
 .tab > .tab-pin-button:hover, .tab > .tab-pin-button:focus {
-  opacity: .5 !important;
+  opacity: var(--opaque-opacity) !important;
 }
 
 .tab.tab-pinned > .tab-pin-button {
@@ -598,11 +598,11 @@ body.transparent > .content {
 .tab > .tab-close-button {
   mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
   background-color: var(--text-color);
-  opacity: .25;
+  opacity: var(--opaque-opacity);
 }
 
 .tab > .tab-close-button:focus, .tab > .tab-close-button:hover {
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 .menu-list .window-label {
@@ -628,11 +628,11 @@ body.transparent > .content {
 
 .window-label > .window-label-name[data-tab-count]::after {
   content: ' (' attr(data-tab-count) ')';
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 .window-label > button {
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   inline-size: 2em;
 }
 
@@ -670,7 +670,7 @@ body.transparent > .content {
   background-position: center center;
   inline-size: 100%;
   block-size: 100%;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   visibility: hidden;
 }
 
@@ -707,13 +707,13 @@ body.transparent > .content {
 
 .container-label[data-tab-count]::after {
   content: ' (' attr(data-tab-count) ')';
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 .container > .edit-container-button {
   mask: url(/img/material-icons/edit.svg) center center/75% no-repeat;
   background-color: var(--text-color);
-  opacity: .25;
+  opacity: var(--opaque-opacity);
 }
 
 .container > button:disabled {
@@ -723,7 +723,7 @@ body.transparent > .content {
 .container > .close-container-button {
   mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
   background-color: var(--text-color);
-  opacity: .25;
+  opacity: var(--opaque-opacity);
 }
 
 .container > .container-tabs {

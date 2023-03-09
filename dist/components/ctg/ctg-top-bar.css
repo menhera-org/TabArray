@@ -37,7 +37,7 @@
 }
 
 #drawer-button, #back-button {
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 :is(#drawer-button, #back-button):is(:hover, :active, :focus) {

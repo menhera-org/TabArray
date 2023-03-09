@@ -87,7 +87,7 @@
 
 .up, .down {
   background-color: var(--text-color);
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   appearance: none;
   border: none;
   padding: 0;

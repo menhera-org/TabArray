@@ -48,6 +48,7 @@
   background-color: transparent;
   text-align: start;
   font: inherit;
+  color: inherit;
 }
 
 #button:not(.icon-only) {

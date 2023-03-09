@@ -80,7 +80,7 @@
   inline-size: 2em;
   block-size: 2em;
   mask: url(/img/firefox-icons/close.svg) center / 75% no-repeat;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 #close-button:is(:hover, :active, :focus) {

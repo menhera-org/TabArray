@@ -50,7 +50,7 @@
   padding-block: .5em;
   padding-inline: .5em;
   border-block-end: solid .25rem transparent;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 .navigation-target.selected {

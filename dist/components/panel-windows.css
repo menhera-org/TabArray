@@ -70,7 +70,7 @@ select.window-select.browser-style {
 
 .tab-count {
   margin-inline: .5rem;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 #search-wrapper {

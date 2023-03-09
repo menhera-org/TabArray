@@ -185,11 +185,11 @@ body > ctg-vertical-layout {
 
 .window-label > .window-label-name[data-tab-count]::after {
   content: ' (' attr(data-tab-count) ')';
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 .window-label > button {
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   inline-size: 2em;
 }
 

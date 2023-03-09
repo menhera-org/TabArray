@@ -37,6 +37,7 @@ button {
   font: inherit;
   min-inline-size: 0;
   text-align: start;
+  color: inherit;
 }
 
 #site-button {
@@ -54,7 +55,7 @@ button {
   block-size: 2em;
   background-color: var(--text-color);
   mask: url(/img/firefox-icons/close.svg) center / 50% no-repeat;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 #close-button:is(:focus, :hover, :active) {
@@ -62,7 +63,7 @@ button {
 }
 
 #site-label {
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   padding-inline: .25em;
   padding-block: .5em;
   display: block;
