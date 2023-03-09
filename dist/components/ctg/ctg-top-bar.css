@@ -75,7 +75,7 @@
   background-color: var(--text-color);
   inline-size: 2em;
   block-size: 2em;
-  mask: url(../../img/fring-resize.svg) center / 75% no-repeat;
+  mask: url(../../img/ring-resize.svg) center / 75% no-repeat;
 }
 
 #spinner.spinner-disabled {
