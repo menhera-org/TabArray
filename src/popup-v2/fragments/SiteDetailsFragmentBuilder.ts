@@ -133,10 +133,13 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
       }
       const userContextElement = this._popupRenderer.renderContainerForFirstPartyDomain(this._domain, userContext, this._isPrivate);
       fragment.appendChild(userContextElement);
+      let tabCount = 0;
       for (const tab of tabs) {
         const tabElement = this._popupRenderer.renderTab(tab, userContext);
         userContextElement.appendChild(tabElement);
+        tabCount++;
       }
+      userContextElement.tabCount = tabCount;
     }
   }
 
