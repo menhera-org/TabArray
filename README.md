@@ -142,3 +142,9 @@ Something missing you need? Please file a new feature request there.
 Copyright &copy; 2022 Menhera.org contributors.
 
 Licensed under GNU GPL version 3 **or later**.
+
+### Used assets
+
+- Material Icons (Apache-2.0)
+- Icons from mozilla-central (MPL-2.0)
+- SVG Spinners (MIT)
