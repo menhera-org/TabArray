@@ -229,6 +229,10 @@ export class MenulistContainerElement extends HTMLElement {
   public override focus() {
     this.containerButton.focus();
   }
+
+  public override click() {
+    this.containerButton.click();
+  }
 }
 
 customElements.define('menulist-container', MenulistContainerElement);

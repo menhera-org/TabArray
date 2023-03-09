@@ -24,7 +24,7 @@ import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../components/ctg/ctg-menu-item";
 import browser from "webextension-polyfill";
-import { PopupRenderer } from "../../popup/PopupRenderer";
+import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
 import { ContainerAttributes, CookieStore } from "../../frameworks/tabAttributes";
 import { UserContext } from "../../frameworks/tabGroups";
@@ -35,7 +35,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
 
   private readonly _messagingService = MessagingService.getInstance();
-  private readonly _popupRenderer = new PopupRenderer();
+  private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private _containerName = browser.i18n.getMessage('noContainer');
   private _cookieStoreId = CookieStore.DEFAULT.id;
   private _browserStateSnapshot: BrowserStateSnapshot | null = null;
@@ -147,5 +147,9 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
     this.setContainer();
     this.renderContainer();
     this.frameLayoutElement.activateFragment(this.getFragmentId());
+  }
+
+  public override getFocusableElements(): HTMLElement[] {
+    return [... this.getFragment().querySelectorAll('menulist-tab')] as HTMLElement[];
   }
 }

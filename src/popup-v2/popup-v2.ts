@@ -48,6 +48,9 @@ import { config, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
 import { StorageArea } from "../frameworks/storage";
 
+import { PopupRendererService } from "./PopupRendererService";
+import { PopupFocusHandlers } from "./PopupFocusHandlers";
+
 const searchParams = new URLSearchParams(window.location.search);
 if (searchParams.get('popup') == '1') {
   document.body.classList.add('popup');
@@ -56,7 +59,9 @@ if (searchParams.get('popup') == '1') {
   }
 }
 
+const popupRenderer = PopupRendererService.getInstance().popupRenderer;
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+
 const extensionName = browser.runtime.getManifest().name;
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
 
@@ -76,6 +81,7 @@ topBarElement.drawerButtonEnabled = false;
 
 const frameLayout = document.querySelector('#frame-layout') as CtgFrameLayoutElement;
 const bottomNavigationElement = document.querySelector('#bottom-navigation') as CtgBottomNavigationElement;
+const popupFocusHandlers = new PopupFocusHandlers(frameLayout);
 
 const fragments: CtgFragmentElement[] = [];
 const windowsBuilder = new WindowsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
@@ -236,3 +242,5 @@ helpFragment.onDeactivated.addListener(() => {
 helpBuilder.onGetStartedClicked.addListener(() => {
   frameLayout.activateFragment(defaultFragment.id);
 });
+
+popupRenderer.modalRenderer.pushKeyHandlers(popupFocusHandlers.okHandler, popupFocusHandlers.cancelHandler, popupFocusHandlers.keyHandler);

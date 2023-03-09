@@ -123,6 +123,11 @@ export class MenulistSiteElement extends HTMLElement {
     const siteButton = this.shadowRoot?.getElementById('site-button');
     if (siteButton) siteButton.focus();
   }
+
+  public override click() {
+    const siteButton = this.shadowRoot?.getElementById('site-button');
+    if (siteButton) siteButton.click();
+  }
 }
 
 customElements.define('menulist-site', MenulistSiteElement);

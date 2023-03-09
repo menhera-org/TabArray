@@ -23,7 +23,7 @@ import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import browser from "webextension-polyfill";
-import { PopupRenderer } from "../../popup/PopupRenderer";
+import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
 import { UserContext } from "../../frameworks/tabGroups";
 import { MessagingService } from "../../frameworks/extension/MessagingService";
@@ -36,7 +36,7 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
 
   private readonly _messagingService = MessagingService.getInstance();
   private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
-  private readonly _popupRenderer = new PopupRenderer();
+  private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private _domain = '(none)';
   private _tabCount = 0;
   private _firstPartyStateSnapshot: ReadonlyMap<string, ReadonlySet<Tab>> | null = null;
@@ -148,5 +148,9 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
     this.setSite();
     this.renderSite();
     this.frameLayoutElement.activateFragment(this.getFragmentId());
+  }
+
+  public override getFocusableElements(): HTMLElement[] {
+    return [... this.getFragment().querySelectorAll('menulist-container, menulist-tab')] as HTMLElement[];
   }
 }

@@ -20,10 +20,12 @@
 */
 
 import { EventSink } from "../../frameworks/utils";
+import { AbstractFragmentBuilder } from "../../popup-v2/fragments/AbstractFragmentBuilder";
 
 export class CtgFragmentElement extends HTMLElement {
   public readonly onActivated = new EventSink<void>();
   public readonly onDeactivated = new EventSink<void>();
+  public builder: AbstractFragmentBuilder | null = null;
 
   public constructor() {
     super();

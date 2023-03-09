@@ -43,6 +43,7 @@ export abstract class AbstractFragmentBuilder implements FragmentBuilder {
     this._globalMenuItems = globalMenuItems;
 
     const fragment = this.build();
+    fragment.builder = this;
     this._fragment = fragment;
     frameLayoutElement.addFragment(fragment);
 
@@ -91,6 +92,14 @@ export abstract class AbstractFragmentBuilder implements FragmentBuilder {
 
   public getFragment(): CtgFragmentElement {
     return this._fragment;
+  }
+
+  /**
+   * Should be overridden by subclasses to return a list of focusable elements
+   * @returns The list of focusable elements in the fragment.
+   */
+  public getFocusableElements(): HTMLElement[] {
+    return [];
   }
 
   public abstract getLabelText(): string;

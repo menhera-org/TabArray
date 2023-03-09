@@ -103,4 +103,10 @@ export class WindowsFragmentBuilder extends AbstractFragmentBuilder {
     const panel = fragment.querySelector('panel-windows') as PanelWindowsElement;
     panel.setState(browserStateSnapshot);
   }
+
+  public override getFocusableElements(): HTMLElement[] {
+    const fragment = this.getFragment();
+    const panel = fragment.querySelector('panel-windows') as PanelWindowsElement;
+    return panel.getFocusableElements();
+  }
 }

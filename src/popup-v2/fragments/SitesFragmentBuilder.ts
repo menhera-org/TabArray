@@ -91,4 +91,8 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
       });
     }
   }
+
+  public override getFocusableElements(): HTMLElement[] {
+    return [... this.getFragment().querySelectorAll('menulist-site')] as HTMLElement[];
+  }
 }

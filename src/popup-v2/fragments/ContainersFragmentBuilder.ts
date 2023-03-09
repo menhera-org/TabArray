@@ -25,7 +25,7 @@ import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../components/ctg/ctg-menu-item";
 import browser from "webextension-polyfill";
 import { ContainersStateSnapshot } from "../../frameworks/tabs/ContainersStateSnapshot";
-import { PopupRenderer } from "../../popup/PopupRenderer";
+import { PopupRendererService } from "../PopupRendererService";
 import { OriginAttributes, TabGroup, UserContext } from "../../frameworks/tabGroups";
 import { UserContextSortingOrderStore } from "../../userContexts/UserContextSortingOrderStore";
 import { EventSink } from "../../frameworks/utils";
@@ -35,7 +35,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onContainerSelected = new EventSink<string>();
 
   private _containerCount = 0;
-  private readonly _popupRenderer = new PopupRenderer();
+  private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
   private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
 
@@ -153,5 +153,14 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
         this.onContainerSelected.dispatch(userContext.cookieStoreId);
       });
     }
+  }
+
+  public override getFocusableElements(): HTMLElement[] {
+    const fragment = this.getFragment();
+    const activeContainersElement = fragment.querySelector('.active-containers') as HTMLDivElement;
+    const inactiveContainersElement = fragment.querySelector('.inactive-containers') as HTMLDivElement;
+    const activeContainers = Array.from(activeContainersElement.querySelectorAll('menulist-container'));
+    const inactiveContainers = Array.from(inactiveContainersElement.querySelectorAll('menulist-container'));
+    return [... activeContainers, ... inactiveContainers] as HTMLElement[];
   }
 }

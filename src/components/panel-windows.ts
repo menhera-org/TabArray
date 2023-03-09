@@ -25,11 +25,11 @@ import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
 import { Uint32 } from "../frameworks/types";
-import { PopupRenderer } from "../popup/PopupRenderer";
 import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from "../userContexts/UserContextVisibilityService";
 import { TemporaryContainerService } from "../containers/TemporaryContainerService";
 import { UserContextSortingOrderStore } from "../userContexts/UserContextSortingOrderStore";
+import { PopupRendererService } from "../popup-v2/PopupRendererService";
 
 export class PanelWindowsElement extends HTMLElement {
   public readonly onCollapseContainersButtonClicked = new EventSink<void>();
@@ -39,7 +39,7 @@ export class PanelWindowsElement extends HTMLElement {
   public readonly onCreateTemporaryContainerButtonClicked = new EventSink<void>();
 
   private _selectedWindowId: number = browser.windows.WINDOW_ID_NONE;
-  private readonly _popupRenderer = new PopupRenderer();
+  private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
   private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
   private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
@@ -367,6 +367,14 @@ export class PanelWindowsElement extends HTMLElement {
     if (!this.shadowRoot) return;
     const searchBox = this.shadowRoot.querySelector('#search') as HTMLInputElement;
     searchBox.focus();
+  }
+
+  public getFocusableElements(): HTMLElement[] {
+    return [... this.shadowRoot?.querySelectorAll('#search, menulist-container, menulist-tab') ?? []] as HTMLElement[];
+  }
+
+  public get activeElement(): HTMLElement | null {
+    return this.shadowRoot?.activeElement as HTMLElement | null;
   }
 }
 

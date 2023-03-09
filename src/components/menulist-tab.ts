@@ -227,6 +227,10 @@ export class MenulistTabElement extends HTMLElement {
   public override focus(): void {
     this.tabButton.focus();
   }
+
+  public override click() {
+    this.tabButton.click();
+  }
 }
 
 customElements.define('menulist-tab', MenulistTabElement);
