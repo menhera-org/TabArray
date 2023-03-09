@@ -28,10 +28,13 @@ import { PopupRenderer } from "../../popup/PopupRenderer";
 import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
 import { ContainerAttributes, CookieStore } from "../../frameworks/tabAttributes";
 import { UserContext } from "../../frameworks/tabGroups";
+import { MenulistWindowElement } from "../../components/menulist-window";
+import { MessagingService } from "../../frameworks/extension/MessagingService";
 
 export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
 
+  private readonly _messagingService = MessagingService.getInstance();
   private readonly _popupRenderer = new PopupRenderer();
   private _containerName = browser.i18n.getMessage('noContainer');
   private _cookieStoreId = CookieStore.DEFAULT.id;
@@ -71,6 +74,15 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
     newTabMenuItem.labelText = browser.i18n.getMessage('buttonOpenTabInContainer');
     newTabMenuItem.iconSrc = '/img/firefox-icons/add.svg';
     topBarElement.addMenuItem('new-tab', newTabMenuItem);
+
+    newTabMenuItem.addEventListener('click', () => {
+      this._messagingService.sendMessage('open_new_tab_in_container', {
+        cookieStoreId: this._cookieStoreId,
+        active: true,
+      }).catch((e) => {
+        console.error(e);
+      });
+    });
 
     topBarElement.headingText = this._containerName;
   }
@@ -115,7 +127,16 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
     const containersStateSnapshot = this._browserStateSnapshot.getContainersStateSnapshot();
     const tabs = containersStateSnapshot.getTabsByContainer(this._cookieStoreId);
     const userContext = UserContext.fromContainerAttributes(this._selectedContainerAttributes);
+    let windowId: number = browser.windows.WINDOW_ID_NONE;
     for (const tab of tabs) {
+      if (windowId != tab.windowId) {
+        const windowElement = new MenulistWindowElement();
+        windowElement.windowName = this._browserStateSnapshot.currentWindowId == tab.windowId
+          ? browser.i18n.getMessage('currentWindow', tab.windowId.toString())
+          : browser.i18n.getMessage('windowLabel', tab.windowId.toString());
+        fragment.appendChild(windowElement);
+      }
+      windowId = tab.windowId;
       const tabElement = this._popupRenderer.renderTab(tab, userContext);
       fragment.appendChild(tabElement);
     }

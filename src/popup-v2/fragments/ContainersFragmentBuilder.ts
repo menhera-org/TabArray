@@ -110,7 +110,15 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     const privateUserContexts = privateContainers.map((container) => UserContext.fromContainerAttributes(container));
     const normalUserContexts = this._userContextSortingOrderStore.sort(normalContainers.map((container) => UserContext.fromContainerAttributes(container)));
     const userContexts = [... privateUserContexts, ... normalUserContexts];
-    for (const userContext of userContexts) {
+    const activeUserContexts = userContexts.filter((userContext) => {
+      const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
+      return tabs.length > 0;
+    })
+    const inactiveUserContexts = userContexts.filter((userContext) => {
+      const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
+      return tabs.length < 1;
+    })
+    for (const userContext of [... activeUserContexts, ... inactiveUserContexts]) {
       const isPrivate = userContext.markedAsPrivate;
       const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
       const containerElement = this._popupRenderer.renderPartialContainerElement(userContext, isPrivate);

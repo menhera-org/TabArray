@@ -73,6 +73,34 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
   }
 };
 
+const openNewTabInContainer = async (cookieStoreId: string, active: boolean) => {
+  try {
+    console.debug('open_new_tab_in_container: cookieStoreId=%s', cookieStoreId);
+    const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => CookieStore.fromId(cookieStoreId).isPrivate == browserWindow.incognito);
+    for (const browserWindow of browserWindows) {
+      if (browserWindow.id == null) continue;
+      await browser.tabs.create({
+        cookieStoreId,
+        windowId: browserWindow.id,
+        active,
+      });
+      if (active) {
+        await browser.windows.update(browserWindow.id, {
+          focused: true,
+        });
+      }
+      return;
+    }
+    await browser.windows.create({
+      cookieStoreId,
+      incognito: CookieStore.fromId(cookieStoreId).isPrivate,
+      focused: active,
+    });
+  } catch (e) {
+    console.warn(e);
+  }
+};
+
 const containerCreate = async (name: string, color: string, icon: string): Promise<string> => {
   console.debug('container_create: name=%s, color=%s, icon=%s', name, color, icon);
   const contextualIdentity = await ContextualIdentity.create({name, color, icon});
@@ -90,6 +118,13 @@ messagingService.addListener('reopen_tab_in_container', async (message) => {
   const active = ('active' in message) ? !!message.active : false;
   const {tabId, cookieStoreId} = message;
   await reopenTabInContainer(tabId as number, cookieStoreId as string, active);
+});
+
+messagingService.addListener('open_new_tab_in_container', async (message) => {
+  if (null == message || typeof message != 'object' || !('cookieStoreId' in message)) return;
+  const active = ('active' in message) ? !!message.active : false;
+  const {cookieStoreId} = message;
+  await openNewTabInContainer(cookieStoreId as string, active);
 });
 
 messagingService.addListener('container_create', async (message) => {

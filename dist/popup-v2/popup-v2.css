@@ -147,3 +147,67 @@ body > ctg-vertical-layout {
   background-color: #0033cc;
   color: #fff;
 }
+
+.window-label > button {
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  opacity: 0;
+  padding: 0;
+  background-color: transparent;
+  display: block;
+}
+
+.window-label {
+  position: sticky;
+  inset-block-start: -.125rem;
+  background-color: var(--background-color);
+  z-index: 2;
+  box-shadow: 0 0 .5em var(--background-color), 0 0 .5em var(--background-color);
+  display: grid;
+  grid-template-columns: 1fr max-content max-content max-content;
+  border-block-start: solid .125rem var(--border-color);
+  padding-inline-end: 1em;
+}
+
+.window-label > .window-label-name {
+  padding-inline: 2em;
+  padding-block: .5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+.window-label > .window-label-name[data-tab-count]::after {
+  content: ' (' attr(data-tab-count) ')';
+  opacity: .5;
+}
+
+.window-label > button {
+  opacity: .5;
+  inline-size: 2em;
+}
+
+.window-label > button:disabled {
+  display: none;
+}
+
+.window-label > button:focus, .window-label > button:hover {
+  opacity: 1;
+}
+
+.window-label > .window-collapse-button {
+  mask: url(/img/material-icons/unfold_less.svg) center center/contain no-repeat;
+  background-color: var(--text-color);
+}
+
+.window-label > .window-expand-button {
+  mask: url(/img/material-icons/unfold_more.svg) center center/contain no-repeat;
+  background-color: var(--text-color);
+}
+
+.window-label > .window-close-button {
+  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
+  background-color: var(--text-color);
+}
