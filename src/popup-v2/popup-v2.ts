@@ -248,3 +248,9 @@ helpBuilder.onGetStartedClicked.addListener(() => {
 popupRenderer.modalRenderer.pushKeyHandlers(popupFocusHandlers.okHandler, popupFocusHandlers.cancelHandler, popupFocusHandlers.keyHandler);
 
 popupCommandHandler.start();
+popupCommandHandler.getCommands().then((commands) => {
+  bottomNavigationElement.setTooltipForTarget('fragment-windows', commands.get('open_windows_view') ?? '');
+  bottomNavigationElement.setTooltipForTarget('fragment-containers', commands.get('open_containers_view') ?? '');
+  bottomNavigationElement.setTooltipForTarget('fragment-sites', commands.get('open_sites_view') ?? '');
+  bottomNavigationElement.setTooltipForTarget('fragment-help', commands.get('open_help_view') ?? '');
+});

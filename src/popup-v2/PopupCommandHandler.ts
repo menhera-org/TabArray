@@ -64,4 +64,27 @@ export class PopupCommandHandler {
   public stop(): void {
     browser.commands.onCommand.removeListener(this._commandListener);
   }
+
+  private async getOs(): Promise<string> {
+    const platformInfo = await browser.runtime.getPlatformInfo();
+    return platformInfo.os;
+  }
+
+  /**
+   * Returns human-readable strings for the available shortcuts.
+   * @returns Map of command name to shortcut
+   */
+  public async getCommands(): Promise<Map<string, string>> {
+    const commands = await browser.commands.getAll();
+    const result = new Map<string, string>();
+    const isMac = (await this.getOs()) === 'mac';
+    for (const command of commands) {
+      if (!command.name || !command.shortcut) continue;
+      const name = command.name;
+      const originalShortcut = command.shortcut;
+      const shortcut = isMac ? originalShortcut.replace('Ctrl', '⌘').replace('Command', '⌘') : originalShortcut;
+      result.set(name, shortcut);
+    }
+    return result;
+  }
 }
