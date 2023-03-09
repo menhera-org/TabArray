@@ -168,6 +168,16 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
   ],
 });
 
+browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
+  tabSortingService.sortTabs().catch((e) => {
+    console.error(e);
+  });
+}, {
+  properties: [
+    'pinned',
+  ],
+});
+
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
   if (tabObj.cookieStoreId == null || tabObj.url == null || tabObj.windowId == null) return;
   if (UserContext.isCookieStoreIdPrivateBrowsing(tabObj.cookieStoreId)) {
