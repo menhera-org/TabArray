@@ -25,6 +25,7 @@ import { EventSink } from '../utils';
 import { OriginAttributes } from './OriginAttributes';
 import { TabGroup } from './TabGroup';
 import { ContainerAttributes } from '../tabAttributes';
+import { ContentStorageStatistics } from '../../cookies/ContentStorageStatistics';
 
 /**
  * Represents a user context (contextual identity or container).
@@ -35,6 +36,8 @@ export class UserContext {
   private static readonly DEFAULT_STORE = 'firefox-default';
   private static readonly PRIVATE_STORE = 'firefox-private';
   private static readonly CONTAINER_STORE = 'firefox-container-';
+
+  private static readonly _contentStorageStatistics = new ContentStorageStatistics();
 
   /**
    * User context ID for "No Container" container (0).
@@ -291,6 +294,7 @@ export class UserContext {
       localStorage: true, // not supported on old Firefox
       indexedDB: true,
     });
+    await UserContext._contentStorageStatistics.removeCookieStore(this.cookieStoreId);
   }
 
   public async updateProperties(name: string, color: string, icon: string): Promise<UserContext> {
