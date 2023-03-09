@@ -54,6 +54,15 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public build(): CtgFragmentElement {
     const fragment = document.createElement('ctg-fragment') as CtgFragmentElement;
     fragment.id = this.getFragmentId();
+
+    const activeContainersElement = document.createElement('div');
+    activeContainersElement.classList.add('active-containers');
+    fragment.appendChild(activeContainersElement);
+
+    const inactiveContainersElement = document.createElement('div');
+    inactiveContainersElement.classList.add('inactive-containers');
+    fragment.appendChild(inactiveContainersElement);
+
     return fragment;
   }
 
@@ -104,7 +113,10 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
       this.renderTopBarWithGlobalItems();
     }
     const fragment = this.getFragment();
-    fragment.textContent = '';
+    const activeContainersElement = fragment.querySelector('.active-containers') as HTMLDivElement;
+    const inactiveContainersElement = fragment.querySelector('.inactive-containers') as HTMLDivElement;
+    activeContainersElement.textContent = '';
+    inactiveContainersElement.textContent = '';
     const privateContainers = containersStateSnapshot.containerAttributesList.filter((container) => container.isPrivate);
     const normalContainers = containersStateSnapshot.containerAttributesList.filter((container) => !container.isPrivate);
     const privateUserContexts = privateContainers.map((container) => UserContext.fromContainerAttributes(container));
@@ -118,12 +130,17 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
       const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
       return tabs.length < 1;
     })
-    for (const userContext of [... activeUserContexts, ... inactiveUserContexts]) {
+    this.renderContainers(containersStateSnapshot, activeUserContexts, activeContainersElement);
+    this.renderContainers(containersStateSnapshot, inactiveUserContexts, inactiveContainersElement);
+  }
+
+  private renderContainers(containersStateSnapshot: ContainersStateSnapshot, userContexts: UserContext[], parentElement: HTMLElement) {
+    for (const userContext of userContexts) {
       const isPrivate = userContext.markedAsPrivate;
       const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
       const containerElement = this._popupRenderer.renderPartialContainerElement(userContext, isPrivate);
       containerElement.tabCount = tabs.length;
-      fragment.appendChild(containerElement);
+      parentElement.appendChild(containerElement);
 
       containerElement.onContainerClose.addListener(async () => {
         const cookieStoreId = userContext.cookieStoreId;

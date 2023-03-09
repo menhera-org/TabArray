@@ -148,6 +148,10 @@ body > ctg-vertical-layout {
   color: #fff;
 }
 
+.active-containers:not(:empty) {
+  border-block-end: solid 1px var(--border-color);
+}
+
 .window-label > button {
   background-size: 1.5em;
   background-repeat: no-repeat;
