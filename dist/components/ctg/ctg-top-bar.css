@@ -68,6 +68,20 @@
   mask: url(../../img/firefox-icons/back.svg) center / 75% no-repeat;
 }
 
+#spinner {
+  appearance: none;
+  border: none;
+  outline: none;
+  background-color: var(--text-color);
+  inline-size: 2em;
+  block-size: 2em;
+  mask: url(../../img/fring-resize.svg) center / 75% no-repeat;
+}
+
+#spinner.spinner-disabled {
+  visibility: hidden;
+}
+
 #heading {
   display: block;
   min-inline-size: 0;

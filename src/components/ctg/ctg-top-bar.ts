@@ -28,6 +28,7 @@ export class CtgTopBarElement extends HTMLElement {
 
   private readonly _menuItems = new Map<string, CtgMenuItemElement>();
   private readonly _overflowMenuItems = new Map<string, CtgMenuItemElement>();
+  private readonly _spinnerTranscations = new Set<string>();
 
   public constructor() {
     super();
@@ -55,6 +56,11 @@ export class CtgTopBarElement extends HTMLElement {
       this.onBackButtonClicked.dispatch();
     });
     backButton.hidden = true;
+
+    const spinner = document.createElement('div');
+    spinner.id = 'spinner';
+    this.shadowRoot.appendChild(spinner);
+    spinner.classList.add('spinner-disabled');
 
     const heading = document.createElement('h1');
     heading.id = 'heading';
@@ -172,6 +178,28 @@ export class CtgTopBarElement extends HTMLElement {
 
   public getOverflowMenuItem(id: string): CtgMenuItemElement | null {
     return this._overflowMenuItems.get(id) ?? null;
+  }
+
+  public beginSpinnerTransaction(id: string) {
+    this._spinnerTranscations.add(id);
+    this.updateSpinner();
+  }
+
+  public endSpinnerTransaction(id: string) {
+    this._spinnerTranscations.delete(id);
+    this.updateSpinner();
+  }
+
+  private updateSpinner() {
+    const spinner = this.shadowRoot?.getElementById('spinner');
+    if (!spinner) {
+      return;
+    }
+    if (this._spinnerTranscations.size > 0) {
+      spinner.classList.remove('spinner-disabled');
+    } else {
+      spinner.classList.add('spinner-disabled');
+    }
   }
 }
 
