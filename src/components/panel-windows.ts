@@ -23,8 +23,6 @@ import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
 import { EventSink } from "../frameworks/utils";
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import browser from 'webextension-polyfill';
-import { MenulistTabElement } from "./menulist-tab";
-import { Tab } from "../frameworks/tabs";
 import { UserContext } from "../frameworks/tabGroups";
 import { Uint32 } from "../frameworks/types";
 import { PopupRenderer } from "../popup/PopupRenderer";
@@ -279,7 +277,7 @@ export class PanelWindowsElement extends HTMLElement {
     const pinnedTabsElement = this.shadowRoot.querySelector('.pinned-tabs') as HTMLDivElement;
     pinnedTabsElement.textContent = '';
     for (const pinnedTab of pinnedTabs) {
-      const tabElement = this.renderTab(pinnedTab, userContextMap.get(pinnedTab.userContextId) || UserContext.DEFAULT);
+      const tabElement = this._popupRenderer.renderTab(pinnedTab, userContextMap.get(pinnedTab.userContextId) || UserContext.DEFAULT);
       pinnedTabsElement.appendChild(tabElement);
     }
   }
@@ -292,23 +290,6 @@ export class PanelWindowsElement extends HTMLElement {
     menuItem.classList.add(className);
     menuItem.addEventListener('click', () => eventSink.dispatch());
     return menuItem;
-  }
-
-  public renderTab(tab: Tab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
-    const element = new MenulistTabElement(tab, userContext);
-    element.onTabClicked.addListener(() => {
-      tab.focus();
-    });
-    element.onClose.addListener(() => {
-      tab.close();
-    });
-    element.onPin.addListener(() => {
-      tab.pin();
-    });
-    element.onUnpin.addListener(() => {
-      tab.unpin();
-    });
-    return element;
   }
 
   public get searchString(): string {
@@ -377,9 +358,15 @@ export class PanelWindowsElement extends HTMLElement {
       searchResultsContainersElement.appendChild(containerElement);
     }
     for (const tab of tabs) {
-      const tabElement = this.renderTab(tab, userContextMap.get(tab.userContextId) || UserContext.DEFAULT);
+      const tabElement = this._popupRenderer.renderTab(tab, userContextMap.get(tab.userContextId) || UserContext.DEFAULT);
       searchResultsTabsElement.appendChild(tabElement);
     }
+  }
+
+  public focusToSearchBox() {
+    if (!this.shadowRoot) return;
+    const searchBox = this.shadowRoot.querySelector('#search') as HTMLInputElement;
+    searchBox.focus();
   }
 }
 

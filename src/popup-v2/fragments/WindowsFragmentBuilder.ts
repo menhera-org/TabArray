@@ -50,6 +50,10 @@ export class WindowsFragmentBuilder extends AbstractFragmentBuilder {
     fragment.id = this.getFragmentId();
     const panel = new PanelWindowsElement();
     fragment.appendChild(panel);
+
+    fragment.onActivated.addListener(() => {
+      panel.focusToSearchBox();
+    });
     return fragment;
   }
 
