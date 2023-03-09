@@ -47,6 +47,7 @@ import { UserContextSortingOrderStore } from "../userContexts/UserContextSorting
 import { config, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
 import { StorageArea } from "../frameworks/storage";
+import { MessagingService } from "../frameworks/extension/MessagingService";
 
 import { PopupRendererService } from "./PopupRendererService";
 import { PopupFocusHandlers } from "./PopupFocusHandlers";
@@ -62,6 +63,7 @@ if (searchParams.get('popup') == '1') {
 
 const popupRenderer = PopupRendererService.getInstance().popupRenderer;
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+const messagingService = MessagingService.getInstance();
 
 const extensionName = browser.runtime.getManifest().name;
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
@@ -118,6 +120,7 @@ topBarElement.onBackButtonClicked.addListener(() => {
 globalMenuItems.defineDrawerMenuItems(drawerElement);
 
 const renderer = new ViewRefreshHandler(async () => {
+  topBarElement.beginSpinnerTransaction('popup-rendering');
   const browserStateSnapshot = await BrowserStateSnapshot.create();
   windowsBuilder.render(browserStateSnapshot);
   containersBuilder.render(browserStateSnapshot.getContainersStateSnapshot());
@@ -127,6 +130,7 @@ const renderer = new ViewRefreshHandler(async () => {
   containerDetailsBuilder.render(browserStateSnapshot);
   siteDetailsBuilder.render(browserStateSnapshot, currentWindowSnapshot.isPrivate);
 
+  topBarElement.endSpinnerTransaction('popup-rendering');
   console.debug('rendering done');
 });
 
@@ -253,4 +257,13 @@ popupCommandHandler.getCommands().then((commands) => {
   bottomNavigationElement.setTooltipForTarget('fragment-containers', commands.get('open_containers_view') ?? '');
   bottomNavigationElement.setTooltipForTarget('fragment-sites', commands.get('open_sites_view') ?? '');
   bottomNavigationElement.setTooltipForTarget('fragment-help', commands.get('open_help_view') ?? '');
+});
+
+// render spinner
+messagingService.addListener('tab-sorting-started', () => {
+  topBarElement.beginSpinnerTransaction('tab-sorting');
+});
+
+messagingService.addListener('tab-sorting-ended', () => {
+  topBarElement.endSpinnerTransaction('tab-sorting');
 });

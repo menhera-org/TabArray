@@ -25,10 +25,12 @@ import { getWindowIds } from '../modules/windows';
 import { IndexTab } from '../modules/IndexTab';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { PromiseUtils } from '../frameworks/utils';
+import { MessagingService } from '../frameworks/extension/MessagingService';
 
 const TAB_MOVE_TIMEOUT = 60000;
 
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+const messagingService = MessagingService.getInstance();
 
 let tabSorting = false;
 
@@ -83,6 +85,7 @@ const sortTabs = async () => {
   }
   tabSorting = true;
   const startTime = Date.now();
+  messagingService.sendMessage('tab-sorting-started', { startTime });
   const promises: Promise<void>[] = [];
   let success = false;
   try {
@@ -94,7 +97,8 @@ const sortTabs = async () => {
   } catch (e) {
     console.error(e);
   } finally {
-    const sortingDuration = Date.now() - startTime;
+    const endTime = Date.now();
+    const sortingDuration = endTime - startTime;
     if (success) {
       if (sortingDuration > 500) {
         console.info('Tab sorting took %d ms', sortingDuration);
@@ -102,6 +106,7 @@ const sortTabs = async () => {
     } else {
       console.error('Tab sorting failed in %d ms', sortingDuration);
     }
+    messagingService.sendMessage('tab-sorting-ended', { endTime });
     tabSorting = false;
   }
 };
