@@ -22,6 +22,7 @@
 import browser from 'webextension-polyfill';
 import { InitialWindowsService } from './InitialWindowsService';
 import { DarkThemeMonitor } from '../frameworks/extension';
+import { config } from '../config/config';
 
 const DARK_THEME_BACKGROUND_COLOR = '#cccccc';
 const LIGHT_THEME_BACKGROUND_COLOR = '#333333';
@@ -58,6 +59,19 @@ const setBadgeTheme = (isDarkTheme: boolean) => {
     console.error(e);
   });
 };
+
+const setPopupSize = (large: boolean) => {
+  browser.browserAction.setPopup({
+    popup: large ? 'popup-v2/popup-v2.html?popup=1&large=1' : 'popup-v2/popup-v2.html?popup=1',
+  }).catch((e) => {
+    console.error(e);
+  });
+};
+
+config['appearance.popupSize'].observe((value) => {
+  console.debug('appearance.popupSize changed:', value);
+  setPopupSize(value === 'large');
+});
 
 initialWindowsService.getInitialWindows().then((browserWindows) => {
   browserWindows.forEach((browserWindow) => {
