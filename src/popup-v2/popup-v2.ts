@@ -50,6 +50,7 @@ import { StorageArea } from "../frameworks/storage";
 
 import { PopupRendererService } from "./PopupRendererService";
 import { PopupFocusHandlers } from "./PopupFocusHandlers";
+import { PopupCommandHandler } from "./PopupCommandHandler";
 
 const searchParams = new URLSearchParams(window.location.search);
 if (searchParams.get('popup') == '1') {
@@ -82,6 +83,7 @@ topBarElement.drawerButtonEnabled = false;
 const frameLayout = document.querySelector('#frame-layout') as CtgFrameLayoutElement;
 const bottomNavigationElement = document.querySelector('#bottom-navigation') as CtgBottomNavigationElement;
 const popupFocusHandlers = new PopupFocusHandlers(frameLayout);
+const popupCommandHandler = new PopupCommandHandler(frameLayout);
 
 const fragments: CtgFragmentElement[] = [];
 const windowsBuilder = new WindowsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
@@ -244,3 +246,5 @@ helpBuilder.onGetStartedClicked.addListener(() => {
 });
 
 popupRenderer.modalRenderer.pushKeyHandlers(popupFocusHandlers.okHandler, popupFocusHandlers.cancelHandler, popupFocusHandlers.keyHandler);
+
+popupCommandHandler.start();

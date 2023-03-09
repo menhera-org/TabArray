@@ -92,6 +92,36 @@
         "default": "Ctrl+Alt+P"
       },
       "description": "__MSG_buttonPanorama__"
+    },
+    "open_windows_view": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+1"
+      },
+      "description": "__MSG_menuItemWindows__"
+    },
+    "open_containers_view": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+2"
+      },
+      "description": "__MSG_menuItemMain__"
+    },
+    "open_sites_view": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+3"
+      },
+      "description": "__MSG_menuItemSites__"
+    },
+    "open_help_view": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+4"
+      },
+      "description": "__MSG_menuItemHelp__"
+    },
+    "open_settings_view": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+5"
+      },
+      "description": "__MSG_buttonSettings__"
     }
   },
   "content_scripts": [
