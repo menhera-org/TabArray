@@ -85,7 +85,7 @@ const sortTabs = async () => {
   }
   tabSorting = true;
   const startTime = Date.now();
-  messagingService.sendMessage('tab-sorting-started', { startTime });
+  messagingService.sendMessageAndIgnoreResponse('tab-sorting-started', { startTime });
   const promises: Promise<void>[] = [];
   let success = false;
   try {
@@ -106,7 +106,7 @@ const sortTabs = async () => {
     } else {
       console.error('Tab sorting failed in %d ms', sortingDuration);
     }
-    messagingService.sendMessage('tab-sorting-ended', { endTime });
+    messagingService.sendMessageAndIgnoreResponse('tab-sorting-ended', { endTime });
     tabSorting = false;
   }
 };

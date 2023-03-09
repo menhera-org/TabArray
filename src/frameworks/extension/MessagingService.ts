@@ -77,4 +77,10 @@ export class MessagingService {
     });
     return result;
   }
+
+  public sendMessageAndIgnoreResponse(type: string, message: unknown): void {
+    this.sendMessage(type, message).catch(() => {
+      // ignore
+    });
+  }
 }
