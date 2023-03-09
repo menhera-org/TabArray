@@ -39,6 +39,7 @@ import { ContainersFragmentBuilder } from "./fragments/ContainersFragmentBuilder
 import { SitesFragmentBuilder } from "./fragments/SitesFragmentBuilder";
 import { HelpFragmentBuilder } from "./fragments/HelpFragmentBuilder";
 import { ContainerDetailsFragmentBuilder } from "./fragments/ContainerDetailsFragmentBuilder";
+import { SiteDetailsFragmentBuilder } from "./fragments/SiteDetailsFragmentBuilder";
 
 import { ViewRefreshHandler } from "../frameworks/rendering/ViewRefreshHandler";
 import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
@@ -83,12 +84,14 @@ const sitesBuilder = new SitesFragmentBuilder(frameLayout, topBarElement, bottom
 const helpBuilder = new HelpFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 
 const containerDetailsBuilder = new ContainerDetailsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
+const siteDetailsBuilder = new SiteDetailsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 
 fragments.push(windowsBuilder.getFragment());
 fragments.push(containersBuilder.getFragment());
 fragments.push(sitesBuilder.getFragment());
 fragments.push(helpBuilder.getFragment());
 fragments.push(containerDetailsBuilder.getFragment());
+fragments.push(siteDetailsBuilder.getFragment());
 
 const defaultFragment = fragments[0] as CtgFragmentElement;
 frameLayout.activateFragment(defaultFragment.id);
@@ -114,6 +117,7 @@ const renderer = new ViewRefreshHandler(async () => {
   sitesBuilder.render(browserStateSnapshot.getFirstPartyStateSnapshot(currentWindowSnapshot.isPrivate));
 
   containerDetailsBuilder.render(browserStateSnapshot);
+  siteDetailsBuilder.render(browserStateSnapshot, currentWindowSnapshot.isPrivate);
 
   console.debug('rendering done');
 });
@@ -142,6 +146,12 @@ renderer.renderInBackground();
 
 containersBuilder.onContainerSelected.addListener((cookieStoreId) => {
   containerDetailsBuilder.activate(cookieStoreId);
+});
+
+// Sites view
+
+sitesBuilder.onSiteClicked.addListener((domain) => {
+  siteDetailsBuilder.activate(domain);
 });
 
 // Help view

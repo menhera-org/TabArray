@@ -46,6 +46,11 @@ export class UserContext {
     */
   public static readonly DEFAULT: UserContext = UserContext.createIncompleteUserContext(UserContext.ID_DEFAULT);
 
+  /**
+   * Hack. Same as DEFAULT.
+   */
+  public static readonly PRIVATE: UserContext =  new UserContext(UserContext.ID_DEFAULT, browser.i18n.getMessage('privateBrowsing'), '', '', '', '/img/firefox-icons/private-browsing-icon.svg', true, true);
+
   // event listeners.
 
   /**

@@ -24,9 +24,17 @@ import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { Tab } from "../../frameworks/tabs";
 import browser from "webextension-polyfill";
+import { MenulistSiteElement } from "../../components/menulist-site";
+import { HostnameService } from "../../frameworks/dns";
+import { FirstPartyService } from "../../frameworks/tabGroups";
+import { EventSink } from "../../frameworks/utils";
 
 export class SitesFragmentBuilder extends AbstractFragmentBuilder {
+  public readonly onSiteClicked = new EventSink<string>();
+
   private _siteCount = 0;
+  private readonly _hostnameService = HostnameService.getInstance();
+  private readonly _firstPartyService = FirstPartyService.getInstance();
 
   public getFragmentId(): string {
     return 'fragment-sites';
@@ -43,9 +51,6 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
   public build(): CtgFragmentElement {
     const fragment = document.createElement('ctg-fragment') as CtgFragmentElement;
     fragment.id = this.getFragmentId();
-    const paragraph = document.createElement('p');
-    paragraph.textContent = 'Sites';
-    fragment.appendChild(paragraph);
     return fragment;
   }
 
@@ -60,6 +65,30 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
     this._siteCount = firstPartyStateSnapshot.size;
     if (this.active) {
       this.renderTopBarWithGlobalItems();
+    }
+    const fragment = this.getFragment();
+    fragment.textContent = '';
+    const hostnames = this._hostnameService.sortDomains([... firstPartyStateSnapshot.keys()]);
+    for (const domain of hostnames) {
+      const tabSet = firstPartyStateSnapshot.get(domain) ?? new Set();
+      const tabs = [... tabSet];
+      const lastAccessedTab = tabs.reduce((a, b) => a.lastAccessed > b.lastAccessed ? a : b);
+      const siteElement = new MenulistSiteElement();
+      siteElement.domain = domain || '(null)';
+      siteElement.tabCount = tabs.length;
+      siteElement.tabIcon = lastAccessedTab.favIconUrl;
+      siteElement.tabLabel = lastAccessedTab.title;
+      fragment.appendChild(siteElement);
+
+      siteElement.onSiteClicked.addListener(() => {
+        this.onSiteClicked.dispatch(domain);
+      });
+
+      siteElement.onSiteCloseClicked.addListener(() => {
+        FirstPartyService.getInstance().closeTabsByFirstPartyDomain(domain).catch((e) => {
+          console.error(e);
+        });
+      });
     }
   }
 }
