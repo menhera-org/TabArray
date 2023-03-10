@@ -76,10 +76,15 @@
   inline-size: 2em;
   block-size: 2em;
   mask: url(../../img/ring-resize.svg) center / 75% no-repeat;
+  opacity: 1;
+}
+
+#spinner:not(.spinner-disabled) {
+  transition: opacity 1s ease-out;
 }
 
 #spinner.spinner-disabled {
-  visibility: hidden;
+  opacity: 0;
 }
 
 #heading {
