@@ -25,6 +25,7 @@ import { UserContextVisibilityService } from '../userContexts/UserContextVisibil
 import { MenuItem, PopupTabContextMenuItem } from '../frameworks/menus';
 
 const MENU_ID_TAB_HIDE_CONTAINER = 'tab-hide-container';
+
 const MENU_ID_CONTEXT_TAB_NEW_TAB = 'context-tab-new-tab';
 const MENU_ID_CONTEXT_TAB_SEPARATOR_1 = 'context-tab-separator-1';
 const MENU_ID_CONTEXT_TAB_RELOAD_TAB = 'context-tab-reload-tab';
@@ -34,6 +35,8 @@ const MENU_ID_CONTEXT_TAB_DUPLICATE_TAB = 'context-tab-duplicate-tab';
 const MENU_ID_CONTEXT_TAB_SEPARATOR_2 = 'context-tab-separator-2';
 const MENU_ID_CONTEXT_TAB_CLOSE_TAB = 'context-tab-close-tab';
 const MENU_ID_CONTEXT_TAB_SEPARATOR_3 = 'context-tab-separator-3';
+
+const MENU_ID_ACTION_SETTINGS = 'action-settings';
 
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 
@@ -87,6 +90,12 @@ export const menus = {
     id: MENU_ID_TAB_HIDE_CONTAINER,
     title: browser.i18n.getMessage('contextMenuHideSelectedContainer'),
     contexts: ['tab'],
+  }),
+
+  [MENU_ID_ACTION_SETTINGS]: new MenuItem({
+    id: MENU_ID_ACTION_SETTINGS,
+    title: browser.i18n.getMessage('buttonSettings'),
+    contexts: ['browser_action', 'page_action'],
   }),
 };
 
@@ -192,6 +201,12 @@ menus[MENU_ID_CONTEXT_TAB_CLOSE_TAB].onClicked.addListener((info) => {
   if (null == tab) return;
 
   tab.close().catch((e) => {
+    console.error(e);
+  });
+});
+
+menus[MENU_ID_ACTION_SETTINGS].onClicked.addListener(() => {
+  browser.runtime.openOptionsPage().catch((e) => {
     console.error(e);
   });
 });
