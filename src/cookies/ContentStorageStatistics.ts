@@ -134,7 +134,7 @@ export class ContentStorageStatistics {
     await this._storageItem.setValue(storage);
   }
 
-  private async removeCookieStore(cookieStoreId: string): Promise<void> {
+  public async removeCookieStore(cookieStoreId: string): Promise<void> {
     const storage = await this._storageItem.getValue();
     delete storage[cookieStoreId];
     await this._storageItem.setValue(storage);

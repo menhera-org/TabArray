@@ -80,7 +80,7 @@ export class PopupRenderer {
 
   private createContainerElement(userContext: UserContext, isPrivate = false): MenulistContainerElement {
     userContext = this._userContextService.fillDefaultValues(userContext);
-    const element = new MenulistContainerElement(userContext);
+    const element = new MenulistContainerElement(userContext, isPrivate);
 
     element.onContainerOptionsClick.addListener(async () => {
       this.modalRenderer.showContainerOptionsPanelAsync(userContext, isPrivate);
@@ -89,7 +89,7 @@ export class PopupRenderer {
     return element;
   }
 
-  private renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT, isPrivate = false): MenulistContainerElement {
+  public renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT, isPrivate = false): MenulistContainerElement {
     const element = this.createContainerElement(userContext, isPrivate);
     element.containerVisibilityToggleButton.disabled = true;
     element.partialContainerView = true;

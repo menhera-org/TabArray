@@ -23,9 +23,21 @@ import browser from 'webextension-polyfill';
 import { PANORAMA_PAGE } from '../defs';
 
 browser.commands.onCommand.addListener(async (command) => {
-  if (command == 'open_panorama_grid') {
-    await browser.tabs.create({
-      url: PANORAMA_PAGE,
-    });
+  try {
+    switch (command) {
+      case 'open_panorama_grid': {
+        await browser.tabs.create({
+          url: PANORAMA_PAGE,
+        });
+        break;
+      }
+
+      case 'open_settings_view': {
+        await browser.runtime.openOptionsPage();
+        break;
+      }
+    }
+  } catch (e) {
+    console.error(e);
   }
 });

@@ -24,7 +24,7 @@ import { PopupRenderer } from './PopupRenderer';
 import { MenulistWindowElement } from '../components/menulist-window';
 import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
-import { UserContext } from '../frameworks/tabGroups';
+import { OriginAttributes, UserContext, TabGroup } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
 import { WindowStateSnapshot } from '../frameworks/tabs/WindowStateSnapshot';
@@ -83,8 +83,13 @@ export class PopupCurrentWindowRenderer {
     return tabCount;
   }
 
-  private async focusContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
-    const tabGroup = await UserContext.createIncompleteUserContext(userContextId).getTabGroup();
+  private async focusContainerOnWindow(windowId: number, userContextId: Uint32.Uint32, isPrivate: boolean): Promise<void> {
+    if (isPrivate) {
+      console.assert(userContextId === 0, 'Private windows should only have userContextId 0');
+    }
+    const tabGroup = isPrivate
+      ? await TabGroup.createTabGroup(OriginAttributes.PRIVATE)
+      : await UserContext.createIncompleteUserContext(userContextId).getTabGroup();
     const tabList = tabGroup.tabList;
     const tabs = (await tabList.getTabs()).filter((tab) => {
       return tab.windowId === windowId;
@@ -119,7 +124,7 @@ export class PopupCurrentWindowRenderer {
       const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, openUserContext, tabs, windowStateSnapshot.isPrivate);
       containerElement.containerHighlightButtonEnabled = true;
       containerElement.onContainerHighlight.addListener(async () => {
-        await this.focusContainerOnWindow(windowStateSnapshot.id, openUserContext.id);
+        await this.focusContainerOnWindow(windowStateSnapshot.id, openUserContext.id, windowStateSnapshot.isPrivate);
         await containers.hideAll(windowStateSnapshot.id);
       });
       element.appendChild(containerElement);

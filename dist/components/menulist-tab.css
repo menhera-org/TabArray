@@ -99,7 +99,7 @@ button:focus {
 }
 
 .tab > .tab-pin-button:hover, .tab > .tab-pin-button:focus {
-  opacity: .5 !important;
+  opacity: var(--opaque-opacity) !important;
 }
 
 .tab.tab-pinned > .tab-pin-button {
@@ -109,11 +109,11 @@ button:focus {
 .tab > .tab-close-button {
   mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
   background-color: var(--text-color);
-  opacity: .25;
+  opacity: var(--opaque-opacity);
 }
 
 .tab > .tab-close-button:focus, .tab > .tab-close-button:hover {
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 #tab-menu {
@@ -177,12 +177,12 @@ button:focus {
 }
 
 #tab-pin-button:hover, #tab-pin-button:focus {
-  opacity: .5 !important;
+  opacity: var(--opaque-opacity) !important;
 }
 
 #tab-close-button {
   mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
-  opacity: .25;
+  opacity: var(--opaque-opacity);
 }
 
 #tab-close-button:hover, #tab-close-button:focus {

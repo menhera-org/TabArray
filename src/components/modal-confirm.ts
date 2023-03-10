@@ -23,8 +23,6 @@ import browser from 'webextension-polyfill';
 import { EventSink } from '../frameworks/utils';
 
 export class ModalConfirmElement extends HTMLElement {
-  public readonly onContainerCreated = new EventSink<string>();
-  public readonly onContainerUpdated = new EventSink<string>();
   public readonly onCancel = new EventSink<void>();
   public readonly onOk = new EventSink<void>();
 
@@ -56,6 +54,7 @@ export class ModalConfirmElement extends HTMLElement {
     const okButton = document.createElement('button');
     okButton.id = 'ok-button';
     okButton.textContent = browser.i18n.getMessage('buttonOk');
+    okButton.classList.add('button-default');
     modalActions.appendChild(okButton);
     modalContent.appendChild(modalActions);
 

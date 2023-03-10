@@ -15,6 +15,8 @@ Chrome-like tab groups using isolated containers: The ultimate tab manager and g
 
 [About Container Tab Groups](https://www.menhera.org/container-tab-groups/)
 
+![Screenshot](./social-image.png)
+
 ## Features
 
 _Tab Group = Container_
@@ -140,3 +142,9 @@ Something missing you need? Please file a new feature request there.
 Copyright &copy; 2022 Menhera.org contributors.
 
 Licensed under GNU GPL version 3 **or later**.
+
+### Used assets
+
+- Material Icons (Apache-2.0)
+- Icons from mozilla-central (MPL-2.0)
+- SVG Spinners (MIT)

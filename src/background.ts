@@ -44,7 +44,9 @@ import './autodiscard/background-autodiscard';
 import './cookies/background-storage-observer';
 import './background/BackgroundMessageListeners';
 import './background/KeyboardShortcurListeners';
+import './background/BrowserActionUpdater';
 import { UaContentScriptRegistrar} from './overrides/UaContentScriptRegistrar';
+import { InitialWindowsService } from './background/InitialWindowsService';
 
 // watchdog
 let scriptCompleted = false;
@@ -71,6 +73,7 @@ const TAB_SORTING_INTERVAL = 10000;
 const userContextService = UserContextService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const tabSortingService = TabSortingService.getInstance();
+const initialWindowsService = InitialWindowsService.getInstance();
 const utils = new BackgroundUtils();
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
@@ -165,6 +168,16 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
   ],
 });
 
+browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
+  tabSortingService.sortTabs().catch((e) => {
+    console.error(e);
+  });
+}, {
+  properties: [
+    'pinned',
+  ],
+});
+
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
   if (tabObj.cookieStoreId == null || tabObj.url == null || tabObj.windowId == null) return;
   if (UserContext.isCookieStoreIdPrivateBrowsing(tabObj.cookieStoreId)) {
@@ -181,15 +194,22 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
     return;
   }
   if (tabObj.url && tabObj.url != 'about:blank' && tabObj.status != 'loading') {
-    console.log('Manually opened tab: %d', tabObj.id);
-    openTabs.add(tabObj.id);
+    if (!openTabs.has(tabObj.id)) {
+      console.log('Manually opened tab: %d', tabObj.id);
+      openTabs.add(tabObj.id);
+    }
   } else if (tabObj.pinned) {
-    console.log('Pinned tab: %d', tabObj.id);
-    openTabs.add(tabObj.id);
+    if (!openTabs.has(tabObj.id)) {
+      console.log('Pinned tab: %d', tabObj.id);
+      openTabs.add(tabObj.id);
+    }
   }
   if (tabObj.url != 'about:blank' && tabObj.status != 'loading' && tabObj.active) {
-    console.log('setActiveUserContext for window %d and user context %d', tabObj.windowId, userContextId);
-    setActiveUserContext(tabObj.windowId, userContextId);
+    const activeUserContextId: number = getActiveUserContext(tabObj.windowId);
+    if (activeUserContextId != userContextId) {
+      console.log('setActiveUserContext for window %d and user context %d', tabObj.windowId, userContextId);
+      setActiveUserContext(tabObj.windowId, userContextId);
+    }
   }
 }, {
   properties: [
@@ -245,14 +265,12 @@ setInterval(() => {
 }, TAB_SORTING_INTERVAL);
 
 
-browser.windows.getAll({
-  windowTypes: ['normal'],
-}).then(async (windows) => {
-  for (const window of windows) {
-    if (window.incognito) continue;
-    if (window.id == null) continue;
+initialWindowsService.getInitialWindows().then(async (browserWindows) => {
+  for (const browserWindow of browserWindows) {
+    if (browserWindow.incognito) continue;
+    if (browserWindow.id == null) continue;
     const activeTabs = await browser.tabs.query({
-      windowId: window.id,
+      windowId: browserWindow.id,
       active: true,
     });
     for (const activeTab of activeTabs) {
@@ -260,7 +278,7 @@ browser.windows.getAll({
       const userContextId = UserContext.fromCookieStoreId(activeTab.cookieStoreId);
       const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
       const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
-      await browser.windows.update(window.id, {
+      await browser.windows.update(browserWindow.id, {
         titlePreface: windowTitlePreface,
       });
     }

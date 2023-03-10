@@ -56,19 +56,26 @@
       <button id='button-settings'>
         <span class='button-text'>buttonSettings</span>
       </button>
+      <button id='button-panorama'>
+        <span class='button-text'>buttonPanorama</span>
+      </button>
       <button id='button-sidebar'>
         <span class='button-text'>buttonSidebar</span>
       </button>
-      <button id='button-panorama'>
-        <span class='button-text'>buttonPanorama</span>
+      <button id='button-popup'>
+        <span class='button-text'>commandOpenPopup</span>
       </button>
       <button id='button-menu'></button>
       <div id='top-menu' hidden=''>
         <button id='button-cookies'>
           <span class='button-text'>buttonCookies</span>
         </button>
+        <hr/>
         <button id='button-about-addon'>
           <span class='button-text'>buttonAboutAddon</span>
+        </button>
+        <button id='button-privacy-policy'>
+          <span class='button-text'>privacyPolicy</span>
         </button>
       </div>
     </div>
@@ -139,30 +146,6 @@
           <span class='button-text'>menuItemHelp</span>
         </a>
       </nav>
-    </div>
-    <div id='confirm' class='modal'>
-      <div class='modal-content'>
-        <p id='confirm-message'></p>
-        <div class='modal-actions'>
-          <button id='confirm-cancel-button'>buttonCancel</button>
-          <button id='confirm-ok-button' class='button-default'>buttonOk</button>
-        </div>
-      </div>
-    </div>
-    <div id='new-container' class='modal'>
-      <div class='modal-content'>
-        <h2 class='modal-title'></h2>
-        <div class='input-box'>
-          <label for='new-container-name'>newContainerNameLabel</label>
-          <input class='input-box-input' type='text' name='name' id='new-container-name' placeholder='newContainerNamePlaceholder'/>
-        </div>
-        <usercontext-iconpicker id='new-container-icon'></usercontext-iconpicker>
-        <usercontext-colorpicker id='new-container-color'></usercontext-colorpicker>
-        <div class='modal-actions'>
-          <button id='new-container-cancel-button'>buttonCancel</button>
-          <button id='new-container-ok-button' class='button-default'>buttonOk</button>
-        </div>
-      </div>
     </div>
     <div id='container-menu' class='modal'>
       <div class='modal-content'>

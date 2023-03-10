@@ -28,6 +28,10 @@ import { ColorPickerElement } from '../components/usercontext-colorpicker';
 import { IconPickerElement } from '../components/usercontext-iconpicker';
 import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
+import { ModalConfirmElement } from '../components/modal-confirm';
+import { ModalMenuElement } from '../components/modal-menu';
+import { ContainerEditorElement } from '../components/container-editor';
+import { CookieStore, ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
 
 type NewContainerPanelResult = {
   name: string;
@@ -146,11 +150,16 @@ export class PopupModalRenderer {
   }
 
   public async confirmAsync(message: string): Promise<boolean> {
-    const confirmMessageElement = this._utils.queryElementNonNull<HTMLElement>('#confirm-message');
-    const cancelButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-cancel-button');
-    const okButton = this._utils.queryElementNonNull<HTMLButtonElement>('#confirm-ok-button');
-    const result = await this.showModal(message, confirmMessageElement, okButton, cancelButton, '#confirm');
-    return result;
+    const confirmElement = new ModalConfirmElement(message);
+    document.body.appendChild(confirmElement);
+    return new Promise((resolve) => {
+      confirmElement.onCancel.addListener(() => {
+        resolve(false);
+      });
+      confirmElement.onOk.addListener(() => {
+        resolve(true);
+      });
+    });
   }
 
   private async showContainerManipulationPanelAsync(dialogTitle: string, userContext?: UserContext): Promise<NewContainerPanelResult> {
@@ -180,20 +189,42 @@ export class PopupModalRenderer {
   }
 
   public async showNewContainerPanelAsync(): Promise<UserContext | null> {
-    try {
-      const { name, icon, color } = await this.showContainerManipulationPanelAsync(browser.i18n.getMessage('newContainerDialogTitle'));
-      return await this._userContextService.create(name, color, icon);
-    } catch (e) {
-      return null;
-    }
+    const editorElement = new ContainerEditorElement();
+    document.body.appendChild(editorElement);
+    return new Promise((res) => {
+      editorElement.onCancel.addListener(() => {
+        res(null);
+      });
+      editorElement.onContainerCreated.addListener((cookieStoreId) => {
+        const cookieStore = CookieStore.fromId(cookieStoreId);
+        UserContext.get(cookieStore.userContextId).then((userContext) => {
+          res(userContext);
+        }).catch(() => {
+          res(null);
+        });
+      });
+    });
   }
 
   public async showEditContainerPanelAsync(userContext: UserContext): Promise<UserContext> {
     try {
-      const { name, icon, color } = await this.showContainerManipulationPanelAsync(browser.i18n.getMessage('editContainerDialogTitle'), userContext);
-      const updateUserContext = await this._userContextService.updateProperties(userContext, name, color, icon);
-      console.log('Container updated', updateUserContext);
-      return updateUserContext;
+      const contextualIdentity = await ContextualIdentity.get(userContext.cookieStoreId);
+      const containerAttributes = ContainerAttributes.fromContextualIdentity(contextualIdentity);
+      const editorElement = new ContainerEditorElement(containerAttributes);
+      document.body.appendChild(editorElement);
+      return await new Promise((res) => {
+        editorElement.onCancel.addListener(() => {
+          res(userContext);
+        });
+        editorElement.onContainerUpdated.addListener((cookieStoreId) => {
+          const cookieStore = CookieStore.fromId(cookieStoreId);
+          UserContext.get(cookieStore.userContextId).then((userContext) => {
+            res(userContext);
+          }).catch(() => {
+            res(userContext);
+          });
+        });
+      });
     } catch (e) {
       return userContext;
     }
@@ -232,42 +263,44 @@ export class PopupModalRenderer {
   }
 
   public async showContainerOptionsPanelAsync(userContext: UserContext, isPrivate = false): Promise<void> {
-    const messageElement = this._utils.queryElementNonNull<HTMLElement>('#container-menu .modal-title');
-    const doneButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-done-button');
     const message = browser.i18n.getMessage('containerOptions', isPrivate ? browser.i18n.getMessage('privateBrowsing') : userContext.name);
 
-    const editButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-edit-button');
-    const clearCookie = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-clear-cookie-button');
-    const deleteButton = this._utils.queryElementNonNull<HTMLButtonElement>('#container-menu-delete-button');
+    const modalMenuElement = new ModalMenuElement(message);
+    document.body.appendChild(modalMenuElement);
 
-    if (isPrivate || userContext.id == 0) {
-      editButton.disabled = true;
-      deleteButton.disabled = true;
-    } else {
-      editButton.disabled = false;
-      deleteButton.disabled = false;
+    if (!isPrivate && userContext.id != 0) {
+      modalMenuElement.defineAction('edit', browser.i18n.getMessage('buttonEditContainer'), false);
+      modalMenuElement.defineAction('delete', browser.i18n.getMessage('buttonDeleteContainer'), false);
     }
 
-    const editHandler = async () => {
-      await this.showEditContainerPanelAsync(userContext);
-    };
+    modalMenuElement.defineAction('clearCookie', browser.i18n.getMessage('buttonContainerClearCookie'), false);
+    modalMenuElement.defineAction('done', browser.i18n.getMessage('buttonDone'), true);
 
-    const clearCookieHandler = () => {
-      this.showContainerClearCookieModal(userContext, isPrivate);
-    };
+    await new Promise<void>((res) => {
+      const actionHandler = (action: string) => {
+        modalMenuElement.onActionClicked.removeListener(actionHandler);
+        switch (action) {
+          case 'edit': {
+            this.showEditContainerPanelAsync(userContext).catch((e) => {
+              console.error(e);
+            });
+            break;
+          }
 
-    const deleteHandler = () => {
-      this.showDeleteContainerModal(userContext);
-    };
+          case 'clearCookie': {
+            this.showContainerClearCookieModal(userContext, isPrivate);
+            break;
+          }
 
-    editButton.addEventListener('click', editHandler);
-    clearCookie.addEventListener('click', clearCookieHandler);
-    deleteButton.addEventListener('click', deleteHandler);
+          case 'delete': {
+            this.showDeleteContainerModal(userContext);
+            break;
+          }
+        }
+        res();
+      };
 
-    await this.showModal(message, messageElement, doneButton, doneButton, '#container-menu');
-
-    editButton.removeEventListener('click', editHandler);
-    clearCookie.removeEventListener('click', clearCookieHandler);
-    deleteButton.removeEventListener('click', deleteHandler);
+      modalMenuElement.onActionClicked.addListener(actionHandler);
+    });
   }
 }

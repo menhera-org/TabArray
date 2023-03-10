@@ -45,11 +45,13 @@ export class UaContentScriptRegistrar extends ContentScriptRegistrar {
   public getContentScriptString(cookieStore: CookieStore): string {
     const ua = this.settings.getUserAgent(cookieStore.id);
     const emulationMode = this.settings.getEmulationMode(cookieStore.id);
-    return `
+    const code = `
       globalThis.gUaStore = globalThis.gUaStore || {};
       gUaStore.userAgent = ${JSON.stringify(ua)};
       gUaStore.emulationMode = ${JSON.stringify(emulationMode)};
     `;
+    console.debug('UaContentScriptRegistrar.getContentScriptString', cookieStore.id, code);
+    return code;
   }
 
   public async deleteUserAgent(): Promise<void> {

@@ -32,6 +32,7 @@ browser.tabs.onRemoved.addListener(async (/*tabId, removeInfo*/) => {
   const promises: Promise<void>[] = [];
   for (const userContext of userContexts) {
     if (!openUserContexts.includes(userContext.id) && autocleanEnabledUserContextIds.includes(userContext.id)) {
+      console.info('Removing browsing data for userContext', userContext.id, userContext.name);
       promises.push(userContext.removeBrowsingData());
     }
   }

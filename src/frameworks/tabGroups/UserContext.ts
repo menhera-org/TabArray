@@ -24,15 +24,20 @@ import { Uint32 } from '../types';
 import { EventSink } from '../utils';
 import { OriginAttributes } from './OriginAttributes';
 import { TabGroup } from './TabGroup';
+import { ContainerAttributes } from '../tabAttributes';
+import { ContentStorageStatistics } from '../../cookies/ContentStorageStatistics';
 
 /**
  * Represents a user context (contextual identity or container).
  * Does not work with private browsing windows.
+ * @deprecated
  */
 export class UserContext {
   private static readonly DEFAULT_STORE = 'firefox-default';
   private static readonly PRIVATE_STORE = 'firefox-private';
   private static readonly CONTAINER_STORE = 'firefox-container-';
+
+  private static readonly _contentStorageStatistics = new ContentStorageStatistics();
 
   /**
    * User context ID for "No Container" container (0).
@@ -43,6 +48,11 @@ export class UserContext {
     * "No Container" container.
     */
   public static readonly DEFAULT: UserContext = UserContext.createIncompleteUserContext(UserContext.ID_DEFAULT);
+
+  /**
+   * Hack. Same as DEFAULT.
+   */
+  public static readonly PRIVATE: UserContext =  new UserContext(UserContext.ID_DEFAULT, browser.i18n.getMessage('privateBrowsing'), '', '', '', '/img/firefox-icons/private-browsing-icon.svg', true, true);
 
   // event listeners.
 
@@ -169,6 +179,14 @@ export class UserContext {
     return userContext;
   }
 
+  // this is a hack. we should move to a better way of doing this.
+  public static fromContainerAttributes(attributes: ContainerAttributes): UserContext {
+    if (attributes.isPrivate) {
+      return new UserContext(attributes.userContextId, attributes.name, '', '', '', '/img/firefox-icons/private-browsing-icon.svg', true, true);
+    }
+    return new UserContext(attributes.userContextId, attributes.name, attributes.color, attributes.colorCode, attributes.icon, attributes.iconUrl, true);
+  }
+
   /**
    * The user context ID for the identity.
    */
@@ -205,9 +223,14 @@ export class UserContext {
   public readonly defined: boolean;
 
   /**
+   * Hack to mark this as a private browsing identity.
+   */
+  public readonly markedAsPrivate: boolean;
+
+  /**
    * This is not intended to be called directly.
    */
-  public constructor(id: Uint32.Uint32, name: string, color: string, colorCode: string, icon: string, iconUrl: string, defined = true) {
+  public constructor(id: Uint32.Uint32, name: string, color: string, colorCode: string, icon: string, iconUrl: string, defined = true, markedAsPrivate = false) {
     if (!UserContext.validateUserContextId(id)) {
       throw new TypeError('Invalid user context id');
     }
@@ -218,12 +241,16 @@ export class UserContext {
     this.icon = icon;
     this.iconUrl = iconUrl;
     this.defined = defined;
+    this.markedAsPrivate = markedAsPrivate;
   }
 
   /**
    * The cookie store ID for the identity.
    */
   public get cookieStoreId(): string {
+    if (this.markedAsPrivate) {
+      return UserContext.PRIVATE_STORE;
+    }
     return UserContext.toCookieStoreId(this.id);
   }
 
@@ -267,6 +294,7 @@ export class UserContext {
       localStorage: true, // not supported on old Firefox
       indexedDB: true,
     });
+    await UserContext._contentStorageStatistics.removeCookieStore(this.cookieStoreId);
   }
 
   public async updateProperties(name: string, color: string, icon: string): Promise<UserContext> {
@@ -284,6 +312,10 @@ export class UserContext {
 
   public getTabGroup(): Promise<TabGroup> {
     return TabGroup.createTabGroup(this.toOriginAttributes());
+  }
+
+  public toContainerAttributes(): ContainerAttributes {
+    return new ContainerAttributes({ userContextId: this.id, privateBrowsingId: 0 as Uint32.Uint32 }, this.name, this.color, this.icon);
   }
 }
 

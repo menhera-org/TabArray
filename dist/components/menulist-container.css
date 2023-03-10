@@ -58,7 +58,7 @@ button:focus {
 
 #container-name[data-tab-count]::after {
   content: ' (' attr(data-tab-count) ')';
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 button[disabled] {
@@ -75,7 +75,7 @@ button[disabled] {
 }
 
 #container-header > button:not(#container-button) {
-  opacity: .25;
+  opacity: var(--opaque-opacity);
   background-color: var(--text-color);
 }
 
@@ -129,5 +129,5 @@ button[disabled] {
   background-position: center center;
   inline-size: 100%;
   block-size: 100%;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }

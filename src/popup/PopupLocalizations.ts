@@ -31,6 +31,7 @@ document.title = browser.i18n.getMessage('browserActionPopupTitle');
 
 utils.queryElementNonNull<HTMLElement>('#button-panorama > .button-text').textContent = browser.i18n.getMessage('buttonPanorama');
 utils.queryElementNonNull<HTMLElement>('#button-panorama').title = browser.i18n.getMessage('buttonPanorama');
+utils.queryElementNonNull<HTMLElement>('#button-popup').title = browser.i18n.getMessage('commandOpenPopup');
 utils.queryElementNonNull<HTMLElement>('#button-cookies > .button-text').textContent = browser.i18n.getMessage('tooltipCookies');
 utils.queryElementNonNull<HTMLElement>('#button-about-addon > .button-text').textContent = browser.i18n.getMessage('buttonAboutAddon');
 utils.queryElementNonNull<HTMLElement>('#button-sidebar > .button-text').textContent = browser.i18n.getMessage('buttonSidebar');
@@ -41,15 +42,8 @@ utils.queryElementNonNull<HTMLElement>('#button-new-temporary-container > .butto
 utils.queryElementNonNull<HTMLElement>('#button-new-temporary-container').title = browser.i18n.getMessage('buttonNewTemporaryContainer');
 utils.queryElementNonNull<HTMLElement>('#button-settings > .button-text').textContent = browser.i18n.getMessage('buttonSettings');
 utils.queryElementNonNull<HTMLElement>('#button-settings').title = browser.i18n.getMessage('buttonSettings');
-utils.queryElementNonNull<HTMLElement>('#confirm-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
-utils.queryElementNonNull<HTMLElement>('#confirm-ok-button').textContent = browser.i18n.getMessage('buttonOk');
 
 utils.queryElementNonNull<HTMLElement>('#help-done-button').textContent = browser.i18n.getMessage('buttonGetStarted');
-
-utils.queryElementNonNull<HTMLElement>('#new-container-cancel-button').textContent = browser.i18n.getMessage('buttonCancel');
-utils.queryElementNonNull<HTMLElement>('#new-container-ok-button').textContent = browser.i18n.getMessage('buttonOk');
-utils.queryElementNonNull<HTMLElement>('label[for="new-container-name"]').textContent = browser.i18n.getMessage('newContainerNameLabel');
-utils.queryElementNonNull<HTMLInputElement>('#new-container-name').placeholder = browser.i18n.getMessage('newContainerNamePlaceholder');
 
 utils.queryElementNonNull<HTMLElement>('#container-menu-edit-button').textContent = browser.i18n.getMessage('buttonEditContainer');
 utils.queryElementNonNull<HTMLElement>('#container-menu-clear-cookie-button').textContent = browser.i18n.getMessage('buttonContainerClearCookie');
@@ -69,6 +63,8 @@ utils.queryElementNonNull<HTMLElement>('#help-banner-version').textContent = ext
 utils.queryElementNonNull<HTMLElement>('#help-banner-heading').textContent = extensionManifest.name;
 utils.queryElementNonNull<HTMLElement>('#help-banner-amo-link').textContent = browser.i18n.getMessage('buttonAboutAddon');
 utils.queryElementNonNull<HTMLElement>('#help-banner-privacy-policy').textContent = browser.i18n.getMessage('privacyPolicy');
+
+utils.queryElementNonNull<HTMLElement>('#button-privacy-policy > .button-text').textContent = browser.i18n.getMessage('privacyPolicy');
 
 utils.queryElementNonNull<HTMLElement>('#fpiDescription').textContent = browser.i18n.getMessage('fpiDescription');
 utils.queryElementNonNull<HTMLElement>('label[for="input-firstPartyIsolate"]').textContent = browser.i18n.getMessage('labelFirstPartyIsolate');

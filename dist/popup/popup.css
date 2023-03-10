@@ -65,6 +65,7 @@ input:is([type="text"], [type="search"]), button, select, textarea {
   box-sizing: border-box;
   margin: 0;
   inline-size: 100%;
+  min-inline-size: 0;
 }
 
 button {
@@ -158,7 +159,7 @@ body.transparent > .content {
 
 #topbox {
   display: block grid;
-  grid-template-columns: 1fr max-content max-content max-content max-content;
+  grid-template-columns: 1fr max-content max-content max-content max-content max-content;
   grid-template-rows: 2.5em;
   padding-inline-start: 1em;
   position: relative;
@@ -169,6 +170,8 @@ body.transparent > .content {
   display: block grid;
   inline-size: 100%;
   overflow-inline: auto;
+  box-sizing: border-box;
+  border-inline-end: solid 1px var(--border-color);
 }
 
 #topbox-content > .content {
@@ -245,7 +248,7 @@ body.transparent > .content {
   block-size: 100%;
   inline-size: 2em;
   color: inherit;
-  mask: url(/img/firefox-icons/add.svg) center center / 67% no-repeat;
+  mask: url(/img/material-icons/create_new_folder.svg) center center / 75% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -268,7 +271,7 @@ body.transparent > .content {
   background-color: var(--text-color);
 }
 
-:is(#button-new-container, #button-settings, #button-sidebar, #button-new-temporary-container, #button-panorama) > .button-text {
+:is(#button-new-container, #button-settings, #button-sidebar, #button-new-temporary-container, #button-panorama, #button-popup) > .button-text {
   display: none;
 }
 
@@ -280,14 +283,22 @@ body.transparent > .content {
   background-color: var(--text-color);
 }
 
+#button-popup {
+  block-size: 100%;
+  inline-size: 2em;
+  color: inherit;
+  mask: url(/img/material-icons/launch.svg) center center / 67% no-repeat;
+  background-color: var(--text-color);
+}
+
 #button-hide-inactive::before {
   mask: url(/img/material-icons/unfold_less.svg) center center/contain no-repeat;
   background-color: var(--text-color);
 }
 
-#button-about-addon {
+/* #button-about-addon {
   border-block-start: solid .125rem var(--border-color);
-}
+} */
 
 #button-about-addon::before {
   background-image: url(/icon.svg);
@@ -363,7 +374,7 @@ body.transparent > .content {
   color: inherit;
   text-decoration: none;
   padding-block: .5rem;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   border-block-end: solid .25rem transparent;
 }
 
@@ -456,7 +467,7 @@ body.transparent > .content {
 
 #sites > * > button > .button-text {
   display: block;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   grid-row: 1;
   grid-column: 1;
 }
@@ -470,7 +481,7 @@ body.transparent > .content {
   grid-row: 1;
   grid-column: 2;
   inline-size: 2rem;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   background-color: var(--text-color);
   mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
 }
@@ -577,7 +588,7 @@ body.transparent > .content {
 }
 
 .tab > .tab-pin-button:hover, .tab > .tab-pin-button:focus {
-  opacity: .5 !important;
+  opacity: var(--opaque-opacity) !important;
 }
 
 .tab.tab-pinned > .tab-pin-button {
@@ -587,11 +598,11 @@ body.transparent > .content {
 .tab > .tab-close-button {
   mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
   background-color: var(--text-color);
-  opacity: .25;
+  opacity: var(--opaque-opacity);
 }
 
 .tab > .tab-close-button:focus, .tab > .tab-close-button:hover {
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 .menu-list .window-label {
@@ -617,11 +628,11 @@ body.transparent > .content {
 
 .window-label > .window-label-name[data-tab-count]::after {
   content: ' (' attr(data-tab-count) ')';
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 .window-label > button {
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   inline-size: 2em;
 }
 
@@ -659,7 +670,7 @@ body.transparent > .content {
   background-position: center center;
   inline-size: 100%;
   block-size: 100%;
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   visibility: hidden;
 }
 
@@ -696,13 +707,13 @@ body.transparent > .content {
 
 .container-label[data-tab-count]::after {
   content: ' (' attr(data-tab-count) ')';
-  opacity: .5;
+  opacity: var(--opaque-opacity);
 }
 
 .container > .edit-container-button {
   mask: url(/img/material-icons/edit.svg) center center/75% no-repeat;
   background-color: var(--text-color);
-  opacity: .25;
+  opacity: var(--opaque-opacity);
 }
 
 .container > button:disabled {
@@ -712,7 +723,7 @@ body.transparent > .content {
 .container > .close-container-button {
   mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
   background-color: var(--text-color);
-  opacity: .25;
+  opacity: var(--opaque-opacity);
 }
 
 .container > .container-tabs {
@@ -799,4 +810,11 @@ body > .modal:target {
   inline-size: 50%;
   max-inline-size: 10em;
   margin-block: 1rem;
+}
+
+body:not(.sidebar) #button-popup {
+  inline-size: 0 !important;
+	padding-inline: 0;
+	overflow: hidden;
+	box-sizing: border-box;
 }

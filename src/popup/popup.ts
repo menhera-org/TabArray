@@ -243,6 +243,15 @@ utils.queryElementNonNull('#help-done-button').addEventListener('click', () => {
   location.hash = '#main';
 });
 
+utils.queryElementNonNull('#button-popup').addEventListener('click', () => {
+  browser.browserAction.openPopup().catch((e) => {
+    console.error(e);
+  });
+});
+
+utils.queryElementNonNull('#button-privacy-policy').addEventListener('click', () => {
+  utils.openPrivacyPolicyPage();
+});
 
 searchBox.focus();
 searchBox.placeholder = browser.i18n.getMessage('searchPlaceholder');

@@ -99,7 +99,7 @@ body {
   inline-size: 1.5em;
   block-size: 1.5em;
   background-color: var(--text-color);
-  opacity: .5;
+  opacity: var(--opaque-opacity);
   mask: url(/img/firefox-icons/close.svg) no-repeat center / 50%;
   margin-inline-start: auto;
 }
