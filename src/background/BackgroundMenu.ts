@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { MenuItem, PopupTabContextMenuItem } from '../frameworks/menus';
+import { PopupUtils } from '../popup/PopupUtils';
 
 const MENU_ID_TAB_HIDE_CONTAINER = 'tab-hide-container';
 
@@ -38,7 +39,11 @@ const MENU_ID_CONTEXT_TAB_SEPARATOR_3 = 'context-tab-separator-3';
 
 const MENU_ID_ACTION_SETTINGS = 'action-settings';
 
+const MENU_ID_TOOLS_PANORAMA_GRID = 'tools-panorama-grid';
+const MENU_ID_TOOLS_SETTINGS = 'tools-settings';
+
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
+const popupUtils = new PopupUtils();
 
 export const menus = {
   [MENU_ID_CONTEXT_TAB_NEW_TAB]: new PopupTabContextMenuItem({
@@ -96,6 +101,18 @@ export const menus = {
     id: MENU_ID_ACTION_SETTINGS,
     title: browser.i18n.getMessage('buttonSettings'),
     contexts: ['browser_action', 'page_action'],
+  }),
+
+  [MENU_ID_TOOLS_PANORAMA_GRID]: new MenuItem({
+    id: MENU_ID_TOOLS_PANORAMA_GRID,
+    title: browser.i18n.getMessage('panoramaGrid'),
+    contexts: ['tools_menu'],
+  }),
+
+  [MENU_ID_TOOLS_SETTINGS]: new MenuItem({
+    id: MENU_ID_TOOLS_SETTINGS,
+    title: browser.i18n.getMessage('buttonSettings'),
+    contexts: ['tools_menu'],
   }),
 };
 
@@ -205,8 +222,20 @@ menus[MENU_ID_CONTEXT_TAB_CLOSE_TAB].onClicked.addListener((info) => {
   });
 });
 
-menus[MENU_ID_ACTION_SETTINGS].onClicked.addListener(() => {
+const openSettings = () => {
   browser.runtime.openOptionsPage().catch((e) => {
     console.error(e);
   });
+};
+
+menus[MENU_ID_ACTION_SETTINGS].onClicked.addListener(() => {
+  openSettings();
+});
+
+menus[MENU_ID_TOOLS_PANORAMA_GRID].onClicked.addListener(() => {
+  popupUtils.openPanoramaPage();
+});
+
+menus[MENU_ID_TOOLS_SETTINGS].onClicked.addListener(() => {
+  openSettings();
 });
