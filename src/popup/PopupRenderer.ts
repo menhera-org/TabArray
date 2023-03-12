@@ -140,6 +140,9 @@ export class PopupRenderer {
   }
 
   public renderContainerWithTabs(windowId: number, userContext: UserContext, tabs: Tab[], isPrivate = false): MenulistContainerElement {
+    if (isPrivate) {
+      userContext = UserContext.PRIVATE;
+    }
     const element = this.renderContainer(windowId, userContext, isPrivate);
     let tabCount = 0;
     let state = ContainerTabsState.NO_TABS;
