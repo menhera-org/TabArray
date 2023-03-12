@@ -34,6 +34,7 @@ import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
 import { Uint32 } from "../frameworks/types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { PopupModalRenderer } from './PopupModalRenderer';
+import browser from 'webextension-polyfill';
 
 enum ContainerTabsState {
   NO_TABS,
@@ -151,6 +152,37 @@ export class PopupRenderer {
       }
 
       const tabElement = this.renderTab(tab, userContext);
+      tabElement.draggable = true;
+      tabElement.addEventListener('dragstart', (ev) => {
+        if (!ev.dataTransfer) return;
+        ev.dataTransfer.setData('application/json', JSON.stringify({
+          type: 'tab',
+          id: tab.id,
+          index: tab.index,
+          pinned: tab.pinned,
+          cookieStoreId: tab.cookieStoreId,
+        }));
+        ev.dataTransfer.dropEffect = 'move';
+      });
+      tabElement.addEventListener('dragover', (ev) => {
+        if (!ev.dataTransfer) return;
+        const json = ev.dataTransfer.getData('application/json');
+        const data = JSON.parse(json);
+        if ('tab' != data.type || data.pinned) return;
+        if (data.cookieStoreId != tab.cookieStoreId) return;
+        ev.preventDefault();
+      });
+      tabElement.addEventListener('drop', (ev) => {
+        if (!ev.dataTransfer) return;
+        const json = ev.dataTransfer.getData('application/json');
+        const data = JSON.parse(json);
+        if ('tab' != data.type || data.pinned) return;
+        if (data.cookieStoreId != tab.cookieStoreId) return;
+        ev.preventDefault();
+        browser.tabs.move(data.id, { index: tab.index }).catch((e) => {
+          console.error(e);
+        });
+      });
       element.appendChild(tabElement);
       state = ContainerTabsState.VISIBLE_TABS;
     }
