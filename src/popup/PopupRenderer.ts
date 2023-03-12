@@ -34,6 +34,7 @@ import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
 import { Uint32 } from "../frameworks/types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { PopupModalRenderer } from './PopupModalRenderer';
+import { MessagingService } from "../frameworks/extension/MessagingService";
 import browser from 'webextension-polyfill';
 
 enum ContainerTabsState {
@@ -46,6 +47,7 @@ enum ContainerTabsState {
 export class PopupRenderer {
   private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
   private readonly _userContextService = UserContextService.getInstance();
+  private readonly _messagingService = MessagingService.getInstance();
 
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly windowListRenderer = new PopupWindowListRenderer(this);
@@ -190,6 +192,28 @@ export class PopupRenderer {
       element.containerHidden = true;
     }
     element.tabCount = tabCount;
+    element.addEventListener('dragover', (ev) => {
+      if (!ev.dataTransfer) return;
+      const json = ev.dataTransfer.getData('application/json');
+      const data = JSON.parse(json);
+      if ('tab' != data.type || data.pinned) return;
+      if (data.cookieStoreId == userContext.cookieStoreId) return;
+      ev.preventDefault();
+    });
+    element.addEventListener('drop', (ev) => {
+      if (!ev.dataTransfer) return;
+      const json = ev.dataTransfer.getData('application/json');
+      const data = JSON.parse(json);
+      if ('tab' != data.type || data.pinned) return;
+      if (data.cookieStoreId == userContext.cookieStoreId) return;
+      ev.preventDefault();
+      this._messagingService.sendMessage('reopen_tab_in_container', {
+        tabId: data.id,
+        cookieStoreId: userContext.cookieStoreId,
+      }).catch((e) => {
+        console.error(e);
+      });
+    });
     return element;
   }
 }
