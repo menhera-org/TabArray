@@ -33,10 +33,7 @@ import { PopupWindowListRenderer } from "./PopupWindowListRenderer";
 import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
 import { Uint32 } from "../frameworks/types";
 import { UserContextService } from '../userContexts/UserContextService';
-import { PopupUtils } from './PopupUtils';
 import { PopupModalRenderer } from './PopupModalRenderer';
-import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
-import { PromiseUtils } from "../frameworks/utils";
 
 enum ContainerTabsState {
   NO_TABS,
