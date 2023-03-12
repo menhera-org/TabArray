@@ -36,7 +36,6 @@ import { UserContextService } from '../userContexts/UserContextService';
 import { PopupUtils } from './PopupUtils';
 import { PopupModalRenderer } from './PopupModalRenderer';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
-import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
 import { PromiseUtils } from "../frameworks/utils";
 
 enum ContainerTabsState {
@@ -49,12 +48,6 @@ enum ContainerTabsState {
 export class PopupRenderer {
   private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
   private readonly _userContextService = UserContextService.getInstance();
-  private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
-  private readonly _utils = new PopupUtils();
-
-  private _rendering = false;
-  private _rerenderRequested = false;
-  private _firstRenderingPromise = PromiseUtils.createPromise<void>();
 
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly windowListRenderer = new PopupWindowListRenderer(this);
