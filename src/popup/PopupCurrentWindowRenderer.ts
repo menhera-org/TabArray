@@ -26,7 +26,6 @@ import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { OriginAttributes, UserContext, TabGroup } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
-import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
 import { WindowStateSnapshot } from '../frameworks/tabs/WindowStateSnapshot';
 import { Uint32 } from '../frameworks/types';
 
@@ -140,33 +139,6 @@ export class PopupCurrentWindowRenderer {
     for (const inactiveUserContext of inactiveUserContexts) {
       const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, inactiveUserContext, [], windowStateSnapshot.isPrivate);
       element.appendChild(containerElement);
-    }
-  }
-
-  public renderCurrentWindowView(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement): void {
-    const currentWindowId = browserStateSnapshot.currentWindowId;
-    const currentWindowState = browserStateSnapshot.getWindowStateSnapshot(currentWindowId);
-    const userContextMap = new Map<Uint32.Uint32, UserContext>();
-    for (const userContext of definedUserContexts) {
-      userContextMap.set(userContext.id, userContext);
-    }
-    if (currentWindowState.isPrivate) {
-      definedUserContexts = definedUserContexts.filter((userContext) => {
-        return userContext.id == UserContext.ID_DEFAULT;
-      });
-    }
-
-    element.textContent = '';
-    const currentWindowLabel = this.renderCurrentWindowLabel(currentWindowId);
-    element.appendChild(currentWindowLabel);
-
-    let tabCount = 0;
-    tabCount += this.renderPinnedTabs(currentWindowState, userContextMap, element);
-    tabCount += this.renderOpenContainers(currentWindowState, definedUserContexts, element);
-    currentWindowLabel.tabCountString = tabCount.toFixed(0);
-    if (!currentWindowState.isPrivate) {
-      element.appendChild(this.renderMoreContainersLabel());
-      this.renderInactiveContainers(currentWindowState, definedUserContexts, element);
     }
   }
 }

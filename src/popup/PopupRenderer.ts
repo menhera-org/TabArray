@@ -150,7 +150,8 @@ export class PopupRenderer {
         continue;
       }
 
-      element.appendChild(this.renderTab(tab, userContext));
+      const tabElement = this.renderTab(tab, userContext);
+      element.appendChild(tabElement);
       state = ContainerTabsState.VISIBLE_TABS;
     }
     if (state === ContainerTabsState.HIDDEN_TABS) {
