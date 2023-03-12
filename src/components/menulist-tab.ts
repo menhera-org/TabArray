@@ -58,6 +58,11 @@ export class MenulistTabElement extends HTMLElement {
     this.closeButton.onclick = () => {
       this.onClose.dispatch(this.tabId);
     };
+    this.tabButton.onauxclick = (event) => {
+      if (event.button == 1) {
+        this.onClose.dispatch(this.tabId);
+      }
+    };
   }
 
   private buildElement() {
