@@ -278,6 +278,34 @@ export class PanelWindowsElement extends HTMLElement {
     pinnedTabsElement.textContent = '';
     for (const pinnedTab of pinnedTabs) {
       const tabElement = this._popupRenderer.renderTab(pinnedTab, userContextMap.get(pinnedTab.userContextId) || UserContext.DEFAULT);
+      tabElement.draggable = true;
+      tabElement.addEventListener('dragstart', (ev) => {
+        if (!ev.dataTransfer) return;
+        ev.dataTransfer.setData('application/json', JSON.stringify({
+          type: 'tab',
+          id: pinnedTab.id,
+          index: pinnedTab.index,
+          pinned: true,
+        }));
+        ev.dataTransfer.dropEffect = 'move';
+      });
+      tabElement.addEventListener('dragover', (ev) => {
+        if (!ev.dataTransfer) return;
+        const json = ev.dataTransfer.getData('application/json');
+        const data = JSON.parse(json);
+        if ('tab' != data.type || !data.pinned) return;
+        ev.preventDefault();
+      });
+      tabElement.addEventListener('drop', (ev) => {
+        if (!ev.dataTransfer) return;
+        const json = ev.dataTransfer.getData('application/json');
+        const data = JSON.parse(json);
+        if ('tab' != data.type || !data.pinned) return;
+        ev.preventDefault();
+        browser.tabs.move(data.id, { index: pinnedTab.index }).catch((e) => {
+          console.error(e);
+        });
+      });
       pinnedTabsElement.appendChild(tabElement);
     }
   }

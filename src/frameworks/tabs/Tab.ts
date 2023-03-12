@@ -128,4 +128,9 @@ export class Tab {
   public async unpin(): Promise<Tab> {
     return this.changePinState(false);
   }
+
+  public async move(newIndex: number): Promise<Tab> {
+    const browserTab = await browser.tabs.move(this.id, { index: newIndex }) as browser.Tabs.Tab;
+    return new Tab(browserTab);
+  }
 }
