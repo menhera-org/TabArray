@@ -175,6 +175,15 @@ button {
   opacity: var(--opaque-opacity);
 }
 
+#button-new-temporary-container {
+  block-size: 2em;
+  inline-size: 2em;
+  color: inherit;
+  mask: url(/img/material-icons/timelapse.svg) center center / 67% no-repeat;
+  background-color: var(--text-color);
+  opacity: var(--opaque-opacity);
+}
+
 #button-settings {
   block-size: 2em;
   inline-size: 2em;
@@ -193,10 +202,10 @@ button {
   opacity: var(--opaque-opacity);
 }
 
-:is(#button-new-container, #button-settings, #button-help):is(:focus, :hover, :active) {
+:is(#button-new-container, #button-new-temporary-container, #button-settings, #button-help):is(:focus, :hover, :active) {
   opacity: 1;
 }
 
-:is(#button-new-container, #button-settings, #button-help) > .button-text {
+:is(#button-new-container, #button-new-temporary-container, #button-settings, #button-help) > .button-text {
   display: none;
 }

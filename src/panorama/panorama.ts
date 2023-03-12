@@ -40,6 +40,7 @@ import { MessagingService } from '../frameworks/extension/MessagingService';
 import { PromiseUtils } from '../frameworks/utils';
 import { ModalFrameElement } from '../components/modal-frame';
 import { HelpBannerElement } from '../components/help-banner';
+import { TemporaryContainerService } from '../containers/TemporaryContainerService';
 
 const panoramaStateStore = new PanoramaStateStore();
 const userContextService = UserContextService.getInstance();
@@ -47,12 +48,16 @@ const windowService = WindowService.getInstance();
 const tabGroupService = TabGroupService.getInstance();
 const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 const messagingService = MessagingService.getInstance();
+const temporaryContainerService = TemporaryContainerService.getInstance();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
 
 const newContainerButtonElement = document.getElementById('button-new-container') as HTMLButtonElement;
 newContainerButtonElement.title = i18n.getMessage('buttonNewContainer');
+
+const newTemporaryContainerButtonElement = document.getElementById('button-new-temporary-container') as HTMLButtonElement;
+newTemporaryContainerButtonElement.title = i18n.getMessage('buttonNewTemporaryContainer');
 
 const settingsButtonElement = document.getElementById('button-settings') as HTMLButtonElement;
 settingsButtonElement.title = i18n.getMessage('buttonSettings');
@@ -78,6 +83,14 @@ newContainerButtonElement.addEventListener('click', () => {
   containerEditorElement.onCancel.addListener(() => {
     containerEditorElement?.remove();
     containerEditorElement = null;
+  });
+});
+
+newTemporaryContainerButtonElement.addEventListener('click', () => {
+  temporaryContainerService.createTemporaryContainer().then(() => {
+    window.close();
+  }).catch((e) => {
+    console.error(e);
   });
 });
 
