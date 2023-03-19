@@ -1,1 +1,573 @@
-{}
+{
+    "effectiveLocale": {
+        "message": "zh-cn",
+        "description": "Locale of this messages.json."
+    },
+    "browserActionPopupTitle": {
+        "message": "容器标签组: 弹出页面",
+        "description": "Title of the popup page for browserAction."
+    },
+    "buttonCancel": {
+        "message": "取消",
+        "description": "Button label to cancel an action."
+    },
+    "newContainerNameLabel": {
+        "message": "名称",
+        "description": "Label for inputting the name of a new container."
+    },
+    "contextMenuHideSelectedContainer": {
+        "message": "隐藏此容器",
+        "description": "Context menu item text for hiding the container of the selected tab."
+    },
+    "tooltipHideContainerButton": {
+        "message": "隐藏此容器的标签页",
+        "description": "Tooltip for the button to hide the tabs of a container."
+    },
+    "tooltipWindowLabel": {
+        "message": "切换到窗口 #$ID$",
+        "description": "Tooltip for a menu item representing a window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "tooltipContainerCloseAll": {
+        "message": "关闭此容器中的所有标签页",
+        "description": "Tooltip for a button to close all tabs of a container."
+    },
+    "tooltipContainerDelete": {
+        "message": "永久删除此容器",
+        "description": "Tooltip for a button to permanently delete a container."
+    },
+    "defaultContainerName": {
+        "message": "容器 #$ID$",
+        "description": "Descriptive default name of a container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "noContainer": {
+        "message": "无容器",
+        "description": "Virtual container name for tabs with no container."
+    },
+    "browserActionTitle": {
+        "message": "标签页和组",
+        "description": "Title of browserAction about tabs and container-based groups."
+    },
+    "labelNewTabKeepContainer": {
+        "message": "始终在当前容器中打开新标签页",
+        "description": "Title of option to always open new tab in current container."
+    },
+    "buttonSettings": {
+        "message": "设置",
+        "description": "Menu item to open the extensions's settings."
+    },
+    "labelResistFingerprinting": {
+        "message": "启用Firefox的指纹保护功能（privacy.restFingerprinting）",
+        "description": "Option to enable privacy.resistFingerprinting."
+    },
+    "optionsHeadingFirefox": {
+        "message": "Firefox 设置",
+        "description": "Heading text of options page for changing Firefox settings."
+    },
+    "optionsDescriptionFirefox": {
+        "message": "在这里，您可以更改一些与隐私相关的隐藏 Firefox 设置。",
+        "description": "Description text for Firefox settings options."
+    },
+    "buttonPanorama": {
+        "message": "打开网格视图",
+        "description": "Button label to open Panorama Grid"
+    },
+    "buttonOpenTabInContainer": {
+        "message": "打开新标签页",
+        "description": "Button label to open a new tab in the specified container"
+    },
+    "tooltipExpandContainers": {
+        "message": "展开容器组",
+        "description": "Tooltip for the button to expand containers."
+    },
+    "titleSelectContainer": {
+        "message": "选择容器",
+        "description": "Title of the popup asking the user to choose a container to open a new tab in."
+    },
+    "labelExternalTabSelectContainerOption": {
+        "message": "当外部应用程序打开选项卡时：",
+        "description": "Label for option for handling of externally opened tabs"
+    },
+    "labelGroupIndexOption": {
+        "message": "显示每个容器的索引选项卡",
+        "description": "Option to show index tabs for containers."
+    },
+    "labelGroupIndexOptionAlways": {
+        "message": "全部容器",
+        "description": "Option to show index tabs for all containers."
+    },
+    "labelPopupSizeStandard": {
+        "message": "标准",
+        "description": "Label text for standard popup size."
+    },
+    "labelPopupSizeLarge": {
+        "message": "大",
+        "description": "Label text for large popup size."
+    },
+    "searchPlaceholder": {
+        "message": "搜索容器",
+        "description": "Placeholder text for searching containers."
+    },
+    "menuItemMain": {
+        "message": "容器",
+        "description": "Menu item for containers view."
+    },
+    "menuItemSites": {
+        "message": "站点",
+        "description": "Menu item for sites view"
+    },
+    "buttonNewWindow": {
+        "message": "新建窗口",
+        "description": "Button to open a new window."
+    },
+    "buttonSidebar": {
+        "message": "打开侧边栏",
+        "description": "Button to open Sidebar."
+    },
+    "buttonClear": {
+        "message": "清理",
+        "description": "Button to clear data."
+    },
+    "privateBrowsing": {
+        "message": "隐私浏览",
+        "description": "Private Browsing page"
+    },
+    "tooltipContainerClearCookie": {
+        "message": "清除此容器中的所有 cookie",
+        "description": "Tooltip for a button to clear all cookies in a container."
+    },
+    "buttonEditContainer": {
+        "message": "编辑容器…",
+        "description": "Button to edit a container."
+    },
+    "buttonContainerClearCookie": {
+        "message": "清理 Cookie…",
+        "description": "Button to clear cookies in a container."
+    },
+    "buttonDeleteContainer": {
+        "message": "删除容器…",
+        "description": "Button to delete a container."
+    },
+    "optionsDescriptionContainerSortOrder": {
+        "message": "此设置不会影响其他扩展。",
+        "description": "Description text for changing container order."
+    },
+    "commandOpenSidebar": {
+        "message": "打开到侧边栏",
+        "description": "Description text for using command to open sidebar."
+    },
+    "buttonNewPrivateWindow": {
+        "message": "新建隐私浏览窗口",
+        "description": "Button to open a new private window."
+    },
+    "tooltipCookies": {
+        "message": "查看 Cookies",
+        "description": "Tooltip for a button to view cookies."
+    },
+    "contextMenuReloadTab": {
+        "message": "刷新标签页",
+        "description": "Reload Tab menu (same as browser's tab menu)"
+    },
+    "optionsLabelLanguages": {
+        "message": "语言",
+        "description": "Label text for languages of a container."
+    },
+    "windowsN": {
+        "message": "窗口 ($COUNT$)",
+        "description": "Text for windows view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "featureLanguageOverrides": {
+        "message": "覆盖每个容器的语言",
+        "description": "Label text for language overrides feature"
+    },
+    "featureUaOverrides": {
+        "message": "覆盖每个容器的 User-Agent",
+        "description": "Label text for UA overrides feature"
+    },
+    "optionsLabelUserAgent": {
+        "message": "User Agent",
+        "description": "Label text for user agent of a container."
+    },
+    "userAgentCustom": {
+        "message": "自定义",
+        "description": "Custom user agent"
+    },
+    "optionsHeadingGeneral": {
+        "message": "常规设置",
+        "description": "Heading text of options page for general settings."
+    },
+    "labelAutoDiscardDisabled": {
+        "message": "禁用",
+        "description": "Label text for autodiscard disabled."
+    },
+    "labelAutoDiscard900": {
+        "message": "15 分钟",
+        "description": "Label text for autodiscard in 900 seconds."
+    },
+    "labelAutoDiscard3600": {
+        "message": "1 小时",
+        "description": "Label text for autodiscard in 3600 seconds."
+    },
+    "labelAutoDiscard10800": {
+        "message": "3 小时",
+        "description": "Label text for autodiscard in 10800 seconds."
+    },
+    "labelAutoDiscard86400": {
+        "message": "24 小时",
+        "description": "Label text for autodiscard in 86400 seconds."
+    },
+    "headingReopen": {
+        "message": "在容器中打开",
+        "description": "Heading text for reopen in container."
+    },
+    "extensionDescription": {
+        "message": "类似 Chrome 的标签组：使用容器隔离的 Firefox 标签组管理器。",
+        "description": "Description of the extension."
+    },
+    "buttonHideInactiveContainers": {
+        "message": "折叠其他容器",
+        "description": "Button label to hide inactive containers on a window."
+    },
+    "buttonNewContainer": {
+        "message": "创建新容器…",
+        "description": "Button label to create a new container."
+    },
+    "newContainerDialogTitle": {
+        "message": "创建新容器",
+        "description": "Title of the dialog prompting for creating a new container."
+    },
+    "buttonOk": {
+        "message": "确认",
+        "description": "Button label to confirm an action."
+    },
+    "editContainerDialogTitle": {
+        "message": "编辑容器",
+        "description": "Title of the dialog prompting for editting a container."
+    },
+    "newContainerNamePlaceholder": {
+        "message": "容器名称",
+        "description": "Placeholder for the input field of the name of a new container."
+    },
+    "tooltipUnhideContainerButton": {
+        "message": "显示此容器的标签页",
+        "description": "Tooltip for the button to unhide the tabs of a container."
+    },
+    "tooltipTabPinButton": {
+        "message": "固定此标签页",
+        "description": "Tooltip for the button to pin a tab."
+    },
+    "tooltipTabUnpinButton": {
+        "message": "取消固定此标签页",
+        "description": "Tooltip for the button to unpin a tab."
+    },
+    "currentWindowMoreContainers": {
+        "message": "此窗口的更多容器"
+    },
+    "labelFirstPartyIsolate": {
+        "message": "启用第一方隔离（FPI）",
+        "description": "Option to enable first-party isolation."
+    },
+    "buttonAboutAddon": {
+        "message": "有关容器标签组的更多信息…",
+        "description": "Menu item to open the extension's addons.mozilla.org page."
+    },
+    "panoramaGrid": {
+        "message": "网格视图",
+        "description": "Panorama Grid page (grid view of container and tabs)"
+    },
+    "windowTitlePrefaceTemplate": {
+        "message": "($CONTAINER$)",
+        "description": "String to add before window title",
+        "placeholders": {
+            "container": {
+                "content": "$1",
+                "example": "Container 1"
+            }
+        }
+    },
+    "optionsDescriptionExperimental": {
+        "message": "禁用其中一些选项可能解决某些错误.",
+        "description": "Description text for experimental features options."
+    },
+    "labelSelectContainerExternalTabs": {
+        "message": "当外部应用程序打开标签页时选择容器",
+        "description": "Option to enable container selection on externally opened tabs."
+    },
+    "optionsHeadingExperimental": {
+        "message": "实验特征",
+        "description": "Heading text of options page for experimental addon features."
+    },
+    "buttonTabClose": {
+        "message": "关闭标签页",
+        "description": "Button label to close a tab."
+    },
+    "tooltipCollapseContainers": {
+        "message": "折叠容器组",
+        "description": "Tooltip for the button to collapse inactive containers."
+    },
+    "tooltipEditContainerButton": {
+        "message": "编辑此容器",
+        "description": "Tooltip for the button to edit a container."
+    },
+    "currentWindow": {
+        "message": "此窗口 (#$ID$)",
+        "description": "Title of popup section for the current window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "2"
+            }
+        }
+    },
+    "invalidContainerName": {
+        "message": "不可用的容器$ID$",
+        "description": "Name shown for an unavailable container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "windowLabel": {
+        "message": "窗口 #$ID$",
+        "description": "Label for a window with ID.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "confirmContainerDelete": {
+        "message": "是否要永久删除此容器：$NAME$？",
+        "description": "Confirmation message before deleting a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "descriptionSelectContainer": {
+        "message": "您即将打开一个新的标签页：$URL$。",
+        "description": "Confirmation message before the user chooses a container to open a new tab in.",
+        "placeholders": {
+            "url": {
+                "content": "$1",
+                "example": "https://example.com/"
+            }
+        }
+    },
+    "promptSelectContainer": {
+        "message": "请选择要打开此标签页的容器。",
+        "description": "Message asking the user to select a container for a new tab."
+    },
+    "labelExternalTabOptionDisabled": {
+        "message": "在默认容器中打开（无容器）",
+        "description": "Option to disable handling of externally opened tabs."
+    },
+    "labelExternalTabOptionChooseContainer": {
+        "message": "每次选择容器",
+        "description": "Option to choose a container every time an external application opens a tab."
+    },
+    "labelExternalTabOptionStickyContainer": {
+        "message": "在最后一个活动的容器中打开",
+        "description": "Option to use the last active container for externally opened tabs."
+    },
+    "labelGroupIndexOptionCollapsed": {
+        "message": "折叠的容器",
+        "description": "Option to show index tabs for collapsed containers."
+    },
+    "optionsHeadingAppearance": {
+        "message": "外观选项",
+        "description": "Heading text of options page for changing appearance settings."
+    },
+    "labelGroupIndexOptionNever": {
+        "message": "从不",
+        "description": "Option to show index tabs for no containers."
+    },
+    "labelPopupSize": {
+        "message": "弹出大小",
+        "description": "Prompt for changing popup size."
+    },
+    "menuItemWindows": {
+        "message": "窗口",
+        "description": "Menu item for windows view"
+    },
+    "commandOpenPopup": {
+        "message": "弹出窗口",
+        "description": "Description text for using command to open popup."
+    },
+    "buttonGetStarted": {
+        "message": "开始",
+        "description": "Button to get started"
+    },
+    "tooltipCloseWindow": {
+        "message": "关闭窗口",
+        "description": "Tooltip for a button to close all tabs of a window."
+    },
+    "optionsHeadingUserData": {
+        "message": "用户数据",
+        "description": "Heading text of options page for managing user data."
+    },
+    "contextMenuPinTab": {
+        "message": "固定标签页",
+        "description": "Pin Tab menu (same as browser's tab menu)"
+    },
+    "headingCookies": {
+        "message": "Cookies",
+        "description": "Heading text of cookies page."
+    },
+    "confirmContainerClearCookie": {
+        "message": "是否要清除此容器的cookie：$NAME$？",
+        "description": "Confirmation message before clearing cookies in a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "confirmPrivateBrowsingClearCookie": {
+        "message": "是否要清除 Cookie 以进行隐私浏览？",
+        "description": "Confirmation message before clearing cookies for private browsing."
+    },
+    "buttonDone": {
+        "message": "完成",
+        "description": "Button to complete an action."
+    },
+    "containerOptions": {
+        "message": "容器选项：$NAME$",
+        "description": "Menu title for container options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "optionsHeadingContainerSortOrder": {
+        "message": "容器列表",
+        "description": "Heading text of options page for changing container order."
+    },
+    "cookiesHeadingDomain": {
+        "message": "域名",
+        "description": "Heading text for domains in cookies table."
+    },
+    "contextMenuUnmuteTab": {
+        "message": "取消静音标签页",
+        "description": "Unmute Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuMuteTab": {
+        "message": "静音标签页",
+        "description": "Mute Tab menu (same as browser's tab menu)"
+    },
+    "cookiesHeadingActions": {
+        "message": "动作",
+        "description": "Heading text for action buttons in cookies table."
+    },
+    "enableCookiesAutoclean": {
+        "message": "自动清理 cookie",
+        "description": "Label text for enabling autoclean of cookies."
+    },
+    "contextMenuNewTab": {
+        "message": "新标签页",
+        "description": "New Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuCloseTab": {
+        "message": "关闭标签页",
+        "description": "Close Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuDuplicateTab": {
+        "message": "复制标签页",
+        "description": "Duplicate Tab menu (same as browser's tab menu)"
+    },
+    "contextMenuUnpinTab": {
+        "message": "取消固定标签页",
+        "description": "Unpin Tab menu (same as browser's tab menu)"
+    },
+    "menuItemHelp": {
+        "message": "帮助",
+        "description": "Menu item for help view"
+    },
+    "privacyPolicy": {
+        "message": "隐私策略",
+        "description": "Privacy Policy page"
+    },
+    "optionsHeadingContainerOverrides": {
+        "message": "覆盖每个容器",
+        "description": "Heading text of options page for container overrides."
+    },
+    "sitesN": {
+        "message": "站点 ($COUNT$)",
+        "description": "Text for sites view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "fpiDescription": {
+        "message": "此扩展默认启用Firefox的第一方隔离（FPI）功能。这意味着不同站点的 cookie，即使在同一个容器中，也会被隔离。你可以在这里关掉它。",
+        "description": "Description text for FPI"
+    },
+    "optionalFeaturesDescription": {
+        "message": "如果您没有使用任何冲突的扩展，您可以在这里启用一些可选功能。",
+        "description": "Description text for optional features"
+    },
+    "userAgentChrome": {
+        "message": "Chrome",
+        "description": "Chrome user agent"
+    },
+    "userAgentGooglebot": {
+        "message": "Googlebot",
+        "description": "Googlebot user agent"
+    },
+    "userAgentDefault": {
+        "message": "默认",
+        "description": "Default user agent"
+    },
+    "focusToThisContainer": {
+        "message": "聚焦此容器",
+        "description": "Button to focus to this container."
+    },
+    "labelAutoDiscardMinAge": {
+        "message": "标签页处于非活动状态后的可用内存：",
+        "description": "Label text for autodiscard min age."
+    },
+    "buttonNewTemporaryContainer": {
+        "message": "新建临时容器",
+        "description": "Button to open a new temporary container."
+    },
+    "labelAutoDiscard1800": {
+        "message": "30 分钟",
+        "description": "Label text for autodiscard in 1800 seconds."
+    },
+    "labelAutoDiscard21600": {
+        "message": "6 小时",
+        "description": "Label text for autodiscard in 21600 seconds."
+    },
+    "labelAutoDiscard43200": {
+        "message": "12 小时",
+        "description": "Label text for autodiscard in 43200 seconds."
+    }
+}
