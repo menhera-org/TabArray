@@ -569,5 +569,9 @@
     "headingReopen": {
         "message": "Reopen in Container",
         "description": "Heading text for reopen in container."
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
     }
 }
