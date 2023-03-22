@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { PANORAMA_PAGE, COOKIES_PAGE, ADDON_PAGE, PRIVACY_POLICY_PAGE } from '../defs';
+import { PANORAMA_PAGE, COOKIES_PAGE, ADDON_PAGE, PRIVACY_POLICY_PAGE, GITHUB_PAGE } from '../defs';
 
 export class PopupUtils {
   public getActiveElement(): HTMLElement | null {
@@ -96,6 +96,14 @@ export class PopupUtils {
       active: true,
       windowId: browser.windows.WINDOW_ID_CURRENT,
       url: browser.runtime.getURL(COOKIES_PAGE),
+    }));
+  }
+
+  public openGithubPage() {
+    this.handlePopupClose(browser.tabs.create({
+      active: true,
+      windowId: browser.windows.WINDOW_ID_CURRENT,
+      url: browser.runtime.getURL(GITHUB_PAGE),
     }));
   }
 

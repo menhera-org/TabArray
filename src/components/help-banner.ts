@@ -98,6 +98,19 @@ export class HelpBannerElement extends HTMLElement {
       this._popupUtils.openPrivacyPolicyPage();
     });
 
+    const helpBannerParagraph3 = document.createElement('p');
+    helpBanner.appendChild(helpBannerParagraph3);
+
+    const helpBannerSourceCodeLink = document.createElement('a');
+    helpBannerSourceCodeLink.href = '#';
+    helpBannerSourceCodeLink.textContent = browser.i18n.getMessage('github');
+    helpBannerParagraph3.appendChild(helpBannerSourceCodeLink);
+
+    helpBannerSourceCodeLink.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      this._popupUtils.openGithubPage();
+    });
+
   }
 }
 
