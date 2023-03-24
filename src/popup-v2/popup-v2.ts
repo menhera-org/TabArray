@@ -80,7 +80,8 @@ topBarElement.onDrawerButtonClicked.addListener(() => {
   drawerElement.hidden = false;
 });
 
-topBarElement.drawerButtonEnabled = false;
+// topBarElement.drawerButtonEnabled = false;
+topBarElement.drawerButtonIconSrc = '/img/shell.svg';
 
 const frameLayout = document.querySelector('#frame-layout') as CtgFrameLayoutElement;
 const bottomNavigationElement = document.querySelector('#bottom-navigation') as CtgBottomNavigationElement;

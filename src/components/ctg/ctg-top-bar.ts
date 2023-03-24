@@ -42,8 +42,10 @@ export class CtgTopBarElement extends HTMLElement {
     styleSheet.href = '/components/ctg/ctg-top-bar.css';
     this.shadowRoot.appendChild(styleSheet);
 
-    const drawerButton = document.createElement('button');
+    const drawerButton = new CtgMenuItemElement();
     drawerButton.id = 'drawer-button';
+    drawerButton.iconSrc = '/img/firefox-icons/menu.svg';
+    drawerButton.displayStyle = 'icon';
     this.shadowRoot.appendChild(drawerButton);
     drawerButton.addEventListener('click', () => {
       this.onDrawerButtonClicked.dispatch();
@@ -98,11 +100,13 @@ export class CtgTopBarElement extends HTMLElement {
   }
 
   public set backButtonEnabled(enabled: boolean) {
+    const drawerButton = this.shadowRoot?.getElementById('drawer-button');
     const backButton = this.shadowRoot?.getElementById('back-button');
-    if (!backButton) {
+    if (!drawerButton || !backButton) {
       return;
     }
     backButton.hidden = !enabled;
+    drawerButton.hidden = enabled;
   }
 
   public get drawerButtonEnabled(): boolean {
@@ -115,10 +119,22 @@ export class CtgTopBarElement extends HTMLElement {
 
   public set drawerButtonEnabled(enabled: boolean) {
     const drawerButton = this.shadowRoot?.getElementById('drawer-button');
-    if (!drawerButton) {
+    const backButton = this.shadowRoot?.getElementById('back-button');
+    if (!drawerButton || !backButton) {
       return;
     }
     drawerButton.hidden = !enabled;
+    backButton.hidden = enabled;
+  }
+
+  public get drawerButtonIconSrc(): string {
+    const drawerButton = this.shadowRoot?.getElementById('drawer-button') as CtgMenuItemElement;
+    return drawerButton.iconSrc;
+  }
+
+  public set drawerButtonIconSrc(src: string) {
+    const drawerButton = this.shadowRoot?.getElementById('drawer-button') as CtgMenuItemElement;
+    drawerButton.iconSrc = src;
   }
 
   public clearMenuItems() {

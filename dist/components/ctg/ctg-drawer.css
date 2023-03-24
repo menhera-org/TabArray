@@ -53,8 +53,8 @@
   position: absolute;
   inset-block-start: 0;
   inset-inline-start: 0;
-  inline-size: 90%;
-  max-inline-size: 20rem;
+  inline-size: 92.5%;
+  max-inline-size: 25rem;
   block-size: 100%;
   z-index: 51;
   flex-direction: column;
