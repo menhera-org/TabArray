@@ -23,7 +23,7 @@
     "ts-loader": "^9.4.2",
     "typedoc": "^0.23.28",
     "typescript": "<5.1.0",
-    "web-ext": "^7.5.0",
+    "web-ext": "^7.6.0",
     "webpack": "^5.76.2",
     "webpack-cli": "^5.0.1"
   },
