@@ -24,7 +24,6 @@ import { LanguageStore } from './LanguageStore';
 import { UaStore } from './UaStore';
 import './content-interfaces';
 import './content-localstorage';
-import './content-visibility';
 
 declare global {
   // eslint-disable-next-line no-var
