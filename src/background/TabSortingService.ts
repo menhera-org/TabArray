@@ -19,6 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { diffArrays } from 'diff';
 import browser from 'webextension-polyfill';
 import { Tab } from '../frameworks/tabs';
 import { getWindowIds } from '../modules/windows';
@@ -49,6 +50,7 @@ const tabSortingCallback = (tab1: Tab, tab2: Tab) => {
   return order;
 };
 
+// https://qiita.com/piroor/items/5e338ec2799dc1d75e6f
 const sortTabsByWindow = async (windowId: number) => {
   try {
     const browserTabs = await browser.tabs.query({windowId: windowId});
@@ -56,22 +58,40 @@ const sortTabsByWindow = async (windowId: number) => {
     const pinnedTabs = tabs.filter(tab => tab.pinned);
     const sortedTabs = tabs.filter(tab => !tab.pinned);
 
+    const origTabIdList = sortedTabs.map(tab => tab.id);
     sortedTabs.sort(tabSortingCallback);
+    const targetTabIdList = sortedTabs.map(tab => tab.id);
 
+    const diffs = diffArrays(origTabIdList, targetTabIdList);
+    let currentIds = [... origTabIdList];
+
+    const promises: Promise<unknown>[] = [];
     const pinnedCount = pinnedTabs.length;
-    for (let i = 0; i < sortedTabs.length; i++) {
-      const tab = sortedTabs[i];
-      if (undefined == tab || null == tab.index || null == tab.id) continue;
-      const currentIndex = tab.index;
-      const targetIndex = pinnedCount + i;
-      if (targetIndex != currentIndex) {
-        try {
-          await PromiseUtils.timeout(browser.tabs.move(tab.id, {index: targetIndex}), TAB_MOVE_TIMEOUT);
-        } catch (e) {
-          console.error('Error moving tab %d from index %d to %d on window %d', tab.id, currentIndex, targetIndex, windowId, e);
-          throw e;
-        }
+    for (const diff of diffs) {
+      if (!diff.added) continue;
+
+      const movingIds = diff.value;
+      const lastMovingId = movingIds[movingIds.length - 1] as number;
+      const nearestFollowingIndex = targetTabIdList.indexOf(lastMovingId) + 1;
+      let newIndex = nearestFollowingIndex < targetTabIdList.length ? currentIds.indexOf(targetTabIdList[nearestFollowingIndex] as number) : -1;
+      if (newIndex < 0) {
+        newIndex = origTabIdList.length;
       }
+      const oldIndex = currentIds.indexOf(movingIds[0] as number);
+      if (oldIndex < newIndex) {
+        newIndex--;
+      }
+      const targetIndex = pinnedCount + newIndex;
+
+      promises.push(PromiseUtils.timeout(browser.tabs.move(movingIds, {index: targetIndex}), TAB_MOVE_TIMEOUT));
+
+      currentIds = currentIds.filter(id => !movingIds.includes(id));
+      currentIds.splice(newIndex, 0, ...movingIds);
+    }
+    try {
+      await Promise.all(promises);
+    } catch (e) {
+      console.error('Error moving tabs on window %d', windowId, e);
     }
   } catch (e) {
     console.error(e);
