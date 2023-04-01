@@ -85,3 +85,5 @@ setTextContent('label[for="select-popupSize"]', 'labelPopupSize');
 
 setTextContent('#select-popupSize > option[value="standard"]', 'labelPopupSizeStandard');
 setTextContent('#select-popupSize > option[value="large"]', 'labelPopupSizeLarge');
+
+setTextContent('label[for="input-enableSorting"]', 'optionEnableSorting');

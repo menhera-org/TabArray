@@ -81,6 +81,8 @@ window.addEventListener('hashchange', () => {
 const paneContainers = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="containers"]');
 const paneContainerOverrides = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="container-overrides"]');
 
+const inputTabSortingEnabled = document.querySelector<HTMLInputElement>('#input-enableSorting');
+
 const inputFeatureLanguageOverrides = document.querySelector<HTMLInputElement>('#input-featureLanguageOverrides');
 const inputFeatureUaOverrides = document.querySelector<HTMLInputElement>('#input-featureUaOverrides');
 
@@ -119,6 +121,15 @@ UserContext.getAll().then(async (userContexts) => {
   containerSorter.onChanged.addListener((sortOrder) => {
     sortingOrderStore.setOrder(sortOrder);
   });
+});
+
+// tab.sorting.enabled setting
+config['tab.sorting.enabled'].observe((value) => {
+  setInputChecked(inputTabSortingEnabled, value);
+});
+
+inputTabSortingEnabled?.addEventListener('change', () => {
+  setConfigValue(config['tab.sorting.enabled'], inputTabSortingEnabled.checked);
 });
 
 // feature.languageOverrides setting

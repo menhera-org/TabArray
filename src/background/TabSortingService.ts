@@ -27,6 +27,7 @@ import { IndexTab } from '../modules/IndexTab';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { PromiseUtils } from '../frameworks/utils';
 import { MessagingService } from '../frameworks/extension/MessagingService';
+import { config } from '../config/config';
 
 const TAB_MOVE_TIMEOUT = 60000;
 
@@ -99,6 +100,8 @@ const sortTabsByWindow = async (windowId: number) => {
 };
 
 const sortTabs = async () => {
+  const enabled = await config['tab.sorting.enabled'].getValue();
+  if (!enabled) return;
   if (tabSorting) {
     console.debug('Tab sorting is already in progress.');
     return;

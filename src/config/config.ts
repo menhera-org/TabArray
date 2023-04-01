@@ -35,6 +35,7 @@ export const config = {
   'appearance.popupSize': new StorageConfigurationOption<PopupSize>('appearance.popupSize', 'standard'),
   'tab.groups.indexOption': new StorageConfigurationOption<GroupIndexOption>('tab.groups.indexOption', 'never'),
   'tab.autoDiscard.minAge': new StorageConfigurationOption<number>('tab.autoDiscard.minAge', -1),
+  'tab.sorting.enabled': new StorageConfigurationOption<boolean>('tab.sorting.enabled', true),
 };
 
 
