@@ -569,5 +569,13 @@
     "headingReopen": {
         "message": "コンテナーで開き直す",
         "description": "Heading text for reopen in container."
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
+    },
+    "optionEnableSorting": {
+        "message": "タブの並び替えを有効化する",
+        "description": "Label text for enabling sorting of containers/tabs."
     }
 }
