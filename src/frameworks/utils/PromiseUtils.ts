@@ -41,6 +41,7 @@ export class PromiseUtils {
 
   /**
    * Sleeps for the specified number of milliseconds.
+   * This should not be used in nonpersistent background pages.
    * @param ms sleep time in milliseconds.
    * @returns Promise.
    */
@@ -50,6 +51,9 @@ export class PromiseUtils {
     return promise;
   }
 
+  /**
+   * This should not be used in nonpersistent background pages.
+   */
   public static timeout(promise: Promise<unknown>, ms: number, message = "Timed out") {
     const timeout = PromiseUtils.sleep(ms).then(() => {
       throw new Error(message);
