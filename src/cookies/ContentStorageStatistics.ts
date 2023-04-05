@@ -22,8 +22,7 @@
 import { StorageArea, StorageItem } from "../frameworks/storage";
 import { EventSink } from "../frameworks/utils";
 import { CookieProvider } from "../frameworks/cookies";
-import { FirstPartyService } from "../frameworks/tabGroups";
-import { HostnameService } from "weeg-domains";
+import { HostnameService, RegistrableDomainService } from "weeg-domains";
 import { ContextualIdentity } from "../frameworks/tabAttributes";
 
 export type OriginStorageStatistics = {
@@ -49,7 +48,7 @@ export type StorageType = {
 export class ContentStorageStatistics {
   private static readonly _STORAGE_KEY = 'content.storage.statistics.firstPartyIsolated';
   private readonly _storageItem = new StorageItem<StorageType>(ContentStorageStatistics._STORAGE_KEY, {}, StorageArea.LOCAL);
-  private readonly _firstPartyService = FirstPartyService.getInstance();
+  private readonly _registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
   private readonly _hostnameService = HostnameService.getInstance();
 
   public readonly cookieProvider = new CookieProvider();
@@ -167,7 +166,6 @@ export class ContentStorageStatistics {
 
   public async getRegistrableDomainList(cookieStoreId: string, firstPartyDomain: string): Promise<string[]> {
     const domains = await this.getDomainList(cookieStoreId, firstPartyDomain);
-    await this._firstPartyService.initialized;
-    return this._firstPartyService.getUniqueFirstPartyDomains(domains);
+    return await this._registrableDomainService.getUniqueRegistrableDomains(domains.map((domain) => `http://${domain}`));
   }
 }

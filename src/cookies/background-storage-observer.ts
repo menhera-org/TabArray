@@ -19,14 +19,14 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { RegistrableDomainService } from 'weeg-domains';
 import { ContentStorageStatistics } from './ContentStorageStatistics';
 import { CookieStore } from '../frameworks/tabAttributes';
-import { FirstPartyService } from '../frameworks/tabGroups';
 import { MessagingService } from '../frameworks/extension/MessagingService';
 
 const statistics = new ContentStorageStatistics();
-const firstPartyService = FirstPartyService.getInstance();
 const messagingService = MessagingService.getInstance();
+const registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
 
 messagingService.addListener('content-localstorage-statistics', async (message, sender) => {
   if (!sender.tab) return;
@@ -43,8 +43,7 @@ messagingService.addListener('content-localstorage-statistics', async (message, 
     ? message.origin as string
     : (sender.tab.url || 'about:blank');
 
-  await firstPartyService.initialized;
-  const firstPartyDomain = firstPartyService.getRegistrableDomain(new URL(topFrameUrl));
+  const firstPartyDomain = (await registrableDomainService.getRegistrableDomains([topFrameUrl]))[0] as string;
 
   const origin = message.origin as string;
   statistics.setOriginStatistics(cookieStoreId, firstPartyDomain, origin, {

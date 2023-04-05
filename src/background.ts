@@ -19,6 +19,8 @@
 
 import './install';
 import browser from 'webextension-polyfill';
+import { RegistrableDomainService } from 'weeg-domains';
+
 import { isNewTabPage } from './modules/newtab';
 
 import { WebExtensionsBroadcastChannel } from './modules/broadcasting';
@@ -70,6 +72,7 @@ setInterval(() => {
 
 const TAB_SORTING_INTERVAL = 10000;
 
+RegistrableDomainService.getInstance<RegistrableDomainService>();
 const userContextService = UserContextService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const tabSortingService = TabSortingService.getInstance();

@@ -20,12 +20,12 @@
 */
 
 import browser from 'webextension-polyfill';
+import { RegistrableDomainService } from 'weeg-domains';
 import { OriginAttributes } from '../tabGroups';
-import { FirstPartyService } from '../tabGroups';
 import { HostnameService } from 'weeg-domains';
 
 export class CookieProvider {
-  private readonly _firstPartyService = FirstPartyService.getInstance();
+  private readonly _registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
   private readonly _hostnameService = HostnameService.getInstance();
 
   private validateOriginAttributes(originAttributes: OriginAttributes): void {
@@ -58,9 +58,8 @@ export class CookieProvider {
   }
 
   public async getCookieRegistrableDomainsForFirstPartyDomain(cookieStoreId: string, firstPartyDomain: string): Promise<string[]> {
-    await this._firstPartyService.initialized;
     const domains = await this.getCookieDomainsForFirstPartyDomain(cookieStoreId, firstPartyDomain);
-    return this._firstPartyService.getUniqueFirstPartyDomains(domains);
+    return await this._registrableDomainService.getUniqueRegistrableDomains(domains.map((domain) => `http://${domain}`));
   }
 
   private async getCookiesForOriginAttributes(originAttributes: OriginAttributes): Promise<browser.Cookies.Cookie[]> {

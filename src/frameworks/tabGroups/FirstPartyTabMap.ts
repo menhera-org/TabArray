@@ -20,34 +20,37 @@
 */
 
 import browser from 'webextension-polyfill';
+import { RegistrableDomainService } from 'weeg-domains';
 import { Tab } from "../tabs";
 import { UrlService } from 'weeg-domains';
 import { HostnameService } from 'weeg-domains';
-import { FirstPartyService } from './FirstPartyService';
 
 type ImplementedMap = ReadonlyMap<string, ReadonlyArray<Tab>>;
 
 export class FirstPartyTabMap implements ImplementedMap {
-  private static readonly firstPartyService = FirstPartyService.getInstance();
+  private static readonly registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
 
   public static async create(isPrivate = false): Promise<FirstPartyTabMap> {
     const browserTabs = await browser.tabs.query({});
-    await this.firstPartyService.initialized;
     const tabs = [];
+    const registrableDomainMap = new WeakMap<Tab, string>();
     for (const browserTab of browserTabs) {
       if (browserTab.incognito != isPrivate) {
         continue;
       }
-      tabs.push(new Tab(browserTab));
+      const tab = new Tab(browserTab);
+      tabs.push(tab);
+      const registrableDomain = (await FirstPartyTabMap.registrableDomainService.getRegistrableDomains([tab.url]))[0] as string;
+      registrableDomainMap.set(tab, registrableDomain);
     }
-    return new FirstPartyTabMap(tabs);
+    return new FirstPartyTabMap(tabs, registrableDomainMap);
   }
 
   private readonly urlService = UrlService.getInstance();
   private readonly hostnameService = HostnameService.getInstance();
   private readonly tabMap = new Map<string, Tab[]>();
 
-  private constructor(tabs: Tab[]) {
+  private constructor(tabs: Tab[], registrableDomainMap: WeakMap<Tab, string>) {
     for (const tab of tabs) {
       const url = new URL(tab.url);
       if (!this.urlService.isHttpScheme(url)) {
@@ -56,7 +59,7 @@ export class FirstPartyTabMap implements ImplementedMap {
       if (this.hostnameService.isHostnameIpAddress(url.href)) {
         continue;
       }
-      const registrableDomain = FirstPartyTabMap.firstPartyService.getRegistrableDomain(url);
+      const registrableDomain = registrableDomainMap.get(tab);
       if (!registrableDomain) {
         continue;
       }
