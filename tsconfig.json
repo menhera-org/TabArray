@@ -8,7 +8,7 @@
     ],
     "module": "CommonJS",
     "sourceMap": true,
-    "declaration": true,
+    "declaration": false,
     "newLine": "lf",
     "outDir": "./ts-dist/",
     "esModuleInterop": true,

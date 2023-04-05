@@ -24,7 +24,7 @@ import { OriginAttributes } from "./OriginAttributes";
 import { Tab } from "../tabs";
 import { FirstPartyService } from './FirstPartyService';
 import { PromiseUtils } from '../utils';
-import { UrlService } from '../dns';
+import { UrlService } from 'weeg-domains';
 import { TabList } from './TabList';
 import { WindowService } from '../tabs';
 

@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { Tab } from "../tabs";
-import { UrlService } from '../dns';
+import { UrlService } from 'weeg-domains';
 import { HostnameService } from 'weeg-domains';
 import { FirstPartyService } from './FirstPartyService';
 
