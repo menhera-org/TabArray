@@ -19,10 +19,10 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { StorageItem } from 'weeg-storage';
 import { Uint32 } from '../frameworks/types';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextSortingProvider } from '../frameworks/tabGroups';
-import { StorageArea, StorageItem } from '../frameworks/storage';
 import { PromiseUtils } from '../frameworks/utils';
 import { EventSink } from '../frameworks/utils';
 
@@ -42,7 +42,7 @@ export class UserContextSortingOrderStore {
   public readonly onChanged = new EventSink<void>();
 
   private constructor() {
-    this.storageItem = new StorageItem(UserContextSortingOrderStore.STORAGE_KEY, [], StorageArea.LOCAL);
+    this.storageItem = new StorageItem(UserContextSortingOrderStore.STORAGE_KEY, [], StorageItem.AREA_LOCAL);
     this.storageItem.observe((newValue) => {
       this.sortingProvider.setOrder(newValue);
       this.initializationPromise.resolve();

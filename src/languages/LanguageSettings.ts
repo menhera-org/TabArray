@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { StorageItem, StorageArea } from "../frameworks/storage";
+import { StorageItem } from "weeg-storage";
 import { EventSink } from "../frameworks/utils";
 import { OriginAttributes } from "../frameworks/tabGroups";
 
@@ -35,7 +35,7 @@ export class LanguageSettings {
     return LanguageSettings.INSTANCE;
   }
 
-  private readonly _storage = new StorageItem<StorageType>(LanguageSettings.STORAGE_KEY, {}, StorageArea.LOCAL);
+  private readonly _storage = new StorageItem<StorageType>(LanguageSettings.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
   private _value: StorageType = {};
 
   public readonly onChanged = new EventSink<void>();

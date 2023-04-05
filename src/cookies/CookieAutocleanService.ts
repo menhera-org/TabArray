@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { StorageItem, StorageArea } from "../frameworks/storage";
+import { StorageItem } from "weeg-storage";
 import { Uint32 } from "../frameworks/types";
 
 export class CookieAutocleanService {
@@ -30,7 +30,7 @@ export class CookieAutocleanService {
     return CookieAutocleanService.INSTANCE;
   }
 
-  private readonly _storageItem = new StorageItem<Uint32.Uint32[]>(CookieAutocleanService.STORAGE_KEY, [], StorageArea.LOCAL);
+  private readonly _storageItem = new StorageItem<Uint32.Uint32[]>(CookieAutocleanService.STORAGE_KEY, [], StorageItem.AREA_LOCAL);
 
   private constructor() {
     // Do nothing

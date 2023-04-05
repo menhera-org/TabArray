@@ -31,6 +31,7 @@
     "@types/diff": "^5.0.3",
     "diff": "^5.1.0",
     "webextension-polyfill": "^0.10.0",
-    "weeg-domains": "^0.3.0"
+    "weeg-domains": "^0.3.0",
+    "weeg-storage": "^0.4.0"
   }
 }

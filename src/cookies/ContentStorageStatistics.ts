@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { StorageArea, StorageItem } from "../frameworks/storage";
+import { StorageItem } from "weeg-storage";
 import { EventSink } from "../frameworks/utils";
 import { CookieProvider } from "../frameworks/cookies";
 import { HostnameService, RegistrableDomainService } from "weeg-domains";
@@ -47,7 +47,7 @@ export type StorageType = {
  */
 export class ContentStorageStatistics {
   private static readonly _STORAGE_KEY = 'content.storage.statistics.firstPartyIsolated';
-  private readonly _storageItem = new StorageItem<StorageType>(ContentStorageStatistics._STORAGE_KEY, {}, StorageArea.LOCAL);
+  private readonly _storageItem = new StorageItem<StorageType>(ContentStorageStatistics._STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
   private readonly _registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
   private readonly _hostnameService = HostnameService.getInstance();
 

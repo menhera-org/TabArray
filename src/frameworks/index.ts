@@ -19,7 +19,6 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as storage from './storage';
 export * as config from './config';
 export * as dns from './dns';
 export * as utils from './utils';

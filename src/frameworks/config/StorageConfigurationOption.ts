@@ -19,9 +19,10 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { StorageItem } from '../storage';
-import { StorageArea } from '../storage';
+import { StorageItem } from 'weeg-storage';
 import { ConfigurationOption } from './ConfigurationOption';
+
+type StorageArea = 'local' | 'sync' | 'managed';
 
 export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
   private static readonly PREFIX = 'config.';
@@ -31,9 +32,9 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
   private readonly sync: StorageItem<T>;
 
   public constructor(key: string, defaultValue: T) {
-    this.managed = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageArea.MANAGED);
-    this.local = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageArea.LOCAL);
-    this.sync = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageArea.SYNC);
+    this.managed = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageItem.AREA_MANAGED);
+    this.local = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageItem.AREA_LOCAL);
+    this.sync = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageItem.AREA_SYNC);
   }
 
   public async getValue(): Promise<T> {
@@ -46,14 +47,14 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
     return await this.sync.getValue();
   }
 
-  public async setValue(value: T, storageArea = StorageArea.SYNC): Promise<void> {
+  public async setValue(value: T, storageArea: StorageArea = 'sync'): Promise<void> {
     switch (storageArea) {
-      case StorageArea.LOCAL: {
+      case 'local': {
         await this.local.setValue(value);
         break;
       }
 
-      case StorageArea.SYNC: {
+      case 'sync': {
         await this.sync.setValue(value);
         break;
       }
@@ -65,8 +66,9 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
   }
 
   private observeManaged(observer: (value: T) => void) {
-    this.managed.observeMaybe(async (managedValue) => {
-      if (managedValue !== undefined) {
+    this.managed.observe(async (managedValue) => {
+      const hasValue = await this.managed.hasValue();
+      if (hasValue) {
         observer(managedValue);
         return;
       }
@@ -81,13 +83,14 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
   }
 
   private observeLocal(observer: (value: T) => void) {
-    this.local.observeMaybe(async (localValue) => {
+    this.local.observe(async (localValue) => {
       if (await this.managed.hasValue()) {
         observer(await this.managed.getValue());
         return;
       }
 
-      if (localValue !== undefined) {
+      const hasValue = await this.local.hasValue();
+      if (hasValue) {
         observer(localValue);
         return;
       }

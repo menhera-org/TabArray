@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { StorageItem, StorageArea } from "../frameworks/storage";
+import { StorageItem } from "weeg-storage";
 import { EventSink } from "../frameworks/utils";
 import { OriginAttributes } from '../frameworks/tabGroups';
 import { ChromiumReleaseService } from "./ChromiumReleaseService";
@@ -45,7 +45,7 @@ export class UserAgentSettings {
     return UserAgentSettings.INSTANCE;
   }
 
-  private readonly _storage = new StorageItem<StorageType>(UserAgentSettings.STORAGE_KEY, {}, StorageArea.LOCAL);
+  private readonly _storage = new StorageItem<StorageType>(UserAgentSettings.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
   private _value: StorageType = {};
   private readonly _chromeReleaseService = ChromiumReleaseService.getInstance();
 

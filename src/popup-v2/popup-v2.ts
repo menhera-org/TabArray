@@ -46,7 +46,6 @@ import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
 import { UserContextSortingOrderStore } from "../userContexts/UserContextSortingOrderStore";
 import { config, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
-import { StorageArea } from "../frameworks/storage";
 import { MessagingService } from "../frameworks/extension/MessagingService";
 
 import { PopupRendererService } from "./PopupRendererService";
@@ -206,7 +205,7 @@ const initializeHelp = () => {
 };
 
 const setHelpShownOnce = () => {
-  config['help.shownOnce'].setValue(true, StorageArea.LOCAL).catch((e) => {
+  config['help.shownOnce'].setValue(true, 'local').catch((e) => {
     console.error(e);
   });
 };

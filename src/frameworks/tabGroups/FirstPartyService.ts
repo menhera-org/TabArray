@@ -19,12 +19,12 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { StorageItem } from "weeg-storage";
 import { OriginAttributes } from "./OriginAttributes";
 import { TabGroup } from "./TabGroup";
 import { HostnameService } from "weeg-domains";
 import { RegistrableDomainService } from "../dns";
 import { PromiseUtils } from "../utils";
-import { StorageArea, StorageItem } from '../storage';
 
 type PublicSuffixListData = {
   rules: string[];
@@ -47,7 +47,7 @@ export class FirstPartyService {
     exceptionRules: [],
     updatedTime: 0,
     initialized: false,
-  }, StorageArea.LOCAL);
+  }, StorageItem.AREA_LOCAL);
   private readonly initializationPromise = PromiseUtils.createPromise<void>();
   private updatedTime = -Infinity;
 

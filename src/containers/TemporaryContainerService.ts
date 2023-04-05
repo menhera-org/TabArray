@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { ContextualIdentity } from "../frameworks/tabAttributes";
-import { StorageItem, StorageArea } from "../frameworks/storage";
+import { StorageItem } from 'weeg-storage';
 
 export class TemporaryContainerService {
   private static readonly _INSTANCE = new TemporaryContainerService();
@@ -30,7 +30,7 @@ export class TemporaryContainerService {
     return this._INSTANCE;
   }
 
-  private readonly _temporaryContainerStorage = new StorageItem<string[]>('temporaryContainers', [], StorageArea.LOCAL);
+  private readonly _temporaryContainerStorage = new StorageItem<string[]>('temporaryContainers', [], StorageItem.AREA_LOCAL);
 
   private constructor() {
     // noop.
