@@ -25,7 +25,7 @@ import { Tab } from '../frameworks/tabs';
 import { PopupRenderer } from './PopupRenderer';
 import { FirstPartyService, FirstPartyUserContextList } from '../frameworks/tabGroups';
 import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
-import { HostnameService } from '../frameworks/dns';
+import { HostnameService } from 'weeg-domains';
 import { TabIconService } from '../modules/TabIconService';
 
 export class PopupSiteListRenderer {

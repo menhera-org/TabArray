@@ -23,7 +23,7 @@ import { StorageArea, StorageItem } from "../frameworks/storage";
 import { EventSink } from "../frameworks/utils";
 import { CookieProvider } from "../frameworks/cookies";
 import { FirstPartyService } from "../frameworks/tabGroups";
-import { HostnameService } from "../frameworks/dns";
+import { HostnameService } from "weeg-domains";
 import { ContextualIdentity } from "../frameworks/tabAttributes";
 
 export type OriginStorageStatistics = {

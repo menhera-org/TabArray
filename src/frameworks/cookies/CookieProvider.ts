@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { OriginAttributes } from '../tabGroups';
 import { FirstPartyService } from '../tabGroups';
-import { HostnameService } from '../dns';
+import { HostnameService } from 'weeg-domains';
 
 export class CookieProvider {
   private readonly _firstPartyService = FirstPartyService.getInstance();

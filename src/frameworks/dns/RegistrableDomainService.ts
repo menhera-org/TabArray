@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { HostnameService } from "./HostnameService";
+import { HostnameService } from "weeg-domains";
 
 /**
  * Rule updates are asynchronous, so if you try to access the rules too early,

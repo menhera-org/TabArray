@@ -13,7 +13,7 @@ module.exports = {
   devtool: 'source-map',
 
   resolve: {
-    extensions: ['.ts', '.d.ts', '.js'],
+    extensions: ['.ts', '.js'],
   },
 
   entry: {

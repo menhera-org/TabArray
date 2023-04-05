@@ -21,7 +21,7 @@
 
 import { OriginAttributes } from "./OriginAttributes";
 import { TabGroup } from "./TabGroup";
-import { HostnameService } from "../dns";
+import { HostnameService } from "weeg-domains";
 import { RegistrableDomainService } from "../dns";
 import { PromiseUtils } from "../utils";
 import { StorageArea, StorageItem } from '../storage';

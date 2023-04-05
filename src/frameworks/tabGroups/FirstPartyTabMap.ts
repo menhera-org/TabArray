@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { Tab } from "../tabs";
 import { UrlService } from '../dns';
-import { HostnameService } from '../dns';
+import { HostnameService } from 'weeg-domains';
 import { FirstPartyService } from './FirstPartyService';
 
 type ImplementedMap = ReadonlyMap<string, ReadonlyArray<Tab>>;

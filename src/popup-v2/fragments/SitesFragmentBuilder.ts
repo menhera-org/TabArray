@@ -25,7 +25,7 @@ import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { Tab } from "../../frameworks/tabs";
 import browser from "webextension-polyfill";
 import { MenulistSiteElement } from "../../components/menulist-site";
-import { HostnameService } from "../../frameworks/dns";
+import { HostnameService } from "weeg-domains";
 import { FirstPartyService } from "../../frameworks/tabGroups";
 import { EventSink } from "../../frameworks/utils";
 
