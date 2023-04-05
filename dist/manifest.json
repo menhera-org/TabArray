@@ -111,12 +111,6 @@
       },
       "description": "__MSG_menuItemSites__"
     },
-    "open_help_view": {
-      "suggested_key": {
-        "default": "Ctrl+Alt+4"
-      },
-      "description": "__MSG_menuItemHelp__"
-    },
     "open_settings_view": {
       "suggested_key": {
         "default": "Ctrl+Alt+5"

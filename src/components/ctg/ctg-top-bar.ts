@@ -137,6 +137,16 @@ export class CtgTopBarElement extends HTMLElement {
     drawerButton.iconSrc = src;
   }
 
+  public get drawerButtonText(): string {
+    const drawerButton = this.shadowRoot?.getElementById('drawer-button') as CtgMenuItemElement;
+    return drawerButton.labelText;
+  }
+
+  public set drawerButtonText(text: string) {
+    const drawerButton = this.shadowRoot?.getElementById('drawer-button') as CtgMenuItemElement;
+    drawerButton.labelText = text;
+  }
+
   public clearMenuItems() {
     for (const [, menuItem] of this._menuItems) {
       menuItem.remove();

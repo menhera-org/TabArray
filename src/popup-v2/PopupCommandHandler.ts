@@ -45,11 +45,6 @@ export class PopupCommandHandler {
             frameLayout.activateFragment('fragment-sites');
             break;
           }
-
-          case 'open_help_view': {
-            frameLayout.activateFragment('fragment-help');
-            break;
-          }
         }
       } catch (e) {
         console.error(e);

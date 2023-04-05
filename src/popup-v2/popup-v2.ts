@@ -70,17 +70,18 @@ document.title = browser.i18n.getMessage('browserActionPopupTitle');
 const globalMenuItems = new GlobalMenuItems();
 
 const drawerElement = document.querySelector('#drawer') as CtgDrawerElement;
-drawerElement.heading = extensionName;
+drawerElement.heading = browser.i18n.getMessage('menuItemHelp');
 drawerElement.hidden = true;
 
 const topBarElement = document.querySelector('#top-bar') as CtgTopBarElement;
 topBarElement.headingText = extensionName;
 topBarElement.onDrawerButtonClicked.addListener(() => {
-  drawerElement.hidden = false;
+  drawerElement.show();
 });
 
 // topBarElement.drawerButtonEnabled = false;
-topBarElement.drawerButtonIconSrc = '/img/shell.svg';
+topBarElement.drawerButtonIconSrc = '/img/firefox-icons/help.svg';
+topBarElement.drawerButtonText = browser.i18n.getMessage('menuItemHelp');
 
 const frameLayout = document.querySelector('#frame-layout') as CtgFrameLayoutElement;
 const bottomNavigationElement = document.querySelector('#bottom-navigation') as CtgBottomNavigationElement;
@@ -91,15 +92,22 @@ const fragments: CtgFragmentElement[] = [];
 const windowsBuilder = new WindowsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 const containersBuilder = new ContainersFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 const sitesBuilder = new SitesFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
-const helpBuilder = new HelpFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 
 const containerDetailsBuilder = new ContainerDetailsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 const siteDetailsBuilder = new SiteDetailsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 
+const helpBuilder = new HelpFragmentBuilder();
+drawerElement.appendChild(helpBuilder.getFragment());
+drawerElement.onShown.addListener(() => {
+  helpBuilder.getFragment().onActivated.dispatch();
+});
+drawerElement.onHidden.addListener(() => {
+  helpBuilder.getFragment().onDeactivated.dispatch();
+});
+
 fragments.push(windowsBuilder.getFragment());
 fragments.push(containersBuilder.getFragment());
 fragments.push(sitesBuilder.getFragment());
-fragments.push(helpBuilder.getFragment());
 fragments.push(containerDetailsBuilder.getFragment());
 fragments.push(siteDetailsBuilder.getFragment());
 
@@ -194,7 +202,7 @@ const helpFragment = helpBuilder.getFragment();
 let firstRun = false;
 config['help.shownOnce'].getValue().then((shownOnce) => {
   if (!shownOnce) {
-    frameLayout.activateFragment(helpFragment.id);
+    drawerElement.show();
     firstRun = true;
     initializeHelp();
   }
@@ -246,7 +254,7 @@ helpFragment.onDeactivated.addListener(() => {
 });
 
 helpBuilder.onGetStartedClicked.addListener(() => {
-  frameLayout.activateFragment(defaultFragment.id);
+  drawerElement.hide();
 });
 
 popupRenderer.modalRenderer.pushKeyHandlers(popupFocusHandlers.okHandler, popupFocusHandlers.cancelHandler, popupFocusHandlers.keyHandler);
@@ -256,7 +264,6 @@ popupCommandHandler.getCommands().then((commands) => {
   bottomNavigationElement.setTooltipForTarget('fragment-windows', commands.get('open_windows_view') ?? '');
   bottomNavigationElement.setTooltipForTarget('fragment-containers', commands.get('open_containers_view') ?? '');
   bottomNavigationElement.setTooltipForTarget('fragment-sites', commands.get('open_sites_view') ?? '');
-  bottomNavigationElement.setTooltipForTarget('fragment-help', commands.get('open_help_view') ?? '');
 });
 
 // render spinner

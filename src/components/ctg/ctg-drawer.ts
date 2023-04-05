@@ -19,7 +19,12 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { EventSink } from "weeg-events";
+
 export class CtgDrawerElement extends HTMLElement {
+  public readonly onShown = new EventSink<void>();
+  public readonly onHidden = new EventSink<void>();
+
   public constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -37,7 +42,7 @@ export class CtgDrawerElement extends HTMLElement {
     this.shadowRoot.appendChild(scrim);
 
     scrim.addEventListener('click', () => {
-      this.hidden = true;
+      this.hide();
     });
 
     const main = document.createElement('div');
@@ -53,7 +58,7 @@ export class CtgDrawerElement extends HTMLElement {
     header.appendChild(closeButton);
 
     closeButton.addEventListener('click', () => {
-      this.hidden = true;
+      this.hide();
     });
 
     const heading = document.createElement('h2');
@@ -81,6 +86,16 @@ export class CtgDrawerElement extends HTMLElement {
       return headingElement.textContent || '';
     }
     return '';
+  }
+
+  public show(): void {
+    this.hidden = false;
+    this.onShown.dispatch();
+  }
+
+  public hide(): void {
+    this.hidden = true;
+    this.onHidden.dispatch();
   }
 }
 

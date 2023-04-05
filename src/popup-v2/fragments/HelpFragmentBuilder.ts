@@ -19,21 +19,17 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
+import { SimpleFragmentBuilder } from "./SimpleFragmentBuilder";
 import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import browser from "webextension-polyfill";
-import { PopupUtils } from "../../popup/PopupUtils";
 import { HelpBannerElement } from "../../components/help-banner";
 import { EventSink } from "../../frameworks/utils";
 
-export class HelpFragmentBuilder extends AbstractFragmentBuilder {
+export class HelpFragmentBuilder extends SimpleFragmentBuilder {
   public readonly onFpiCheckedChanged = new EventSink<boolean>();
   public readonly onLanguageOverridesCheckedChanged = new EventSink<boolean>();
   public readonly onUaOverridesCheckedChanged = new EventSink<boolean>();
   public readonly onGetStartedClicked = new EventSink<void>();
-
-  private readonly _popupUtils = new PopupUtils();
 
   public getFragmentId(): string {
     return 'fragment-help';
@@ -139,13 +135,6 @@ export class HelpFragmentBuilder extends AbstractFragmentBuilder {
     });
 
     return fragment;
-  }
-
-  public renderTopBar(topBarElement: CtgTopBarElement): void {
-    topBarElement.clearMenuItems();
-    topBarElement.clearOverflowMenuItems();
-
-    topBarElement.headingText = this.getLabelText();
   }
 
   public get fpiChecked(): boolean {
