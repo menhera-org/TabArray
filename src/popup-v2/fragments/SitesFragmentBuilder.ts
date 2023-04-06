@@ -19,22 +19,22 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from "webextension-polyfill";
+import { EventSink } from "weeg-events";
+import { CompatTabGroup, DomainTabGroupFilter } from 'weeg-tabs';
+import { HostnameService } from "weeg-domains";
+
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { Tab } from "../../frameworks/tabs";
-import browser from "webextension-polyfill";
 import { MenulistSiteElement } from "../../components/menulist-site";
-import { HostnameService } from "weeg-domains";
-import { FirstPartyService } from "../../frameworks/tabGroups";
-import { EventSink } from "weeg-events";
 
 export class SitesFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onSiteClicked = new EventSink<string>();
 
   private _siteCount = 0;
   private readonly _hostnameService = HostnameService.getInstance();
-  private readonly _firstPartyService = FirstPartyService.getInstance();
 
   public getFragmentId(): string {
     return 'fragment-sites';
@@ -84,8 +84,12 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
         this.onSiteClicked.dispatch(domain);
       });
 
-      siteElement.onSiteCloseClicked.addListener(() => {
-        FirstPartyService.getInstance().closeTabsByFirstPartyDomain(domain).catch((e) => {
+      siteElement.onSiteCloseClicked.addListener(async () => {
+        const siteDomain = domain;
+        const tabGroup = new CompatTabGroup(new DomainTabGroupFilter(siteDomain));
+        const tabs = await tabGroup.getTabs();
+        const tabIds = tabs.map((tab) => tab.id);
+        browser.tabs.remove(tabIds).catch((e) => {
           console.error(e);
         });
       });

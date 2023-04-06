@@ -20,12 +20,14 @@
 */
 
 import browser from 'webextension-polyfill';
+import { HostnameService } from 'weeg-domains';
+import { CompatTabGroup, DomainTabGroupFilter } from 'weeg-tabs';
+
 import { MenulistSiteButtonElement } from '../components/menulist-site-button';
 import { Tab } from '../frameworks/tabs';
 import { PopupRenderer } from './PopupRenderer';
-import { FirstPartyService, FirstPartyUserContextList } from '../frameworks/tabGroups';
+import { FirstPartyUserContextList } from '../frameworks/tabGroups';
 import { BrowserStateSnapshot } from '../frameworks/tabs/BrowserStateSnapshot';
-import { HostnameService } from 'weeg-domains';
 import { TabIconService } from '../modules/TabIconService';
 
 export class PopupSiteListRenderer {
@@ -41,8 +43,11 @@ export class PopupSiteListRenderer {
     const siteButton = new MenulistSiteButtonElement();
     siteButton.tabCountString = String(tabs.length);
     siteButton.siteDomain = siteDomain || '(null)';
-    siteButton.onCloseClicked.addListener(() => {
-      FirstPartyService.getInstance().closeTabsByFirstPartyDomain(siteDomain).catch((e) => {
+    siteButton.onCloseClicked.addListener(async () => {
+      const tabGroup = new CompatTabGroup(new DomainTabGroupFilter(siteDomain));
+      const tabs = await tabGroup.getTabs();
+      const tabIds = tabs.map((tab) => tab.id);
+      browser.tabs.remove(tabIds).catch((e) => {
         console.error(e);
       });
     });
