@@ -19,6 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { CompatTab } from "weeg-tabs";
 import { OriginAttributes } from "../tabGroups";
 import browser from 'webextension-polyfill';
 import { Uint32 } from "../types";
@@ -51,7 +52,7 @@ export class Tab {
     return isPrivate ? "firefox-private" : "firefox-default";
   }
 
-  public constructor(browserTab: browser.Tabs.Tab) {
+  public constructor(browserTab: browser.Tabs.Tab | CompatTab) {
     if (browserTab.id === undefined) {
       throw new Error("Tab ID is undefined");
     }
@@ -65,15 +66,24 @@ export class Tab {
     this.hidden = browserTab.hidden ?? false;
     this.active = browserTab.active;
     this.pinned = browserTab.pinned;
-    this.muted = browserTab.mutedInfo?.muted ?? false;
+
     this.lastAccessed = browserTab.lastAccessed ?? 0;
-    if (browserTab.sharingState !== undefined) {
-      this.isSharing = this.checkSharingState(browserTab.sharingState);
+
+    if (browserTab instanceof CompatTab) {
+      this.muted = browserTab.muted;
+      this.isSharing = browserTab.isSharing;
+      const cookieStoreId = browserTab.cookieStore.id;
+      this.originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId, this.url);
     } else {
-      this.isSharing = false;
+      this.muted = browserTab.mutedInfo?.muted ?? false;
+      if (browserTab.sharingState !== undefined) {
+        this.isSharing = this.checkSharingState(browserTab.sharingState);
+      } else {
+        this.isSharing = false;
+      }
+      const cookieStoreId = browserTab.cookieStoreId ?? Tab.getDefaultCookieStoreId(browserTab.incognito);
+      this.originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId, this.url);
     }
-    const cookieStoreId = browserTab.cookieStoreId ?? Tab.getDefaultCookieStoreId(browserTab.incognito);
-    this.originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId, this.url);
   }
 
   private checkSharingState(sharingState: browser.Tabs.SharingState): boolean {
