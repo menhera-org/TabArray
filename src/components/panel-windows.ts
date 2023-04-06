@@ -360,6 +360,7 @@ export class PanelWindowsElement extends HTMLElement {
     if (isPrivate) {
       userContexts = userContexts.filter((userContext) => userContext.id == 0);
     }
+    const allUserContexts = userContexts;
     const searchWords = searchString.split(/\s+/u);
     let tabs = [... windowStateSnapshot.tabs];
     for (const searchWord of searchWords) {
@@ -377,7 +378,7 @@ export class PanelWindowsElement extends HTMLElement {
     userContexts = this._userContextSortingOrderStore.sort(userContexts);
 
     const userContextMap = new Map<Uint32.Uint32, UserContext>();
-    for (const userContext of userContexts) {
+    for (const userContext of allUserContexts) {
       userContextMap.set(userContext.id, userContext);
     }
 
