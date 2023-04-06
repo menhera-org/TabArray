@@ -28,7 +28,6 @@ import { Uint32 } from "weeg-types";
 import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from "../userContexts/UserContextVisibilityService";
 import { TemporaryContainerService } from "../containers/TemporaryContainerService";
-import { UserContextSortingOrderStore } from "../userContexts/UserContextSortingOrderStore";
 import { PopupRendererService } from "../popup-v2/PopupRendererService";
 
 export class PanelWindowsElement extends HTMLElement {
@@ -42,7 +41,6 @@ export class PanelWindowsElement extends HTMLElement {
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
   private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
-  private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
   private _isSearching = false;
   private _browserStateSnapshot: BrowserStateSnapshot | null = null;
   private _searchString = '';
@@ -354,13 +352,14 @@ export class PanelWindowsElement extends HTMLElement {
     searchResultsTabsElement.textContent = '';
 
     if (!this._browserStateSnapshot) return;
+    const tabGroupDirectorySnapshot = this._browserStateSnapshot.getTabGroupDirectorySnapshot();
     const windowStateSnapshot = this._browserStateSnapshot.getWindowStateSnapshot(this._selectedWindowId);
     const isPrivate = windowStateSnapshot.isPrivate;
     let userContexts = [... this._browserStateSnapshot.getDefinedUserContexts()];
     if (isPrivate) {
       userContexts = userContexts.filter((userContext) => userContext.id == 0);
     }
-    const allUserContexts = userContexts;
+    const allUserContexts = [... userContexts];
     const searchWords = searchString.split(/\s+/u);
     let tabs = [... windowStateSnapshot.tabs];
     for (const searchWord of searchWords) {
@@ -372,10 +371,13 @@ export class PanelWindowsElement extends HTMLElement {
           || tab.url.toLowerCase().includes(searchWord.toLowerCase());
       });
     }
+
     tabs.sort((a, b) => {
       return a.index - b.index;
     });
-    userContexts = this._userContextSortingOrderStore.sort(userContexts);
+    userContexts.sort((a, b) => {
+      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+    });
 
     const userContextMap = new Map<Uint32.Uint32, UserContext>();
     for (const userContext of allUserContexts) {
