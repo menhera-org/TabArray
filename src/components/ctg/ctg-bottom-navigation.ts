@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EventSink } from "../../frameworks/utils";
+import { EventSink } from "weeg-events";
 
 export class CtgBottomNavigationElement extends HTMLElement {
   public readonly onTargetClicked = new EventSink<string>();

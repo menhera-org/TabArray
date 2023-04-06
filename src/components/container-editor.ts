@@ -21,10 +21,10 @@
 
 import browser from 'webextension-polyfill';
 import { MessagingService } from 'weeg-utils';
+import { EventSink } from 'weeg-events';
 import { ContainerAttributes } from '../frameworks/tabAttributes';
 import { ColorPickerElement } from './usercontext-colorpicker';
 import { IconPickerElement } from './usercontext-iconpicker';
-import { EventSink } from '../frameworks/utils';
 
 export type EditorMode = 'create' | 'edit';
 

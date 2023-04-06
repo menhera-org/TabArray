@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EventSink } from "../../frameworks/utils";
+import { EventSink } from "weeg-events";
 import { AbstractFragmentBuilder } from "../../popup-v2/fragments/AbstractFragmentBuilder";
 
 export class CtgFragmentElement extends HTMLElement {

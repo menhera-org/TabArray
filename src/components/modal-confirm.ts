@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { EventSink } from '../frameworks/utils';
+import { EventSink } from "weeg-events";
 
 export class ModalConfirmElement extends HTMLElement {
   public readonly onCancel = new EventSink<void>();

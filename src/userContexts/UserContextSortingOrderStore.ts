@@ -25,7 +25,7 @@ import { PromiseUtils } from 'weeg-utils';
 import { Uint32 } from '../frameworks/types';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextSortingProvider } from '../frameworks/tabGroups';
-import { EventSink } from '../frameworks/utils';
+import { EventSink } from "weeg-events";
 
 export class UserContextSortingOrderStore {
   private static readonly STORAGE_KEY = 'userContextSortingOrder';

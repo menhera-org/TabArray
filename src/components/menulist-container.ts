@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
-import { EventSink } from '../frameworks/utils';
+import { EventSink } from "weeg-events";
 
 export class MenulistContainerElement extends HTMLElement {
   public partialContainerView = false;

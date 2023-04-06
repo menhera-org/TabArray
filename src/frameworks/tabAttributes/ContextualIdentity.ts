@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 import { ContextualIdentityParams } from "./ContextualIdentityParams";
 import { ContextualIdentityUniqueParams } from "./ContextualIdentityUniqueParams";
 import { CookieStore } from "./CookieStore";
-import { EventSink } from '../utils';
+import { EventSink } from "weeg-events";
 
 export class ContextualIdentity extends CookieStore implements ContextualIdentityParams {
   public static readonly onCreated = new EventSink<ContextualIdentity>();

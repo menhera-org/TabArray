@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { EventSink } from '../frameworks/utils';
+import { EventSink } from "weeg-events";
 
 export class MenulistWindowElement extends HTMLElement {
   private _nameElement: HTMLDivElement;

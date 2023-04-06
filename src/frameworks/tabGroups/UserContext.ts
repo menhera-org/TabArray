@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { Uint32 } from '../types';
-import { EventSink } from '../utils';
+import { EventSink } from "weeg-events";
 import { OriginAttributes } from './OriginAttributes';
 import { TabGroup } from './TabGroup';
 import { ContainerAttributes } from '../tabAttributes';

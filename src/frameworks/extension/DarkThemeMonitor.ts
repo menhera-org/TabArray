@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EventSink } from "../utils";
+import { EventSink } from "weeg-events";
 
 export class DarkThemeMonitor {
   private _matchedMedia = window.matchMedia("(prefers-color-scheme: dark)");

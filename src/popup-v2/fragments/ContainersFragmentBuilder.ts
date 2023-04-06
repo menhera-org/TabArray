@@ -28,7 +28,7 @@ import { ContainersStateSnapshot } from "../../frameworks/tabs/ContainersStateSn
 import { PopupRendererService } from "../PopupRendererService";
 import { OriginAttributes, TabGroup, UserContext } from "../../frameworks/tabGroups";
 import { UserContextSortingOrderStore } from "../../userContexts/UserContextSortingOrderStore";
-import { EventSink } from "../../frameworks/utils";
+import { EventSink } from "weeg-events";
 import { TemporaryContainerService } from "../../containers/TemporaryContainerService";
 
 export class ContainersFragmentBuilder extends AbstractFragmentBuilder {

@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
 import { Uint32 } from '../frameworks/types';
-import { EventSink } from '../frameworks/utils';
+import { EventSink } from "weeg-events";
 
 /**
  * You must set tabCount to an appropriate value.

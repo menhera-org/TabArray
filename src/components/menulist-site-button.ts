@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EventSink } from '../frameworks/utils';
+import { EventSink } from "weeg-events";
 
 export class MenulistSiteButtonElement extends HTMLButtonElement {
   private readonly _buttonTextElement: HTMLSpanElement;

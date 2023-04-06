@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 import { Theme } from './Theme';
 import { DarkThemeMonitor } from '../extension';
 import { CssColor, Srgb } from '../colors';
-import { EventSink } from '../utils';
+import { EventSink } from "weeg-events";
 
 export class ThemeService {
   private static readonly INSTANCE = new ThemeService();

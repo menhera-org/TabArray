@@ -20,8 +20,9 @@
 */
 
 import browser from 'webextension-polyfill';
+import { EventSink } from "weeg-events";
+
 import { UserContext } from "../frameworks/tabGroups";
-import { EventSink } from "../frameworks/utils";
 import { Uint32 } from "../frameworks/types";
 import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
 import { LanguageSettings } from '../languages/LanguageSettings';

@@ -20,7 +20,7 @@
 */
 
 import { StorageItem } from "weeg-storage";
-import { EventSink } from "../frameworks/utils";
+import { EventSink } from "weeg-events";
 import { OriginAttributes } from "../frameworks/tabGroups";
 
 type StorageType = {

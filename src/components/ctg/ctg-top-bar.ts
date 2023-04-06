@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EventSink } from "../../frameworks/utils";
+import { EventSink } from "weeg-events";
 import { CtgMenuItemElement } from "./ctg-menu-item";
 
 export class CtgTopBarElement extends HTMLElement {

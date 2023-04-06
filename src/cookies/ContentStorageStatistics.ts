@@ -20,7 +20,7 @@
 */
 
 import { StorageItem } from "weeg-storage";
-import { EventSink } from "../frameworks/utils";
+import { EventSink } from "weeg-events";
 import { CookieProvider } from "../frameworks/cookies";
 import { HostnameService, RegistrableDomainService } from "weeg-domains";
 import { ContextualIdentity } from "../frameworks/tabAttributes";

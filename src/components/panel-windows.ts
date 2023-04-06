@@ -20,7 +20,7 @@
 */
 
 import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
-import { EventSink } from "../frameworks/utils";
+import { EventSink } from "weeg-events";
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";

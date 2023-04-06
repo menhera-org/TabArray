@@ -27,7 +27,7 @@ import browser from "webextension-polyfill";
 import { MenulistSiteElement } from "../../components/menulist-site";
 import { HostnameService } from "weeg-domains";
 import { FirstPartyService } from "../../frameworks/tabGroups";
-import { EventSink } from "../../frameworks/utils";
+import { EventSink } from "weeg-events";
 
 export class SitesFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onSiteClicked = new EventSink<string>();

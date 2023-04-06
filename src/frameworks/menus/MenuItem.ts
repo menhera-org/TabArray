@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { EventSink } from '../utils';
+import { EventSink } from "weeg-events";
 import { Tab } from '../tabs';
 
 export type OnClickData = browser.Menus.OnClickData & {
