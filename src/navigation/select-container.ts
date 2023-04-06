@@ -20,13 +20,14 @@
 */
 
 import browser from 'webextension-polyfill';
+import { ExtensionService } from 'weeg-utils';
+
 import * as i18n from '../modules/i18n';
 import { Tab } from '../frameworks/tabs';
 import { config } from '../config/config';
 import { UserContext } from '../frameworks/tabGroups';
 import * as containers from '../modules/containers';
 import { UserContextService } from '../userContexts/UserContextService';
-import { ExtensionService } from '../frameworks/extension';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { ContainerEditorElement } from '../components/container-editor';

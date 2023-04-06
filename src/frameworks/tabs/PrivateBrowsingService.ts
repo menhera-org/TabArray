@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { ExtensionService } from '../extension';
+import { ExtensionService } from 'weeg-utils';
 import { WindowService } from './WindowService';
 import { Tab } from './Tab';
 

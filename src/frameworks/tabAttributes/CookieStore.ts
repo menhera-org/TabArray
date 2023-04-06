@@ -19,9 +19,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { ExtensionService } from "weeg-utils";
 import { Uint32 } from "../types";
 import { CookieStoreParams } from "./CookieStoreParams";
-import { ExtensionService } from "../extension";
 
 const contextualIdentityPromise = import('./ContextualIdentity');
 

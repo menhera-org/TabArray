@@ -19,9 +19,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { ExtensionService } from "weeg-utils";
 import { OriginAttributes } from "./OriginAttributes"
 import { UserContext } from "./UserContext";
-import { ExtensionService } from "../extension";
 
 export class CookieStoreSet {
   private readonly _extensionService = ExtensionService.getInstance();

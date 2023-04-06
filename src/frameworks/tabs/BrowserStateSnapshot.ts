@@ -20,12 +20,13 @@
 */
 
 import browser from 'webextension-polyfill';
+import { ExtensionService } from 'weeg-utils';
+
 import { UserContext } from '../tabGroups';
 import { Tab } from './Tab';
 import { WindowStateSnapshot } from './WindowStateSnapshot';
 import { FirstPartyService } from '../tabGroups';
 import { ContainerAttributes, ContextualIdentity, CookieStore } from '../tabAttributes';
-import { ExtensionService } from '../extension';
 import { SetMap } from '../types';
 import { ContainersStateSnapshot } from './ContainersStateSnapshot';
 
