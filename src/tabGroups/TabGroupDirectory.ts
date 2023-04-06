@@ -23,7 +23,9 @@ import { StorageItem } from "weeg-storage";
 import { CookieStore } from "weeg-containers";
 import { EventSink } from "weeg-events";
 import { Uint32 } from "weeg-types";
+import { CompatTab } from "weeg-tabs";
 
+import { IndexTab } from "../modules/IndexTab";
 import { UserContextSortingOrderStore } from "../userContexts/UserContextSortingOrderStore";
 import { TabGroupAttributes } from "./TabGroupAttributes";
 
@@ -50,6 +52,7 @@ export class TabGroupDirectory {
 
   public constructor() {
     this.storage.onChanged.addListener(() => this.onChanged.dispatch());
+    this.userContextSortingOrderStore.onChanged.addListener(() => this.onChanged.dispatch());
   }
 
   public getRootSupergroupId(): string {
@@ -103,7 +106,7 @@ export class TabGroupDirectory {
           break;
         }
       }
-      if (!found) {
+      if (!found && definedSupergroupId != rootSupergroupId) {
         rootSupergroup.members.push(definedSupergroupId);
       }
     }
@@ -177,5 +180,43 @@ export class TabGroupDirectory {
     currentParentSupergroup.members = currentParentSupergroup.members.filter((memberTabGroupId) => memberTabGroupId !== tabGroupId);
     parentSupergroup.members.push(tabGroupId);
     await this.setValue(value);
+  }
+
+  public async getContainerOrder(tabGroupId = this.getRootSupergroupId()): Promise<string[]> {
+    const value = await this.getValue();
+    const supergroup = value[tabGroupId] as SupergroupType;
+    if (!supergroup) return [];
+    const tabGroupIds: string[] = [];
+    for (const memberTabGroupId of supergroup.members) {
+      const attributes = new TabGroupAttributes(memberTabGroupId);
+      if (attributes.tabGroupType == 'cookieStore') {
+        tabGroupIds.push(memberTabGroupId);
+      } else {
+        tabGroupIds.push(...await this.getContainerOrder(memberTabGroupId));
+      }
+    }
+    return tabGroupIds;
+  }
+
+  public async sortTabs(tabs: Iterable<CompatTab>): Promise<CompatTab[]> {
+    const tabGroupIds = await this.getContainerOrder();
+    const tabArray = [... tabs];
+    tabArray.sort((a, b) => {
+      const aIndex = tabGroupIds.indexOf(a.cookieStore.id);
+      const bIndex = tabGroupIds.indexOf(b.cookieStore.id);
+      if (aIndex != bIndex) {
+        if (aIndex == -1) return 1;
+        if (bIndex == -1) return -1;
+      } else {
+        if (IndexTab.isIndexTabUrl(a.url)) {
+          return -1;
+        }
+        if (IndexTab.isIndexTabUrl(b.url)) {
+          return 1;
+        }
+      }
+      return aIndex - bIndex;
+    });
+    return tabArray;
   }
 }

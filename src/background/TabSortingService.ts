@@ -22,46 +22,27 @@
 import { diffArrays } from 'diff';
 import browser from 'webextension-polyfill';
 import { MessagingService } from 'weeg-utils';
-import { PromiseUtils } from 'weeg-utils';
+import { CompatTab } from 'weeg-tabs';
 
-import { Tab } from '../frameworks/tabs';
+import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
 import { getWindowIds } from '../modules/windows';
-import { IndexTab } from '../modules/IndexTab';
-import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { config } from '../config/config';
 
-const TAB_MOVE_TIMEOUT = 60000;
-
-const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+const tabGroupDirectory = new TabGroupDirectory();
 const messagingService = MessagingService.getInstance();
 
 let tabSorting = false;
-
-const tabSortingCallback = (tab1: Tab, tab2: Tab) => {
-  const userContextId1 = tab1.userContextId;
-  const userContextId2 = tab2.userContextId;
-  const order = userContextSortingOrderStore.sortingCallback(userContextId1, userContextId2);
-  if (order == 0) {
-    if (IndexTab.isIndexTabUrl(tab1.url)) {
-      return -1;
-    }
-    if (IndexTab.isIndexTabUrl(tab2.url)) {
-      return 1;
-    }
-  }
-  return order;
-};
 
 // https://qiita.com/piroor/items/5e338ec2799dc1d75e6f
 const sortTabsByWindow = async (windowId: number) => {
   try {
     const browserTabs = await browser.tabs.query({windowId: windowId});
-    const tabs = browserTabs.map((tab) => new Tab(tab));
+    const tabs = browserTabs.map((tab) => new CompatTab(tab));
     const pinnedTabs = tabs.filter(tab => tab.pinned);
-    const sortedTabs = tabs.filter(tab => !tab.pinned);
+    let sortedTabs = tabs.filter(tab => !tab.pinned);
 
     const origTabIdList = sortedTabs.map(tab => tab.id);
-    sortedTabs.sort(tabSortingCallback);
+    sortedTabs = await tabGroupDirectory.sortTabs(sortedTabs);
     const targetTabIdList = sortedTabs.map(tab => tab.id);
 
     const diffs = diffArrays(origTabIdList, targetTabIdList);
@@ -85,7 +66,7 @@ const sortTabsByWindow = async (windowId: number) => {
       }
       const targetIndex = pinnedCount + newIndex;
 
-      promises.push(PromiseUtils.timeout(browser.tabs.move(movingIds, {index: targetIndex}), TAB_MOVE_TIMEOUT));
+      promises.push(browser.tabs.move(movingIds, {index: targetIndex}));
 
       currentIds = currentIds.filter(id => !movingIds.includes(id));
       currentIds.splice(newIndex, 0, ...movingIds);
@@ -135,7 +116,7 @@ const sortTabs = async () => {
   }
 };
 
-userContextSortingOrderStore.onChanged.addListener(sortTabs);
+tabGroupDirectory.onChanged.addListener(sortTabs);
 
 export class TabSortingService {
   private static readonly INSTANCE = new TabSortingService();
