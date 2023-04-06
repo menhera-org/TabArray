@@ -21,7 +21,7 @@
 
 import browser from "webextension-polyfill";
 import { MessagingService } from "weeg-utils";
-import { Uint32 } from "weeg-types";
+import { Uint32, SetMap } from "weeg-types";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
@@ -30,7 +30,6 @@ import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
 import { UserContext } from "../../frameworks/tabGroups";
 import { Tab } from "../../frameworks/tabs";
-import { SetMap } from "../../frameworks/types";
 import { UserContextSortingOrderStore } from "../../userContexts/UserContextSortingOrderStore";
 
 export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {

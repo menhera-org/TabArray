@@ -21,13 +21,13 @@
 
 import browser from 'webextension-polyfill';
 import { ExtensionService } from 'weeg-utils';
+import { SetMap } from 'weeg-types';
 
 import { UserContext } from '../tabGroups';
 import { Tab } from './Tab';
 import { WindowStateSnapshot } from './WindowStateSnapshot';
 import { FirstPartyService } from '../tabGroups';
 import { ContainerAttributes, ContextualIdentity, CookieStore } from '../tabAttributes';
-import { SetMap } from '../types';
 import { ContainersStateSnapshot } from './ContainersStateSnapshot';
 
 const firstPartyService = FirstPartyService.getInstance();

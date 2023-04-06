@@ -21,7 +21,6 @@
 
 export * as config from './config';
 export * as dns from './dns';
-export * as types from './types';
 export * as tabGroups from './tabGroups';
 export * as tabs from './tabs';
 export * as extension from './extension';
