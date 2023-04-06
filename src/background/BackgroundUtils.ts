@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
 
-import { Uint32 } from '../frameworks/types';
+import { Uint32 } from "weeg-types";
 import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 

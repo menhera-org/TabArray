@@ -22,7 +22,7 @@
 import { CompatTab } from "weeg-tabs";
 import { OriginAttributes } from "../tabGroups";
 import browser from 'webextension-polyfill';
-import { Uint32 } from "../types";
+import { Uint32 } from "weeg-types";
 
 /**
  * Thin wrapper around browser.tabs

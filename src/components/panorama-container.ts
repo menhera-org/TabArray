@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
-import { Uint32 } from '../frameworks/types';
+import { Uint32 } from "weeg-types";
 import { EventSink } from "weeg-events";
 
 /**

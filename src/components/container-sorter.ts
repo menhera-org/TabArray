@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { EventSink } from "weeg-events";
 import { UserContext } from "../frameworks/tabGroups";
-import { Uint32 } from "../frameworks/types";
+import { Uint32 } from "weeg-types";
 import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
 import { LanguageSettings } from '../languages/LanguageSettings';
 

@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { config } from '../config/config';
-import { Uint32 } from '../frameworks/types';
+import { Uint32 } from "weeg-types";
 import { WindowUserContextVisibilityHelper } from './WindowUserContextVisibilityHelper';
 import { IndexTab } from '../modules/IndexTab';
 import { UserContext } from '../frameworks/tabGroups';

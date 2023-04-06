@@ -21,7 +21,7 @@
 
 import { UserContext } from "./UserContext";
 import { OriginAttributes } from "./OriginAttributes";
-import { Uint32 } from "../types";
+import { Uint32 } from "weeg-types";
 import { TabGroup } from "./TabGroup";
 
 export class TabGroupService {

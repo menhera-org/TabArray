@@ -34,7 +34,7 @@ import { IndexTab } from "../modules/IndexTab";
 import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";
 import { PopupWindowListRenderer } from "./PopupWindowListRenderer";
 import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
-import { Uint32 } from "../frameworks/types";
+import { Uint32 } from "weeg-types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { PopupModalRenderer } from './PopupModalRenderer';
 

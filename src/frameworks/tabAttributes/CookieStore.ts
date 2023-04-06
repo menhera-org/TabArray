@@ -20,7 +20,7 @@
 */
 
 import { ExtensionService } from "weeg-utils";
-import { Uint32 } from "../types";
+import { Uint32 } from "weeg-types";
 import { CookieStoreParams } from "./CookieStoreParams";
 
 const contextualIdentityPromise = import('./ContextualIdentity');

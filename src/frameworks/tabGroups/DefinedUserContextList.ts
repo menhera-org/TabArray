@@ -1,7 +1,7 @@
 // -*- indent-tabs-mode: nil; tab-width: 2; -*-
 // vim: set ts=2 sw=2 et ai :
 
-import { Uint32 } from "../types";
+import { Uint32 } from "weeg-types";
 import { UserContext } from "./UserContext";
 
 /*

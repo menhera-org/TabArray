@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { Uint32 } from '../types';
+import { Uint32 } from "weeg-types";
 import { Tab } from '../tabs';
 import { UserContext } from './UserContext';
 import { DefinedUserContextList } from './DefinedUserContextList';

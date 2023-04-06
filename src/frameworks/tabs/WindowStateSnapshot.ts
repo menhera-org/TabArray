@@ -20,7 +20,7 @@
 */
 
 import { Tab } from "./Tab";
-import { Uint32 } from "../types";
+import { Uint32 } from "weeg-types";
 
 export class WindowStateSnapshot {
   public readonly id: number;

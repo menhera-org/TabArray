@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { Uint32 } from '../frameworks/types';
+import { Uint32 } from "weeg-types";
 import { Tab } from '../frameworks/tabs';
 import { IndexTab } from '../modules/IndexTab';
 

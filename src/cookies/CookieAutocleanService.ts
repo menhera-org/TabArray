@@ -20,7 +20,7 @@
 */
 
 import { StorageItem } from "weeg-storage";
-import { Uint32 } from "../frameworks/types";
+import { Uint32 } from "weeg-types";
 
 export class CookieAutocleanService {
   private static readonly STORAGE_KEY = 'cookies.autoclean.enabledUserContexts';

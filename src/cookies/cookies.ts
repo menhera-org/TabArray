@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { OriginAttributes } from '../frameworks/tabGroups';
 import { UserContext } from '../frameworks/tabGroups';
-import { Uint32 } from '../frameworks/types';
+import { Uint32 } from "weeg-types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';

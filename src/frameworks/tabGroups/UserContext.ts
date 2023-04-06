@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { Uint32 } from '../types';
+import { Uint32 } from "weeg-types";
 import { EventSink } from "weeg-events";
 import { OriginAttributes } from './OriginAttributes';
 import { TabGroup } from './TabGroup';

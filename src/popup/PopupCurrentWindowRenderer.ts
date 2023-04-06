@@ -27,7 +27,7 @@ import { UserContextVisibilityService } from '../userContexts/UserContextVisibil
 import { OriginAttributes, UserContext, TabGroup } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { WindowStateSnapshot } from '../frameworks/tabs/WindowStateSnapshot';
-import { Uint32 } from '../frameworks/types';
+import { Uint32 } from "weeg-types";
 
 export class PopupCurrentWindowRenderer {
   private readonly popupRenderer: PopupRenderer;

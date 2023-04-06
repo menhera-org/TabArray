@@ -22,7 +22,7 @@ import { MessagingService, ExtensionService } from 'weeg-utils';
 
 import { ContainerAttributes, ContextualIdentity, CookieStore } from '../frameworks/tabAttributes';
 import { UserContext } from '../frameworks/tabGroups';
-import { Uint32 } from '../frameworks/types';
+import { Uint32 } from "weeg-types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 

@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Uint32 } from "../types";
+import { Uint32 } from "weeg-types";
 
 export interface CookieStoreParams {
   readonly userContextId: Uint32.Uint32;

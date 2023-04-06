@@ -22,7 +22,7 @@ import { setActiveUserContext } from './usercontext-state.js';
 import { UserContext } from '../frameworks/tabGroups';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
-import { Uint32 } from '../frameworks/types';
+import { Uint32 } from "weeg-types";
 import { WindowService } from '../frameworks/tabs/WindowService';
 
 const tabGroupService = TabGroupService.getInstance();

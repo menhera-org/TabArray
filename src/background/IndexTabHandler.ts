@@ -29,7 +29,7 @@ import { Tab } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { config } from '../config/config';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
-import { Uint32 } from '../frameworks/types';
+import { Uint32 } from "weeg-types";
 import { InitialWindowsService } from './InitialWindowsService';
 
 const tabGroupService = TabGroupService.getInstance();

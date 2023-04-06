@@ -24,7 +24,7 @@ import { EventSink } from "weeg-events";
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
-import { Uint32 } from "../frameworks/types";
+import { Uint32 } from "weeg-types";
 import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from "../userContexts/UserContextVisibilityService";
 import { TemporaryContainerService } from "../containers/TemporaryContainerService";
