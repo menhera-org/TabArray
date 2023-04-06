@@ -20,8 +20,8 @@
 */
 
 import browser from 'webextension-polyfill';
+import { MessagingService } from 'weeg-utils';
 import { CookieStore, ContextualIdentity } from '../frameworks/tabAttributes';
-import { MessagingService } from '../frameworks/extension/MessagingService';
 
 const messagingService = MessagingService.getInstance();
 

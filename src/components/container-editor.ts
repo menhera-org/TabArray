@@ -20,11 +20,11 @@
 */
 
 import browser from 'webextension-polyfill';
+import { MessagingService } from 'weeg-utils';
 import { ContainerAttributes } from '../frameworks/tabAttributes';
 import { ColorPickerElement } from './usercontext-colorpicker';
 import { IconPickerElement } from './usercontext-iconpicker';
 import { EventSink } from '../frameworks/utils';
-import { MessagingService } from '../frameworks/extension/MessagingService';
 
 export type EditorMode = 'create' | 'edit';
 

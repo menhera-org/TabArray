@@ -18,13 +18,13 @@
 */
 
 import browser from 'webextension-polyfill';
+import { MessagingService } from 'weeg-utils';
 import { ContainerAttributes, ContextualIdentity, CookieStore } from '../frameworks/tabAttributes';
 import { UserContext } from '../frameworks/tabGroups';
 import { Uint32 } from '../frameworks/types';
 import { UserContextService } from '../userContexts/UserContextService';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { ExtensionService } from '../frameworks/extension';
-import { MessagingService } from '../frameworks/extension/MessagingService';
 
 type ContainerInfo = {
   cookieStoreId: string;

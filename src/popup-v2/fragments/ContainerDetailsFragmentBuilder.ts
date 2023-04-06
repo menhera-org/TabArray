@@ -19,17 +19,17 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from "webextension-polyfill";
+import { MessagingService } from "weeg-utils";
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../components/ctg/ctg-menu-item";
-import browser from "webextension-polyfill";
 import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
 import { ContainerAttributes, CookieStore } from "../../frameworks/tabAttributes";
 import { UserContext } from "../../frameworks/tabGroups";
 import { MenulistWindowElement } from "../../components/menulist-window";
-import { MessagingService } from "../../frameworks/extension/MessagingService";
 
 export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;

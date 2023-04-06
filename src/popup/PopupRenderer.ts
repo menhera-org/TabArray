@@ -19,6 +19,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from 'webextension-polyfill';
+import { MessagingService } from 'weeg-utils';
+
 import { Tab } from "../frameworks/tabs";
 import { UserContext } from "../frameworks/tabGroups";
 import { MenulistTabElement } from "../components/menulist-tab";
@@ -34,8 +37,6 @@ import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
 import { Uint32 } from "../frameworks/types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { PopupModalRenderer } from './PopupModalRenderer';
-import { MessagingService } from "../frameworks/extension/MessagingService";
-import browser from 'webextension-polyfill';
 
 enum ContainerTabsState {
   NO_TABS,

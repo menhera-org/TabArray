@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { MessagingService } from '../frameworks/extension/MessagingService';
+import { MessagingService } from 'weeg-utils';
 
 const messagingService = MessagingService.getInstance();
 const shadows = new WeakMap;

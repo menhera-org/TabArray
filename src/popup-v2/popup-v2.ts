@@ -19,6 +19,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from "webextension-polyfill";
+import { MessagingService } from "weeg-utils";
+
 import "../components/ctg/ctg-vertical-layout";
 import "../components/ctg/ctg-drawer";
 import "../components/ctg/ctg-top-bar";
@@ -31,7 +34,7 @@ import { CtgTopBarElement } from "../components/ctg/ctg-top-bar";
 import { CtgFrameLayoutElement } from "../components/ctg/ctg-frame-layout";
 import { CtgBottomNavigationElement } from "../components/ctg/ctg-bottom-navigation";
 import { CtgFragmentElement } from "../components/ctg/ctg-fragment";
-import browser from "webextension-polyfill";
+
 import { GlobalMenuItems } from "./GlobalMenuItems";
 
 import { WindowsFragmentBuilder } from "./fragments/WindowsFragmentBuilder";
@@ -46,7 +49,6 @@ import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
 import { UserContextSortingOrderStore } from "../userContexts/UserContextSortingOrderStore";
 import { config, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
-import { MessagingService } from "../frameworks/extension/MessagingService";
 
 import { PopupRendererService } from "./PopupRendererService";
 import { PopupFocusHandlers } from "./PopupFocusHandlers";

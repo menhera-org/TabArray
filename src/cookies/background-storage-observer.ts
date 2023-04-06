@@ -20,9 +20,9 @@
 */
 
 import { RegistrableDomainService } from 'weeg-domains';
+import { MessagingService } from 'weeg-utils';
 import { ContentStorageStatistics } from './ContentStorageStatistics';
 import { CookieStore } from '../frameworks/tabAttributes';
-import { MessagingService } from '../frameworks/extension/MessagingService';
 
 const statistics = new ContentStorageStatistics();
 const messagingService = MessagingService.getInstance();

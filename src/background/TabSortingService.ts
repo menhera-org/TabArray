@@ -21,12 +21,13 @@
 
 import { diffArrays } from 'diff';
 import browser from 'webextension-polyfill';
+import { MessagingService } from 'weeg-utils';
+
 import { Tab } from '../frameworks/tabs';
 import { getWindowIds } from '../modules/windows';
 import { IndexTab } from '../modules/IndexTab';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { PromiseUtils } from '../frameworks/utils';
-import { MessagingService } from '../frameworks/extension/MessagingService';
 import { config } from '../config/config';
 
 const TAB_MOVE_TIMEOUT = 60000;
