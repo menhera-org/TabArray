@@ -20,10 +20,11 @@
 */
 
 import browser from 'webextension-polyfill';
+import { PromiseUtils } from 'weeg-utils';
+
 import { UserContext } from "../frameworks/tabGroups";
 import { PopupRenderer } from './PopupRenderer';
 import { PopupUtils } from './PopupUtils';
-import { PromiseUtils } from '../frameworks/utils';
 import { ColorPickerElement } from '../components/usercontext-colorpicker';
 import { IconPickerElement } from '../components/usercontext-iconpicker';
 import { UserContextService } from '../userContexts/UserContextService';

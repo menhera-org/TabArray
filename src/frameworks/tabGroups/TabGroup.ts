@@ -20,11 +20,12 @@
 */
 
 import browser from 'webextension-polyfill';
+import { UrlService } from 'weeg-domains';
+import { PromiseUtils } from 'weeg-utils';
+
 import { OriginAttributes } from "./OriginAttributes";
 import { Tab } from "../tabs";
 import { FirstPartyService } from './FirstPartyService';
-import { PromiseUtils } from '../utils';
-import { UrlService } from 'weeg-domains';
 import { TabList } from './TabList';
 import { WindowService } from '../tabs';
 

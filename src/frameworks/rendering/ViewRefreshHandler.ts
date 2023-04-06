@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PromiseUtils } from "../utils";
+import { PromiseUtils } from "weeg-utils";
 
 export class ViewRefreshHandler {
   public static readonly RERENDERING_DELAY = 100;

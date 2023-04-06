@@ -20,11 +20,12 @@
 */
 
 import { StorageItem } from "weeg-storage";
+import { HostnameService } from "weeg-domains";
+import { PromiseUtils } from "weeg-utils";
+
 import { OriginAttributes } from "./OriginAttributes";
 import { TabGroup } from "./TabGroup";
-import { HostnameService } from "weeg-domains";
 import { RegistrableDomainService } from "../dns";
-import { PromiseUtils } from "../utils";
 
 type PublicSuffixListData = {
   rules: string[];

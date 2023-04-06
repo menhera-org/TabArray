@@ -20,6 +20,8 @@
 */
 
 import browser from 'webextension-polyfill';
+import { PromiseUtils } from 'weeg-utils';
+
 import * as containers from '../modules/containers';
 import { IndexTab } from '../modules/IndexTab';
 import { UserContext, WindowUserContextList } from '../frameworks/tabGroups';
@@ -27,7 +29,6 @@ import { Tab } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { config } from '../config/config';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
-import { PromiseUtils } from '../frameworks/utils';
 import { Uint32 } from '../frameworks/types';
 import { InitialWindowsService } from './InitialWindowsService';
 

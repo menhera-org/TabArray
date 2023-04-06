@@ -20,7 +20,8 @@
 */
 
 import browser from 'webextension-polyfill';
-import { MessagingService } from 'weeg-utils';
+import { MessagingService, PromiseUtils } from 'weeg-utils';
+
 import * as containers from '../modules/containers';
 import { PanoramaStateStore } from "./PanoramaStateStore";
 import { PanoramaTabElement } from "../components/panorama-tab";
@@ -37,7 +38,6 @@ import { CookieStore, ContextualIdentity, ContainerAttributes } from '../framewo
 import { ContainerEditorElement } from '../components/container-editor';
 import { ModalConfirmElement } from '../components/modal-confirm';
 import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
-import { PromiseUtils } from '../frameworks/utils';
 import { ModalFrameElement } from '../components/modal-frame';
 import { HelpBannerElement } from '../components/help-banner';
 import { TemporaryContainerService } from '../containers/TemporaryContainerService';

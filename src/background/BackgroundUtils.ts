@@ -20,9 +20,10 @@
 */
 
 import browser from 'webextension-polyfill';
+import { PromiseUtils } from 'weeg-utils';
+
 import { Uint32 } from '../frameworks/types';
 import * as containers from '../modules/containers';
-import { PromiseUtils } from '../frameworks/utils';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 
 export class BackgroundUtils {

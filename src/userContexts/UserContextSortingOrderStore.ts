@@ -20,10 +20,11 @@
 */
 
 import { StorageItem } from 'weeg-storage';
+import { PromiseUtils } from 'weeg-utils';
+
 import { Uint32 } from '../frameworks/types';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextSortingProvider } from '../frameworks/tabGroups';
-import { PromiseUtils } from '../frameworks/utils';
 import { EventSink } from '../frameworks/utils';
 
 export class UserContextSortingOrderStore {
