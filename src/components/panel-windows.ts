@@ -227,23 +227,26 @@ export class PanelWindowsElement extends HTMLElement {
     const tabCount = this.shadowRoot.querySelector('.tab-count') as HTMLSpanElement;
     tabCount.textContent = `(${currentWindowState.tabs.length})`;
 
+    const tabGroupDirectorySnapshot = browserStateSnapshot.getTabGroupDirectorySnapshot();
     let definedUserContexts = browserStateSnapshot.getDefinedUserContexts();
     if (currentWindowState.isPrivate) {
       definedUserContexts = definedUserContexts.filter((userContext) => {
         return userContext.id == UserContext.ID_DEFAULT;
       });
     }
-    definedUserContexts = this._userContextSortingOrderStore.sort([... definedUserContexts]);
+    definedUserContexts = [... definedUserContexts].sort((a, b) => {
+      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+    });
 
     this.renderPinnedTabs(browserStateSnapshot, definedUserContexts);
 
     const activeContainersElement = this.shadowRoot.querySelector('.active-containers') as HTMLDivElement;
     activeContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderOpenContainers(currentWindowState, definedUserContexts, activeContainersElement);
+    this._popupRenderer.currentWindowRenderer.renderOpenContainers(currentWindowState, definedUserContexts, activeContainersElement, tabGroupDirectorySnapshot);
 
     const inactiveContainersElement = this.shadowRoot.querySelector('.inactive-containers') as HTMLDivElement;
     inactiveContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(currentWindowState, definedUserContexts, inactiveContainersElement);
+    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(currentWindowState, definedUserContexts, inactiveContainersElement, tabGroupDirectorySnapshot);
 
     this.renderActions();
   }

@@ -27,7 +27,6 @@ import browser from "webextension-polyfill";
 import { ContainersStateSnapshot } from "../../frameworks/tabs/ContainersStateSnapshot";
 import { PopupRendererService } from "../PopupRendererService";
 import { OriginAttributes, TabGroup, UserContext } from "../../frameworks/tabGroups";
-import { UserContextSortingOrderStore } from "../../userContexts/UserContextSortingOrderStore";
 import { EventSink } from "weeg-events";
 import { TemporaryContainerService } from "../../containers/TemporaryContainerService";
 
@@ -36,7 +35,6 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
 
   private _containerCount = 0;
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
-  private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
   private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
 
   public getFragmentId(): string {
@@ -112,6 +110,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     if (this.active) {
       this.renderTopBarWithGlobalItems();
     }
+    const tabGroupDirectorySnapshot = containersStateSnapshot.tabGroupDirectorySnapshot;
     const fragment = this.getFragment();
     const activeContainersElement = fragment.querySelector('.active-containers') as HTMLDivElement;
     const inactiveContainersElement = fragment.querySelector('.inactive-containers') as HTMLDivElement;
@@ -120,16 +119,18 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     const privateContainers = containersStateSnapshot.containerAttributesList.filter((container) => container.isPrivate);
     const normalContainers = containersStateSnapshot.containerAttributesList.filter((container) => !container.isPrivate);
     const privateUserContexts = privateContainers.map((container) => UserContext.fromContainerAttributes(container));
-    const normalUserContexts = this._userContextSortingOrderStore.sort(normalContainers.map((container) => UserContext.fromContainerAttributes(container)));
+    const normalUserContexts = normalContainers.map((container) => UserContext.fromContainerAttributes(container)).sort((a, b) => {
+      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+    });
     const userContexts = [... privateUserContexts, ... normalUserContexts];
     const activeUserContexts = userContexts.filter((userContext) => {
       const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
       return tabs.length > 0;
-    })
+    });
     const inactiveUserContexts = userContexts.filter((userContext) => {
       const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
       return tabs.length < 1;
-    })
+    });
     this.renderContainers(containersStateSnapshot, activeUserContexts, activeContainersElement);
     this.renderContainers(containersStateSnapshot, inactiveUserContexts, inactiveContainersElement);
   }

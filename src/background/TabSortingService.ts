@@ -42,7 +42,8 @@ const sortTabsByWindow = async (windowId: number) => {
     let sortedTabs = tabs.filter(tab => !tab.pinned);
 
     const origTabIdList = sortedTabs.map(tab => tab.id);
-    sortedTabs = await tabGroupDirectory.sortTabs(sortedTabs);
+    const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
+    sortedTabs = tabGroupDirectorySnapshot.sortTabs(sortedTabs);
     const targetTabIdList = sortedTabs.map(tab => tab.id);
 
     const diffs = diffArrays(origTabIdList, targetTabIdList);

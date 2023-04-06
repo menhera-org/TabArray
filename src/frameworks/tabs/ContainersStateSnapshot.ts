@@ -1,9 +1,6 @@
 // -*- indent-tabs-mode: nil; tab-width: 2; -*-
 // vim: set ts=2 sw=2 et ai :
 
-import { ContainerAttributes } from "../tabAttributes";
-import { Tab } from "./Tab";
-
 /*
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
@@ -22,12 +19,18 @@ import { Tab } from "./Tab";
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { ContainerAttributes } from "../tabAttributes";
+import { Tab } from "./Tab";
+import { TabGroupDirectorySnapshot } from "../../tabGroups/TabGroupDirectorySnapshot";
+
 export class ContainersStateSnapshot {
   public readonly containerAttributesList: readonly ContainerAttributes[];
   private readonly _tabsByContainer = new Map<string, Tab[]>();
+  public readonly tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
 
-  public constructor(containerAttributesList: ContainerAttributes[], tabs: Tab[]) {
+  public constructor(containerAttributesList: ContainerAttributes[], tabs: Tab[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot) {
     this.containerAttributesList = containerAttributesList;
+    this.tabGroupDirectorySnapshot = tabGroupDirectorySnapshot;
     tabs.sort((a, b) => {
       if (a.windowId == b.windowId) {
         return a.index - b.index;

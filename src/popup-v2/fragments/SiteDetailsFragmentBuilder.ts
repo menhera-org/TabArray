@@ -20,7 +20,6 @@
 */
 
 import browser from "webextension-polyfill";
-import { MessagingService } from "weeg-utils";
 import { Uint32, SetMap } from "weeg-types";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
@@ -30,13 +29,10 @@ import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
 import { UserContext } from "../../frameworks/tabGroups";
 import { Tab } from "../../frameworks/tabs";
-import { UserContextSortingOrderStore } from "../../userContexts/UserContextSortingOrderStore";
 
 export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
 
-  private readonly _messagingService = MessagingService.getInstance();
-  private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private _domain = '(none)';
   private _tabCount = 0;
@@ -95,13 +91,16 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
     if (this._firstPartyStateSnapshot == null || this._browserStateSnapshot == null) {
       return;
     }
+    const tabGroupDirectorySnapshot = this._browserStateSnapshot.getTabGroupDirectorySnapshot();
     const tabs = this._firstPartyStateSnapshot.get(this._domain) ?? new Set();
     this._tabCount = tabs.size;
     this._tabs = [... tabs];
     if (this._isPrivate) {
       this._definedUserContexts = [UserContext.PRIVATE];
     } else {
-      this._definedUserContexts = this._userContextSortingOrderStore.sort([... this._browserStateSnapshot.getDefinedUserContexts()]);
+      this._definedUserContexts = [... this._browserStateSnapshot.getDefinedUserContexts()].sort((a, b) => {
+        return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+      });
     }
   }
 

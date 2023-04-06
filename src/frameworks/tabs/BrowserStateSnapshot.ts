@@ -23,13 +23,16 @@ import browser from 'webextension-polyfill';
 import { ExtensionService } from 'weeg-utils';
 import { SetMap } from 'weeg-types';
 
+import { TabGroupDirectory } from '../../tabGroups/TabGroupDirectory';
 import { UserContext } from '../tabGroups';
 import { Tab } from './Tab';
 import { WindowStateSnapshot } from './WindowStateSnapshot';
 import { FirstPartyService } from '../tabGroups';
 import { ContainerAttributes, ContextualIdentity, CookieStore } from '../tabAttributes';
 import { ContainersStateSnapshot } from './ContainersStateSnapshot';
+import { TabGroupDirectorySnapshot } from '../../tabGroups/TabGroupDirectorySnapshot';
 
+const tabGroupDirectory = new TabGroupDirectory();
 const firstPartyService = FirstPartyService.getInstance();
 const extensionService = ExtensionService.getInstance();
 
@@ -47,7 +50,7 @@ export class BrowserStateSnapshot {
   }
 
   public static async create(): Promise<BrowserStateSnapshot> {
-    const [userContexts, browserWindows, currentBrowserWindow, containerAttributesList, enabledInPrivateBrowsing] = await Promise.all([
+    const [userContexts, browserWindows, currentBrowserWindow, containerAttributesList, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
       UserContext.getAll(),
       browser.windows.getAll({
         populate: true,
@@ -56,12 +59,13 @@ export class BrowserStateSnapshot {
       browser.windows.get(browser.windows.WINDOW_ID_CURRENT),
       BrowserStateSnapshot.getContainers(),
       extensionService.isAllowedInPrivateBrowsing(),
+      tabGroupDirectory.getSnapshot(),
       firstPartyService.initialized,
     ]);
     if (null == currentBrowserWindow.id) {
       throw new Error('currentBrowserWindow.id is null');
     }
-    return new BrowserStateSnapshot(userContexts, browserWindows, currentBrowserWindow.id, containerAttributesList, enabledInPrivateBrowsing);
+    return new BrowserStateSnapshot(userContexts, browserWindows, currentBrowserWindow.id, containerAttributesList, enabledInPrivateBrowsing, tabGroupDirectorySnapshot);
   }
 
   public readonly currentWindowId: number;
@@ -75,8 +79,9 @@ export class BrowserStateSnapshot {
   private readonly _windowStateSnapshots: Map<number, WindowStateSnapshot> = new Map();
   private readonly _definedUserContexts: readonly UserContext[];
   private readonly _containersStateSnapshot: ContainersStateSnapshot;
+  private readonly _tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
 
-  public constructor(userContexts: UserContext[], browserWindows: browser.Windows.Window[], currentWindowId: number, containerAttributesList: ContainerAttributes[], enabledInPrivateBrowsing: boolean) {
+  public constructor(userContexts: UserContext[], browserWindows: browser.Windows.Window[], currentWindowId: number, containerAttributesList: ContainerAttributes[], enabledInPrivateBrowsing: boolean, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot) {
     this.currentWindowId = currentWindowId;
     this._definedUserContexts = userContexts;
     this.enabledInPrivateBrowsing = enabledInPrivateBrowsing;
@@ -99,7 +104,8 @@ export class BrowserStateSnapshot {
       }
     }
     this._tabIds = Array.from(this._tabMap.keys()).sort((a, b) => a - b);
-    this._containersStateSnapshot = new ContainersStateSnapshot(containerAttributesList, tabs);
+    this._containersStateSnapshot = new ContainersStateSnapshot(containerAttributesList, tabs, tabGroupDirectorySnapshot);
+    this._tabGroupDirectorySnapshot = tabGroupDirectorySnapshot;
   }
 
   public getWindowIds(): number[] {
@@ -135,5 +141,9 @@ export class BrowserStateSnapshot {
 
   public getContainersStateSnapshot(): ContainersStateSnapshot {
     return this._containersStateSnapshot;
+  }
+
+  public getTabGroupDirectorySnapshot(): TabGroupDirectorySnapshot {
+    return this._tabGroupDirectorySnapshot;
   }
 }
