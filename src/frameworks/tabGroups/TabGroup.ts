@@ -20,12 +20,11 @@
 */
 
 import browser from 'webextension-polyfill';
-import { UrlService } from 'weeg-domains';
+import { UrlService, RegistrableDomainService } from 'weeg-domains';
 import { PromiseUtils } from 'weeg-utils';
 
 import { OriginAttributes } from "./OriginAttributes";
 import { Tab } from "../tabs";
-import { FirstPartyService } from './FirstPartyService';
 import { TabList } from './TabList';
 import { WindowService } from '../tabs';
 
@@ -34,7 +33,7 @@ type TabGroupObserver = (tabGroup: TabGroup) => void;
 export class TabGroup {
   public readonly originAttributes: OriginAttributes;
   private readonly _tabIds = new Set<number>();
-  private readonly _firstPartyService = FirstPartyService.getInstance();
+  private readonly _registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
   private readonly _windowService = WindowService.getInstance();
   private readonly _observers = new Set<TabGroupObserver>();
   private readonly _initializationPromise = PromiseUtils.createPromise<void>();
@@ -80,12 +79,12 @@ export class TabGroup {
       return;
     }
 
-    browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       if (tab.url === undefined) {
         return;
       }
       const url = new URL(tab.url);
-      const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
+      const firstPartyDomain = await this._registrableDomainService.getRegistrableDomain(url.href);
       if (this._tabIds.has(tabId)) {
         if (firstPartyDomain !== this.matchedFirstPartyDomain) {
           this._tabIds.delete(tabId);
@@ -112,14 +111,14 @@ export class TabGroup {
     }
 
     // When there is a first-party domain, tabs are added at the time of url update.
-    browser.tabs.onCreated.addListener((tab) => {
+    browser.tabs.onCreated.addListener(async (tab) => {
       if (tab.cookieStoreId === this.originAttributes.cookieStoreId && tab.id !== undefined) {
         if (this.originAttributes.hasFirstpartyDomain()) {
           if (tab.url == undefined || !this._urlService.isHttpScheme(new URL(tab.url))) {
             return;
           }
           const url = new URL(tab.url);
-          const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
+          const firstPartyDomain = await this._registrableDomainService.getRegistrableDomain(url.href);
           if (firstPartyDomain === this.matchedFirstPartyDomain) {
             this._tabIds.add(tab.id);
             this._notifyObservers();
@@ -182,17 +181,17 @@ export class TabGroup {
     this._observers.delete(observer);
   }
 
-  public isUrlValidInGroup(url: URL): boolean {
+  public async isUrlValidInGroup(url: URL): Promise<boolean> {
     if (!this.originAttributes.hasFirstpartyDomain()) {
       return true;
     }
-    const firstPartyDomain = this._firstPartyService.getRegistrableDomain(url);
+    const firstPartyDomain = await this._registrableDomainService.getRegistrableDomain(url.href);
     return firstPartyDomain === this.matchedFirstPartyDomain;
   }
 
   public async openTabOnWindow(windowId: number | undefined, url: URL | null = null, active = true): Promise<Tab> {
     if (url) {
-      if (this.isUrlValidInGroup(url)) {
+      if (await this.isUrlValidInGroup(url)) {
         throw new Error('URL is not in the same first-party domain');
       }
     } else if (this.originAttributes.hasFirstpartyDomain()) {
