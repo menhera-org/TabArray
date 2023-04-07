@@ -20,9 +20,12 @@
 */
 
 import browser from 'webextension-polyfill';
-import { ContextualIdentityFactory, ContextualIdentityParams, DisplayedContainerParams } from "weeg-containers";
+import { ContextualIdentityFactory, ContextualIdentityParams, CookieStore, DisplayedContainerFactory, DisplayedContainerParams } from "weeg-containers";
 
 export class ContextualIdentityService {
+  private static readonly DEFAULT_ICON_URL = browser.runtime.getURL('/img/material-icons/category.svg');
+  private static readonly DEFAULT_COLOR_CODE = '#7c7c7d';
+
   public static getInstance(): ContextualIdentityService {
     return ContextualIdentityService.INSTANCE;
   }
@@ -59,6 +62,23 @@ export class ContextualIdentityService {
     // nothing.
   }
 
+  private validateName(aName: string): string {
+    return String(aName).trim();
+  }
+
+  private getDefaultName(aId: number): string {
+    return aId == 0 ? browser.i18n.getMessage('noContainer') : browser.i18n.getMessage('invalidContainerName', String(aId));
+  }
+
+  public getDefaultParams(cookieStoreId: string): DisplayedContainerParams {
+    const cookieStore = new CookieStore(cookieStoreId);
+    return {
+      name: this.getDefaultName(cookieStore.userContextId),
+      iconUrl: ContextualIdentityService.DEFAULT_ICON_URL,
+      colorCode: ContextualIdentityService.DEFAULT_COLOR_CODE,
+    };
+  }
+
   public getFactory(): ContextualIdentityFactory {
     const themeCallback = (params: ContextualIdentityParams): DisplayedContainerParams => {
       const color = params.color;
@@ -70,5 +90,12 @@ export class ContextualIdentityService {
       };
     };
     return new ContextualIdentityFactory(themeCallback);
+  }
+
+  public getDisplayedContainerFactory(): DisplayedContainerFactory {
+    const displayedAttributesProvider = (cookieStoreId: string): DisplayedContainerParams => {
+      return this.getDefaultParams(cookieStoreId);
+    };
+    return new DisplayedContainerFactory(displayedAttributesProvider);
   }
 }

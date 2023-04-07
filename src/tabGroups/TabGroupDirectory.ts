@@ -194,6 +194,32 @@ export class TabGroupDirectory {
     await this.setValue(value);
   }
 
+  public async moveTabGroupUp(tabGroupId: string): Promise<void> {
+    const snapshot = await this.getSnapshot();
+    const parentTabGroupId = snapshot.getParentTabGroupId(tabGroupId);
+    if (!parentTabGroupId) return;
+    const value = snapshot.value;
+    const supergroup = value[parentTabGroupId] as SupergroupType;
+    const index = supergroup.members.indexOf(tabGroupId);
+    if (index <= 0) return;
+    supergroup.members.splice(index, 1);
+    supergroup.members.splice(index - 1, 0, tabGroupId);
+    await this.setValue(value);
+  }
+
+  public async moveTabGroupDown(tabGroupId: string): Promise<void> {
+    const snapshot = await this.getSnapshot();
+    const parentTabGroupId = snapshot.getParentTabGroupId(tabGroupId);
+    if (!parentTabGroupId) return;
+    const value = snapshot.value;
+    const supergroup = value[parentTabGroupId] as SupergroupType;
+    const index = supergroup.members.indexOf(tabGroupId);
+    if (index < 0 || index >= supergroup.members.length - 1) return;
+    supergroup.members.splice(index, 1);
+    supergroup.members.splice(index + 1, 0, tabGroupId);
+    await this.setValue(value);
+  }
+
   public async getSnapshot(): Promise<TabGroupDirectorySnapshot> {
     const value = await this.getValue();
     return new TabGroupDirectorySnapshot(value);

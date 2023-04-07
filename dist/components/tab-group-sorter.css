@@ -23,24 +23,24 @@
 
 @namespace url(http://www.w3.org/1999/xhtml);
 
-#containers-wrapper {
+#sorter-wrapper {
   inline-size: max-content;
   max-inline-size: 100%;
   display: block grid;
-  grid-template-columns: .5em 2em 1fr 2em 2em min-content .5em;
+  grid-template-columns: 1fr min-content;
   border-radius: .5em;
   border: 1px solid var(--border-color);
   margin-block: .5em;
   box-sizing: border-box;
 }
 
-#containers {
+#groups {
   display: grid;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
 }
 
-#containers-wrapper > .header {
+#sorter-wrapper > .header {
   display: block grid;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
@@ -48,21 +48,13 @@
   background-color: var(--hover-color);
 }
 
-#containers-wrapper > .header > * {
+#sorter-wrapper > .header > * {
   text-align: center;
   padding: .5em;
 }
 
-#containers-wrapper > .header > :not(:first-child) {
+#sorter-wrapper > .header > :not(:first-child) {
   border-inline-start: 1px solid var(--border-color);
-}
-
-#containers-wrapper > .header > .header-container {
-  grid-column: 2 / 6;
-}
-
-#containers-wrapper > .header > .header-autoclean {
-  grid-column: 6 / 7;
 }
 
 .container {
@@ -72,12 +64,22 @@
   border-block-start: 1px solid var(--border-color);
 }
 
-.container::before, .container::after {
-  content: '';
-  display: block;
+.container-inner {
+  display: block flex;
+  flex-direction: row;
 }
 
-.container > .name {
+.container .icon {
+  inline-size: 2em;
+}
+
+.container .icon.masked {
+  background-color: var(--text-color);
+}
+
+.container .name {
+  flex: 1;
+  min-inline-size: 0;
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -92,6 +94,7 @@
   border: none;
   padding: 0;
   margin: 0;
+  inline-size: 2em;
 }
 
 .up:hover, .up:focus, .down:hover, .down:focus {
@@ -111,17 +114,4 @@
   margin-inline-start: 1em;
   margin-bottom: unset;
   text-align: center;
-}
-
-.languages {
-  inline-size: 100%;
-  min-inline-size: 0;
-  box-sizing: border-box;
-  margin: 0;
-  font: inherit;
-  border: none;
-  border-radius: 0;
-  padding: .5em;
-  color: inherit;
-  background-color: transparent;
 }

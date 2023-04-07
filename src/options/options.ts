@@ -20,13 +20,12 @@
 import browser from 'webextension-polyfill';
 import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
-import { ContainerSorterElement } from '../components/container-sorter';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { UserContextService } from '../userContexts/UserContextService';
-import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
 import { ContainerOverridesElement } from '../components/container-overrides';
 import './options-i18n';
+import { TabGroupSorterElement } from '../components/tab-group-sorter';
 
 interface HTMLFormInput extends HTMLElement {
   value: string;
@@ -34,7 +33,6 @@ interface HTMLFormInput extends HTMLElement {
 
 const sortingOrderStore = UserContextSortingOrderStore.getInstance();
 const userContextService = UserContextService.getInstance();
-const cookieAutocleanService = CookieAutocleanService.getInstance();
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
@@ -96,20 +94,18 @@ const selectPopupSize = document.querySelector<HTMLSelectElement>('#select-popup
 
 const selectAutoDiscardMinAge = document.querySelector<HTMLSelectElement>('#select-autoDiscardMinAge');
 
+const tabGroupSorter = new TabGroupSorterElement();
+paneContainers?.appendChild(tabGroupSorter);
+
 UserContext.getAll().then(async (userContexts) => {
-  const autocleanEnabledUserContextIds = await cookieAutocleanService.getAutocleanEnabledUserContexts();
   const sortedUserContext = sortingOrderStore.sort(userContexts.map((userContext) => userContextService.fillDefaultValues(userContext)));
-  const containerSorter = new ContainerSorterElement(sortedUserContext, autocleanEnabledUserContextIds);
-  paneContainers?.appendChild(containerSorter);
 
   const containerOverrides = new ContainerOverridesElement(sortedUserContext);
   paneContainerOverrides?.appendChild(containerOverrides);
 
   const callback = async () => {
-    const autocleanEnabledUserContextIds = await cookieAutocleanService.getAutocleanEnabledUserContexts();
     const userContexts = (await UserContext.getAll()).map((userContext) => userContextService.fillDefaultValues(userContext));
     const sortedUserContext = sortingOrderStore.sort(userContexts);
-    containerSorter.setUserContexts(sortedUserContext, autocleanEnabledUserContextIds);
     containerOverrides.setUserContexts(sortedUserContext);
   };
 
@@ -117,10 +113,6 @@ UserContext.getAll().then(async (userContexts) => {
   UserContext.onCreated.addListener(callback);
   UserContext.onRemoved.addListener(callback);
   UserContext.onUpdated.addListener(callback);
-
-  containerSorter.onChanged.addListener((sortOrder) => {
-    sortingOrderStore.setOrder(sortOrder);
-  });
 });
 
 // tab.sorting.enabled setting
