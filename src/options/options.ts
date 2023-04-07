@@ -21,17 +21,17 @@ import browser from 'webextension-polyfill';
 import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
 import { UserContext } from '../frameworks/tabGroups';
-import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { UserContextService } from '../userContexts/UserContextService';
 import { ContainerOverridesElement } from '../components/container-overrides';
 import './options-i18n';
 import { TabGroupSorterElement } from '../components/tab-group-sorter';
+import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
 
 interface HTMLFormInput extends HTMLElement {
   value: string;
 }
 
-const sortingOrderStore = UserContextSortingOrderStore.getInstance();
+const tabGroupDirectory = new TabGroupDirectory();
 const userContextService = UserContextService.getInstance();
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
@@ -98,18 +98,24 @@ const tabGroupSorter = new TabGroupSorterElement();
 paneContainers?.appendChild(tabGroupSorter);
 
 UserContext.getAll().then(async (userContexts) => {
-  const sortedUserContext = sortingOrderStore.sort(userContexts.map((userContext) => userContextService.fillDefaultValues(userContext)));
+  const snapshot = await tabGroupDirectory.getSnapshot();
+  const sortedUserContext = userContexts.map((userContext) => userContextService.fillDefaultValues(userContext)).sort((a, b) => {
+    return snapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+  });
 
   const containerOverrides = new ContainerOverridesElement(sortedUserContext);
   paneContainerOverrides?.appendChild(containerOverrides);
 
   const callback = async () => {
     const userContexts = (await UserContext.getAll()).map((userContext) => userContextService.fillDefaultValues(userContext));
-    const sortedUserContext = sortingOrderStore.sort(userContexts);
-    containerOverrides.setUserContexts(sortedUserContext);
+    const snapshot = await tabGroupDirectory.getSnapshot();
+    const sortedUserContexts = [... userContexts].sort((a, b) => {
+      return snapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+    });
+    containerOverrides.setUserContexts(sortedUserContexts);
   };
 
-  sortingOrderStore.onChanged.addListener(callback);
+  tabGroupDirectory.onChanged.addListener(callback);
   UserContext.onCreated.addListener(callback);
   UserContext.onRemoved.addListener(callback);
   UserContext.onUpdated.addListener(callback);
