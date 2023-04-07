@@ -21,6 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
+import { CookieStore } from 'weeg-containers';
 
 import { TabGroupDirectorySnapshot } from '../tabGroups/TabGroupDirectorySnapshot';
 import { SupergroupType, TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
@@ -35,7 +36,11 @@ import { MenulistContainerElement } from '../components/menulist-container';
 import { MenulistSupergroupElement } from '../components/menulist-supergroup';
 import { Tab } from '../frameworks/tabs';
 import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
-import { CookieStore } from 'weeg-containers';
+import { ModalMenuElement } from '../components/modal-menu';
+import { SupergroupEditorElement } from '../components/supergroup-editor';
+import { ModalMoveGroupElement } from '../components/modal-move-group';
+
+const tabGroupDirectory = new TabGroupDirectory();
 
 export class PopupCurrentWindowRenderer {
   private readonly popupRenderer: PopupRenderer;
@@ -130,6 +135,48 @@ export class PopupCurrentWindowRenderer {
     return containerElement;
   }
 
+  private renderSupergroupOptions(supergroup: SupergroupType): void {
+    const title = browser.i18n.getMessage('groupOptions', supergroup.name);
+    const modalMenuElement = new ModalMenuElement(title);
+    modalMenuElement.defineAction('edit', browser.i18n.getMessage('buttonEditGroup'), false);
+    modalMenuElement.defineAction('delete', browser.i18n.getMessage('buttonDeleteGroup'), false);
+    modalMenuElement.defineAction('move', browser.i18n.getMessage('moveContainer'), false);
+    modalMenuElement.defineAction('done', browser.i18n.getMessage('buttonDone'), true);
+    document.body.appendChild(modalMenuElement);
+    modalMenuElement.onActionClicked.addListener(async (action) => {
+      switch (action) {
+        case 'edit': {
+          modalMenuElement.remove();
+          const groupEditorElement = new SupergroupEditorElement(supergroup);
+          document.body.appendChild(groupEditorElement);
+          break;
+        }
+
+        case 'delete': {
+          modalMenuElement.remove();
+          const answer = await this.popupRenderer.modalRenderer.confirmAsync(browser.i18n.getMessage('confirmGroupDelete', supergroup.name));
+          if (answer) {
+            await tabGroupDirectory.removeSupergroup(TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId));
+          }
+          break;
+        }
+
+        case 'move': {
+          modalMenuElement.remove();
+          const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
+          const modalMoveElement = new ModalMoveGroupElement(tabGroupId);
+          document.body.appendChild(modalMoveElement);
+          break;
+        }
+
+        case 'done': {
+          modalMenuElement.remove();
+          break;
+        }
+      }
+    });
+  }
+
   private renderSupergroup(supergroup: SupergroupType, windowStateSnapshot: WindowStateSnapshot, definedUserContexts: UserContext[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, element: HTMLElement): number {
     let tabCount = 0;
     const supergroupElement = new MenulistSupergroupElement();
@@ -159,6 +206,9 @@ export class PopupCurrentWindowRenderer {
       }
     }
     supergroupElement.tabCount = tabCount;
+    supergroupElement.onGroupOptionsClick.addListener(() => {
+      this.renderSupergroupOptions(supergroup);
+    });
     return tabCount;
   }
 

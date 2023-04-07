@@ -46,9 +46,9 @@ import { SiteDetailsFragmentBuilder } from "./fragments/SiteDetailsFragmentBuild
 
 import { ViewRefreshHandler } from "../frameworks/rendering/ViewRefreshHandler";
 import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
-import { UserContextSortingOrderStore } from "../userContexts/UserContextSortingOrderStore";
 import { config, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
+import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
 
 import { PopupRendererService } from "./PopupRendererService";
 import { PopupFocusHandlers } from "./PopupFocusHandlers";
@@ -62,8 +62,8 @@ if (searchParams.get('popup') == '1') {
   }
 }
 
+const tabGroupDirectory = new TabGroupDirectory();
 const popupRenderer = PopupRendererService.getInstance().popupRenderer;
-const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 const messagingService = MessagingService.getInstance();
 
 const extensionName = browser.runtime.getManifest().name;
@@ -160,7 +160,7 @@ browser.contextualIdentities.onCreated.addListener(renderInBackground);
 browser.contextualIdentities.onUpdated.addListener(renderInBackground);
 browser.contextualIdentities.onRemoved.addListener(renderInBackground);
 
-userContextSortingOrderStore.onChanged.addListener(renderInBackground);
+tabGroupDirectory.onChanged.addListener(renderInBackground);
 
 renderer.renderInBackground();
 

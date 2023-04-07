@@ -33,6 +33,7 @@ import { ModalConfirmElement } from '../components/modal-confirm';
 import { ModalMenuElement } from '../components/modal-menu';
 import { ContainerEditorElement } from '../components/container-editor';
 import { CookieStore, ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
+import { ModalMoveGroupElement } from '../components/modal-move-group';
 
 type NewContainerPanelResult = {
   name: string;
@@ -275,6 +276,7 @@ export class PopupModalRenderer {
     }
 
     modalMenuElement.defineAction('clearCookie', browser.i18n.getMessage('buttonContainerClearCookie'), false);
+    modalMenuElement.defineAction('move', browser.i18n.getMessage('moveContainer'), false);
     modalMenuElement.defineAction('done', browser.i18n.getMessage('buttonDone'), true);
 
     await new Promise<void>((res) => {
@@ -295,6 +297,12 @@ export class PopupModalRenderer {
 
           case 'delete': {
             this.showDeleteContainerModal(userContext);
+            break;
+          }
+
+          case 'move': {
+            const modalMoveElement = new ModalMoveGroupElement(userContext.cookieStoreId);
+            document.body.appendChild(modalMoveElement);
             break;
           }
         }

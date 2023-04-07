@@ -19,12 +19,14 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
-import { EventSink } from "weeg-events";
-import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import browser from 'webextension-polyfill';
-import { UserContext } from "../frameworks/tabGroups";
+import { EventSink } from "weeg-events";
 import { Uint32 } from "weeg-types";
+
+import { SupergroupEditorElement } from './supergroup-editor';
+import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
+import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
+import { UserContext } from "../frameworks/tabGroups";
 import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from "../userContexts/UserContextVisibilityService";
 import { TemporaryContainerService } from "../containers/TemporaryContainerService";
@@ -36,6 +38,7 @@ export class PanelWindowsElement extends HTMLElement {
   public readonly onWindowCloseButtonClicked = new EventSink<void>();
   public readonly onCreateContainerButtonClicked = new EventSink<void>();
   public readonly onCreateTemporaryContainerButtonClicked = new EventSink<void>();
+  public readonly onCreateGroupButtonClicked = new EventSink<void>();
 
   private _selectedWindowId: number = browser.windows.WINDOW_ID_NONE;
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
@@ -97,7 +100,10 @@ export class PanelWindowsElement extends HTMLElement {
     search.placeholder = browser.i18n.getMessage('searchPlaceholder');
     searchWrapper.appendChild(search);
 
-    const newContainerMenuItem = this.createMenuItem('new-container', 'buttonNewContainer', '/img/material-icons/create_new_folder.svg', this.onCreateContainerButtonClicked);
+    const newGroupMenuItem = this.createMenuItem('new-group', 'buttonNewGroup', '/img/material-icons/create_new_folder.svg', this.onCreateGroupButtonClicked);
+    headerContainer.appendChild(newGroupMenuItem);
+
+    const newContainerMenuItem = this.createMenuItem('new-container', 'buttonNewContainer', '/img/firefox-icons/add.svg', this.onCreateContainerButtonClicked);
     headerContainer.appendChild(newContainerMenuItem);
 
     const newTemporaryContainerMenuItem = this.createMenuItem('new-temporary-container', 'buttonNewTemporaryContainer', '/img/material-icons/timelapse.svg', this.onCreateTemporaryContainerButtonClicked);
@@ -175,6 +181,10 @@ export class PanelWindowsElement extends HTMLElement {
       });
     });
 
+    this.onCreateGroupButtonClicked.addListener(() => {
+      document.body.appendChild(new SupergroupEditorElement());
+    });
+
     if (!this.shadowRoot) return;
     const search = this.shadowRoot.querySelector('#search') as HTMLInputElement;
     search.addEventListener('input', () => {
@@ -225,12 +235,18 @@ export class PanelWindowsElement extends HTMLElement {
     const tabCount = this.shadowRoot.querySelector('.tab-count') as HTMLSpanElement;
     tabCount.textContent = `(${currentWindowState.tabs.length})`;
 
+    const newGroupMenuItem = this.shadowRoot.querySelector('.new-group') as CtgMenuItemElement;
+
     const tabGroupDirectorySnapshot = browserStateSnapshot.getTabGroupDirectorySnapshot();
     let definedUserContexts = browserStateSnapshot.getDefinedUserContexts();
     if (currentWindowState.isPrivate) {
       definedUserContexts = definedUserContexts.filter((userContext) => {
         return userContext.id == UserContext.ID_DEFAULT;
       });
+
+      newGroupMenuItem.hidden = true;
+    } else {
+      newGroupMenuItem.hidden = false;
     }
     definedUserContexts = [... definedUserContexts].sort((a, b) => {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);

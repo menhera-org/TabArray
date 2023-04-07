@@ -122,6 +122,10 @@ export class TabGroupDirectory {
     return value[tabGroupId];
   }
 
+  public async getChildContainers(tabGroupId: string): Promise<string[]> {
+    return (await this.getSnapshot()).getChildContainers(tabGroupId);
+  }
+
   public async getParentTabGroupId(tabGroupId: string): Promise<string | undefined> {
     const value = await this.getValue();
     for (const supergroupId in value) {
@@ -152,6 +156,14 @@ export class TabGroupDirectory {
     return tabGroupId;
   }
 
+  public async renameSupergroup(tabGroupId: string, name: string): Promise<void> {
+    const value = await this.getValue();
+    const supergroup = value[tabGroupId] as SupergroupType;
+    if (!supergroup) return;
+    supergroup.name = name;
+    await this.setValue(value);
+  }
+
   public async removeSupergroup(tabGroupId: string): Promise<void> {
     if (tabGroupId == TabGroupDirectory.getRootSupergroupId()) return;
     const value = await this.getValue();
@@ -175,6 +187,7 @@ export class TabGroupDirectory {
     const parentSupergroup = value[parentTabGroupId] as SupergroupType;
     if (!parentSupergroup) return;
     const currentParentTabGroupId = await this.getParentTabGroupId(tabGroupId) ?? TabGroupDirectory.getRootSupergroupId();
+    if (currentParentTabGroupId == parentTabGroupId) return;
     const currentParentSupergroup = value[currentParentTabGroupId] as SupergroupType;
     currentParentSupergroup.members = currentParentSupergroup.members.filter((memberTabGroupId) => memberTabGroupId !== tabGroupId);
     parentSupergroup.members.push(tabGroupId);
