@@ -17,31 +17,28 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import browser from 'webextension-polyfill';
-import { IndexTab } from "../modules/IndexTab";
+const defaultIconUrl = '/img/material-icons/category.svg';
+const params = new URLSearchParams(window.location.hash.slice(1));
+const title = params.get('t') ?? '';
+const iconUrl = params.get('iu') ?? defaultIconUrl;
 
-const indexTab = new IndexTab(location.href);
-document.title = indexTab.title;
-
-const rect = document.querySelector<SVGRectElement>('#rect');
-const iconElement = document.querySelector<HTMLLinkElement>(`link[rel="icon"]`);
-if (!rect || !iconElement) {
-  throw new Error('Failed to find the elements');
-}
-
-rect.setAttribute('fill', indexTab.colorCode);
-rect.style.mask = `url(${indexTab.iconUrl}) center / contain no-repeat`;
-
-browser.tabs.getCurrent().then(async (tabObj) => {
-  const tabId = tabObj.id;
-  const imageUrl = await browser.tabs.captureTab(tabId, {
-    scale: 1,
-    rect: {
-      x: 0,
-      y: 0,
-      width: 256,
-      height: 256,
+document.addEventListener('DOMContentLoaded', async () => {
+  document.title = title;
+  const iconElement = document.querySelector<HTMLLinkElement>(`link[rel="icon"]`);
+  if (!iconElement) return;
+  const iconUrlObject = new URL(iconUrl, window.location.href);
+  const color = iconUrlObject.hash.slice(1);
+  iconUrlObject.hash = '';
+  const res = await fetch(iconUrlObject.href);
+  const text = await res.text();
+  const svgDocument = new DOMParser().parseFromString(text, 'image/svg+xml');
+  svgDocument.querySelector('style')?.remove();
+  const groups = svgDocument.querySelectorAll('g');
+  for (const group of groups) {
+    if (group.id != color) {
+      group.remove();
     }
-  });
-  iconElement.href = imageUrl;
+  }
+  const source = new XMLSerializer().serializeToString(svgDocument);
+  iconElement.href = `data:image/svg+xml,${encodeURIComponent(source)}`;
 });

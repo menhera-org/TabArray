@@ -28,6 +28,7 @@ import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
 import { Tab } from '../frameworks/tabs';
 import { WindowService } from '../frameworks/tabs/WindowService';
+import { ContextualIdentityService } from '../tabGroups/ContextualIdentityService';
 //import { OriginAttributes } from '../frameworks/tabGroups';
 //import { TabGroup } from '../frameworks/tabGroups';
 
@@ -50,6 +51,7 @@ export class UserContextVisibilityService {
   }
 
   private readonly _windowService = WindowService.getInstance();
+  private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
 
   private constructor() {
     // nothing.
@@ -61,7 +63,14 @@ export class UserContextVisibilityService {
   public async createIndexTab(windowId: number, userContextId: Uint32.Uint32): Promise<Tab> {
     const rawUserContext = await UserContext.get(userContextId);
     const userContext = UserContextService.getInstance().fillDefaultValues(rawUserContext);
-    const url = IndexTab.getUrl(userContext.name, userContext.icon, userContext.colorCode).url;
+    let iconUrl: string;
+    if (userContext.id == 0) {
+      const params = this._contextualIdentityService.getDefaultParams(userContext.cookieStoreId);
+      iconUrl = params.iconUrl;
+    } else {
+      iconUrl = ContextualIdentityService.getIconUrl(userContext.icon, userContext.color);
+    }
+    const url = IndexTab.getUrl(userContext.name, userContext.icon, userContext.colorCode, iconUrl).url;
     const cookieStoreId = UserContext.toCookieStoreId(userContextId);
     const browserTabs = await browser.tabs.query({ windowId, cookieStoreId });
     const minIndex = browserTabs.reduce((min, browserTab) => Math.min(min, browserTab.index), Number.MAX_SAFE_INTEGER);

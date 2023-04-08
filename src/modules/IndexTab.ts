@@ -21,7 +21,6 @@ import browser from 'webextension-polyfill';
 
 const indexPageUrl = browser.runtime.getURL('/index/index-tab.html');
 const defaultIconUrl = browser.runtime.getURL('/img/material-icons/category.svg');
-const iconUrl = browser.runtime.getURL('/img/usercontext.svg');
 
 export class IndexTab {
   public readonly url: string;
@@ -38,12 +37,13 @@ export class IndexTab {
     }
   }
 
-  public static getUrl(title: string, icon: string, colorCode: string) {
+  public static getUrl(title: string, icon: string, colorCode: string, iconUrl: string) {
     const url = new URL(indexPageUrl);
     const params = new URLSearchParams();
     params.set('i', icon || '');
     params.set('t', title || '');
     params.set('c', colorCode || '#000000');
+    params.set('iu', iconUrl);
     url.hash = '#' + params;
     return new IndexTab(url.href);
   }
@@ -57,11 +57,11 @@ export class IndexTab {
       throw new TypeError('Not an IndexTab');
     }
     const params = new URLSearchParams(hash);
-    const icon = params.get('i');
-    if (!icon) {
+    const iconUrl = params.get('iu');
+    if (!iconUrl) {
       this.iconUrl = defaultIconUrl;
     } else {
-      this.iconUrl = iconUrl + '#' + icon;
+      this.iconUrl = iconUrl;
     }
     this.title = params.get('t') || '';
     this.colorCode = params.get('c') || '#000000';
