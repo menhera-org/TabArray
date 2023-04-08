@@ -121,11 +121,11 @@ export class MenulistSupergroupElement extends HTMLElement {
     return this.shadowRoot?.querySelector('#group-options-button') as HTMLButtonElement;
   }
 
-  private get groupHideButton(): HTMLButtonElement {
+  public get groupHideButton(): HTMLButtonElement {
     return this.shadowRoot?.querySelector('#group-hide-button') as HTMLButtonElement;
   }
 
-  private get groupUnhideButton(): HTMLButtonElement {
+  public get groupUnhideButton(): HTMLButtonElement {
     return this.shadowRoot?.querySelector('#group-unhide-button') as HTMLButtonElement;
   }
 
@@ -147,8 +147,12 @@ export class MenulistSupergroupElement extends HTMLElement {
     this.groupNameElement.dataset.tabCount = String(tabCount);
     if (0 == tabCount) {
       this.groupCloseButton.disabled = true;
+      this.groupHideButton.disabled = true;
+      this.groupUnhideButton.disabled = true;
     } else {
       this.groupCloseButton.disabled = false;
+      this.groupHideButton.disabled = false;
+      this.groupUnhideButton.disabled = false;
     }
   }
 }

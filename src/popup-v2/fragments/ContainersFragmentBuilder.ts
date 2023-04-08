@@ -19,16 +19,21 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import browser from "webextension-polyfill";
+import { CookieStore } from "weeg-containers";
+import { EventSink } from "weeg-events";
+
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../components/ctg/ctg-menu-item";
-import browser from "webextension-polyfill";
 import { ContainersStateSnapshot } from "../../frameworks/tabs/ContainersStateSnapshot";
 import { PopupRendererService } from "../PopupRendererService";
 import { OriginAttributes, TabGroup, UserContext } from "../../frameworks/tabGroups";
-import { EventSink } from "weeg-events";
 import { TemporaryContainerService } from "../../containers/TemporaryContainerService";
+import { SupergroupType, TabGroupDirectory } from "../../tabGroups/TabGroupDirectory";
+import { TabGroupAttributes } from "../../tabGroups/TabGroupAttributes";
+import { MenulistSupergroupElement } from "../../components/menulist-supergroup";
 
 export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onContainerSelected = new EventSink<string>();
@@ -122,17 +127,56 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     const normalUserContexts = normalContainers.map((container) => UserContext.fromContainerAttributes(container)).sort((a, b) => {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
     });
-    const userContexts = [... privateUserContexts, ... normalUserContexts];
-    const activeUserContexts = userContexts.filter((userContext) => {
-      const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
-      return tabs.length > 0;
-    });
-    const inactiveUserContexts = userContexts.filter((userContext) => {
-      const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
-      return tabs.length < 1;
-    });
-    this.renderContainers(containersStateSnapshot, activeUserContexts, activeContainersElement);
-    this.renderContainers(containersStateSnapshot, inactiveUserContexts, inactiveContainersElement);
+    const userContextMap = new Map<string, UserContext>();
+    for (const normalUserContext of normalUserContexts) {
+      userContextMap.set(normalUserContext.cookieStoreId, normalUserContext);
+    }
+    const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupDirectory.getRootSupergroupId()) as SupergroupType;
+    this.renderContainers(containersStateSnapshot, privateUserContexts, activeContainersElement);
+    this.renderSupergroup(0, rootSupergroup, containersStateSnapshot, userContextMap, activeContainersElement);
+  }
+
+  private renderSupergroup(nestingCount: number, supergroup: SupergroupType, containersStateSnapshot: ContainersStateSnapshot, userContextMap: Map<string, UserContext>, parentElement: HTMLElement) {
+    let tabCount = 0;
+    const tabGroupDirectorySnapshot = containersStateSnapshot.tabGroupDirectorySnapshot;
+    const tabGroupIds = supergroup.members;
+    for (const tabGroupId of tabGroupIds) {
+      const attributes = new TabGroupAttributes(tabGroupId);
+      if (attributes.tabGroupType == 'cookieStore') {
+        const cookieStore = attributes.cookieStore as CookieStore;
+        const userContext = userContextMap.get(tabGroupId);
+        if (!userContext) continue;
+        const isPrivate = cookieStore.isPrivate;
+        const tabs = containersStateSnapshot.getTabsByContainer(cookieStore.id);
+        const containerElement = this._popupRenderer.renderPartialContainerElement(userContext, isPrivate);
+        containerElement.tabCount = tabs.length;
+        tabCount += tabs.length;
+        parentElement.appendChild(containerElement);
+
+        containerElement.onContainerClose.addListener(async () => {
+          const cookieStoreId = userContext.cookieStoreId;
+          const originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId);
+          const tabGroup = await TabGroup.createTabGroup(originAttributes);
+          tabGroup.tabList.closeUnpinnedTabs();
+        });
+
+        containerElement.onContainerClick.addListener(() => {
+          this.onContainerSelected.dispatch(userContext.cookieStoreId);
+        });
+      } else {
+        const supergroup = tabGroupDirectorySnapshot.getSupergroup(tabGroupId) as SupergroupType;
+        const supergroupElement = new MenulistSupergroupElement();
+        supergroupElement.groupName = supergroup.name;
+        parentElement.appendChild(supergroupElement);
+
+        const subTabCount = this.renderSupergroup(nestingCount + 1, supergroup, containersStateSnapshot, userContextMap, supergroupElement);
+        supergroupElement.tabCount = subTabCount;
+        supergroupElement.groupHideButton.disabled = true;
+        supergroupElement.groupUnhideButton.disabled = true;
+        tabCount += subTabCount;
+      }
+    }
+    return tabCount;
   }
 
   private renderContainers(containersStateSnapshot: ContainersStateSnapshot, userContexts: UserContext[], parentElement: HTMLElement) {
