@@ -52,7 +52,7 @@ button:focus {
 
 #group-header {
   display: block grid;
-  grid-template-columns: 1fr max-content max-content;
+  grid-template-columns: 1fr max-content max-content max-content max-content;
   padding-inline-end: 1em;
 }
 
@@ -83,7 +83,7 @@ button[disabled] {
   opacity: 1;
 }
 
-#group-close-button, #group-options-button, #group-highlight-button {
+#group-close-button, #group-options-button, #group-highlight-button, #group-hide-button, #group-unhide-button {
   inline-size: 2em;
 }
 
@@ -101,6 +101,14 @@ button[disabled] {
 
 #group-options-button {
   mask: url(/img/material-icons/more_horiz.svg) center center/75% no-repeat;
+}
+
+#group-hide-button {
+  mask: url(/img/material-icons/unfold_less.svg) center center/75% no-repeat;
+}
+
+#group-unhide-button {
+  mask: url(/img/material-icons/unfold_more.svg) center center/75% no-repeat;
 }
 
 #group-button {

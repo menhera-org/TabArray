@@ -38,6 +38,8 @@ export class MenulistSupergroupElement extends HTMLElement {
     }
     this.buildElement();
     this.groupCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
+    this.groupHideButton.title = browser.i18n.getMessage('tooltipCollapseContainers');
+    this.groupUnhideButton.title = browser.i18n.getMessage('tooltipExpandContainers');
     this.tabCount = 0;
     this.registerEventListeners();
   }
@@ -68,9 +70,17 @@ export class MenulistSupergroupElement extends HTMLElement {
     groupNameElement.id = 'group-name';
     groupButton.appendChild(groupNameElement);
 
-    const containerOptionsButton = document.createElement('button');
-    containerOptionsButton.id = 'group-options-button';
-    groupHeaderElement.appendChild(containerOptionsButton);
+    const groupHideButton = document.createElement('button');
+    groupHideButton.id = 'group-hide-button';
+    groupHeaderElement.appendChild(groupHideButton);
+
+    const groupUnhideButton = document.createElement('button');
+    groupUnhideButton.id = 'group-unhide-button';
+    groupHeaderElement.appendChild(groupUnhideButton);
+
+    const groupOptionsButton = document.createElement('button');
+    groupOptionsButton.id = 'group-options-button';
+    groupHeaderElement.appendChild(groupOptionsButton);
 
     const groupCloseButton = document.createElement('button');
     groupCloseButton.id = 'group-close-button';
@@ -88,8 +98,14 @@ export class MenulistSupergroupElement extends HTMLElement {
     this.groupCloseButton.onclick = () => {
       this.onGroupClose.dispatch();
     };
-    this.containerOptionsButton.onclick = () => {
+    this.groupOptionsButton.onclick = () => {
       this.onGroupOptionsClick.dispatch();
+    };
+    this.groupHideButton.onclick = () => {
+      this.onGroupHide.dispatch();
+    };
+    this.groupUnhideButton.onclick = () => {
+      this.onGroupUnhide.dispatch();
     };
   }
 
@@ -101,8 +117,16 @@ export class MenulistSupergroupElement extends HTMLElement {
     return this.shadowRoot?.querySelector('#group-close-button') as HTMLButtonElement;
   }
 
-  private get containerOptionsButton(): HTMLButtonElement {
+  private get groupOptionsButton(): HTMLButtonElement {
     return this.shadowRoot?.querySelector('#group-options-button') as HTMLButtonElement;
+  }
+
+  private get groupHideButton(): HTMLButtonElement {
+    return this.shadowRoot?.querySelector('#group-hide-button') as HTMLButtonElement;
+  }
+
+  private get groupUnhideButton(): HTMLButtonElement {
+    return this.shadowRoot?.querySelector('#group-unhide-button') as HTMLButtonElement;
   }
 
   public get groupName(): string {
@@ -111,6 +135,7 @@ export class MenulistSupergroupElement extends HTMLElement {
 
   public set groupName(groupName: string) {
     this.groupNameElement.textContent = groupName;
+    this.groupOptionsButton.title = browser.i18n.getMessage('groupOptions', groupName);
   }
 
   public get tabCount(): number {

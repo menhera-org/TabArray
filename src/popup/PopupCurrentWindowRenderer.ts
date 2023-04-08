@@ -39,12 +39,14 @@ import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
 import { ModalMenuElement } from '../components/modal-menu';
 import { SupergroupEditorElement } from '../components/supergroup-editor';
 import { ModalMoveGroupElement } from '../components/modal-move-group';
+import { SupergroupService } from '../tabGroups/SupergroupService';
 
 const tabGroupDirectory = new TabGroupDirectory();
 
 export class PopupCurrentWindowRenderer {
   private readonly popupRenderer: PopupRenderer;
   private readonly userContextVisibilityService = UserContextVisibilityService.getInstance();
+  private readonly supergroupService = SupergroupService.getInstance();
   private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
   public constructor(popupRenderer: PopupRenderer) {
@@ -179,6 +181,7 @@ export class PopupCurrentWindowRenderer {
 
   private renderSupergroup(supergroup: SupergroupType, windowStateSnapshot: WindowStateSnapshot, definedUserContexts: UserContext[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, element: HTMLElement): number {
     let tabCount = 0;
+    const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
     const supergroupElement = new MenulistSupergroupElement();
     supergroupElement.groupName = supergroup.name;
     element.appendChild(supergroupElement);
@@ -208,6 +211,21 @@ export class PopupCurrentWindowRenderer {
     supergroupElement.tabCount = tabCount;
     supergroupElement.onGroupOptionsClick.addListener(() => {
       this.renderSupergroupOptions(supergroup);
+    });
+    supergroupElement.onGroupHide.addListener(() => {
+      this.supergroupService.hideSupergroupOnWindow(tabGroupId, windowStateSnapshot.id).catch((e) => {
+        console.error(e);
+      });
+    });
+    supergroupElement.onGroupUnhide.addListener(() => {
+      this.supergroupService.showSupergroupOnWindow(tabGroupId, windowStateSnapshot.id).catch((e) => {
+        console.error(e);
+      });
+    });
+    supergroupElement.onGroupClose.addListener(() => {
+      this.supergroupService.closeUnpinnedSupergroupTabsOnWindow(tabGroupId, windowStateSnapshot.id).catch((e) => {
+        console.error(e);
+      });
     });
     return tabCount;
   }
