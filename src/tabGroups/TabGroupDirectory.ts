@@ -183,10 +183,12 @@ export class TabGroupDirectory {
   }
 
   public async moveTabGroupToSupergroup(tabGroupId: string, parentTabGroupId: string): Promise<void> {
-    const value = await this.getValue();
+    const snapshot = await this.getSnapshot();
+    const value = snapshot.value;
+    if (snapshot.hasChildTabGroupId(tabGroupId, parentTabGroupId)) return;
     const parentSupergroup = value[parentTabGroupId] as SupergroupType;
     if (!parentSupergroup) return;
-    const currentParentTabGroupId = await this.getParentTabGroupId(tabGroupId) ?? TabGroupDirectory.getRootSupergroupId();
+    const currentParentTabGroupId = snapshot.getParentTabGroupId(tabGroupId) ?? TabGroupDirectory.getRootSupergroupId();
     if (currentParentTabGroupId == parentTabGroupId) return;
     const currentParentSupergroup = value[currentParentTabGroupId] as SupergroupType;
     currentParentSupergroup.members = currentParentSupergroup.members.filter((memberTabGroupId) => memberTabGroupId !== tabGroupId);

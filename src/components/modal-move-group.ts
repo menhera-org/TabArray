@@ -72,9 +72,13 @@ export class ModalMoveGroupElement extends HTMLElement {
 
     this.shadowRoot.appendChild(modalContent);
 
-    tabGroupDirectory.getValue().then((value) => {
+    tabGroupDirectory.getSnapshot().then((snapshot) => {
+      const value = snapshot.value;
       for (const targetTabGroupId in value) {
         if (targetTabGroupId === this._tabGroupId) {
+          continue;
+        }
+        if (snapshot.hasChildTabGroupId(this._tabGroupId, targetTabGroupId)) {
           continue;
         }
         const supergroup = value[targetTabGroupId] as SupergroupType;

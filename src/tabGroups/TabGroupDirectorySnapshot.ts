@@ -52,6 +52,19 @@ export class TabGroupDirectorySnapshot {
     return undefined;
   }
 
+  public hasChildTabGroupId(tabGroupId: string, childTabGroupId: string): boolean {
+    const value = this.value;
+    const supergroup = value[tabGroupId] as SupergroupType;
+    if (!supergroup) return false;
+    if (supergroup.members.includes(childTabGroupId)) return true;
+    for (const memberTabGroupId of supergroup.members) {
+      const attributes = new TabGroupAttributes(memberTabGroupId);
+      if (attributes.tabGroupType == 'cookieStore') continue;
+      if (this.hasChildTabGroupId(memberTabGroupId, childTabGroupId)) return true;
+    }
+    return false;
+  }
+
   public getChildContainers(tabGroupId: string): string[] {
     const value = this.value;
     const supergroup = value[tabGroupId] as SupergroupType;
