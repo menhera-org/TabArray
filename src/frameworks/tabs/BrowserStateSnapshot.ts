@@ -22,6 +22,7 @@
 import browser from 'webextension-polyfill';
 import { ExtensionService } from 'weeg-utils';
 import { SetMap } from 'weeg-types';
+import { CompatTab } from 'weeg-tabs';
 
 import { TabGroupDirectory } from '../../tabGroups/TabGroupDirectory';
 import { UserContext } from '../tabGroups';
@@ -31,6 +32,7 @@ import { FirstPartyService } from '../tabGroups';
 import { ContainerAttributes, ContextualIdentity, CookieStore } from '../tabAttributes';
 import { ContainersStateSnapshot } from './ContainersStateSnapshot';
 import { TabGroupDirectorySnapshot } from '../../tabGroups/TabGroupDirectorySnapshot';
+import { TabAttributeMap } from '../../tabGroups/TabAttributeMap';
 
 const tabGroupDirectory = new TabGroupDirectory();
 const firstPartyService = FirstPartyService.getInstance();
@@ -65,12 +67,23 @@ export class BrowserStateSnapshot {
     if (null == currentBrowserWindow.id) {
       throw new Error('currentBrowserWindow.id is null');
     }
-    return new BrowserStateSnapshot(userContexts, browserWindows, currentBrowserWindow.id, containerAttributesList, enabledInPrivateBrowsing, tabGroupDirectorySnapshot);
+    const compatTabMap = new Map<number, CompatTab>();
+    for (const browserWindow of browserWindows) {
+      if (browserWindow.tabs == null) continue;
+      for (const browserTab of browserWindow.tabs) {
+        if (browserTab.id == null) continue;
+        compatTabMap.set(browserTab.id, new CompatTab(browserTab));
+      }
+    }
+
+    const tabAttributeMap = await TabAttributeMap.create(compatTabMap.values());
+    return new BrowserStateSnapshot(userContexts, browserWindows, currentBrowserWindow.id, containerAttributesList, enabledInPrivateBrowsing, tabGroupDirectorySnapshot, tabAttributeMap);
   }
 
   public readonly currentWindowId: number;
   public readonly enabledInPrivateBrowsing;
 
+  private readonly _tabAttributeMap: TabAttributeMap;
   private readonly _tabMap: Map<number, Tab> = new Map();
   private readonly _tabIds: number[];
   private readonly _tabsByWindow: Map<number, Tab[]> = new Map();
@@ -81,10 +94,11 @@ export class BrowserStateSnapshot {
   private readonly _containersStateSnapshot: ContainersStateSnapshot;
   private readonly _tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
 
-  public constructor(userContexts: UserContext[], browserWindows: browser.Windows.Window[], currentWindowId: number, containerAttributesList: ContainerAttributes[], enabledInPrivateBrowsing: boolean, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot) {
+  public constructor(userContexts: UserContext[], browserWindows: browser.Windows.Window[], currentWindowId: number, containerAttributesList: ContainerAttributes[], enabledInPrivateBrowsing: boolean, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap) {
     this.currentWindowId = currentWindowId;
     this._definedUserContexts = userContexts;
     this.enabledInPrivateBrowsing = enabledInPrivateBrowsing;
+    this._tabAttributeMap = tabAttributeMap;
     const tabs: Tab[] = [];
     for (const browserWindow of browserWindows) {
       if (browserWindow.tabs == null || browserWindow.id == null) {
@@ -145,5 +159,9 @@ export class BrowserStateSnapshot {
 
   public getTabGroupDirectorySnapshot(): TabGroupDirectorySnapshot {
     return this._tabGroupDirectorySnapshot;
+  }
+
+  public getTabAttributeMap(): TabAttributeMap {
+    return this._tabAttributeMap;
   }
 }
