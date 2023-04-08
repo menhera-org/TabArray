@@ -21,6 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
+import { Uint32 } from "weeg-types";
 
 import * as containers from '../modules/containers';
 import { IndexTab } from '../modules/IndexTab';
@@ -29,7 +30,6 @@ import { Tab } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { config } from '../config/config';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
-import { Uint32 } from "weeg-types";
 import { InitialWindowsService } from './InitialWindowsService';
 
 const tabGroupService = TabGroupService.getInstance();
@@ -40,21 +40,28 @@ const indexTabUserContextMap = new Map<number, Uint32.Uint32>();
 browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) => {
   if (isWindowClosing) return;
 
-  const indexTabUserContextId = indexTabUserContextMap.get(tabId);
-  const isIndexTab = await userContextVisibilityService.isIndexTab(tabId);
-  if (indexTabUserContextId != undefined && isIndexTab) {
-    indexTabUserContextMap.delete(tabId);
-    // index closed, close all tabs of that group
-    console.log('index tab %d closed on window %d, close all tabs of that group %d', tabId, windowId, indexTabUserContextId);
-    await containers.closeAllTabsOnWindow(indexTabUserContextId, windowId);
-    return;
+  try {
+    const indexTabUserContextId = indexTabUserContextMap.get(tabId);
+    if (indexTabUserContextId != undefined) {
+      indexTabUserContextMap.delete(tabId);
+      // index closed, close all tabs of that group
+      console.log('index tab %d closed on window %d, close all tabs of that group %d', tabId, windowId, indexTabUserContextId);
+      await containers.closeAllTabsOnWindow(indexTabUserContextId, windowId);
+      return;
+    }
+  } catch (e) {
+    console.error(e);
   }
 
   const list = await WindowUserContextList.create(windowId);
   for (const userContext of list.getOpenUserContexts()) {
     const tabs = [... list.getUserContextTabs(userContext.id)];
 
-    // if the only remaining tab is the index tab, close it
+    if (tabs[0] && tabs.length == 1) {
+      console.debug('only one tab left in userContext %d', userContext.id, tabs[0]);
+    }
+
+    // if the only remaining tab is an index tab, close it
     if (tabs[0] && tabs.length == 1 && IndexTab.isIndexTabUrl(tabs[0].url)) {
       await userContextVisibilityService.unregisterIndexTab(tabs[0].id);
       await tabs[0].close();
