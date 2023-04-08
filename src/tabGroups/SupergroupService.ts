@@ -24,6 +24,7 @@ import { CookieStore } from "weeg-containers";
 import { TabGroupDirectory } from "./TabGroupDirectory";
 import { UserContextVisibilityService } from "../userContexts/UserContextVisibilityService";
 import * as containers from '../modules/containers';
+import { OriginAttributes, TabGroup } from "../frameworks/tabGroups";
 
 const tabGroupDirectory = new TabGroupDirectory();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
@@ -71,6 +72,16 @@ export class SupergroupService {
       promises.push(containers.closeAllTabsOnWindow(cookieStore.userContextId, windowId).catch(() => {
         // ignore (errors for private windows)
       }));
+    }
+    await Promise.all(promises);
+  }
+
+  public async closeUnpinnedSupergroupTabs(tabGroupId: string): Promise<void> {
+    const childContainers = await tabGroupDirectory.getChildContainers(tabGroupId);
+    const promises: Promise<void>[] = [];
+    for (const childContainer of childContainers) {
+      const originAttributes = OriginAttributes.fromCookieStoreId(childContainer);
+      promises.push(TabGroup.createTabGroup(originAttributes).then((tabGroup) => tabGroup.tabList.closeUnpinnedTabs()));
     }
     await Promise.all(promises);
   }

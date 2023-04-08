@@ -137,7 +137,7 @@ export class PopupCurrentWindowRenderer {
     return containerElement;
   }
 
-  private renderSupergroupOptions(supergroup: SupergroupType): void {
+  public renderSupergroupOptions(supergroup: SupergroupType): void {
     const title = browser.i18n.getMessage('groupOptions', supergroup.name);
     const modalMenuElement = new ModalMenuElement(title);
     modalMenuElement.defineAction('edit', browser.i18n.getMessage('buttonEditGroup'), false);

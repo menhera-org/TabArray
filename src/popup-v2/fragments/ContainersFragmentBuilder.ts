@@ -34,6 +34,7 @@ import { TemporaryContainerService } from "../../containers/TemporaryContainerSe
 import { SupergroupType, TabGroupDirectory } from "../../tabGroups/TabGroupDirectory";
 import { TabGroupAttributes } from "../../tabGroups/TabGroupAttributes";
 import { MenulistSupergroupElement } from "../../components/menulist-supergroup";
+import { SupergroupService } from "../../tabGroups/SupergroupService";
 
 export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onContainerSelected = new EventSink<string>();
@@ -41,6 +42,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   private _containerCount = 0;
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
+  private readonly _supergroupService = SupergroupService.getInstance();
 
   public getFragmentId(): string {
     return 'fragment-containers';
@@ -174,6 +176,16 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
         supergroupElement.groupHideButton.disabled = true;
         supergroupElement.groupUnhideButton.disabled = true;
         tabCount += subTabCount;
+
+        supergroupElement.onGroupOptionsClick.addListener(() => {
+          this._popupRenderer.currentWindowRenderer.renderSupergroupOptions(supergroup);
+        });
+
+        supergroupElement.onGroupClose.addListener(() => {
+          this._supergroupService.closeUnpinnedSupergroupTabs(tabGroupId).catch((e) => {
+            console.error(e);
+          });
+        })
       }
     }
     return tabCount;
