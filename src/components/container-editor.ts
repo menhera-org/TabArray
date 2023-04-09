@@ -106,7 +106,8 @@ export class ContainerEditorElement extends HTMLElement {
     });
 
     okButton.addEventListener('click', async () => {
-      const name = input.value;
+      const name = input.value.trim().replace(/^\s*|\s*$/gu, '');
+      if ('' == name) return;
       const icon = iconPicker.value;
       const color = colorPicker.value;
       if (this._mode === 'create') {
