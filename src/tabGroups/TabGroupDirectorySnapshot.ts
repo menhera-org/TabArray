@@ -19,10 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CompatTab } from "weeg-tabs";
-
 import { TabGroupDirectory, StorageType, SupergroupType } from "./TabGroupDirectory";
-import { IndexTab } from "../modules/IndexTab";
 import { TabGroupAttributes } from "./TabGroupAttributes";
 
 export class TabGroupDirectorySnapshot {
@@ -95,28 +92,6 @@ export class TabGroupDirectorySnapshot {
       }
     }
     return tabGroupIds;
-  }
-
-  public sortTabs(tabs: Iterable<CompatTab>): CompatTab[] {
-    const tabGroupIds = this.getContainerOrder();
-    const tabArray = [... tabs];
-    tabArray.sort((a, b) => {
-      const aIndex = tabGroupIds.indexOf(a.cookieStore.id);
-      const bIndex = tabGroupIds.indexOf(b.cookieStore.id);
-      if (aIndex != bIndex) {
-        if (aIndex == -1) return 1;
-        if (bIndex == -1) return -1;
-      } else {
-        if (IndexTab.isIndexTabUrl(a.url)) {
-          return -1;
-        }
-        if (IndexTab.isIndexTabUrl(b.url)) {
-          return 1;
-        }
-      }
-      return aIndex - bIndex;
-    });
-    return tabArray;
   }
 
   public cookieStoreIdSortingCallback(a: string, b: string): number {

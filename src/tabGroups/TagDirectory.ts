@@ -20,6 +20,7 @@
 */
 
 import { StorageItem } from "weeg-storage";
+import { EventSink } from "weeg-events";
 
 import { TagDirectorySnapshot } from "./TagDirectorySnapshot";
 
@@ -33,7 +34,13 @@ export type TagStorageType = {
 };
 
 export class TagDirectory {
+  public readonly onChanged = new EventSink<void>();
+
   private readonly _storage = new StorageItem<TagStorageType>("tagDirectory", {}, StorageItem.AREA_LOCAL);
+
+  public constructor() {
+    this._storage.onChanged.addListener(() => this.onChanged.dispatch());
+  }
 
   public async getValue(): Promise<TagStorageType> {
     return this._storage.getValue();

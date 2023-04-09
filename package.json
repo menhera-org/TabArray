@@ -35,7 +35,7 @@
     "weeg-domains": "^0.4.0",
     "weeg-events": "^0.3.0",
     "weeg-storage": "^0.4.0",
-    "weeg-tabs": "^0.9.0",
+    "weeg-tabs": "^0.10.0",
     "weeg-types": "^0.2.0",
     "weeg-utils": "^0.6.0"
   }

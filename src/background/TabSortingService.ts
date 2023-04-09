@@ -24,11 +24,11 @@ import browser from 'webextension-polyfill';
 import { MessagingService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 
-import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
+import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
 import { getWindowIds } from '../modules/windows';
 import { config } from '../config/config';
 
-const tabGroupDirectory = new TabGroupDirectory();
+const tabSortingProvider = new TabSortingProvider();
 const messagingService = MessagingService.getInstance();
 
 let tabSorting = false;
@@ -42,8 +42,7 @@ const sortTabsByWindow = async (windowId: number) => {
     let sortedTabs = tabs.filter(tab => !tab.pinned);
 
     const origTabIdList = sortedTabs.map(tab => tab.id);
-    const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
-    sortedTabs = tabGroupDirectorySnapshot.sortTabs(sortedTabs);
+    sortedTabs = await tabSortingProvider.getTabSortingOrder(sortedTabs);
     const targetTabIdList = sortedTabs.map(tab => tab.id);
 
     const diffs = diffArrays(origTabIdList, targetTabIdList);
@@ -117,7 +116,7 @@ const sortTabs = async () => {
   }
 };
 
-tabGroupDirectory.onChanged.addListener(sortTabs);
+tabSortingProvider.onChanged.addListener(sortTabs);
 
 export class TabSortingService {
   private static readonly INSTANCE = new TabSortingService();

@@ -80,4 +80,8 @@ export class TabAttributeMap {
     if (tagId == null) return undefined;
     return this._snapshot.getTag(tagId);
   }
+
+  public getTagDirectorySnapshot(): TagDirectorySnapshot {
+    return this._snapshot;
+  }
 }
