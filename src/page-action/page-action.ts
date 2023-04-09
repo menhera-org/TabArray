@@ -24,7 +24,7 @@ import { ContainerAttributes, ContextualIdentity, CookieStore } from '../framewo
 import { UserContext } from '../frameworks/tabGroups';
 import { Uint32 } from "weeg-types";
 import { UserContextService } from '../userContexts/UserContextService';
-import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
+import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 
 type ContainerInfo = {
   cookieStoreId: string;

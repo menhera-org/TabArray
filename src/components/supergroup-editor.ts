@@ -22,8 +22,8 @@
 import browser from 'webextension-polyfill';
 import { EventSink } from 'weeg-events';
 
-import { TabGroupDirectory, SupergroupType } from '../tabGroups/TabGroupDirectory';
-import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
+import { TabGroupDirectory, SupergroupType } from '../lib/tabGroups/TabGroupDirectory';
+import { TabGroupAttributes } from '../lib/tabGroups/TabGroupAttributes';
 
 export type EditorMode = 'create' | 'edit';
 

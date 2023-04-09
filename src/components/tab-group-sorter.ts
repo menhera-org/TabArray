@@ -22,11 +22,11 @@
 import browser from 'webextension-polyfill';
 import { CookieStore, DisplayedContainer } from 'weeg-containers';
 
-import { SupergroupType, TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
+import { SupergroupType, TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
-import { ContextualIdentityService } from '../tabGroups/ContextualIdentityService';
-import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
-import { TabGroupDirectorySnapshot } from '../tabGroups/TabGroupDirectorySnapshot';
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
+import { TabGroupAttributes } from '../lib/tabGroups/TabGroupAttributes';
+import { TabGroupDirectorySnapshot } from '../lib/tabGroups/TabGroupDirectorySnapshot';
 
 export class TabGroupSorterElement extends HTMLElement {
   private readonly _cookieAutocleanService = CookieAutocleanService.getInstance();

@@ -21,7 +21,7 @@
 
 import { ContainerAttributes } from "../tabAttributes";
 import { Tab } from "./Tab";
-import { TabGroupDirectorySnapshot } from "../../tabGroups/TabGroupDirectorySnapshot";
+import { TabGroupDirectorySnapshot } from "../../lib/tabGroups/TabGroupDirectorySnapshot";
 
 export class ContainersStateSnapshot {
   public readonly containerAttributesList: readonly ContainerAttributes[];

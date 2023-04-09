@@ -28,7 +28,7 @@ import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
 import { Tab } from '../frameworks/tabs';
 import { WindowService } from '../frameworks/tabs/WindowService';
-import { ContextualIdentityService } from '../tabGroups/ContextualIdentityService';
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
 //import { OriginAttributes } from '../frameworks/tabGroups';
 //import { TabGroup } from '../frameworks/tabGroups';
 

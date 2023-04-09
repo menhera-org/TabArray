@@ -24,7 +24,7 @@ import browser from 'webextension-polyfill';
 import { MessagingService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 
-import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
+import { TabSortingProvider } from '../lib/tabGroups/TabSortingProvider';
 import { getWindowIds } from '../modules/windows';
 import { config } from '../config/config';
 

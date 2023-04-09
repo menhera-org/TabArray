@@ -31,7 +31,7 @@ import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { ContainerEditorElement } from '../components/container-editor';
 import { TemporaryContainerService } from '../containers/TemporaryContainerService';
-import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
+import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 
 const extensionService = ExtensionService.getInstance();
 const privateBrowsingService = PrivateBrowsingService.getInstance();

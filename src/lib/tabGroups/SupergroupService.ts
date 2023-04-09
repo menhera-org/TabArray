@@ -23,10 +23,10 @@ import { ContextualIdentity, ContextualIdentityParams, CookieStore } from "weeg-
 
 import { ContextualIdentityService } from "./ContextualIdentityService";
 import { TabGroupDirectory } from "./TabGroupDirectory";
-import { UserContextVisibilityService } from "../userContexts/UserContextVisibilityService";
-import * as containers from '../modules/containers';
-import { OriginAttributes, TabGroup } from "../frameworks/tabGroups";
-import { TemporaryContainerService } from "../containers/TemporaryContainerService";
+import { UserContextVisibilityService } from "../../userContexts/UserContextVisibilityService";
+import * as containers from '../../modules/containers';
+import { OriginAttributes, TabGroup } from "../../frameworks/tabGroups";
+import { TemporaryContainerService } from "../../containers/TemporaryContainerService";
 
 const tabGroupDirectory = new TabGroupDirectory();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();

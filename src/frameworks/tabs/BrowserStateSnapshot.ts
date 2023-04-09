@@ -24,15 +24,15 @@ import { ExtensionService } from 'weeg-utils';
 import { SetMap } from 'weeg-types';
 import { CompatTab } from 'weeg-tabs';
 
-import { TabGroupDirectory } from '../../tabGroups/TabGroupDirectory';
+import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { UserContext } from '../tabGroups';
 import { Tab } from './Tab';
 import { WindowStateSnapshot } from './WindowStateSnapshot';
 import { FirstPartyService } from '../tabGroups';
 import { ContainerAttributes, ContextualIdentity, CookieStore } from '../tabAttributes';
 import { ContainersStateSnapshot } from './ContainersStateSnapshot';
-import { TabGroupDirectorySnapshot } from '../../tabGroups/TabGroupDirectorySnapshot';
-import { TabAttributeMap } from '../../tabGroups/TabAttributeMap';
+import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
+import { TabAttributeMap } from '../../lib/tabGroups/TabAttributeMap';
 
 const tabGroupDirectory = new TabGroupDirectory();
 const firstPartyService = FirstPartyService.getInstance();

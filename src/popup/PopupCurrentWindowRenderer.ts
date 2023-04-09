@@ -23,8 +23,8 @@ import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
 import { CookieStore } from 'weeg-containers';
 
-import { TabGroupDirectorySnapshot } from '../tabGroups/TabGroupDirectorySnapshot';
-import { SupergroupType, TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
+import { TabGroupDirectorySnapshot } from '../lib/tabGroups/TabGroupDirectorySnapshot';
+import { SupergroupType, TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 import { PopupRenderer } from './PopupRenderer';
 import { MenulistWindowElement } from '../components/menulist-window';
 import * as containers from '../modules/containers';
@@ -34,11 +34,11 @@ import { WindowStateSnapshot } from '../frameworks/tabs/WindowStateSnapshot';
 import { MenulistContainerElement } from '../components/menulist-container';
 import { MenulistSupergroupElement } from '../components/menulist-supergroup';
 import { Tab } from '../frameworks/tabs';
-import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
+import { TabGroupAttributes } from '../lib/tabGroups/TabGroupAttributes';
 import { ModalMenuElement } from '../components/modal-menu';
 import { SupergroupEditorElement } from '../components/supergroup-editor';
 import { ModalMoveGroupElement } from '../components/modal-move-group';
-import { SupergroupService } from '../tabGroups/SupergroupService';
+import { SupergroupService } from '../lib/tabGroups/SupergroupService';
 import { ContainerEditorElement } from '../components/container-editor';
 
 const tabGroupDirectory = new TabGroupDirectory();

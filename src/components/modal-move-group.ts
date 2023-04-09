@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { EventSink } from 'weeg-events';
 
-import { TabGroupDirectory, SupergroupType } from '../tabGroups/TabGroupDirectory';
+import { TabGroupDirectory, SupergroupType } from '../lib/tabGroups/TabGroupDirectory';
 
 const tabGroupDirectory = new TabGroupDirectory();
 

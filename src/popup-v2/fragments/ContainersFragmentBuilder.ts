@@ -31,10 +31,10 @@ import { ContainersStateSnapshot } from "../../frameworks/tabs/ContainersStateSn
 import { PopupRendererService } from "../PopupRendererService";
 import { OriginAttributes, TabGroup, UserContext } from "../../frameworks/tabGroups";
 import { TemporaryContainerService } from "../../containers/TemporaryContainerService";
-import { SupergroupType, TabGroupDirectory } from "../../tabGroups/TabGroupDirectory";
-import { TabGroupAttributes } from "../../tabGroups/TabGroupAttributes";
+import { SupergroupType, TabGroupDirectory } from "../../lib/tabGroups/TabGroupDirectory";
+import { TabGroupAttributes } from "../../lib/tabGroups/TabGroupAttributes";
 import { MenulistSupergroupElement } from "../../components/menulist-supergroup";
-import { SupergroupService } from "../../tabGroups/SupergroupService";
+import { SupergroupService } from "../../lib/tabGroups/SupergroupService";
 
 export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onContainerSelected = new EventSink<string>();

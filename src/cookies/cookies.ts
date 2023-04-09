@@ -28,7 +28,7 @@ import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { ContentStorageStatistics } from './ContentStorageStatistics';
 import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
-import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
+import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 
 const userContextService = UserContextService.getInstance();
 const privateBrowsingService = PrivateBrowsingService.getInstance();

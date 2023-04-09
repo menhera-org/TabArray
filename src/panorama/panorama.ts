@@ -40,7 +40,7 @@ import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
 import { ModalFrameElement } from '../components/modal-frame';
 import { HelpBannerElement } from '../components/help-banner';
 import { TemporaryContainerService } from '../containers/TemporaryContainerService';
-import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
+import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 
 const panoramaStateStore = new PanoramaStateStore();
 const userContextService = UserContextService.getInstance();

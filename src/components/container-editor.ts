@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 import { MessagingService } from 'weeg-utils';
 import { EventSink } from 'weeg-events';
 
-import { SupergroupService } from '../tabGroups/SupergroupService';
+import { SupergroupService } from '../lib/tabGroups/SupergroupService';
 import { ContainerAttributes } from '../frameworks/tabAttributes';
 import { ColorPickerElement } from './usercontext-colorpicker';
 import { IconPickerElement } from './usercontext-iconpicker';

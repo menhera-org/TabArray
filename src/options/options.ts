@@ -25,7 +25,7 @@ import { UserContextService } from '../userContexts/UserContextService';
 import { ContainerOverridesElement } from '../components/container-overrides';
 import './options-i18n';
 import { TabGroupSorterElement } from '../components/tab-group-sorter';
-import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
+import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 
 interface HTMLFormInput extends HTMLElement {
   value: string;

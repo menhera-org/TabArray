@@ -48,7 +48,7 @@ import { ViewRefreshHandler } from "../frameworks/rendering/ViewRefreshHandler";
 import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
 import { config, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
-import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
+import { TabGroupDirectory } from "../lib/tabGroups/TabGroupDirectory";
 
 import { PopupRendererService } from "./PopupRendererService";
 import { PopupFocusHandlers } from "./PopupFocusHandlers";
