@@ -153,6 +153,9 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
         const containerElement = this._popupRenderer.renderPartialContainerElement(userContext, isPrivate);
         containerElement.tabCount = tabs.length;
         tabCount += tabs.length;
+        if (tabs.length < 1) {
+          containerElement.style.opacity = '0.75';
+        }
         parentElement.appendChild(containerElement);
 
         containerElement.onContainerClose.addListener(async () => {
