@@ -1,1 +1,1 @@
-{"version":"11.5.0","name":"container-tab-groups","dependencies":{"webextension-polyfill":{"version":"0.10.0"}}}
+{"version":"11.6.0","name":"container-tab-groups","dependencies":{"@types/diff":{"version":"5.0.3"},"diff":{"version":"5.1.0"},"webextension-polyfill":{"version":"0.10.0"},"weeg-containers":{"version":"0.6.0"},"weeg-domains":{"version":"0.4.0"},"weeg-events":{"version":"0.3.0"},"weeg-storage":{"version":"0.4.0"},"weeg-tabs":{"version":"0.11.0"},"weeg-types":{"version":"0.2.0"},"weeg-utils":{"version":"0.6.0"}}}

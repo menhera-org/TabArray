@@ -24,7 +24,7 @@ import { ContainerAttributes, ContextualIdentity, CookieStore } from '../framewo
 import { UserContext } from '../frameworks/tabGroups';
 import { Uint32 } from "weeg-types";
 import { UserContextService } from '../userContexts/UserContextService';
-import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
+import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
 
 type ContainerInfo = {
   cookieStoreId: string;
@@ -33,9 +33,9 @@ type ContainerInfo = {
 };
 
 const userContextService = UserContextService.getInstance();
-const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 const extensionService = ExtensionService.getInstance();
 const messagingService = MessagingService.getInstance();
+const tabGroupDirectory = new TabGroupDirectory();
 
 const mainElement = document.querySelector('#main');
 
@@ -56,8 +56,10 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
   const currentCookieStoreId = currentBrowserTab?.cookieStoreId;
   const userContexts = await UserContext.getAll();
   const filledUserContexts = userContexts.map((userContext) => userContextService.fillDefaultValues(userContext));
-  await userContextSortingOrderStore.initialized;
-  const sortedUserContext = userContextSortingOrderStore.sort(filledUserContexts).filter((userContext) => userContext.id !== UserContext.ID_DEFAULT);
+  const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
+  const sortedUserContexts = [... filledUserContexts].sort((a, b) => {
+    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+  }).filter((userContext) => userContext.id !== UserContext.ID_DEFAULT);
   const defaultContainer = CookieStore.DEFAULT;
   const privateBrowsingContainer = CookieStore.PRIVATE;
   const privateBrowsingContainerInfos = await extensionService.isAllowedInPrivateBrowsing() ? [
@@ -73,7 +75,7 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
       name: browser.i18n.getMessage('noContainer'),
       iconUrl: '',
     },
-    ... sortedUserContext.map((userContext) => {
+    ... sortedUserContexts.map((userContext) => {
       const contextualIdentity = new ContextualIdentity({
         userContextId: userContext.id,
         privateBrowsingId: 0 as Uint32.Uint32,

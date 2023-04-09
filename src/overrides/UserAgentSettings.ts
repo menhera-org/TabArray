@@ -21,7 +21,6 @@
 
 import { StorageItem } from "weeg-storage";
 import { EventSink } from "weeg-events";
-import { OriginAttributes } from '../frameworks/tabGroups';
 import { ChromiumReleaseService } from "./ChromiumReleaseService";
 
 export type UserAgentPreset = 'default' | 'chrome' | 'googlebot' | 'custom';
@@ -56,10 +55,6 @@ export class UserAgentSettings {
       this._value = newValue;
       this.onChanged.dispatch();
     }, true);
-  }
-
-  private originAttributesToKey(originAttributes: OriginAttributes): string {
-    return originAttributes.cookieStoreId;
   }
 
   private save() {
