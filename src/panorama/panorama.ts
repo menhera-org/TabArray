@@ -33,7 +33,6 @@ import { UserContext } from "../frameworks/tabGroups";
 import * as i18n from '../modules/i18n';
 import { WindowService } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
-import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { CookieStore, ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
 import { ContainerEditorElement } from '../components/container-editor';
 import { ModalConfirmElement } from '../components/modal-confirm';
@@ -41,14 +40,15 @@ import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
 import { ModalFrameElement } from '../components/modal-frame';
 import { HelpBannerElement } from '../components/help-banner';
 import { TemporaryContainerService } from '../containers/TemporaryContainerService';
+import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
 
 const panoramaStateStore = new PanoramaStateStore();
 const userContextService = UserContextService.getInstance();
 const windowService = WindowService.getInstance();
 const tabGroupService = TabGroupService.getInstance();
-const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 const messagingService = MessagingService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
+const tabGroupDirectory = new TabGroupDirectory();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -234,10 +234,11 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
 
 const render = async () => {
   console.log('render()');
-  await userContextSortingOrderStore.initialized;
+  const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
   const isPrivate = await windowService.isPrivateWindow(browser.windows.WINDOW_ID_CURRENT);
-  const userContexts = userContextSortingOrderStore.sort(await UserContext.getAll(isPrivate))
-    .map((userContext) => userContextService.fillDefaultValues(userContext));
+  const userContexts = [... await UserContext.getAll(isPrivate)].sort((a, b) => {
+    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+  }).map((userContext) => userContextService.fillDefaultValues(userContext));
   const containerElements = await Promise.all(userContexts.map((userContext) => renderContainer(userContext, isPrivate)));
   const nonemptyContainerElements = containerElements.filter((containerElement) => containerElement.tabCount > 0);
   const emptyContainerElements = containerElements.filter((containerElement) => containerElement.tabCount === 0);

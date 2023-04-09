@@ -30,7 +30,6 @@ import { MenulistWindowElement } from '../components/menulist-window';
 import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { OriginAttributes, UserContext, TabGroup } from '../frameworks/tabGroups';
-import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { WindowStateSnapshot } from '../frameworks/tabs/WindowStateSnapshot';
 import { MenulistContainerElement } from '../components/menulist-container';
 import { MenulistSupergroupElement } from '../components/menulist-supergroup';
@@ -48,7 +47,6 @@ export class PopupCurrentWindowRenderer {
   private readonly popupRenderer: PopupRenderer;
   private readonly userContextVisibilityService = UserContextVisibilityService.getInstance();
   private readonly supergroupService = SupergroupService.getInstance();
-  private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 
   public constructor(popupRenderer: PopupRenderer) {
     this.popupRenderer = popupRenderer;

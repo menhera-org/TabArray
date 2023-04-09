@@ -29,14 +29,14 @@ import { UserContext } from '../frameworks/tabGroups';
 import * as containers from '../modules/containers';
 import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
-import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { ContainerEditorElement } from '../components/container-editor';
 import { TemporaryContainerService } from '../containers/TemporaryContainerService';
+import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
 
 const extensionService = ExtensionService.getInstance();
 const privateBrowsingService = PrivateBrowsingService.getInstance();
-const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
+const tabGroupDirectory = new TabGroupDirectory();
 
 const params = new URLSearchParams(location.search);
 
@@ -58,7 +58,6 @@ new URL(url); // throws for invalid urls
 if (!containersElement || !headingElement || !descriptionElement || !promptElement || !settingsButton) {
   throw new Error('Missing elements');
 }
-
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = i18n.getMessage('titleSelectContainer');
@@ -170,7 +169,7 @@ const createUserContextElement = (userContext: UserContext) => {
 };
 
 UserContext.getAll().then(async (userContexts) => {
-  await userContextSortingOrderStore.initialized;
+  const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
   const privateBrowsingSupported = await extensionService.isAllowedInPrivateBrowsing();
   if (privateBrowsingSupported) {
     const privateBrowsingButton = createPrivateBrowsingButton();
@@ -201,7 +200,9 @@ UserContext.getAll().then(async (userContexts) => {
     const identity = await temporaryContainerService.createTemporaryContainer();
     reopenInContainer(identity.id);
   });
-  userContextSortingOrderStore.sort(userContexts).forEach(createUserContextElement);
+  [... userContexts].sort((a, b) => {
+    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+  }).forEach(createUserContextElement);
 });
 
 UserContext.onCreated.addListener(createUserContextElement);

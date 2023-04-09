@@ -24,9 +24,9 @@ import { CookieStore } from "weeg-containers";
 import { EventSink } from "weeg-events";
 import { Uint32 } from "weeg-types";
 
-import { UserContextSortingOrderStore } from "../userContexts/UserContextSortingOrderStore";
 import { TabGroupAttributes } from "./TabGroupAttributes";
 import { TabGroupDirectorySnapshot } from "./TabGroupDirectorySnapshot";
+import { ContextualIdentityService } from "./ContextualIdentityService";
 
 // this is not applicable to private windows.
 
@@ -44,23 +44,65 @@ export type StorageType = {
  * In background pages, this must be instantiated on the first event loop of execution.
  */
 export class TabGroupDirectory {
+  private static readonly STORAGE_KEY = 'tabGroupDirectory';
+  private static readonly LEGACY_STORAGE_KEY = 'userContextSortingOrder';
+
   public readonly onChanged = new EventSink<void>();
 
-  private readonly storage = new StorageItem<StorageType>('tabGroupDirectory', {}, StorageItem.AREA_LOCAL);
-  private readonly userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
+  private readonly storage = new StorageItem<StorageType>(TabGroupDirectory.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
+  private readonly legacyStorage = new StorageItem<Uint32.Uint32[]>(TabGroupDirectory.LEGACY_STORAGE_KEY, [], StorageItem.AREA_LOCAL);
+  private readonly contextualIdentityService = ContextualIdentityService.getInstance();
 
   public constructor() {
     this.storage.onChanged.addListener(() => this.onChanged.dispatch());
-    this.userContextSortingOrderStore.onChanged.addListener(() => this.onChanged.dispatch());
+    this.legacyStorage.onChanged.addListener(() => this.onChanged.dispatch());
   }
 
   public static getRootSupergroupId(): string {
     return TabGroupAttributes.getTabGroupIdFromSupergroupId(0);
   }
 
+  private async getLegacyUserContextOrder(): Promise<Uint32.Uint32[]> {
+    const value = await this.legacyStorage.getValue();
+    return value;
+  }
+
+  /**
+   * Returns non-private cookie stores by userContextId.
+   */
+  private async getDefinedUserContextIds(): Promise<Uint32.Uint32[]> {
+    const contextualIdentityFactory = this.contextualIdentityService.getFactory();
+    const contextualIdentities = await contextualIdentityFactory.getAll();
+    const userContextIds = contextualIdentities.map((contextualIdentity) => contextualIdentity.cookieStore.userContextId);
+    return [
+      0 as Uint32.Uint32,
+      ... userContextIds,
+    ];
+  }
+
+  private async getLegacyUserContextOrderSorted(): Promise<Uint32.Uint32[]> {
+    const order = await this.getLegacyUserContextOrder();
+    const userContextIds = await this.getDefinedUserContextIds();
+    userContextIds.sort((a: Uint32.Uint32, b: Uint32.Uint32): number => {
+      const aIndex = order.indexOf(a);
+      const bIndex = order.indexOf(b);
+      if (aIndex < 0 && bIndex < 0) {
+        return a - b;
+      }
+      if (aIndex < 0) {
+        return 1;
+      }
+      if (bIndex < 0) {
+        return -1;
+      }
+      return aIndex - bIndex;
+    });
+    return userContextIds;
+  }
+
   public async getValue(): Promise<StorageType> {
     const value = await this.storage.getValue();
-    const userContextIds = await this.userContextSortingOrderStore.getOrder();
+    const userContextIds = await this.getLegacyUserContextOrderSorted();
     const cookieStoreIds = userContextIds.map((userContextId) => CookieStore.fromParams({ userContextId, privateBrowsingId: 0 as Uint32.Uint32 }).id);
     const rootSupergroupId = TabGroupDirectory.getRootSupergroupId();
     if (!(rootSupergroupId in value)) {
