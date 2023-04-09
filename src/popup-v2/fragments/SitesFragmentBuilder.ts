@@ -86,12 +86,17 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
 
       siteElement.onSiteCloseClicked.addListener(async () => {
         const siteDomain = domain;
-        const tabGroup = new CompatTabGroup(new DomainTabGroupFilter(siteDomain));
-        const tabs = await tabGroup.getTabs();
-        const tabIds = tabs.map((tab) => tab.id);
-        browser.tabs.remove(tabIds).catch((e) => {
+        try {
+          const tabGroup = new CompatTabGroup(new DomainTabGroupFilter(siteDomain));
+          const tabs = await tabGroup.getTabs();
+          const tabIds = tabs.map((tab) => tab.id);
+          console.info(`Closing ${tabIds.length} tabs for ${siteDomain}...`);
+          browser.tabs.remove(tabIds).catch((e) => {
+            console.error(e);
+          });
+        } catch (e) {
           console.error(e);
-        });
+        }
       });
     }
   }

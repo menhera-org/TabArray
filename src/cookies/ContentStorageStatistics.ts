@@ -21,8 +21,9 @@
 
 import { StorageItem } from "weeg-storage";
 import { EventSink } from "weeg-events";
+
+import { ExternalServiceProvider } from "../lib/ExternalServiceProvider";
 import { CookieProvider } from "../frameworks/cookies";
-import { HostnameService, RegistrableDomainService } from "weeg-domains";
 import { ContextualIdentity } from "../frameworks/tabAttributes";
 
 export type OriginStorageStatistics = {
@@ -48,8 +49,9 @@ export type StorageType = {
 export class ContentStorageStatistics {
   private static readonly _STORAGE_KEY = 'content.storage.statistics.firstPartyIsolated';
   private readonly _storageItem = new StorageItem<StorageType>(ContentStorageStatistics._STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
-  private readonly _registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
-  private readonly _hostnameService = HostnameService.getInstance();
+  private readonly _serviceProvider = ExternalServiceProvider.getInstance();
+  private readonly _registrableDomainService = this._serviceProvider.registrableDomainService;
+  private readonly _hostnameService = this._serviceProvider.hostnameService;
 
   public readonly cookieProvider = new CookieProvider();
   public readonly onChanged = new EventSink<void>();

@@ -49,6 +49,7 @@ import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
 import { config, privacyConfig } from '../config/config';
 import { ConfigurationOption } from '../frameworks/config';
 import { TabGroupDirectory } from "../lib/tabGroups/TabGroupDirectory";
+import { ExternalServiceProvider } from "../lib/ExternalServiceProvider";
 
 import { PopupRendererService } from "./PopupRendererService";
 import { PopupFocusHandlers } from "./PopupFocusHandlers";
@@ -62,6 +63,7 @@ if (searchParams.get('popup') == '1') {
   }
 }
 
+ExternalServiceProvider.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
 const popupRenderer = PopupRendererService.getInstance().popupRenderer;
 const messagingService = MessagingService.getInstance();

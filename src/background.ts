@@ -19,7 +19,6 @@
 
 import './install';
 import browser from 'webextension-polyfill';
-import { RegistrableDomainService } from 'weeg-domains';
 
 import { isNewTabPage } from './modules/newtab';
 
@@ -49,6 +48,7 @@ import './background/KeyboardShortcurListeners';
 import './background/BrowserActionUpdater';
 import { UaContentScriptRegistrar} from './overrides/UaContentScriptRegistrar';
 import { InitialWindowsService } from './background/InitialWindowsService';
+import { ExternalServiceProvider } from './lib/ExternalServiceProvider';
 
 // watchdog
 let scriptCompleted = false;
@@ -72,7 +72,7 @@ setInterval(() => {
 
 const TAB_SORTING_INTERVAL = 10000;
 
-RegistrableDomainService.getInstance<RegistrableDomainService>();
+ExternalServiceProvider.getInstance();
 const userContextService = UserContextService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const tabSortingService = TabSortingService.getInstance();

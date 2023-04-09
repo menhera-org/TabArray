@@ -19,14 +19,16 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { RegistrableDomainService } from 'weeg-domains';
 import { MessagingService } from 'weeg-utils';
+
+import { ExternalServiceProvider } from '../lib/ExternalServiceProvider';
 import { ContentStorageStatistics } from './ContentStorageStatistics';
 import { CookieStore } from '../frameworks/tabAttributes';
 
+const serviceProvider = ExternalServiceProvider.getInstance();
 const statistics = new ContentStorageStatistics();
 const messagingService = MessagingService.getInstance();
-const registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
+const registrableDomainService = serviceProvider.registrableDomainService;
 
 messagingService.addListener('content-localstorage-statistics', async (message, sender) => {
   if (!sender.tab) return;
