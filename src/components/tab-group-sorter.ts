@@ -23,14 +23,14 @@ import browser from 'webextension-polyfill';
 import { CookieStore, DisplayedContainer } from 'weeg-containers';
 
 import { SupergroupType, TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
-import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
+import { TabGroupOptionDirectory } from '../lib/tabGroups/TabGroupOptionDirectory';
 import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
 import { TabGroupAttributes } from '../lib/tabGroups/TabGroupAttributes';
 import { TabGroupDirectorySnapshot } from '../lib/tabGroups/TabGroupDirectorySnapshot';
 
 export class TabGroupSorterElement extends HTMLElement {
-  private readonly _cookieAutocleanService = CookieAutocleanService.getInstance();
   private readonly _tabGroupDirectory = new TabGroupDirectory();
+  private readonly _tabGroupOptionDirectory = new TabGroupOptionDirectory();
   private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
   private readonly _contextualIdentityFactory = this._contextualIdentityService.getFactory();
   private readonly _displayedContainerFactory = this._contextualIdentityService.getDisplayedContainerFactory();
@@ -81,26 +81,23 @@ export class TabGroupSorterElement extends HTMLElement {
   }
 
   private createOptionsElement(cookieStoreId: string): HTMLDivElement {
-    const cookieStore = new CookieStore(cookieStoreId);
     const options = document.createElement('div');
     options.classList.add('options');
     options.classList.add('browser-style');
     const autocleanCheckbox = document.createElement('input');
     autocleanCheckbox.type = 'checkbox';
 
-    this._cookieAutocleanService.getAutocleanEnabledUserContexts().then((userContextIds) => {
-      if (userContextIds.includes(cookieStore.userContextId)) {
+    this._tabGroupOptionDirectory.getAutocleanEnabledTabGroupIds().then((tabGroupIds) => {
+      if (tabGroupIds.includes(cookieStoreId)) {
         autocleanCheckbox.checked = true;
       } else {
         autocleanCheckbox.checked = false;
       }
     });
     autocleanCheckbox.addEventListener('change', () => {
-      if (autocleanCheckbox.checked) {
-        this._cookieAutocleanService.enableAutocleanForUserContext(cookieStore.userContextId);
-      } else {
-        this._cookieAutocleanService.disableAutocleanForUserContext(cookieStore.userContextId);
-      }
+      this._tabGroupOptionDirectory.setAutocleanForTabGroupId(cookieStoreId, autocleanCheckbox.checked).catch((e) => {
+        console.error(e);
+      });
     });
     options.appendChild(autocleanCheckbox);
     return options;

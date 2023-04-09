@@ -62,6 +62,9 @@ export class TabGroupDirectorySnapshot {
     return false;
   }
 
+  /**
+   * Returns child cookie store IDs for given tab group ID.
+   */
   public getChildContainers(tabGroupId: string): string[] {
     const value = this.value;
     const supergroup = value[tabGroupId] as SupergroupType;

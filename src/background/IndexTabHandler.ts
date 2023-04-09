@@ -57,10 +57,6 @@ browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) =>
   for (const userContext of list.getOpenUserContexts()) {
     const tabs = [... list.getUserContextTabs(userContext.id)];
 
-    if (tabs[0] && tabs.length == 1) {
-      console.debug('only one tab left in userContext %d', userContext.id, tabs[0]);
-    }
-
     // if the only remaining tab is an index tab, close it
     if (tabs[0] && tabs.length == 1 && IndexTab.isIndexTabUrl(tabs[0].url)) {
       await userContextVisibilityService.unregisterIndexTab(tabs[0].id);

@@ -20,20 +20,25 @@
 */
 
 import browser from 'webextension-polyfill';
-import { UserContext } from '../frameworks/tabGroups';
-import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
+import { TabGroupService } from '../lib/tabGroups/TabGroupService';
 
-const cookieAutocleanService = CookieAutocleanService.getInstance();
+const contextualIdentityService = ContextualIdentityService.getInstance();
+const contextualIdentityFactory = contextualIdentityService.getFactory();
+const tabGroupService = TabGroupService.getInstance();
 
 browser.tabs.onRemoved.addListener(async (/*tabId, removeInfo*/) => {
-  const autocleanEnabledUserContextIds = await cookieAutocleanService.getAutocleanEnabledUserContexts();
-  const userContexts = await UserContext.getAll(false);
-  const openUserContexts = await UserContext.getAllActiveIds();
+  const [contextualIdentities, openTabGroupIds, autoCleanEnabledTabGroupIds] = await Promise.all([
+    contextualIdentityFactory.getAll(),
+    tabGroupService.getOpenTabGroupIds(),
+    tabGroupService.optionDirectory.getAutocleanEnabledTabGroupIds(),
+  ]);
   const promises: Promise<void>[] = [];
-  for (const userContext of userContexts) {
-    if (!openUserContexts.includes(userContext.id) && autocleanEnabledUserContextIds.includes(userContext.id)) {
-      console.info('Removing browsing data for userContext', userContext.id, userContext.name);
-      promises.push(userContext.removeBrowsingData());
+  for (const contextualIdentity of contextualIdentities) {
+    const cookieStoreId = contextualIdentity.cookieStore.id;
+    if (!openTabGroupIds.includes(cookieStoreId) && autoCleanEnabledTabGroupIds.includes(cookieStoreId)) {
+      console.info('Removing browsing data for tab group', cookieStoreId, contextualIdentity.name);
+      promises.push(tabGroupService.removeBrowsingDataForTabGroupId(cookieStoreId));
     }
   }
   await Promise.all(promises);

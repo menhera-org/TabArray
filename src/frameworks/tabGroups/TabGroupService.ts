@@ -24,6 +24,9 @@ import { OriginAttributes } from "./OriginAttributes";
 import { Uint32 } from "weeg-types";
 import { TabGroup } from "./TabGroup";
 
+/**
+ * @deprecated
+ */
 export class TabGroupService {
   // static definitions.
   // This must be at the end of static definitions.

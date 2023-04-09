@@ -164,6 +164,9 @@ export class TabGroupDirectory {
     return value[tabGroupId];
   }
 
+  /**
+   * Returns child cookie store IDs for given tab group ID.
+   */
   public async getChildContainers(tabGroupId: string): Promise<string[]> {
     return (await this.getSnapshot()).getChildContainers(tabGroupId);
   }
