@@ -24,13 +24,11 @@ import { EventSink } from "weeg-events";
 
 import { UserContext } from "../frameworks/tabGroups";
 import { Uint32 } from "weeg-types";
-import { CookieAutocleanService } from '../cookies/CookieAutocleanService';
 import { LanguageSettings } from '../languages/LanguageSettings';
 import { UserAgentSettings, UserAgentPreset } from '../overrides/UserAgentSettings';
 import { config } from '../config/config';
 
 export class ContainerOverridesElement extends HTMLElement {
-  private readonly _cookieAutocleanService = CookieAutocleanService.getInstance();
   private readonly _languageSettings = LanguageSettings.getInstance();
   private readonly _userAgentSettings = UserAgentSettings.getInstance();
   public readonly onChanged = new EventSink<Uint32.Uint32[]>();
