@@ -20,20 +20,21 @@
 */
 
 import browser from 'webextension-polyfill';
+import { Uint32 } from "weeg-types";
+
 import { OriginAttributes } from '../frameworks/tabGroups';
 import { UserContext } from '../frameworks/tabGroups';
-import { Uint32 } from "weeg-types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
-import { UserContextSortingOrderStore } from '../userContexts/UserContextSortingOrderStore';
 import { ContentStorageStatistics } from './ContentStorageStatistics';
 import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
+import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
 
 const userContextService = UserContextService.getInstance();
 const privateBrowsingService = PrivateBrowsingService.getInstance();
-const userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
 const contentStorageStatistics = new ContentStorageStatistics();
 const cookieProvider = contentStorageStatistics.cookieProvider;
+const tabGroupDirectory = new TabGroupDirectory();
 
 const selectContainers = document.querySelector('#selectContainers') as HTMLSelectElement;
 const cookieDomains = document.querySelector('#cookieDomains') as HTMLTableSectionElement;
@@ -57,8 +58,11 @@ const getSelectedOriginAttributes = () => {
 };
 
 const render = async () => {
-  await userContextSortingOrderStore.initialized;
-  const userContexts = userContextSortingOrderStore.sort((await UserContext.getAll(false)).map((userContext) => userContextService.fillDefaultValues(userContext)));
+  const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
+  const userContexts = (await UserContext.getAll(false)).map((userContext) => userContextService.fillDefaultValues(userContext));
+  userContexts.sort((a, b) => {
+    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+  });
   const containers: Map<OriginAttributes, string> = new Map;
   for (const userContext of userContexts) {
     containers.set(new OriginAttributes('', userContext.id, 0 as Uint32.Uint32), userContext.name);
