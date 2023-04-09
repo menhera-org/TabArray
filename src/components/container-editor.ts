@@ -22,6 +22,8 @@
 import browser from 'webextension-polyfill';
 import { MessagingService } from 'weeg-utils';
 import { EventSink } from 'weeg-events';
+
+import { SupergroupService } from '../tabGroups/SupergroupService';
 import { ContainerAttributes } from '../frameworks/tabAttributes';
 import { ColorPickerElement } from './usercontext-colorpicker';
 import { IconPickerElement } from './usercontext-iconpicker';
@@ -32,12 +34,13 @@ export class ContainerEditorElement extends HTMLElement {
   private _mode: EditorMode;
   private _containerAttributes: ContainerAttributes | undefined;
   private readonly _messagingService = MessagingService.getInstance();
+  private readonly _supergroupService = SupergroupService.getInstance();
 
   public readonly onContainerCreated = new EventSink<string>();
   public readonly onContainerUpdated = new EventSink<string>();
   public readonly onCancel = new EventSink<void>();
 
-  public constructor(containerAttributes?: ContainerAttributes) {
+  public constructor(containerAttributes?: ContainerAttributes, parentTabGroupId?: string) {
     super();
     this._containerAttributes = containerAttributes;
     this.attachShadow({ mode: 'open' });
@@ -107,12 +110,21 @@ export class ContainerEditorElement extends HTMLElement {
       const icon = iconPicker.value;
       const color = colorPicker.value;
       if (this._mode === 'create') {
-        const cookieStoreId = await this._messagingService.sendMessage('container_create', {
-          name,
-          icon,
-          color,
-        }) as string;
-        this.onContainerCreated.dispatch(cookieStoreId);
+        if (parentTabGroupId) {
+          const contextualIdentity = await this._supergroupService.createChildContainer(parentTabGroupId, {
+            name,
+            icon,
+            color,
+          });
+          this.onContainerCreated.dispatch(contextualIdentity.cookieStore.id);
+        } else {
+          const cookieStoreId = await this._messagingService.sendMessage('container_create', {
+            name,
+            icon,
+            color,
+          }) as string;
+          this.onContainerCreated.dispatch(cookieStoreId);
+        }
       } else if (this._mode === 'edit') {
         if (!this._containerAttributes) {
           throw new Error('Container attributes is null');

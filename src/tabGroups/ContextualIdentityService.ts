@@ -58,8 +58,31 @@ export class ContextualIdentityService {
 
   private static readonly INSTANCE = new ContextualIdentityService();
 
+  private readonly _factory = this.createFactory();
+  private readonly _displayedContainerFactory = this.createDisplayedContainerFactory();
+
   private constructor() {
     // nothing.
+  }
+
+  private createFactory(): ContextualIdentityFactory {
+    const themeCallback = (params: ContextualIdentityParams): DisplayedContainerParams => {
+      const color = params.color;
+      const icon = params.icon;
+      return {
+        name: params.name,
+        colorCode: ContextualIdentityService.getColorCode(color),
+        iconUrl: ContextualIdentityService.getIconUrl(icon, color)
+      };
+    };
+    return new ContextualIdentityFactory(themeCallback);
+  }
+
+  private createDisplayedContainerFactory(): DisplayedContainerFactory {
+    const displayedAttributesProvider = (cookieStoreId: string): DisplayedContainerParams => {
+      return this.getDefaultParams(cookieStoreId);
+    };
+    return new DisplayedContainerFactory(displayedAttributesProvider);
   }
 
   private validateName(aName: string): string {
@@ -80,22 +103,10 @@ export class ContextualIdentityService {
   }
 
   public getFactory(): ContextualIdentityFactory {
-    const themeCallback = (params: ContextualIdentityParams): DisplayedContainerParams => {
-      const color = params.color;
-      const icon = params.icon;
-      return {
-        name: params.name,
-        colorCode: ContextualIdentityService.getColorCode(color),
-        iconUrl: ContextualIdentityService.getIconUrl(icon, color)
-      };
-    };
-    return new ContextualIdentityFactory(themeCallback);
+    return this._factory;
   }
 
   public getDisplayedContainerFactory(): DisplayedContainerFactory {
-    const displayedAttributesProvider = (cookieStoreId: string): DisplayedContainerParams => {
-      return this.getDefaultParams(cookieStoreId);
-    };
-    return new DisplayedContainerFactory(displayedAttributesProvider);
+    return this._displayedContainerFactory;
   }
 }

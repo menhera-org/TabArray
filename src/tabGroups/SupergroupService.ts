@@ -19,15 +19,19 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CookieStore } from "weeg-containers";
+import { ContextualIdentity, ContextualIdentityParams, CookieStore } from "weeg-containers";
 
+import { ContextualIdentityService } from "./ContextualIdentityService";
 import { TabGroupDirectory } from "./TabGroupDirectory";
 import { UserContextVisibilityService } from "../userContexts/UserContextVisibilityService";
 import * as containers from '../modules/containers';
 import { OriginAttributes, TabGroup } from "../frameworks/tabGroups";
+import { TemporaryContainerService } from "../containers/TemporaryContainerService";
 
 const tabGroupDirectory = new TabGroupDirectory();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
+const contextualIdentityService = ContextualIdentityService.getInstance();
+const temporaryContainerService = TemporaryContainerService.getInstance();
 
 export class SupergroupService {
   private static readonly INSTANCE = new SupergroupService();
@@ -84,5 +88,35 @@ export class SupergroupService {
       promises.push(TabGroup.createTabGroup(originAttributes).then((tabGroup) => tabGroup.tabList.closeUnpinnedTabs()));
     }
     await Promise.all(promises);
+  }
+
+  /**
+   * @todo fill default options from supergroup defaults
+   */
+  public async createChildContainer(parentTabGroupId: string, params: ContextualIdentityParams): Promise<ContextualIdentity> {
+    const contextualIdentity = await contextualIdentityService.getFactory().create(params);
+    await tabGroupDirectory.moveTabGroupToSupergroup(contextualIdentity.cookieStore.id, parentTabGroupId);
+    return contextualIdentity;
+  }
+
+  /**
+   * @todo fill default options from supergroup defaults
+   */
+  public async createChildTemporaryContainer(parentTabGroupId: string): Promise<ContextualIdentity> {
+    const supergroup = await tabGroupDirectory.getSupergroup(parentTabGroupId);
+    if (!supergroup) {
+      throw new Error(`Supergroup not found: ${parentTabGroupId}`);
+    }
+    const contextualIdentityFactory = contextualIdentityService.getFactory();
+    const v1ContextualIdentity = await temporaryContainerService.createTemporaryContainer();
+    const cookieStoreId = v1ContextualIdentity.id;
+    await tabGroupDirectory.moveTabGroupToSupergroup(cookieStoreId, parentTabGroupId);
+    await v1ContextualIdentity.setParams({
+      name: v1ContextualIdentity.name + ` (${supergroup.name})`,
+      icon: v1ContextualIdentity.icon,
+      color: v1ContextualIdentity.color,
+    });
+    const contextualIdentity = await contextualIdentityFactory.get(cookieStoreId);
+    return contextualIdentity;
   }
 }

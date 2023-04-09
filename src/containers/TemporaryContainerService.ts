@@ -62,13 +62,13 @@ export class TemporaryContainerService {
   }
 
   public async createTemporaryContainer(): Promise<ContextualIdentity> {
-    const identity = await ContextualIdentity.create({
+    let identity = await ContextualIdentity.create({
       name: '__tmp__',
       color: this.getRandomColor(),
       icon: 'fingerprint',
     });
 
-    await identity.setParams({
+    identity = await identity.setParams({
       name: `tmp-${identity.userContextId.toFixed(0)}`,
       color: identity.color,
       icon: identity.icon,

@@ -40,6 +40,7 @@ import { ModalMenuElement } from '../components/modal-menu';
 import { SupergroupEditorElement } from '../components/supergroup-editor';
 import { ModalMoveGroupElement } from '../components/modal-move-group';
 import { SupergroupService } from '../tabGroups/SupergroupService';
+import { ContainerEditorElement } from '../components/container-editor';
 
 const tabGroupDirectory = new TabGroupDirectory();
 
@@ -143,6 +144,8 @@ export class PopupCurrentWindowRenderer {
     modalMenuElement.defineAction('edit', browser.i18n.getMessage('buttonEditGroup'), false);
     modalMenuElement.defineAction('delete', browser.i18n.getMessage('buttonDeleteGroup'), false);
     modalMenuElement.defineAction('move', browser.i18n.getMessage('moveContainer'), false);
+    modalMenuElement.defineAction('create-container', browser.i18n.getMessage('buttonNewContainer'), false);
+    modalMenuElement.defineAction('create-temporary-container', browser.i18n.getMessage('buttonNewTemporaryContainer'), false);
     modalMenuElement.defineAction('done', browser.i18n.getMessage('buttonDone'), true);
     document.body.appendChild(modalMenuElement);
     modalMenuElement.onActionClicked.addListener(async (action) => {
@@ -168,6 +171,22 @@ export class PopupCurrentWindowRenderer {
           const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
           const modalMoveElement = new ModalMoveGroupElement(tabGroupId);
           document.body.appendChild(modalMoveElement);
+          break;
+        }
+
+        case 'create-container': {
+          modalMenuElement.remove();
+          const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
+          const containerEditorElement = new ContainerEditorElement(undefined, tabGroupId);
+          document.body.appendChild(containerEditorElement);
+          break;
+        }
+
+        case 'create-temporary-container': {
+          modalMenuElement.remove();
+          const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
+          const contextualIdentity = await this.supergroupService.createChildTemporaryContainer(tabGroupId);
+          console.debug('Created temporary container', contextualIdentity);
           break;
         }
 
