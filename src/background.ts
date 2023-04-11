@@ -84,7 +84,7 @@ const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
 // Set<number>
 // Set of tab IDs.
-const openTabs = new Set;
+const openTabs = new Set<number>();
 
 let configNewTabInContainerEnabled = true;
 let configExternalTabChooseContainer = true;
@@ -138,7 +138,7 @@ browser.tabs.onCreated.addListener((browserTab) => {
       setTimeout(() => {
         browser.tabs.get(tabId).then((browserTab) => {
           if (browserTab.url == 'about:blank' && browserTab.status != 'loading') {
-            openTabs.add(browserTab.id);
+            openTabs.add(tabId);
             if (browserTab.active) {
               setActiveUserContext(browserTab.windowId, userContextId);
             }
