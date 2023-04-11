@@ -117,7 +117,7 @@ export class UserContext {
     return UserContext.CONTAINER_STORE + userContextId;
   }
 
-  public static fromContextualIdentity(identity: browser.ContextualIdentities.ContextualIdentity): UserContext {
+  public static fromBrowserContextualIdentity(identity: browser.ContextualIdentities.ContextualIdentity): UserContext {
     const userContextId = UserContext.fromCookieStoreId(identity.cookieStoreId);
     return new UserContext(
       userContextId,
@@ -139,7 +139,7 @@ export class UserContext {
       if (!identity) {
         throw new Error('Identity not found');
       }
-      return UserContext.fromContextualIdentity(identity);
+      return UserContext.fromBrowserContextualIdentity(identity);
     } catch (_e) {
       return UserContext.createIncompleteUserContext(userContextId);
     }
@@ -151,7 +151,7 @@ export class UserContext {
     }
     const identities = await browser.contextualIdentities.query({});
     const userContexts = identities.map(identity => {
-      return UserContext.fromContextualIdentity(identity);
+      return UserContext.fromBrowserContextualIdentity(identity);
     });
     userContexts.push(UserContext.DEFAULT);
     userContexts.sort((a, b) => a.id - b.id);
@@ -176,7 +176,7 @@ export class UserContext {
       color,
       icon,
     });
-    const userContext = UserContext.fromContextualIdentity(identity);
+    const userContext = UserContext.fromBrowserContextualIdentity(identity);
     return userContext;
   }
 
@@ -304,7 +304,7 @@ export class UserContext {
       color,
       icon,
     });
-    return UserContext.fromContextualIdentity(identity);
+    return UserContext.fromBrowserContextualIdentity(identity);
   }
 
   public toOriginAttributes(): OriginAttributes {
@@ -319,7 +319,7 @@ export class UserContext {
 // call event listeners
 browser.contextualIdentities.onCreated.addListener((changeInfo) => {
   const {contextualIdentity} = changeInfo;
-  const userContext = UserContext.fromContextualIdentity(contextualIdentity);
+  const userContext = UserContext.fromBrowserContextualIdentity(contextualIdentity);
   UserContext.onCreated.dispatch(userContext);
 });
 
@@ -331,6 +331,6 @@ browser.contextualIdentities.onRemoved.addListener((changeInfo) => {
 
 browser.contextualIdentities.onUpdated.addListener((changeInfo) => {
   const {contextualIdentity} = changeInfo;
-  const userContext = UserContext.fromContextualIdentity(contextualIdentity);
+  const userContext = UserContext.fromBrowserContextualIdentity(contextualIdentity);
   UserContext.onUpdated.dispatch(userContext);
 });
