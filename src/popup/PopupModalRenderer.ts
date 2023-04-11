@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
 import { CookieStore } from 'weeg-containers';
 
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
 import { UserContext } from "../frameworks/tabGroups";
 import { PopupRenderer } from './PopupRenderer';
 import { PopupUtils } from './PopupUtils';
@@ -32,7 +33,6 @@ import { PrivateBrowsingService } from '../frameworks/tabs';
 import { ModalConfirmElement } from '../components/modal-confirm';
 import { ModalMenuElement } from '../components/modal-menu';
 import { ContainerEditorElement } from '../components/container-editor';
-import { ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
 import { ModalMoveGroupElement } from '../components/modal-move-group';
 
 type NewContainerPanelResult = {
@@ -51,7 +51,9 @@ export class PopupModalRenderer {
   private readonly _popupRenderer: PopupRenderer;
   private readonly _utils: PopupUtils;
   private readonly _keyHandlersStack = new Array<KeyHandlers>();
-  private _privateBrowsingService = PrivateBrowsingService.getInstance();
+  private readonly _privateBrowsingService = PrivateBrowsingService.getInstance();
+  private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
+  private readonly _contextualIdentityFactory = this._contextualIdentityService.getFactory();
 
   constructor(popupRenderer: PopupRenderer) {
     this._popupRenderer = popupRenderer;
@@ -209,9 +211,8 @@ export class PopupModalRenderer {
 
   public async showEditContainerPanelAsync(userContext: UserContext): Promise<UserContext> {
     try {
-      const contextualIdentity = await ContextualIdentity.get(userContext.cookieStoreId);
-      const containerAttributes = ContainerAttributes.fromContextualIdentity(contextualIdentity);
-      const editorElement = new ContainerEditorElement(containerAttributes);
+      const contextualIdentity = await this._contextualIdentityFactory.get(userContext.cookieStoreId);
+      const editorElement = new ContainerEditorElement(contextualIdentity);
       document.body.appendChild(editorElement);
       return await new Promise((res) => {
         editorElement.onCancel.addListener(() => {

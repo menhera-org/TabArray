@@ -35,7 +35,6 @@ import { UserContext } from "../frameworks/tabGroups";
 import * as i18n from '../modules/i18n';
 import { WindowService } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
-import { ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
 import { ContainerEditorElement } from '../components/container-editor';
 import { ModalConfirmElement } from '../components/modal-confirm';
 import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
@@ -177,9 +176,8 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
       if (containerEditorElement) {
         containerEditorElement.remove();
       }
-      const contextualIdentity = await ContextualIdentity.get(cookieStore.id);
-      const containerAttributes = ContainerAttributes.fromContextualIdentity(contextualIdentity);
-      containerEditorElement = new ContainerEditorElement(containerAttributes);
+      const contextualIdentity = await contextualIdentityFactory.get(cookieStore.id);
+      containerEditorElement = new ContainerEditorElement(contextualIdentity);
       document.body.appendChild(containerEditorElement);
       containerEditorElement.onContainerUpdated.addListener(async (cookieStoreId) => {
         containerEditorElement?.remove();

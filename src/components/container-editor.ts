@@ -22,9 +22,9 @@
 import browser from 'webextension-polyfill';
 import { MessagingService } from 'weeg-utils';
 import { EventSink } from 'weeg-events';
+import { ContextualIdentity } from 'weeg-containers';
 
 import { SupergroupService } from '../lib/tabGroups/SupergroupService';
-import { ContainerAttributes } from '../frameworks/tabAttributes';
 import { ColorPickerElement } from './usercontext-colorpicker';
 import { IconPickerElement } from './usercontext-iconpicker';
 
@@ -32,7 +32,7 @@ export type EditorMode = 'create' | 'edit';
 
 export class ContainerEditorElement extends HTMLElement {
   private _mode: EditorMode;
-  private _containerAttributes: ContainerAttributes | undefined;
+  private _contextualIdentity: ContextualIdentity | undefined;
   private readonly _messagingService = MessagingService.getInstance();
   private readonly _supergroupService = SupergroupService.getInstance();
 
@@ -40,9 +40,9 @@ export class ContainerEditorElement extends HTMLElement {
   public readonly onContainerUpdated = new EventSink<string>();
   public readonly onCancel = new EventSink<void>();
 
-  public constructor(containerAttributes?: ContainerAttributes, parentTabGroupId?: string) {
+  public constructor(contextualIdentity?: ContextualIdentity, parentTabGroupId?: string) {
     super();
-    this._containerAttributes = containerAttributes;
+    this._contextualIdentity = contextualIdentity;
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
       throw new Error('Shadow root is null');
@@ -87,12 +87,12 @@ export class ContainerEditorElement extends HTMLElement {
     modalActions.appendChild(okButton);
     modalContent.appendChild(modalActions);
 
-    if (containerAttributes) {
+    if (contextualIdentity) {
       this._mode = 'edit';
       modalTitle.textContent = browser.i18n.getMessage('editContainerDialogTitle');
-      input.value = containerAttributes.name;
-      iconPicker.value = containerAttributes.icon;
-      colorPicker.value = containerAttributes.color;
+      input.value = contextualIdentity.name;
+      iconPicker.value = contextualIdentity.icon;
+      colorPicker.value = contextualIdentity.color;
     } else {
       this._mode = 'create';
       modalTitle.textContent = browser.i18n.getMessage('newContainerDialogTitle');
@@ -127,11 +127,11 @@ export class ContainerEditorElement extends HTMLElement {
           this.onContainerCreated.dispatch(cookieStoreId);
         }
       } else if (this._mode === 'edit') {
-        if (!this._containerAttributes) {
+        if (!this._contextualIdentity) {
           throw new Error('Container attributes is null');
         }
         const cookieStoreId = await this._messagingService.sendMessage('container_update', {
-          cookieStoreId: this._containerAttributes.id,
+          cookieStoreId: this._contextualIdentity.cookieStore.id,
           name,
           icon,
           color,
