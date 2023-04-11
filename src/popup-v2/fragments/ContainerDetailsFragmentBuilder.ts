@@ -21,7 +21,7 @@
 
 import browser from "webextension-polyfill";
 import { MessagingService } from "weeg-utils";
-import { CookieStore } from "weeg-containers";
+import { CookieStore, DisplayedContainer } from "weeg-containers";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
@@ -29,7 +29,6 @@ import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../components/ctg/ctg-menu-item";
 import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
-import { ContainerAttributes } from "../../frameworks/tabAttributes";
 import { UserContext } from "../../frameworks/tabGroups";
 import { MenulistWindowElement } from "../../components/menulist-window";
 
@@ -41,7 +40,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   private _containerName = browser.i18n.getMessage('noContainer');
   private _cookieStoreId = CookieStore.DEFAULT.id;
   private _browserStateSnapshot: BrowserStateSnapshot | null = null;
-  private _selectedContainerAttributes: ContainerAttributes | null = null;
+  private _selectedDisplayedContainer: DisplayedContainer | null = null;
 
   public getFragmentId(): string {
     return 'fragment-container-details';
@@ -105,22 +104,22 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
       return;
     }
     const containersStateSnapshot = this._browserStateSnapshot.getContainersStateSnapshot();
-    let selectedContainerAttributes: ContainerAttributes | null = null;
-    for (const containerAttributes of containersStateSnapshot.containerAttributesList) {
-      if (containerAttributes.id === this._cookieStoreId) {
-        selectedContainerAttributes = containerAttributes;
+    let selectedDisplayedContainer: DisplayedContainer | null = null;
+    for (const containerAttributes of containersStateSnapshot.displayedContainers) {
+      if (containerAttributes.cookieStore.id === this._cookieStoreId) {
+        selectedDisplayedContainer = containerAttributes;
         break;
       }
     }
-    if (selectedContainerAttributes == null) {
+    if (selectedDisplayedContainer == null) {
       return;
     }
-    this._selectedContainerAttributes = selectedContainerAttributes;
-    this._containerName = selectedContainerAttributes.name;
+    this._selectedDisplayedContainer = selectedDisplayedContainer;
+    this._containerName = selectedDisplayedContainer.name;
   }
 
   public renderContainer(): void {
-    if (this._browserStateSnapshot == null || this._selectedContainerAttributes == null) {
+    if (this._browserStateSnapshot == null || this._selectedDisplayedContainer == null) {
       return;
     }
 
@@ -128,7 +127,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
     fragment.textContent = '';
     const containersStateSnapshot = this._browserStateSnapshot.getContainersStateSnapshot();
     const tabs = containersStateSnapshot.getTabsByContainer(this._cookieStoreId);
-    const userContext = UserContext.fromContainerAttributes(this._selectedContainerAttributes);
+    const userContext = UserContext.fromDisplayedContainer(this._selectedDisplayedContainer);
     let windowId: number = browser.windows.WINDOW_ID_NONE;
     for (const tab of tabs) {
       if (windowId != tab.windowId) {

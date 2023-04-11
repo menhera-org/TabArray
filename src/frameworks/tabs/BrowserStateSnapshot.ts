@@ -23,14 +23,14 @@ import browser from 'webextension-polyfill';
 import { ExtensionService } from 'weeg-utils';
 import { SetMap } from 'weeg-types';
 import { CompatTab } from 'weeg-tabs';
-import { CookieStore } from 'weeg-containers';
+import { DisplayedContainer } from 'weeg-containers';
 
+import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { UserContext } from '../tabGroups';
 import { Tab } from './Tab';
 import { WindowStateSnapshot } from './WindowStateSnapshot';
 import { FirstPartyService } from '../tabGroups';
-import { ContainerAttributes, ContextualIdentity } from '../tabAttributes';
 import { ContainersStateSnapshot } from './ContainersStateSnapshot';
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
 import { TabAttributeMap } from '../../lib/tabGroups/TabAttributeMap';
@@ -38,29 +38,18 @@ import { TabAttributeMap } from '../../lib/tabGroups/TabAttributeMap';
 const tabGroupDirectory = new TabGroupDirectory();
 const firstPartyService = FirstPartyService.getInstance();
 const extensionService = ExtensionService.getInstance();
+const displayedContainerService = DisplayedContainerService.getInstance();
 
 export class BrowserStateSnapshot {
-  private static async getContainers(): Promise<ContainerAttributes[]> {
-    const contextualIdentities = await ContextualIdentity.getAll();
-    const containerAttributes = [
-      ContainerAttributes.fromCookieStore(CookieStore.DEFAULT),
-      ... contextualIdentities.map((contextualIdentity) => ContainerAttributes.fromContextualIdentity(contextualIdentity)),
-    ];
-    if (await extensionService.isAllowedInPrivateBrowsing()) {
-      containerAttributes.push(ContainerAttributes.fromCookieStore(CookieStore.PRIVATE));
-    }
-    return containerAttributes;
-  }
-
   public static async create(): Promise<BrowserStateSnapshot> {
-    const [userContexts, browserWindows, currentBrowserWindow, containerAttributesList, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
+    const [userContexts, browserWindows, currentBrowserWindow, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
       UserContext.getAll(),
       browser.windows.getAll({
         populate: true,
         windowTypes: ['normal'],
       }),
       browser.windows.get(browser.windows.WINDOW_ID_CURRENT),
-      BrowserStateSnapshot.getContainers(),
+      displayedContainerService.getDisplayedContainers(),
       extensionService.isAllowedInPrivateBrowsing(),
       tabGroupDirectory.getSnapshot(),
       firstPartyService.initialized,
@@ -78,7 +67,7 @@ export class BrowserStateSnapshot {
     }
 
     const tabAttributeMap = await TabAttributeMap.create(compatTabMap.values());
-    return new BrowserStateSnapshot(userContexts, browserWindows, currentBrowserWindow.id, containerAttributesList, enabledInPrivateBrowsing, tabGroupDirectorySnapshot, tabAttributeMap);
+    return new BrowserStateSnapshot(userContexts, browserWindows, currentBrowserWindow.id, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot, tabAttributeMap);
   }
 
   public readonly currentWindowId: number;
@@ -95,7 +84,7 @@ export class BrowserStateSnapshot {
   private readonly _containersStateSnapshot: ContainersStateSnapshot;
   private readonly _tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
 
-  public constructor(userContexts: UserContext[], browserWindows: browser.Windows.Window[], currentWindowId: number, containerAttributesList: ContainerAttributes[], enabledInPrivateBrowsing: boolean, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap) {
+  public constructor(userContexts: UserContext[], browserWindows: browser.Windows.Window[], currentWindowId: number, displayedContainers: DisplayedContainer[], enabledInPrivateBrowsing: boolean, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap) {
     this.currentWindowId = currentWindowId;
     this._definedUserContexts = userContexts;
     this.enabledInPrivateBrowsing = enabledInPrivateBrowsing;
@@ -119,7 +108,7 @@ export class BrowserStateSnapshot {
       }
     }
     this._tabIds = Array.from(this._tabMap.keys()).sort((a, b) => a - b);
-    this._containersStateSnapshot = new ContainersStateSnapshot(containerAttributesList, tabs, tabGroupDirectorySnapshot);
+    this._containersStateSnapshot = new ContainersStateSnapshot(displayedContainers, tabs, tabGroupDirectorySnapshot);
     this._tabGroupDirectorySnapshot = tabGroupDirectorySnapshot;
   }
 

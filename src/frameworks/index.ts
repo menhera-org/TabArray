@@ -28,4 +28,3 @@ export * as cookies from './cookies';
 export * as colors from './colors';
 export * as menus from './menus';
 export * as themes from './themes';
-export * as tabAttributes from './tabAttributes';

@@ -19,17 +19,18 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ContainerAttributes } from "../tabAttributes";
+import { DisplayedContainer } from "weeg-containers";
+
 import { Tab } from "./Tab";
 import { TabGroupDirectorySnapshot } from "../../lib/tabGroups/TabGroupDirectorySnapshot";
 
 export class ContainersStateSnapshot {
-  public readonly containerAttributesList: readonly ContainerAttributes[];
+  public readonly displayedContainers: readonly DisplayedContainer[];
   private readonly _tabsByContainer = new Map<string, Tab[]>();
   public readonly tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
 
-  public constructor(containerAttributesList: ContainerAttributes[], tabs: Tab[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot) {
-    this.containerAttributesList = containerAttributesList;
+  public constructor(displayedContainers: DisplayedContainer[], tabs: Tab[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot) {
+    this.displayedContainers = displayedContainers;
     this.tabGroupDirectorySnapshot = tabGroupDirectorySnapshot;
     tabs.sort((a, b) => {
       if (a.windowId == b.windowId) {

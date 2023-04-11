@@ -113,7 +113,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   }
 
   public render(containersStateSnapshot: ContainersStateSnapshot): void {
-    this._containerCount = containersStateSnapshot.containerAttributesList.length;
+    this._containerCount = containersStateSnapshot.displayedContainers.length;
     if (this.active) {
       this.renderTopBarWithGlobalItems();
     }
@@ -123,10 +123,10 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     const inactiveContainersElement = fragment.querySelector('.inactive-containers') as HTMLDivElement;
     activeContainersElement.textContent = '';
     inactiveContainersElement.textContent = '';
-    const privateContainers = containersStateSnapshot.containerAttributesList.filter((container) => container.isPrivate);
-    const normalContainers = containersStateSnapshot.containerAttributesList.filter((container) => !container.isPrivate);
-    const privateUserContexts = privateContainers.map((container) => UserContext.fromContainerAttributes(container));
-    const normalUserContexts = normalContainers.map((container) => UserContext.fromContainerAttributes(container)).sort((a, b) => {
+    const privateContainers = containersStateSnapshot.displayedContainers.filter((container) => container.cookieStore.isPrivate);
+    const normalContainers = containersStateSnapshot.displayedContainers.filter((container) => !container.cookieStore.isPrivate);
+    const privateUserContexts = privateContainers.map((container) => UserContext.fromDisplayedContainer(container));
+    const normalUserContexts = normalContainers.map((container) => UserContext.fromDisplayedContainer(container)).sort((a, b) => {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
     });
     const userContextMap = new Map<string, UserContext>();

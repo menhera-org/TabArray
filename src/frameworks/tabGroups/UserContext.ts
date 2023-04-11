@@ -22,9 +22,10 @@
 import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
 import { EventSink } from "weeg-events";
+import { DisplayedContainer } from 'weeg-containers';
+
 import { OriginAttributes } from './OriginAttributes';
 import { TabGroup } from './TabGroup';
-import { ContainerAttributes } from '../tabAttributes';
 import { ContentStorageStatistics } from '../../cookies/ContentStorageStatistics';
 
 /**
@@ -180,11 +181,11 @@ export class UserContext {
   }
 
   // this is a hack. we should move to a better way of doing this.
-  public static fromContainerAttributes(attributes: ContainerAttributes): UserContext {
-    if (attributes.isPrivate) {
-      return new UserContext(attributes.userContextId, attributes.name, '', '', '', '/img/firefox-icons/private-browsing-icon.svg', true, true);
+  public static fromDisplayedContainer(displayedContainer: DisplayedContainer): UserContext {
+    if (displayedContainer.cookieStore.isPrivate) {
+      return new UserContext(displayedContainer.cookieStore.userContextId, displayedContainer.name, '', '', '', displayedContainer.iconUrl, true, true);
     }
-    return new UserContext(attributes.userContextId, attributes.name, attributes.color, attributes.colorCode, attributes.icon, attributes.iconUrl, true);
+    return new UserContext(displayedContainer.cookieStore.userContextId, displayedContainer.name, '', displayedContainer.colorCode, '', displayedContainer.iconUrl, true);
   }
 
   /**
@@ -312,10 +313,6 @@ export class UserContext {
 
   public getTabGroup(): Promise<TabGroup> {
     return TabGroup.createTabGroup(this.toOriginAttributes());
-  }
-
-  public toContainerAttributes(): ContainerAttributes {
-    return new ContainerAttributes({ userContextId: this.id, privateBrowsingId: 0 as Uint32.Uint32 }, this.name, this.color, this.icon);
   }
 }
 
