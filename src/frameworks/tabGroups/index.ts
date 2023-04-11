@@ -23,7 +23,6 @@ export { OriginAttributes } from './OriginAttributes';
 export { FirstPartyService } from './FirstPartyService';
 export { TabGroup } from './TabGroup';
 export { UserContext } from './UserContext';
-export { TabGroupService } from './TabGroupService';
 export { TabList } from './TabList';
 export { FirstPartyTabMap } from './FirstPartyTabMap';
 export { WindowUserContextList } from './WindowUserContextList';
