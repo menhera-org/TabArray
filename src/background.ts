@@ -19,6 +19,7 @@
 
 import './install';
 import browser from 'webextension-polyfill';
+import { CompatTab } from 'weeg-tabs';
 
 import { isNewTabPage } from './modules/newtab';
 
@@ -109,46 +110,52 @@ browser.tabs.onAttached.addListener(async () => {
   tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onCreated.addListener((tab) => {
-  if (null == tab.cookieStoreId || null == tab.windowId || null == tab.id) return;
-  if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
-    return;
-  }
-  const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
-  const activeUserContextId = getActiveUserContext(tab.windowId);
-  const windowId = tab.windowId;
-  if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
-    utils.reopenNewTabInContainer(tab.id, activeUserContextId, windowId).catch((e) => {
+browser.tabs.onCreated.addListener((tabObj) => {
+  try {
+    if (null == tabObj.cookieStoreId || null == tabObj.windowId || null == tabObj.id || null == tabObj.url) return;
+    const tab = new CompatTab(tabObj);
+    const cookieStore = tab.cookieStore;
+    if (cookieStore.isPrivate) {
+      return;
+    }
+    const userContextId = cookieStore.userContextId;
+    const activeUserContextId = getActiveUserContext(tab.windowId);
+    const windowId = tab.windowId;
+    if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
+      utils.reopenNewTabInContainer(tab.id, activeUserContextId, windowId).catch((e) => {
+        console.error(e);
+      });
+      return;
+    }
+
+    if (tab.url != 'about:blank' && tabObj.status != 'loading') {
+      console.log('Manually opened tab: %d', tab.id);
+      openTabs.add(tab.id);
+    } else if (tab.pinned) {
+      console.log('Pinned tab: %d', tab.id);
+      openTabs.add(tab.id);
+    } else if (tab.url == 'about:blank') {
+      // handles the case when the new tab page is about:blank
+      const tabId = tab.id;
+      setTimeout(() => {
+        browser.tabs.get(tabId).then((tabObj) => {
+          if (tabObj.url == 'about:blank' && tabObj.status != 'loading') {
+            openTabs.add(tabObj.id);
+            if (tabObj.active) {
+              setActiveUserContext(tabObj.windowId, userContextId);
+            }
+          }
+        });
+      }, 3000);
+    }
+    tabSortingService.sortTabs().then(() => {
+      tabChangeChannel.postMessage(true);
+    }).catch((e) => {
       console.error(e);
     });
-    return;
-  }
-
-  if (tab.url && tab.url != 'about:blank' && tab.status != 'loading') {
-    console.log('Manually opened tab: %d', tab.id);
-    openTabs.add(tab.id);
-  } else if (tab.pinned) {
-    console.log('Pinned tab: %d', tab.id);
-    openTabs.add(tab.id);
-  } else if (tab.url == 'about:blank') {
-    // handles the case when the new tab page is about:blank
-    const tabId = tab.id;
-    setTimeout(() => {
-      browser.tabs.get(tabId).then((tab) => {
-        if (tab.url == 'about:blank' && tab.status != 'loading') {
-          openTabs.add(tab.id);
-          if (tab.active) {
-            setActiveUserContext(tab.windowId, userContextId);
-          }
-        }
-      });
-    }, 3000);
-  }
-  tabSortingService.sortTabs().then(() => {
-    tabChangeChannel.postMessage(true);
-  }).catch((e) => {
+  } catch (e) {
     console.error(e);
-  });
+  }
 });
 
 browser.tabs.onRemoved.addListener(async (tabId) => {
@@ -156,15 +163,19 @@ browser.tabs.onRemoved.addListener(async (tabId) => {
 });
 
 browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
-  const tab = await browser.tabs.get(tabId);
-  if (tab.pinned) {
-    return;
+  try {
+    const tabObj = await browser.tabs.get(tabId);
+    if (tabObj.pinned) {
+      return;
+    }
+    await tabSortingService.sortTabs();
+    tabChangeChannel.postMessage(true);
+  } catch (e) {
+    console.error(e);
   }
-  await tabSortingService.sortTabs();
-  tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
+browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tabObj*/) => {
   //console.log('tab %d hidden on window %d', tabId, tab.windowId);
   tabChangeChannel.postMessage(true);
 }, {
@@ -173,7 +184,7 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
   ],
 });
 
-browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
+browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tabObj*/) => {
   tabSortingService.sortTabs().catch((e) => {
     console.error(e);
   });
@@ -183,38 +194,45 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tab*/) => {
   ],
 });
 
-browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
-  if (tabObj.cookieStoreId == null || tabObj.url == null || tabObj.windowId == null) return;
-  if (UserContext.isCookieStoreIdPrivateBrowsing(tabObj.cookieStoreId)) {
-    return;
-  }
-  const userContextId = UserContext.fromCookieStoreId(tabObj.cookieStoreId);
-  const windowId = tabObj.windowId;
-  const activeUserContextId = getActiveUserContext(tabObj.windowId);
-  if (configNewTabInContainerEnabled && isNewTabPage(tabObj.url) && 0 == userContextId && 0 != activeUserContextId) {
-    console.log('Reopening new tab in active user context: %d for window %d', activeUserContextId, tabObj.windowId);
-    utils.reopenNewTabInContainer(tabId, activeUserContextId, windowId).catch((e) => {
-      console.error(e);
-    });
-    return;
-  }
-  if (tabObj.url && tabObj.url != 'about:blank' && tabObj.status != 'loading') {
-    if (!openTabs.has(tabObj.id)) {
-      console.log('Manually opened tab: %d', tabObj.id);
-      openTabs.add(tabObj.id);
+browser.tabs.onUpdated.addListener((tabId, _changeInfo, tabObj) => {
+  try {
+    tabObj.id = tabId;
+    if (tabObj.cookieStoreId == null || tabObj.url == null || tabObj.windowId == null) return;
+    const tab = new CompatTab(tabObj);
+    const cookieStore = tab.cookieStore;
+    if (cookieStore.isPrivate) {
+      return;
     }
-  } else if (tabObj.pinned) {
-    if (!openTabs.has(tabObj.id)) {
-      console.log('Pinned tab: %d', tabObj.id);
-      openTabs.add(tabObj.id);
+    const userContextId = cookieStore.userContextId;
+    const windowId = tab.windowId;
+    const activeUserContextId = getActiveUserContext(tab.windowId);
+    if (configNewTabInContainerEnabled && isNewTabPage(tab.url) && 0 == userContextId && 0 != activeUserContextId) {
+      console.log('Reopening new tab in active user context: %d for window %d', activeUserContextId, tab.windowId);
+      utils.reopenNewTabInContainer(tab.id, activeUserContextId, windowId).catch((e) => {
+        console.error(e);
+      });
+      return;
     }
-  }
-  if (tabObj.url != 'about:blank' && tabObj.status != 'loading' && tabObj.active) {
-    const activeUserContextId: number = getActiveUserContext(tabObj.windowId);
-    if (activeUserContextId != userContextId) {
-      console.log('setActiveUserContext for window %d and user context %d', tabObj.windowId, userContextId);
-      setActiveUserContext(tabObj.windowId, userContextId);
+    if (tab.url != 'about:blank' && tabObj.status != 'loading') {
+      if (!openTabs.has(tab.id)) {
+        console.log('Manually opened tab: %d', tab.id);
+        openTabs.add(tab.id);
+      }
+    } else if (tab.pinned) {
+      if (!openTabs.has(tab.id)) {
+        console.log('Pinned tab: %d', tab.id);
+        openTabs.add(tab.id);
+      }
     }
+    if (tab.url != 'about:blank' && tabObj.status != 'loading' && tab.active) {
+      const activeUserContextId: number = getActiveUserContext(tab.windowId);
+      if (activeUserContextId != userContextId) {
+        console.log('setActiveUserContext for window %d and user context %d', tab.windowId, userContextId);
+        setActiveUserContext(tab.windowId, userContextId);
+      }
+    }
+  } catch (e) {
+    console.error(e);
   }
 }, {
   properties: [
@@ -224,42 +242,48 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabObj) => {
 });
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
-  const tabObj = await browser.tabs.get(tabId);
-  if (tabObj.cookieStoreId == null || tabObj.id == null) return;
-  if (UserContext.isCookieStoreIdPrivateBrowsing(tabObj.cookieStoreId)) {
-    return;
-  }
-  const userContextId = UserContext.fromCookieStoreId(tabObj.cookieStoreId);
-  const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
-  const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
   try {
-    const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
-    if (!indexTabUrl) {
-      throw void 0;
+    const tabObj = await browser.tabs.get(tabId);
+    const tab = new CompatTab(tabObj);
+    const cookieStore = tab.cookieStore;
+    if (tabObj.cookieStoreId == null || tabObj.id == null) return;
+    if (cookieStore.isPrivate) {
+      return;
     }
-    const nextTabs = await browser.tabs.query({
-      windowId: tabObj.windowId,
-      index: tabObj.index + 1,
-    });
-    for (const nextTab of nextTabs) {
-      await browser.tabs.update(nextTab.id, {
-        active: true,
+    const userContextId = cookieStore.userContextId;
+    const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
+    const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
+    try {
+      const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
+      if (!indexTabUrl) {
+        throw void 0;
+      }
+      const nextTabs = await browser.tabs.query({
+        windowId: tabObj.windowId,
+        index: tabObj.index + 1,
       });
-      break;
+      for (const nextTab of nextTabs) {
+        await browser.tabs.update(nextTab.id, {
+          active: true,
+        });
+        break;
+      }
+    } catch (e) {
+      // nothing.
     }
-  } catch (e) {
-    // nothing.
-  }
 
-  try {
-    await browser.windows.update(windowId, {
-      titlePreface: windowTitlePreface,
-    });
+    try {
+      await browser.windows.update(windowId, {
+        titlePreface: windowTitlePreface,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    if (!tabObj.pinned) {
+      await userContextVisibilityService.showContainerOnWindow(windowId, userContextId);
+    }
   } catch (e) {
     console.error(e);
-  }
-  if (!tabObj.pinned) {
-    await userContextVisibilityService.showContainerOnWindow(windowId, userContextId);
   }
 });
 

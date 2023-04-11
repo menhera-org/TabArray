@@ -26,13 +26,14 @@ import * as i18n from '../modules/i18n';
 import { Tab } from '../frameworks/tabs';
 import { config } from '../config/config';
 import { UserContext } from '../frameworks/tabGroups';
-import * as containers from '../modules/containers';
 import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { ContainerEditorElement } from '../components/container-editor';
 import { TemporaryContainerService } from '../containers/TemporaryContainerService';
 import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
+import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
 
+const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const extensionService = ExtensionService.getInstance();
 const privateBrowsingService = PrivateBrowsingService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
@@ -226,20 +227,21 @@ browser.tabs.getCurrent().then((browserTab) => {
   }
 
   config['tab.external.containerOption'].getValue().then(async (optionValue) => {
-    if ('sticky' == optionValue) {
-      const activeTabs = await browser.tabs.query({
-        windowId: browserTab.windowId,
-        active: true,
-      });
-      for (const activeTab of activeTabs) {
-        if (!activeTab.cookieStoreId) continue;
-        const {cookieStoreId} = activeTab;
-        const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
-        containers.reopenInContainer(userContextId, tab.id, tab.isPrivate()).catch((e) => {
-          console.error(e);
+    try {
+      if ('sticky' == optionValue) {
+        const activeTabs = await browser.tabs.query({
+          windowId: browserTab.windowId,
+          active: true,
         });
-        break;
+        for (const activeTab of activeTabs) {
+          if (!activeTab.cookieStoreId) continue;
+          const {cookieStoreId} = activeTab;
+          await containerTabOpenerService.reopenTabInContainer(tab.id, cookieStoreId, true);
+          break;
+        }
       }
+    } catch (e) {
+      console.error(e);
     }
   });
 });
