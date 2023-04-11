@@ -22,6 +22,9 @@
 import browser from 'webextension-polyfill';
 import { CONFIRM_PAGE } from '../defs';
 
+/**
+ * The type of the handler function. Returns whether to redirect the request.
+ */
 export type HandlerType = (details: browser.WebRequest.OnBeforeRequestDetailsType) => Promise<boolean>;
 
 export class BeforeRequestHandler {

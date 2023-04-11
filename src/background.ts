@@ -20,16 +20,16 @@
 import './install';
 import browser from 'webextension-polyfill';
 import { CompatTab } from 'weeg-tabs';
+import { CookieStore } from 'weeg-containers';
+import { Uint32 } from 'weeg-types';
 
 import { isNewTabPage } from './modules/newtab';
 
 import { WebExtensionsBroadcastChannel } from './modules/broadcasting';
 import { getActiveUserContext, setActiveUserContext } from './modules/usercontext-state.js';
 import { config } from './config/config';
-import { UserContext } from './frameworks/tabGroups';
 import { UserContextVisibilityService } from './userContexts/UserContextVisibilityService';
 import { BeforeRequestHandler } from './background/BeforeRequestHandler';
-import { Tab } from './frameworks/tabs';
 import { BackgroundUtils } from './background/BackgroundUtils';
 import { TabSortingService } from './background/TabSortingService';
 import './background/IndexTabHandler';
@@ -72,7 +72,7 @@ setInterval(() => {
 
 const TAB_SORTING_INTERVAL = 10000;
 
-ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
+const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 ExternalServiceProvider.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const tabSortingService = TabSortingService.getInstance();
@@ -281,53 +281,57 @@ setInterval(() => {
 }, TAB_SORTING_INTERVAL);
 
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
-  // since this is never a private tab, we can use this safely.
-  if (details.cookieStoreId == null || details.tabId == -1) return false;
-  const userContextId = UserContext.fromCookieStoreId(details.cookieStoreId);
-  const userContextIds = new Set((await UserContext.getAll(false)).map((userContext) => userContext.id));
-  const userContextIsDefined = userContextIds.has(userContextId);
-  if (details.frameId != 0 || 0 != userContextId && userContextIsDefined || details.originUrl || details.incognito || !configExternalTabChooseContainer && userContextIsDefined) {
-    return false;
-  }
-  if (openTabs.has(details.tabId)) {
-    console.info('Ignoring manually navigated tab: %d', details.tabId);
-    return false;
-  }
-  const tabId = details.tabId;
-  const {url} = details;
-  console.log('Capturing request for tab %d: %s', tabId, url);
-
-  const tab = await Tab.get(tabId);
-  const {windowId} = tab;
-  const activeUserContextId = getActiveUserContext(windowId);
-  if (tab.discarded) {
-    return false;
-  }
-  if ('sticky' == configExternalTabContainerOption) {
-    if (userContextId == activeUserContextId) {
-      console.log('Tab %d in active user context %d', tabId, userContextId);
-      openTabs.add(tabId);
+  // This is never called for private tabs.
+  try {
+    // do not redirect if the tab is loaded when the browser is started
+    if (Date.now() - scriptStart < 2000) return false;
+    if (details.cookieStoreId == null || details.tabId == -1) return false;
+    const cookieStore = new CookieStore(details.cookieStoreId);
+    const userContextId = cookieStore.userContextId;
+    if (details.frameId != 0 || 0 != userContextId || details.originUrl || details.incognito || !configExternalTabChooseContainer) {
       return false;
-    } else {
-      await browser.tabs.remove(tabId);
-      await browser.tabs.create({
-        active: true,
-        url,
-        cookieStoreId: UserContext.toCookieStoreId(activeUserContextId), // this tab is never private
-        windowId,
-      });
-      console.log('Reopened %s in container id %d', url, activeUserContextId);
     }
-  }
+    if (openTabs.has(details.tabId)) {
+      console.info('Ignoring manually navigated tab: %d', details.tabId);
+      return false;
+    }
+    const tabId = details.tabId;
+    const {url} = details;
 
-  return true;
+    const browserTab = await browser.tabs.get(tabId);
+    const tab = new CompatTab(browserTab);
+    const {windowId} = tab;
+    const activeUserContextId = getActiveUserContext(windowId);
+    if (tab.discarded) {
+      return false;
+    }
+    if ('sticky' == configExternalTabContainerOption) {
+      if (userContextId == activeUserContextId) {
+        console.log('Tab %d in active user context %d', tabId, userContextId);
+        openTabs.add(tabId);
+        return false;
+      } else {
+        // this tab is never private
+        const cookieStoreId = CookieStore.fromParams({
+          userContextId: activeUserContextId,
+          privateBrowsingId: 0 as Uint32.Uint32,
+        }).id;
+
+        await containerTabOpenerService.reopenTabInContainer(tabId, cookieStoreId, true);
+        console.log('Reopened %s in container id %d', url, activeUserContextId);
+      }
+    }
+
+    console.log('Capturing request for tab %d: %s', tabId, url);
+    return true;
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
 });
+beforeRequestHandler.startListening();
 
 new UaContentScriptRegistrar();
-
-setTimeout(() => {
-  beforeRequestHandler.startListening();
-}, 1000);
 
 console.log('background.js loaded in %d ms', Date.now() - scriptStart);
 scriptCompleted = true;
