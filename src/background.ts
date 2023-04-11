@@ -110,10 +110,10 @@ browser.tabs.onAttached.addListener(async () => {
   tabChangeChannel.postMessage(true);
 });
 
-browser.tabs.onCreated.addListener((tabObj) => {
+browser.tabs.onCreated.addListener((browserTab) => {
   try {
-    if (null == tabObj.cookieStoreId || null == tabObj.windowId || null == tabObj.id || null == tabObj.url) return;
-    const tab = new CompatTab(tabObj);
+    if (null == browserTab.cookieStoreId || null == browserTab.windowId || null == browserTab.id || null == browserTab.url) return;
+    const tab = new CompatTab(browserTab);
     const cookieStore = tab.cookieStore;
     if (cookieStore.isPrivate) {
       return;
@@ -128,7 +128,7 @@ browser.tabs.onCreated.addListener((tabObj) => {
       return;
     }
 
-    if (tab.url != 'about:blank' && tabObj.status != 'loading') {
+    if (tab.url != 'about:blank' && browserTab.status != 'loading') {
       console.log('Manually opened tab: %d', tab.id);
       openTabs.add(tab.id);
     } else if (tab.pinned) {
@@ -138,11 +138,11 @@ browser.tabs.onCreated.addListener((tabObj) => {
       // handles the case when the new tab page is about:blank
       const tabId = tab.id;
       setTimeout(() => {
-        browser.tabs.get(tabId).then((tabObj) => {
-          if (tabObj.url == 'about:blank' && tabObj.status != 'loading') {
-            openTabs.add(tabObj.id);
-            if (tabObj.active) {
-              setActiveUserContext(tabObj.windowId, userContextId);
+        browser.tabs.get(tabId).then((browserTab) => {
+          if (browserTab.url == 'about:blank' && browserTab.status != 'loading') {
+            openTabs.add(browserTab.id);
+            if (browserTab.active) {
+              setActiveUserContext(browserTab.windowId, userContextId);
             }
           }
         });
@@ -164,8 +164,8 @@ browser.tabs.onRemoved.addListener(async (tabId) => {
 
 browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
   try {
-    const tabObj = await browser.tabs.get(tabId);
-    if (tabObj.pinned) {
+    const browserTab = await browser.tabs.get(tabId);
+    if (browserTab.pinned) {
       return;
     }
     await tabSortingService.sortTabs();
@@ -175,7 +175,7 @@ browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
   }
 });
 
-browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tabObj*/) => {
+browser.tabs.onUpdated.addListener((/*tabId, changeInfo, browserTab*/) => {
   //console.log('tab %d hidden on window %d', tabId, tab.windowId);
   tabChangeChannel.postMessage(true);
 }, {
@@ -184,7 +184,7 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tabObj*/) => {
   ],
 });
 
-browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tabObj*/) => {
+browser.tabs.onUpdated.addListener((/*tabId, changeInfo, browserTab*/) => {
   tabSortingService.sortTabs().catch((e) => {
     console.error(e);
   });
@@ -194,11 +194,11 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, tabObj*/) => {
   ],
 });
 
-browser.tabs.onUpdated.addListener((tabId, _changeInfo, tabObj) => {
+browser.tabs.onUpdated.addListener((tabId, _changeInfo, browserTab) => {
   try {
-    tabObj.id = tabId;
-    if (tabObj.cookieStoreId == null || tabObj.url == null || tabObj.windowId == null) return;
-    const tab = new CompatTab(tabObj);
+    browserTab.id = tabId;
+    if (browserTab.cookieStoreId == null || browserTab.url == null || browserTab.windowId == null) return;
+    const tab = new CompatTab(browserTab);
     const cookieStore = tab.cookieStore;
     if (cookieStore.isPrivate) {
       return;
@@ -213,7 +213,7 @@ browser.tabs.onUpdated.addListener((tabId, _changeInfo, tabObj) => {
       });
       return;
     }
-    if (tab.url != 'about:blank' && tabObj.status != 'loading') {
+    if (tab.url != 'about:blank' && browserTab.status != 'loading') {
       if (!openTabs.has(tab.id)) {
         console.log('Manually opened tab: %d', tab.id);
         openTabs.add(tab.id);
@@ -224,7 +224,7 @@ browser.tabs.onUpdated.addListener((tabId, _changeInfo, tabObj) => {
         openTabs.add(tab.id);
       }
     }
-    if (tab.url != 'about:blank' && tabObj.status != 'loading' && tab.active) {
+    if (tab.url != 'about:blank' && browserTab.status != 'loading' && tab.active) {
       const activeUserContextId: number = getActiveUserContext(tab.windowId);
       if (activeUserContextId != userContextId) {
         console.log('setActiveUserContext for window %d and user context %d', tab.windowId, userContextId);
@@ -243,10 +243,10 @@ browser.tabs.onUpdated.addListener((tabId, _changeInfo, tabObj) => {
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   try {
-    const tabObj = await browser.tabs.get(tabId);
-    const tab = new CompatTab(tabObj);
+    const browserTab = await browser.tabs.get(tabId);
+    const tab = new CompatTab(browserTab);
     const cookieStore = tab.cookieStore;
-    if (tabObj.cookieStoreId == null || tabObj.id == null) return;
+    if (browserTab.cookieStoreId == null || browserTab.id == null) return;
     if (cookieStore.isPrivate) {
       return;
     }
@@ -254,13 +254,13 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
     const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
     const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
     try {
-      const indexTabUrl = await browser.sessions.getTabValue(tabObj.id, 'indexTabUrl');
+      const indexTabUrl = await browser.sessions.getTabValue(browserTab.id, 'indexTabUrl');
       if (!indexTabUrl) {
         throw void 0;
       }
       const nextTabs = await browser.tabs.query({
-        windowId: tabObj.windowId,
-        index: tabObj.index + 1,
+        windowId: browserTab.windowId,
+        index: browserTab.index + 1,
       });
       for (const nextTab of nextTabs) {
         await browser.tabs.update(nextTab.id, {
@@ -279,7 +279,7 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
     } catch (e) {
       console.error(e);
     }
-    if (!tabObj.pinned) {
+    if (!browserTab.pinned) {
       await userContextVisibilityService.showContainerOnWindow(windowId, userContextId);
     }
   } catch (e) {
