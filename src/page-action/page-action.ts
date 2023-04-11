@@ -19,10 +19,11 @@
 
 import browser from 'webextension-polyfill';
 import { MessagingService, ExtensionService } from 'weeg-utils';
-
-import { ContainerAttributes, ContextualIdentity, CookieStore } from '../frameworks/tabAttributes';
-import { UserContext } from '../frameworks/tabGroups';
 import { Uint32 } from "weeg-types";
+import { CookieStore } from 'weeg-containers';
+
+import { ContainerAttributes, ContextualIdentity } from '../frameworks/tabAttributes';
+import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
 import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 

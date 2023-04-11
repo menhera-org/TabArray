@@ -20,10 +20,10 @@
 */
 
 import { MessagingService } from 'weeg-utils';
+import { CookieStore } from 'weeg-containers';
 
 import { ExternalServiceProvider } from '../lib/ExternalServiceProvider';
 import { ContentStorageStatistics } from './ContentStorageStatistics';
-import { CookieStore } from '../frameworks/tabAttributes';
 
 const serviceProvider = ExternalServiceProvider.getInstance();
 const statistics = new ContentStorageStatistics();

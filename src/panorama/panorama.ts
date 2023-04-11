@@ -21,6 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { MessagingService, PromiseUtils } from 'weeg-utils';
+import { CookieStore } from 'weeg-containers';
 
 import * as containers from '../modules/containers';
 import { PanoramaStateStore } from "./PanoramaStateStore";
@@ -33,7 +34,7 @@ import { UserContext } from "../frameworks/tabGroups";
 import * as i18n from '../modules/i18n';
 import { WindowService } from '../frameworks/tabs';
 import { TabGroupService } from '../frameworks/tabGroups';
-import { CookieStore, ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
+import { ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
 import { ContainerEditorElement } from '../components/container-editor';
 import { ModalConfirmElement } from '../components/modal-confirm';
 import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
@@ -151,7 +152,7 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
   if (isPrivate) {
     console.assert(userContextId == 0);
   }
-  const cookieStore = isPrivate ? CookieStore.PRIVATE : CookieStore.fromId(userContext.cookieStoreId);
+  const cookieStore = isPrivate ? CookieStore.PRIVATE : new CookieStore(userContext.cookieStoreId);
   const containerElement = new PanoramaContainerElement(userContext);
   containerElement.targetId = cookieStore.id;
   const tabGroup = await (isPrivate ? tabGroupService.getPrivateBrowsingTabGroup() : userContext.getTabGroup());

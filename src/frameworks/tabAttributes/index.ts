@@ -25,5 +25,3 @@ export { ContextualIdentityParams } from './ContextualIdentityParams';
 export { ContextualIdentityUniqueParams } from './ContextualIdentityUniqueParams';
 export { CookieStore } from './CookieStore';
 export { CookieStoreParams } from './CookieStoreParams';
-export { ExtendedCookieStore } from './ExtendedCookieStore';
-export { ExtendedCookieStoreParams } from './ExtendedCookieStoreParams';

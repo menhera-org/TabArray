@@ -21,9 +21,13 @@
 
 import browser from 'webextension-polyfill';
 import { MessagingService } from 'weeg-utils';
-import { CookieStore, ContextualIdentity } from '../frameworks/tabAttributes';
+import { CookieStore } from 'weeg-containers';
 
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
+
+const contextualIdentityService = ContextualIdentityService.getInstance();
 const messagingService = MessagingService.getInstance();
+const contextualIdentityFactory = contextualIdentityService.getFactory();
 
 const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number, active: boolean) => {
   const browserTab = await browser.tabs.create({
@@ -47,8 +51,8 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
       console.debug('reopen_tab_in_container: tabId=%d is incomplete, ignoring', tabId);
       return;
     }
-    const currentCookieStore = CookieStore.fromId(browserTab.cookieStoreId);
-    const targetCookieStore = CookieStore.fromId(cookieStoreId);
+    const currentCookieStore = new CookieStore(browserTab.cookieStoreId);
+    const targetCookieStore = new CookieStore(cookieStoreId);
     if (currentCookieStore.id === targetCookieStore.id) return;
     if (currentCookieStore.isPrivate != targetCookieStore.isPrivate) {
       const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => targetCookieStore.isPrivate == browserWindow.incognito);
@@ -76,7 +80,7 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
 const openNewTabInContainer = async (cookieStoreId: string, active: boolean) => {
   try {
     console.debug('open_new_tab_in_container: cookieStoreId=%s', cookieStoreId);
-    const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => CookieStore.fromId(cookieStoreId).isPrivate == browserWindow.incognito);
+    const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => new CookieStore(cookieStoreId).isPrivate == browserWindow.incognito);
     for (const browserWindow of browserWindows) {
       if (browserWindow.id == null) continue;
       await browser.tabs.create({
@@ -93,7 +97,7 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean) => 
     }
     await browser.windows.create({
       cookieStoreId,
-      incognito: CookieStore.fromId(cookieStoreId).isPrivate,
+      incognito: new CookieStore(cookieStoreId).isPrivate,
       focused: active,
     });
   } catch (e) {
@@ -103,14 +107,13 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean) => 
 
 const containerCreate = async (name: string, color: string, icon: string): Promise<string> => {
   console.debug('container_create: name=%s, color=%s, icon=%s', name, color, icon);
-  const contextualIdentity = await ContextualIdentity.create({name, color, icon});
-  return contextualIdentity.id;
+  const contextualIdentity = await contextualIdentityFactory.create({name, color, icon});
+  return contextualIdentity.cookieStore.id;
 };
 
 const containerUpdate = async (name: string, color: string, icon: string, cookieStoreId: string): Promise<void> => {
   console.debug('container_update: name=%s, color=%s, icon=%s, cookieStoreId=%s', name, color, icon, cookieStoreId);
-  const contextualIdentity = await ContextualIdentity.get(cookieStoreId);
-  await contextualIdentity.setParams({name, color, icon});
+  await contextualIdentityFactory.setParams(cookieStoreId, {name, color, icon});
 };
 
 messagingService.addListener('reopen_tab_in_container', async (message) => {

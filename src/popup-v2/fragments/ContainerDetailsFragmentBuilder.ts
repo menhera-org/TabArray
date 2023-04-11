@@ -21,13 +21,15 @@
 
 import browser from "webextension-polyfill";
 import { MessagingService } from "weeg-utils";
+import { CookieStore } from "weeg-containers";
+
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../components/ctg/ctg-menu-item";
 import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
-import { ContainerAttributes, CookieStore } from "../../frameworks/tabAttributes";
+import { ContainerAttributes } from "../../frameworks/tabAttributes";
 import { UserContext } from "../../frameworks/tabGroups";
 import { MenulistWindowElement } from "../../components/menulist-window";
 

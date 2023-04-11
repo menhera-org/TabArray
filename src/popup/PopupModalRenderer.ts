@@ -21,6 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
+import { CookieStore } from 'weeg-containers';
 
 import { UserContext } from "../frameworks/tabGroups";
 import { PopupRenderer } from './PopupRenderer';
@@ -32,7 +33,7 @@ import { PrivateBrowsingService } from '../frameworks/tabs';
 import { ModalConfirmElement } from '../components/modal-confirm';
 import { ModalMenuElement } from '../components/modal-menu';
 import { ContainerEditorElement } from '../components/container-editor';
-import { CookieStore, ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
+import { ContextualIdentity, ContainerAttributes } from '../frameworks/tabAttributes';
 import { ModalMoveGroupElement } from '../components/modal-move-group';
 
 type NewContainerPanelResult = {
@@ -198,7 +199,7 @@ export class PopupModalRenderer {
         res(null);
       });
       editorElement.onContainerCreated.addListener((cookieStoreId) => {
-        const cookieStore = CookieStore.fromId(cookieStoreId);
+        const cookieStore = new CookieStore(cookieStoreId);
         UserContext.get(cookieStore.userContextId).then((userContext) => {
           res(userContext);
         }).catch(() => {
@@ -219,7 +220,7 @@ export class PopupModalRenderer {
           res(userContext);
         });
         editorElement.onContainerUpdated.addListener((cookieStoreId) => {
-          const cookieStore = CookieStore.fromId(cookieStoreId);
+          const cookieStore = new CookieStore(cookieStoreId);
           UserContext.get(cookieStore.userContextId).then((userContext) => {
             res(userContext);
           }).catch(() => {
