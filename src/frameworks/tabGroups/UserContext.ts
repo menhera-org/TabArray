@@ -147,7 +147,7 @@ export class UserContext {
 
   public static async getAll(isPrivateBrowsing = false): Promise<UserContext[]> {
     if (isPrivateBrowsing) {
-      return [UserContext.DEFAULT];
+      return [UserContext.PRIVATE];
     }
     const identities = await browser.contextualIdentities.query({});
     const userContexts = identities.map(identity => {
