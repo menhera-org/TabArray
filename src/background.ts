@@ -27,7 +27,6 @@ import { WebExtensionsBroadcastChannel } from './modules/broadcasting';
 import { getActiveUserContext, setActiveUserContext } from './modules/usercontext-state.js';
 import { config } from './config/config';
 import { UserContext } from './frameworks/tabGroups';
-import { UserContextService } from './userContexts/UserContextService';
 import { UserContextVisibilityService } from './userContexts/UserContextVisibilityService';
 import { BeforeRequestHandler } from './background/BeforeRequestHandler';
 import { Tab } from './frameworks/tabs';
@@ -48,7 +47,6 @@ import './background/BackgroundMessageListeners';
 import './background/KeyboardShortcurListeners';
 import './background/BrowserActionUpdater';
 import { UaContentScriptRegistrar} from './overrides/UaContentScriptRegistrar';
-import { InitialWindowsService } from './background/InitialWindowsService';
 import { ExternalServiceProvider } from './lib/ExternalServiceProvider';
 import { ContainerTabOpenerService } from './lib/tabGroups/ContainerTabOpenerService';
 
@@ -76,10 +74,8 @@ const TAB_SORTING_INTERVAL = 10000;
 
 ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 ExternalServiceProvider.getInstance();
-const userContextService = UserContextService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const tabSortingService = TabSortingService.getInstance();
-const initialWindowsService = InitialWindowsService.getInstance();
 const utils = new BackgroundUtils();
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
