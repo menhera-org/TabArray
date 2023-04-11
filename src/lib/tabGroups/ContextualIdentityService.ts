@@ -26,6 +26,7 @@ import { ServiceRegistry } from '../ServiceRegistry';
 
 export class ContextualIdentityService {
   private static readonly DEFAULT_ICON_URL = browser.runtime.getURL('/img/material-icons/category.svg');
+  private static readonly PRIVATE_ICON_URL = browser.runtime.getURL('/img/firefox-icons/private-browsing-icon.svg');
   private static readonly DEFAULT_COLOR_CODE = '#7c7c7d';
 
   public static getInstance(): ContextualIdentityService {
@@ -87,18 +88,27 @@ export class ContextualIdentityService {
     return new DisplayedContainerFactory(displayedAttributesProvider);
   }
 
-  private validateName(aName: string): string {
-    return String(aName).trim();
-  }
+  private getDefaultName(cookieStoreId: string): string {
+    switch (cookieStoreId) {
+      case CookieStore.DEFAULT.id: {
+        return browser.i18n.getMessage('noContainer');
+      }
 
-  private getDefaultName(aId: number): string {
-    return aId == 0 ? browser.i18n.getMessage('noContainer') : browser.i18n.getMessage('invalidContainerName', String(aId));
+      case CookieStore.PRIVATE.id: {
+        return browser.i18n.getMessage('privateBrowsing');
+      }
+
+      default: {
+        const cookieStore = new CookieStore(cookieStoreId);
+        return browser.i18n.getMessage('invalidContainerName', String(cookieStore.userContextId));
+      }
+    }
   }
 
   public getDefaultParams(cookieStoreId: string): DisplayedContainerParams {
     const cookieStore = new CookieStore(cookieStoreId);
     return {
-      name: this.getDefaultName(cookieStore.userContextId),
+      name: this.getDefaultName(cookieStore.id),
       iconUrl: ContextualIdentityService.DEFAULT_ICON_URL,
       colorCode: ContextualIdentityService.DEFAULT_COLOR_CODE,
     };
