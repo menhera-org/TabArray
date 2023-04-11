@@ -20,7 +20,10 @@
 */
 
 import browser from 'webextension-polyfill';
-import { CookieStore } from "../frameworks/tabAttributes/CookieStore";
+
+import { CookieStoreService } from '../lib/tabGroups/CookieStoreService';
+
+const cookieStoreService = CookieStoreService.getInstance();
 
 export abstract class ContentScriptRegistrar {
   protected readonly contentScripts = new Map<string, browser.ContentScripts.RegisteredContentScript>();
@@ -40,10 +43,10 @@ export abstract class ContentScriptRegistrar {
   }
 
   public async register(cookieStoreId: string): Promise<void> {
-    const cookieStore = CookieStore.fromId(cookieStoreId);
     await this.unregister(cookieStoreId);
+    const code = await this.getContentScriptString(cookieStoreId);
     this.contentScripts.set(cookieStoreId, await browser.contentScripts.register({
-      js: [{ code: this.getContentScriptString(cookieStore) }],
+      js: [{ code }],
       matches: ['<all_urls>'],
       runAt: 'document_start',
       allFrames: true,
@@ -58,7 +61,7 @@ export abstract class ContentScriptRegistrar {
     this._registerAllRunning = true;
     try {
       console.debug(`${this.constructor.name}.registerAll()`);
-      const cookieStores = await CookieStore.getAll();
+      const cookieStores = await cookieStoreService.getCookieStores();
       const cookieStoreIds = cookieStores.map(cookieStore => cookieStore.id);
       const previousCookieStoreIds = Array.from(this.contentScripts.keys());
 
@@ -80,5 +83,5 @@ export abstract class ContentScriptRegistrar {
     }
   }
 
-  public abstract getContentScriptString(cookieStore: CookieStore): string;
+  public abstract getContentScriptString(cookieStoreId: string): string | Promise<string>;
 }

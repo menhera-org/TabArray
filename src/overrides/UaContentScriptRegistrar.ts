@@ -20,10 +20,10 @@
 */
 
 import browser from 'webextension-polyfill';
+
 import { UserAgentSettings } from './UserAgentSettings';
 import { config } from '../config/config';
 import { ContentScriptRegistrar } from './ContentScriptRegistrar';
-import { CookieStore } from '../frameworks/tabAttributes/CookieStore';
 
 export class UaContentScriptRegistrar extends ContentScriptRegistrar {
   private readonly settings: UserAgentSettings = UserAgentSettings.getInstance();
@@ -42,15 +42,15 @@ export class UaContentScriptRegistrar extends ContentScriptRegistrar {
     return config['feature.uaOverrides'].getValue();
   }
 
-  public getContentScriptString(cookieStore: CookieStore): string {
-    const ua = this.settings.getUserAgent(cookieStore.id);
-    const emulationMode = this.settings.getEmulationMode(cookieStore.id);
+  public getContentScriptString(cookieStoreId: string): string {
+    const ua = this.settings.getUserAgent(cookieStoreId);
+    const emulationMode = this.settings.getEmulationMode(cookieStoreId);
     const code = `
       globalThis.gUaStore = globalThis.gUaStore || {};
       gUaStore.userAgent = ${JSON.stringify(ua)};
       gUaStore.emulationMode = ${JSON.stringify(emulationMode)};
     `;
-    console.debug('UaContentScriptRegistrar.getContentScriptString', cookieStore.id, code);
+    console.debug('UaContentScriptRegistrar.getContentScriptString', cookieStoreId, code);
     return code;
   }
 

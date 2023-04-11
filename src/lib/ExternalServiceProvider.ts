@@ -20,7 +20,7 @@
 */
 
 import { RegistrableDomainService, HostnameService, UrlService } from "weeg-domains";
-import { MessagingService } from "weeg-utils";
+import { MessagingService, ExtensionService } from "weeg-utils";
 
 import { ServiceRegistry } from "./ServiceRegistry";
 
@@ -36,6 +36,7 @@ export class ExternalServiceProvider {
   public readonly hostnameService: HostnameService;
   public readonly urlService: UrlService;
   public readonly messagingService: MessagingService;
+  public readonly extensionService: ExtensionService;
 
   private constructor() {
     this.serviceRegistry = ServiceRegistry.getInstance();
@@ -47,5 +48,7 @@ export class ExternalServiceProvider {
     this.serviceRegistry.registerService('UrlService', this.urlService);
     this.messagingService = MessagingService.getInstance();
     this.serviceRegistry.registerService('MessagingService', this.messagingService);
+    this.extensionService = ExtensionService.getInstance();
+    this.serviceRegistry.registerService('ExtensionService', this.extensionService);
   }
 }
