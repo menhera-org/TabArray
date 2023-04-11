@@ -21,10 +21,11 @@
 
 import { StorageItem } from "weeg-storage";
 import { EventSink } from "weeg-events";
+import { ContextualIdentity } from "weeg-containers";
 
+import { ContextualIdentityService } from "../lib/tabGroups/ContextualIdentityService";
 import { ExternalServiceProvider } from "../lib/ExternalServiceProvider";
 import { CookieProvider } from "../frameworks/cookies";
-import { ContextualIdentity } from "../frameworks/tabAttributes";
 
 export type OriginStorageStatistics = {
   origin: string;
@@ -52,6 +53,8 @@ export class ContentStorageStatistics {
   private readonly _serviceProvider = ExternalServiceProvider.getInstance();
   private readonly _registrableDomainService = this._serviceProvider.registrableDomainService;
   private readonly _hostnameService = this._serviceProvider.hostnameService;
+  private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
+  private readonly _contextualIdentityFactory = this._contextualIdentityService.getFactory();
 
   public readonly cookieProvider = new CookieProvider();
   public readonly onChanged = new EventSink<void>();
@@ -61,8 +64,8 @@ export class ContentStorageStatistics {
       this.onChanged.dispatch();
     }, false);
 
-    ContextualIdentity.onRemoved.addListener((contextualIdentity: ContextualIdentity) => {
-      this.removeCookieStore(contextualIdentity.id);
+    this._contextualIdentityFactory.onRemoved.addListener((contextualIdentity: ContextualIdentity) => {
+      this.removeCookieStore(contextualIdentity.cookieStore.id);
     });
   }
 

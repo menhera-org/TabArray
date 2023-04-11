@@ -20,19 +20,22 @@
 */
 
 import browser from 'webextension-polyfill';
-import { TemporaryContainerService } from './TemporaryContainerService';
-import { ContextualIdentity } from '../frameworks/tabAttributes';
 
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
+import { TemporaryContainerService } from './TemporaryContainerService';
+
+const contextualIdentityService = ContextualIdentityService.getInstance();
+const contextualIdentityFactory = contextualIdentityService.getFactory();
 const temporatyContainerService = TemporaryContainerService.getInstance();
 
-ContextualIdentity.onRemoved.addListener(async (identity) => {
-  temporatyContainerService.removeTemporaryContainerFromList(identity.id);
+contextualIdentityFactory.onRemoved.addListener(async (identity) => {
+  temporatyContainerService.removeTemporaryContainerFromList(identity.cookieStore.id);
 });
 
 browser.tabs.onRemoved.addListener(async () => {
   try {
-    const identities = await ContextualIdentity.getAll();
-    const cookieStoreIds = new Set(identities.map((identity) => identity.id));
+    const identities = await contextualIdentityFactory.getAll();
+    const cookieStoreIds = new Set(identities.map((identity) => identity.cookieStore.id));
     const browserTabs = await browser.tabs.query({});
     for (const browserTab of browserTabs) {
       if (!browserTab.cookieStoreId) {

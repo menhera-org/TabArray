@@ -19,12 +19,9 @@
 
 import browser from 'webextension-polyfill';
 import { MessagingService, ExtensionService } from 'weeg-utils';
-import { Uint32 } from "weeg-types";
 import { CookieStore } from 'weeg-containers';
 
-import { ContainerAttributes, ContextualIdentity } from '../frameworks/tabAttributes';
-import { UserContext } from '../frameworks/tabGroups';
-import { UserContextService } from '../userContexts/UserContextService';
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
 import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 
 type ContainerInfo = {
@@ -33,10 +30,11 @@ type ContainerInfo = {
   iconUrl: string;
 };
 
-const userContextService = UserContextService.getInstance();
 const extensionService = ExtensionService.getInstance();
 const messagingService = MessagingService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
+const contextualIdentityService = ContextualIdentityService.getInstance();
+const contextualIdentityFactory = contextualIdentityService.getFactory();
 
 const mainElement = document.querySelector('#main');
 
@@ -55,12 +53,11 @@ const currentBrowserTabPromise = browser.tabs.query({active: true, currentWindow
 const getContainerInfos = async (): Promise<ContainerInfo[]> => {
   const currentBrowserTab = await currentBrowserTabPromise;
   const currentCookieStoreId = currentBrowserTab?.cookieStoreId;
-  const userContexts = await UserContext.getAll();
-  const filledUserContexts = userContexts.map((userContext) => userContextService.fillDefaultValues(userContext));
+  const contextualIdentities = await contextualIdentityFactory.getAll();
+  contextualIdentities.sort((a, b) => {
+    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
+  })
   const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
-  const sortedUserContexts = [... filledUserContexts].sort((a, b) => {
-    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
-  }).filter((userContext) => userContext.id !== UserContext.ID_DEFAULT);
   const defaultContainer = CookieStore.DEFAULT;
   const privateBrowsingContainer = CookieStore.PRIVATE;
   const privateBrowsingContainerInfos = await extensionService.isAllowedInPrivateBrowsing() ? [
@@ -76,19 +73,11 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
       name: browser.i18n.getMessage('noContainer'),
       iconUrl: '',
     },
-    ... sortedUserContexts.map((userContext) => {
-      const contextualIdentity = new ContextualIdentity({
-        userContextId: userContext.id,
-        privateBrowsingId: 0 as Uint32.Uint32,
-        name: userContext.name,
-        icon: userContext.icon,
-        color: userContext.color,
-      });
-      const containerAttributes = new ContainerAttributes(contextualIdentity, contextualIdentity.name, contextualIdentity.color, contextualIdentity.icon);
+    ... contextualIdentities.map((contextualIdentity) => {
       return {
-        cookieStoreId: containerAttributes.id,
-        name: containerAttributes.name,
-        iconUrl: containerAttributes.iconUrl,
+        cookieStoreId: contextualIdentity.cookieStore.id,
+        name: contextualIdentity.name,
+        iconUrl: contextualIdentity.iconUrl,
       };
     }),
     ... privateBrowsingContainerInfos,

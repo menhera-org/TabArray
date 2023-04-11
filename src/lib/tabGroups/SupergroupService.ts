@@ -109,15 +109,14 @@ export class SupergroupService {
       throw new Error(`Supergroup not found: ${parentTabGroupId}`);
     }
     const contextualIdentityFactory = contextualIdentityService.getFactory();
-    const v1ContextualIdentity = await temporaryContainerService.createTemporaryContainer();
-    const cookieStoreId = v1ContextualIdentity.id;
+    let contextualIdentity = await temporaryContainerService.createTemporaryContainer();
+    const cookieStoreId = contextualIdentity.cookieStore.id;
     await tabGroupDirectory.moveTabGroupToSupergroup(cookieStoreId, parentTabGroupId);
-    await v1ContextualIdentity.setParams({
-      name: v1ContextualIdentity.name + ` (${supergroup.name})`,
-      icon: v1ContextualIdentity.icon,
-      color: v1ContextualIdentity.color,
+    contextualIdentity = await contextualIdentityFactory.setParams(cookieStoreId, {
+      name: contextualIdentity.name + ` (${supergroup.name})`,
+      icon: contextualIdentity.icon,
+      color: contextualIdentity.color,
     });
-    const contextualIdentity = await contextualIdentityFactory.get(cookieStoreId);
     return contextualIdentity;
   }
 }

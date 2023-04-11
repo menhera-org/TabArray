@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 import { MessagingService, PromiseUtils } from 'weeg-utils';
 import { CookieStore } from 'weeg-containers';
 
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
 import * as containers from '../modules/containers';
 import { PanoramaStateStore } from "./PanoramaStateStore";
 import { PanoramaTabElement } from "../components/panorama-tab";
@@ -50,6 +51,8 @@ const tabGroupService = TabGroupService.getInstance();
 const messagingService = MessagingService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
+const contextualIdentityService = ContextualIdentityService.getInstance();
+const contextualIdentityFactory = contextualIdentityService.getFactory();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -193,11 +196,11 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
     });
 
     containerElement.onContainerDeleteButtonClick.addListener(async () => {
-      const contextualIdentity = await ContextualIdentity.get(cookieStore.id);
+      const contextualIdentity = await contextualIdentityFactory.get(cookieStore.id);
       if (!contextualIdentity) return;
       const confirmElement = new ModalConfirmElement(browser.i18n.getMessage('confirmContainerDelete', contextualIdentity.name));
       confirmElement.onOk.addListener(async () => {
-        await ContextualIdentity.remove(cookieStore.id);
+        await contextualIdentityFactory.remove(cookieStore.id);
       });
       document.body.appendChild(confirmElement);
     });
@@ -258,9 +261,9 @@ handler.render().catch((e) => {
   console.error(e);
 });
 
-ContextualIdentity.onCreated.addListener(() => handler.render());
-ContextualIdentity.onRemoved.addListener(() => handler.render());
-ContextualIdentity.onUpdated.addListener(() => handler.render());
+contextualIdentityFactory.onCreated.addListener(() => handler.render());
+contextualIdentityFactory.onRemoved.addListener(() => handler.render());
+contextualIdentityFactory.onUpdated.addListener(() => handler.render());
 browser.tabs.onRemoved.addListener(() => handler.render());
 browser.tabs.onUpdated.addListener(() => handler.render(), { properties: ['favIconUrl', 'title', 'url'] });
 browser.tabs.onCreated.addListener(() => handler.render());

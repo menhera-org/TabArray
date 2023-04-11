@@ -28,7 +28,6 @@ import { PopupRenderer } from './PopupRenderer';
 import { PopupUtils } from './PopupUtils';
 import { ColorPickerElement } from '../components/usercontext-colorpicker';
 import { IconPickerElement } from '../components/usercontext-iconpicker';
-import { UserContextService } from '../userContexts/UserContextService';
 import { PrivateBrowsingService } from '../frameworks/tabs';
 import { ModalConfirmElement } from '../components/modal-confirm';
 import { ModalMenuElement } from '../components/modal-menu';
@@ -51,7 +50,6 @@ type KeyHandlers = {
 export class PopupModalRenderer {
   private readonly _popupRenderer: PopupRenderer;
   private readonly _utils: PopupUtils;
-  private readonly _userContextService = UserContextService.getInstance();
   private readonly _keyHandlersStack = new Array<KeyHandlers>();
   private _privateBrowsingService = PrivateBrowsingService.getInstance();
 

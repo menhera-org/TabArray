@@ -20,8 +20,11 @@
 */
 
 import browser from 'webextension-polyfill';
-import { ContextualIdentity } from "../frameworks/tabAttributes";
 import { StorageItem } from 'weeg-storage';
+import { ContextualIdentity } from 'weeg-containers';
+
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
+import { TabGroupService } from '../lib/tabGroups/TabGroupService';
 
 export class TemporaryContainerService {
   private static readonly _INSTANCE = new TemporaryContainerService();
@@ -30,6 +33,9 @@ export class TemporaryContainerService {
     return this._INSTANCE;
   }
 
+  private readonly _tabGroupService = TabGroupService.getInstance();
+  private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
+  private readonly _contextualIdentityFactory = this._contextualIdentityService.getFactory();
   private readonly _temporaryContainerStorage = new StorageItem<string[]>('temporaryContainers', [], StorageItem.AREA_LOCAL);
 
   private constructor() {
@@ -46,8 +52,8 @@ export class TemporaryContainerService {
 
   public async removeTemporaryContainer(cookieStoreId: string): Promise<void> {
     this.removeTemporaryContainerFromList(cookieStoreId);
-    await ContextualIdentity.removeBrowsingData(cookieStoreId);
-    await ContextualIdentity.remove(cookieStoreId);
+    await this._tabGroupService.removeBrowsingDataForTabGroupId(cookieStoreId);
+    await this._contextualIdentityFactory.remove(cookieStoreId);
     console.debug('Removed temporary container', cookieStoreId);
   }
 
@@ -62,25 +68,25 @@ export class TemporaryContainerService {
   }
 
   public async createTemporaryContainer(): Promise<ContextualIdentity> {
-    let identity = await ContextualIdentity.create({
+    let identity = await this._contextualIdentityFactory.create({
       name: '__tmp__',
       color: this.getRandomColor(),
       icon: 'fingerprint',
     });
 
-    identity = await identity.setParams({
-      name: `tmp-${identity.userContextId.toFixed(0)}`,
+    identity = await this._contextualIdentityFactory.setParams(identity.cookieStore.id, {
+      name: `tmp-${identity.cookieStore.userContextId.toFixed(0)}`,
       color: identity.color,
       icon: identity.icon,
     });
 
     await browser.tabs.create({
-      cookieStoreId: identity.id,
+      cookieStoreId: identity.cookieStore.id,
       windowId: browser.windows.WINDOW_ID_CURRENT,
     });
 
     const temporaryContainers = await this._temporaryContainerStorage.getValue();
-    temporaryContainers.push(identity.id);
+    temporaryContainers.push(identity.cookieStore.id);
     await this._temporaryContainerStorage.setValue(temporaryContainers);
 
     return identity;

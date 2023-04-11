@@ -198,7 +198,7 @@ UserContext.getAll().then(async (userContexts) => {
   containersElement.append(temporaryContainerButton);
   temporaryContainerButton.addEventListener('click', async () => {
     const identity = await temporaryContainerService.createTemporaryContainer();
-    reopenInContainer(identity.id);
+    reopenInContainer(identity.cookieStore.id);
   });
   [... userContexts].sort((a, b) => {
     return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
