@@ -51,6 +51,14 @@ export class ServiceRegistry {
     }
     return service as T;
   }
+
+  public hasService(aServiceName: string): boolean {
+    return this.serviceMap.has(aServiceName);
+  }
+
+  public getServiceNames(): string[] {
+    return [...this.serviceMap.keys()];
+  }
 }
 
 globalThis.gServiceRegistry = ServiceRegistry.getInstance();
