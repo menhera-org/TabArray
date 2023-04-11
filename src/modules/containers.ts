@@ -20,20 +20,31 @@
 import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
 import { CookieStore } from 'weeg-containers';
+import { CompatTabGroup, PinnedTabGroupFilter, WindowTabGroupFilter, CookieStoreTabGroupFilter } from 'weeg-tabs';
 
+import { TabService } from '../lib/TabService';
 import { setActiveUserContext } from './usercontext-state.js';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { WindowService } from '../frameworks/tabs/WindowService';
 
+const tabService = TabService.getInstance();
 const tabGroupService = TabGroupService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const windowService = WindowService.getInstance();
 
 export const closeAllTabsOnWindow = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
+  const cookieStore = CookieStore.fromParams({
+    userContextId: aUserContextId,
+    privateBrowsingId: 0 as Uint32.Uint32,
+  });
   const isPrivate = await windowService.isPrivateWindow(aWindowId);
-  const tabGroup = await (isPrivate ? tabGroupService.getPrivateBrowsingTabGroup() : tabGroupService.getTabGroupFromUserContextId(aUserContextId));
-  await tabGroup.tabList.closeUnpinnedTabsOnWindow(aWindowId);
+  const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : cookieStore.id;
+  const compatTabGroup = new CompatTabGroup(new CookieStoreTabGroupFilter(cookieStoreId), new WindowTabGroupFilter(aWindowId), new PinnedTabGroupFilter(false));
+  const tabs = await compatTabGroup.getTabs();
+  if (tabs.length > 0) {
+    await tabService.closeTabs(tabs);
+  }
 };
 
 export const getInactiveIds = async (aWindowId: number) => {

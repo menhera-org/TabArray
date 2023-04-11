@@ -19,91 +19,13 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import browser from 'webextension-polyfill';
 import { MessagingService } from 'weeg-utils';
-import { CookieStore } from 'weeg-containers';
 
 import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
 
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const messagingService = MessagingService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
-
-const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number, active: boolean) => {
-  const browserTab = await browser.tabs.create({
-    url,
-    cookieStoreId,
-    windowId,
-    active: false,
-  });
-  if (!browserTab.id) return;
-  await Promise.all([
-    browser.tabs.update(browserTab.id, {active}),
-    browser.tabs.remove(currentTabId),
-  ]);
-};
-
-const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active: boolean) => {
-  try {
-    console.debug('reopen_tab_in_container: tabId=%d, cookieStoreId=%s', tabId, cookieStoreId);
-    const browserTab = await browser.tabs.get(tabId);
-    if (!browserTab.url || browserTab.url === 'about:blank' || !browserTab.cookieStoreId || !browserTab.windowId) {
-      console.debug('reopen_tab_in_container: tabId=%d is incomplete, ignoring', tabId);
-      return;
-    }
-    const currentCookieStore = new CookieStore(browserTab.cookieStoreId);
-    const targetCookieStore = new CookieStore(cookieStoreId);
-    if (currentCookieStore.id === targetCookieStore.id) return;
-    if (currentCookieStore.isPrivate != targetCookieStore.isPrivate) {
-      const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => targetCookieStore.isPrivate == browserWindow.incognito);
-      for (const browserWindow of browserWindows) {
-        if (browserWindow.id == null) continue;
-        await openTabAndCloseCurrent(browserTab.url, targetCookieStore.id, browserWindow.id, tabId, active);
-        return;
-      }
-      await browser.windows.create({
-        url: browserTab.url,
-        cookieStoreId: targetCookieStore.id,
-        incognito: targetCookieStore.isPrivate,
-        focused: active,
-      });
-      await browser.tabs.remove(tabId);
-    } else {
-      await openTabAndCloseCurrent(browserTab.url, targetCookieStore.id, browserTab.windowId, tabId, active);
-    }
-  } catch (e) {
-    // this happens when the tab is privileged
-    console.warn(e);
-  }
-};
-
-const openNewTabInContainer = async (cookieStoreId: string, active: boolean) => {
-  try {
-    console.debug('open_new_tab_in_container: cookieStoreId=%s', cookieStoreId);
-    const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => new CookieStore(cookieStoreId).isPrivate == browserWindow.incognito);
-    for (const browserWindow of browserWindows) {
-      if (browserWindow.id == null) continue;
-      await browser.tabs.create({
-        cookieStoreId,
-        windowId: browserWindow.id,
-        active,
-      });
-      if (active) {
-        await browser.windows.update(browserWindow.id, {
-          focused: true,
-        });
-      }
-      return;
-    }
-    await browser.windows.create({
-      cookieStoreId,
-      incognito: new CookieStore(cookieStoreId).isPrivate,
-      focused: active,
-    });
-  } catch (e) {
-    console.warn(e);
-  }
-};
 
 const containerCreate = async (name: string, color: string, icon: string): Promise<string> => {
   console.debug('container_create: name=%s, color=%s, icon=%s', name, color, icon);
@@ -115,20 +37,6 @@ const containerUpdate = async (name: string, color: string, icon: string, cookie
   console.debug('container_update: name=%s, color=%s, icon=%s, cookieStoreId=%s', name, color, icon, cookieStoreId);
   await contextualIdentityFactory.setParams(cookieStoreId, {name, color, icon});
 };
-
-messagingService.addListener('reopen_tab_in_container', async (message) => {
-  if (null == message || typeof message != 'object' || !('tabId' in message) || !('cookieStoreId' in message)) return;
-  const active = ('active' in message) ? !!message.active : false;
-  const {tabId, cookieStoreId} = message;
-  await reopenTabInContainer(tabId as number, cookieStoreId as string, active);
-});
-
-messagingService.addListener('open_new_tab_in_container', async (message) => {
-  if (null == message || typeof message != 'object' || !('cookieStoreId' in message)) return;
-  const active = ('active' in message) ? !!message.active : false;
-  const {cookieStoreId} = message;
-  await openNewTabInContainer(cookieStoreId as string, active);
-});
 
 messagingService.addListener('container_create', async (message) => {
   if (null == message || typeof message != 'object' || !('name' in message) || !('color' in message) || !('icon' in message)) return;

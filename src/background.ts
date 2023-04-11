@@ -49,6 +49,7 @@ import './background/BrowserActionUpdater';
 import { UaContentScriptRegistrar} from './overrides/UaContentScriptRegistrar';
 import { InitialWindowsService } from './background/InitialWindowsService';
 import { ExternalServiceProvider } from './lib/ExternalServiceProvider';
+import { ContainerTabOpenerService } from './lib/tabGroups/ContainerTabOpenerService';
 
 // watchdog
 let scriptCompleted = false;
@@ -72,6 +73,7 @@ setInterval(() => {
 
 const TAB_SORTING_INTERVAL = 10000;
 
+ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 ExternalServiceProvider.getInstance();
 const userContextService = UserContextService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();

@@ -20,7 +20,6 @@
 */
 
 import browser from "webextension-polyfill";
-import { MessagingService } from "weeg-utils";
 import { CookieStore, DisplayedContainer } from "weeg-containers";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
@@ -31,11 +30,12 @@ import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
 import { UserContext } from "../../frameworks/tabGroups";
 import { MenulistWindowElement } from "../../components/menulist-window";
+import { ContainerTabOpenerService } from "../../lib/tabGroups/ContainerTabOpenerService";
 
 export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
 
-  private readonly _messagingService = MessagingService.getInstance();
+  private readonly _containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private _containerName = browser.i18n.getMessage('noContainer');
   private _cookieStoreId = CookieStore.DEFAULT.id;
@@ -77,10 +77,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
     topBarElement.addMenuItem('new-tab', newTabMenuItem);
 
     newTabMenuItem.addEventListener('click', () => {
-      this._messagingService.sendMessage('open_new_tab_in_container', {
-        cookieStoreId: this._cookieStoreId,
-        active: true,
-      }).catch((e) => {
+      this._containerTabOpenerService.openNewTabInContainer(this._cookieStoreId, true).catch((e) => {
         console.error(e);
       });
     });

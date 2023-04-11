@@ -20,18 +20,26 @@
 */
 
 import browser from 'webextension-polyfill';
-import { TabGroupService } from '../frameworks/tabGroups';
-import { UserContext } from '../frameworks/tabGroups';
+import { ContextualIdentity } from 'weeg-containers';
+import { CompatTabGroup, CookieStoreTabGroupFilter } from 'weeg-tabs';
 
-const tabGroupService = TabGroupService.getInstance();
+import { TabService } from '../lib/TabService';
 
-browser.contextualIdentities.onRemoved.addListener(async ({contextualIdentity}) => {
-  const userContextId = UserContext.fromCookieStoreId(contextualIdentity.cookieStoreId);
-  console.log('userContext %d removed', userContextId);
-  const tabGroup = await tabGroupService.getTabGroupFromUserContextId(userContextId);
-  tabGroup.tabList.closeTabs().then(() => {
-    console.log('Closed all tabs for userContext %d', userContextId);
-  }).catch((e) => {
-    console.error('cleanup failed for userContext %d', userContextId, e);
-  });
+const tabService = TabService.getInstance();
+
+browser.contextualIdentities.onRemoved.addListener(async ({contextualIdentity: browserContextualIdentity}) => {
+  try {
+    const contextualIdentity = ContextualIdentity.fromWebExtensionsContextualIdentity(browserContextualIdentity);
+    const cookieStoreId = contextualIdentity.cookieStore.id;
+    const name = contextualIdentity.name;
+    console.info('contextualIdentity %s (%s) removed', name, cookieStoreId);
+    const compatTabGroup = new CompatTabGroup(new CookieStoreTabGroupFilter(cookieStoreId));
+    const tabs = await compatTabGroup.getTabs();
+    if (tabs.length > 0) {
+      await tabService.closeTabs(tabs);
+      console.info('closed %d tabs in %s (%s)', tabs.length, name, cookieStoreId);
+    }
+  } catch (e) {
+    console.error(e);
+  }
 });

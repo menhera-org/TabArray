@@ -18,9 +18,10 @@
 */
 
 import browser from 'webextension-polyfill';
-import { MessagingService, ExtensionService } from 'weeg-utils';
+import { ExtensionService } from 'weeg-utils';
 import { CookieStore } from 'weeg-containers';
 
+import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
 import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
 import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 
@@ -31,10 +32,10 @@ type ContainerInfo = {
 };
 
 const extensionService = ExtensionService.getInstance();
-const messagingService = MessagingService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
+const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 
 const mainElement = document.querySelector('#main');
 
@@ -54,10 +55,10 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
   const currentBrowserTab = await currentBrowserTabPromise;
   const currentCookieStoreId = currentBrowserTab?.cookieStoreId;
   const contextualIdentities = await contextualIdentityFactory.getAll();
+  const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
   contextualIdentities.sort((a, b) => {
     return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-  })
-  const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
+  });
   const defaultContainer = CookieStore.DEFAULT;
   const privateBrowsingContainer = CookieStore.PRIVATE;
   const privateBrowsingContainerInfos = await extensionService.isAllowedInPrivateBrowsing() ? [
@@ -86,11 +87,10 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
 };
 
 const reopenTab = async (targetCookieStoreId: string, currentBrowserTab: browser.Tabs.Tab) => {
-  await messagingService.sendMessage('reopen_tab_in_container', {
-    tabId: currentBrowserTab.id,
-    cookieStoreId: targetCookieStoreId,
-    active: true,
-  });
+  if (currentBrowserTab.id == null) {
+    throw new Error('currentBrowserTab.id is null');
+  }
+  await containerTabOpenerService.reopenTabInContainer(currentBrowserTab.id, targetCookieStoreId, true);
 };
 
 (async () => {

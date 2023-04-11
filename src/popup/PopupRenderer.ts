@@ -37,6 +37,7 @@ import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
 import { Uint32 } from "weeg-types";
 import { UserContextService } from '../userContexts/UserContextService';
 import { PopupModalRenderer } from './PopupModalRenderer';
+import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
 
 enum ContainerTabsState {
   NO_TABS,
@@ -49,6 +50,7 @@ export class PopupRenderer {
   private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
   private readonly _userContextService = UserContextService.getInstance();
   private readonly _messagingService = MessagingService.getInstance();
+  private readonly _containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly windowListRenderer = new PopupWindowListRenderer(this);
@@ -211,10 +213,7 @@ export class PopupRenderer {
       if ('tab' != data.type || data.pinned) return;
       if (data.cookieStoreId == userContext.cookieStoreId) return;
       ev.preventDefault();
-      this._messagingService.sendMessage('reopen_tab_in_container', {
-        tabId: data.id,
-        cookieStoreId: userContext.cookieStoreId,
-      }).catch((e) => {
+      this._containerTabOpenerService.reopenTabInContainer(data.id, userContext.cookieStoreId, false).catch((e) => {
         console.error(e);
       });
     });

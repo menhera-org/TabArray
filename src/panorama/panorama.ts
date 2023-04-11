@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { MessagingService, PromiseUtils } from 'weeg-utils';
+import { PromiseUtils } from 'weeg-utils';
 import { CookieStore } from 'weeg-containers';
 
 import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
@@ -42,16 +42,17 @@ import { ModalFrameElement } from '../components/modal-frame';
 import { HelpBannerElement } from '../components/help-banner';
 import { TemporaryContainerService } from '../containers/TemporaryContainerService';
 import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
+import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
 
 const panoramaStateStore = new PanoramaStateStore();
 const userContextService = UserContextService.getInstance();
 const windowService = WindowService.getInstance();
 const tabGroupService = TabGroupService.getInstance();
-const messagingService = MessagingService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
+const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -213,10 +214,7 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
       const data = JSON.parse(json || '');
       if (!data.id) return;
       console.log('drop', data.id, cookieStore.id);
-      await messagingService.sendMessage('reopen_tab_in_container', {
-        tabId: data.id,
-        cookieStoreId: cookieStore.id,
-      });
+      await containerTabOpenerService.reopenTabInContainer(data.id, cookieStore.id, false);
 
       let count = 0;
       const intervalId = setInterval(() => {
