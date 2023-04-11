@@ -20,7 +20,7 @@
 import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
 import { CookieStore } from 'weeg-containers';
-import { CompatTabGroup, PinnedTabGroupFilter, WindowTabGroupFilter, CookieStoreTabGroupFilter } from 'weeg-tabs';
+import { CompatTab, CompatTabGroup, PinnedTabGroupFilter, WindowTabGroupFilter, CookieStoreTabGroupFilter } from 'weeg-tabs';
 
 import { TabService } from '../lib/TabService';
 
@@ -31,6 +31,9 @@ const tabService = TabService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const windowService = WindowService.getInstance();
 
+/**
+ * Close all unpinned tabs in a window with a given userContextId.
+ */
 export const closeAllTabsOnWindow = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
   const cookieStore = CookieStore.fromParams({
     userContextId: aUserContextId,
@@ -46,14 +49,14 @@ export const closeAllTabsOnWindow = async (aUserContextId: Uint32.Uint32, aWindo
 };
 
 export const getInactiveIds = async (aWindowId: number) => {
-  const tabs = await browser.tabs.query({
+  const browserTabs = await browser.tabs.query({
     windowId: aWindowId,
     pinned: false,
   });
-  const userContextIds = new Set([... tabs].map((tab) => tab.cookieStoreId ? new CookieStore(tab.cookieStoreId).userContextId : CookieStore.DEFAULT.userContextId));
+  const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
+  const userContextIds = new Set([... tabs].map((tab) => tab.cookieStore.userContextId));
   for (const tab of tabs) {
-    if (!tab.cookieStoreId) continue;
-    const userContextId = new CookieStore(tab.cookieStoreId).userContextId;
+    const userContextId = tab.cookieStore.userContextId;
     if (tab.active) {
       userContextIds.delete(userContextId);
     }
