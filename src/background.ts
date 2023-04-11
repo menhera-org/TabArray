@@ -251,8 +251,6 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
       return;
     }
     const userContextId = cookieStore.userContextId;
-    const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
-    const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
     try {
       const indexTabUrl = await browser.sessions.getTabValue(browserTab.id, 'indexTabUrl');
       if (!indexTabUrl) {
@@ -272,13 +270,6 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
       // nothing.
     }
 
-    try {
-      await browser.windows.update(windowId, {
-        titlePreface: windowTitlePreface,
-      });
-    } catch (e) {
-      console.error(e);
-    }
     if (!browserTab.pinned) {
       await userContextVisibilityService.showContainerOnWindow(windowId, userContextId);
     }
@@ -292,27 +283,6 @@ tabSortingService.sortTabs();
 setInterval(() => {
   tabSortingService.sortTabs();
 }, TAB_SORTING_INTERVAL);
-
-
-initialWindowsService.getInitialWindows().then(async (browserWindows) => {
-  for (const browserWindow of browserWindows) {
-    if (browserWindow.incognito) continue;
-    if (browserWindow.id == null) continue;
-    const activeTabs = await browser.tabs.query({
-      windowId: browserWindow.id,
-      active: true,
-    });
-    for (const activeTab of activeTabs) {
-      if (activeTab.cookieStoreId == null) continue;
-      const userContextId = UserContext.fromCookieStoreId(activeTab.cookieStoreId);
-      const userContext = userContextService.fillDefaultValues(await UserContext.get(userContextId));
-      const windowTitlePreface = browser.i18n.getMessage('windowTitlePrefaceTemplate', userContext.name);
-      await browser.windows.update(browserWindow.id, {
-        titlePreface: windowTitlePreface,
-      });
-    }
-  }
-});
 
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   // since this is never a private tab, we can use this safely.
