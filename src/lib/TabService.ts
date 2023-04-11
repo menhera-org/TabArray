@@ -19,26 +19,30 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ExtensionService, assertTopLevel } from "weeg-utils";
+import browser from 'webextension-polyfill';
+import { CompatTab } from 'weeg-tabs';
 
-const extensionService = ExtensionService.getInstance();
+import { ServiceRegistry } from './ServiceRegistry';
 
-export class Asserts {
-  /**
-   * Forbid some operation in background pages.
-   */
-  public static assertNotBackgroundScript(): void {
-    if (extensionService.isBackgroundPage()) {
-      throw new Error('This function cannot be called from the background script.');
-    }
+export class TabService {
+  private static readonly INSTANCE = new TabService();
+
+  public static getInstance(): TabService {
+    return TabService.INSTANCE;
   }
 
-  /**
-   * Assert some operation is called from the top level of the background script.
-   */
-  public static assertTopLevelInBackgroundScript(): void {
-    if (extensionService.isBackgroundPage()) {
-      assertTopLevel();
-    }
+  private constructor() {
+    // nothing.
+  }
+
+  public getTabIds(tabs: Iterable<CompatTab>): number[] {
+    return [... new Set([... tabs].map((tab) => tab.id))];
+  }
+
+  public async closeTabs(tabs: Iterable<CompatTab>): Promise<void> {
+    const tabIds = this.getTabIds(tabs);
+    await browser.tabs.remove(tabIds);
   }
 }
+
+ServiceRegistry.getInstance().registerService('TabService', TabService.getInstance());

@@ -18,11 +18,12 @@
 */
 
 import browser from 'webextension-polyfill';
+import { Uint32 } from "weeg-types";
+import { CookieStore } from 'weeg-containers';
+
 import { setActiveUserContext } from './usercontext-state.js';
-import { UserContext } from '../frameworks/tabGroups';
 import { TabGroupService } from '../frameworks/tabGroups';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
-import { Uint32 } from "weeg-types";
 import { WindowService } from '../frameworks/tabs/WindowService';
 
 const tabGroupService = TabGroupService.getInstance();
@@ -40,10 +41,10 @@ export const getInactiveIds = async (aWindowId: number) => {
     windowId: aWindowId,
     pinned: false,
   });
-  const userContextIds = new Set([... tabs].map((tab) => tab.cookieStoreId ? UserContext.fromCookieStoreId(tab.cookieStoreId) : UserContext.ID_DEFAULT));
+  const userContextIds = new Set([... tabs].map((tab) => tab.cookieStoreId ? new CookieStore(tab.cookieStoreId).userContextId : CookieStore.DEFAULT.userContextId));
   for (const tab of tabs) {
     if (!tab.cookieStoreId) continue;
-    const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
+    const userContextId = new CookieStore(tab.cookieStoreId).userContextId;
     if (tab.active) {
       userContextIds.delete(userContextId);
     }
@@ -77,8 +78,11 @@ export const openNewTabInContainer = async (aUserContextId: Uint32.Uint32, aWind
     return;
   }
   const windowId = aWindowId;
-  const cookieStoreId = UserContext.toCookieStoreId(aUserContextId);
-  const userContextId = UserContext.fromCookieStoreId(cookieStoreId);
+  const cookieStore = CookieStore.fromParams({
+    userContextId: aUserContextId,
+    privateBrowsingId: 0 as Uint32.Uint32,
+  });
+  const userContextId = cookieStore.userContextId;
   setActiveUserContext(windowId, userContextId);
   const tabGroup = await tabGroupService.getTabGroupFromUserContextId(userContextId);
   console.log('openNewTabInContainer: userContext=%d, windowId=%d', userContextId, windowId);
