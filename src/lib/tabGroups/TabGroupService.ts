@@ -21,6 +21,7 @@
 
 import browser from 'webextension-polyfill';
 
+import { ServiceRegistry } from '../ServiceRegistry';
 import { TabGroupDirectory } from "./TabGroupDirectory";
 import { TabGroupOptionDirectory } from './TabGroupOptionDirectory';
 import { TabGroupAttributes } from './TabGroupAttributes';
@@ -90,3 +91,5 @@ export class TabGroupService {
     }
   }
 }
+
+ServiceRegistry.getInstance().registerService('TabGroupService', TabGroupService.getInstance());

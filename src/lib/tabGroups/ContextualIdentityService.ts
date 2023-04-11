@@ -22,6 +22,8 @@
 import browser from 'webextension-polyfill';
 import { ContextualIdentityFactory, ContextualIdentityParams, CookieStore, DisplayedContainerFactory, DisplayedContainerParams } from "weeg-containers";
 
+import { ServiceRegistry } from '../ServiceRegistry';
+
 export class ContextualIdentityService {
   private static readonly DEFAULT_ICON_URL = browser.runtime.getURL('/img/material-icons/category.svg');
   private static readonly DEFAULT_COLOR_CODE = '#7c7c7d';
@@ -110,3 +112,5 @@ export class ContextualIdentityService {
     return this._displayedContainerFactory;
   }
 }
+
+ServiceRegistry.getInstance().registerService('ContextualIdentityService', ContextualIdentityService.getInstance());

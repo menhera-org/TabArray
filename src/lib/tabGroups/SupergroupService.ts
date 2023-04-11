@@ -21,6 +21,7 @@
 
 import { ContextualIdentity, ContextualIdentityParams, CookieStore } from "weeg-containers";
 
+import { ServiceRegistry } from "../ServiceRegistry";
 import { ContextualIdentityService } from "./ContextualIdentityService";
 import { TabGroupDirectory } from "./TabGroupDirectory";
 import { UserContextVisibilityService } from "../../userContexts/UserContextVisibilityService";
@@ -120,3 +121,5 @@ export class SupergroupService {
     return contextualIdentity;
   }
 }
+
+ServiceRegistry.getInstance().registerService('SupergroupService', SupergroupService.getInstance());
