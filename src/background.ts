@@ -23,12 +23,16 @@ import { CompatTab } from 'weeg-tabs';
 import { CookieStore } from 'weeg-containers';
 import { Uint32 } from 'weeg-types';
 
-import { isNewTabPage } from './modules/newtab';
+import { ExternalServiceProvider } from './lib/ExternalServiceProvider';
+import { ContainerTabOpenerService } from './lib/tabGroups/ContainerTabOpenerService';
 
+import { isNewTabPage } from './modules/newtab';
 import { WebExtensionsBroadcastChannel } from './modules/broadcasting';
 import { getActiveUserContext, setActiveUserContext } from './modules/usercontext-state.js';
+
 import { config } from './config/config';
 import { UserContextVisibilityService } from './userContexts/UserContextVisibilityService';
+
 import { BeforeRequestHandler } from './background/BeforeRequestHandler';
 import { BackgroundUtils } from './background/BackgroundUtils';
 import { TabSortingService } from './background/TabSortingService';
@@ -37,18 +41,16 @@ import './background/BackgroundContainerObservers';
 import './background/BackgroundMenu';
 import './background/BackgroundCookieAutoclean';
 import './background/FramingHeadersService';
+import './background/BackgroundMessageListeners';
+import './background/KeyboardShortcurListeners';
+import './background/BrowserActionUpdater';
 import './api/ApiDefinitions';
 import './overrides/fetch';
 import './languages/register-content-script';
 import './containers/background-temporary-containers';
 import './autodiscard/background-autodiscard';
 import './cookies/background-storage-observer';
-import './background/BackgroundMessageListeners';
-import './background/KeyboardShortcurListeners';
-import './background/BrowserActionUpdater';
 import { UaContentScriptRegistrar} from './overrides/UaContentScriptRegistrar';
-import { ExternalServiceProvider } from './lib/ExternalServiceProvider';
-import { ContainerTabOpenerService } from './lib/tabGroups/ContainerTabOpenerService';
 
 // watchdog
 let scriptCompleted = false;
