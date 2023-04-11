@@ -109,7 +109,7 @@ export class ContextualIdentityService {
     const cookieStore = new CookieStore(cookieStoreId);
     return {
       name: this.getDefaultName(cookieStore.id),
-      iconUrl: ContextualIdentityService.DEFAULT_ICON_URL,
+      iconUrl: cookieStore.isPrivate ? ContextualIdentityService.PRIVATE_ICON_URL : ContextualIdentityService.DEFAULT_ICON_URL,
       colorCode: ContextualIdentityService.DEFAULT_COLOR_CODE,
     };
   }
