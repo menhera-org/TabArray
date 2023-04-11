@@ -21,38 +21,37 @@
 
 import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
-import { CookieStore } from 'weeg-containers';
+import { DisplayedContainer } from 'weeg-containers';
+import { CompatTab, CompatTabGroup, CookieStoreTabGroupFilter } from 'weeg-tabs';
 
 import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
-import * as containers from '../modules/containers';
-import { PanoramaStateStore } from "./PanoramaStateStore";
-import { PanoramaTabElement } from "../components/panorama-tab";
-import { Tab } from "../frameworks/tabs";
-import { IndexTab } from "../modules/IndexTab";
-import { UserContextService } from "../userContexts/UserContextService";
-import { PanoramaContainerElement } from "../components/panorama-container";
-import { UserContext } from "../frameworks/tabGroups";
-import * as i18n from '../modules/i18n';
-import { WindowService } from '../frameworks/tabs';
-import { TabGroupService } from '../frameworks/tabGroups';
-import { ContainerEditorElement } from '../components/container-editor';
-import { ModalConfirmElement } from '../components/modal-confirm';
-import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
-import { ModalFrameElement } from '../components/modal-frame';
-import { HelpBannerElement } from '../components/help-banner';
-import { TemporaryContainerService } from '../containers/TemporaryContainerService';
 import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
+import { DisplayedContainerService } from '../lib/tabGroups/DisplayedContainerService';
+
+import { PanoramaStateStore } from "./PanoramaStateStore";
+
+import { Tab } from "../frameworks/tabs";
+import { IndexTab } from "../modules/IndexTab";
+import { UserContext } from "../frameworks/tabGroups";
+import * as i18n from '../modules/i18n';
+import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
+import { TemporaryContainerService } from '../containers/TemporaryContainerService';
+
+import { PanoramaTabElement } from "../components/panorama-tab";
+import { PanoramaContainerElement } from "../components/panorama-container";
+import { ContainerEditorElement } from '../components/container-editor';
+import { ModalConfirmElement } from '../components/modal-confirm';
+import { ModalFrameElement } from '../components/modal-frame';
+import { HelpBannerElement } from '../components/help-banner';
 
 const panoramaStateStore = new PanoramaStateStore();
-const userContextService = UserContextService.getInstance();
-const windowService = WindowService.getInstance();
-const tabGroupService = TabGroupService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
+const displayedContainerService = DisplayedContainerService.getInstance();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -98,7 +97,7 @@ newTemporaryContainerButtonElement.addEventListener('click', () => {
   });
 });
 
-const renderTab = (tab: Tab) => {
+const renderTab = (tab: CompatTab) => {
   const tabElement = new PanoramaTabElement();
   if (tab.url) {
     tabElement.title = tab.url;
@@ -150,29 +149,29 @@ const renderTab = (tab: Tab) => {
   return tabElement;
 };
 
-const renderContainer = async (userContext: UserContext, isPrivate = false) => {
-  const userContextId = userContext.id;
+const renderContainer = async (displayedContainer: DisplayedContainer, isPrivate = false, windowId: number) => {
   if (isPrivate) {
-    console.assert(userContextId == 0);
+    console.assert(displayedContainer.cookieStore.isPrivate == true);
   }
-  const cookieStore = isPrivate ? CookieStore.PRIVATE : new CookieStore(userContext.cookieStoreId);
+  const cookieStore = displayedContainer.cookieStore;
+  const userContext = UserContext.fromDisplayedContainer(displayedContainer);
   const containerElement = new PanoramaContainerElement(userContext);
   containerElement.targetId = cookieStore.id;
-  const tabGroup = await (isPrivate ? tabGroupService.getPrivateBrowsingTabGroup() : userContext.getTabGroup());
-  const tabs = (await tabGroup.tabList.getTabs()).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
+  const compatTabGroup = new CompatTabGroup(new CookieStoreTabGroupFilter(cookieStore.id));
+  const tabs = (await compatTabGroup.getTabs()).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
   containerElement.tabCount = tabs.length;
   containerElement.containerTabsElement.append(...tabs.map((tab) => {
     const tabElement = renderTab(tab);
     return tabElement;
   }));
   containerElement.onNewTabButtonClick.addListener(() => {
-    containers.openNewTabInContainer(userContextId, browser.windows.WINDOW_ID_CURRENT).then(() => {
+    containerTabOpenerService.openNewTabInContainer(cookieStore.id, true, windowId).then(() => {
       window.close();
     }).catch((e) => {
       console.error(e);
     });
   });
-  if (0 != userContextId) {
+  if (0 != cookieStore.userContextId) {
     containerElement.onContainerEditButtonClick.addListener(async () => {
       if (containerEditorElement) {
         containerEditorElement.remove();
@@ -234,12 +233,20 @@ const renderContainer = async (userContext: UserContext, isPrivate = false) => {
 
 const render = async () => {
   console.log('render()');
-  const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
-  const isPrivate = await windowService.isPrivateWindow(browser.windows.WINDOW_ID_CURRENT);
-  const userContexts = [... await UserContext.getAll(isPrivate)].sort((a, b) => {
-    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
-  }).map((userContext) => userContextService.fillDefaultValues(userContext));
-  const containerElements = await Promise.all(userContexts.map((userContext) => renderContainer(userContext, isPrivate)));
+  const [tabGroupDirectorySnapshot, browserWindow] = await Promise.all([
+    tabGroupDirectory.getSnapshot(),
+    browser.windows.get(browser.windows.WINDOW_ID_CURRENT),
+  ]);
+  const isPrivate = browserWindow.incognito;
+  const displayedContainers = await displayedContainerService.getDisplayedContainersByPrivateBrowsing(isPrivate);
+  displayedContainers.sort((a, b) => {
+    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
+  });
+  if (browserWindow.id == null) {
+    throw new Error('browserWindow.id is null');
+  }
+  const windowId = browserWindow.id;
+  const containerElements = await Promise.all(displayedContainers.map((displayedContainer) => renderContainer(displayedContainer, isPrivate, windowId)));
   const nonemptyContainerElements = containerElements.filter((containerElement) => containerElement.tabCount > 0);
   const emptyContainerElements = containerElements.filter((containerElement) => containerElement.tabCount === 0);
   const containersContainer = document.querySelector<HTMLDivElement>('#containers');

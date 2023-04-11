@@ -21,13 +21,15 @@
 
 import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
+import { CookieStore } from 'weeg-containers';
 
 import { Uint32 } from "weeg-types";
-import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
+import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
 
 export class BackgroundUtils {
   private static readonly userContextVisibilityService = UserContextVisibilityService.getInstance();
+  private static readonly containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 
   public async reopenNewTabInContainer(tabId: number, userContextId: Uint32.Uint32, windowId: number) {
     await PromiseUtils.sleep(100);
@@ -35,7 +37,11 @@ export class BackgroundUtils {
       console.log('Ignoring an index tab: ', tabId);
       return;
     }
+    const cookieStoreId = CookieStore.fromParams({
+      userContextId,
+      privateBrowsingId: 0 as Uint32.Uint32,
+    }).id;
     await browser.tabs.remove(tabId);
-    await containers.openNewTabInContainer(userContextId, windowId);
+    await BackgroundUtils.containerTabOpenerService.openNewTabInContainer(cookieStoreId, true, windowId);
   }
 }

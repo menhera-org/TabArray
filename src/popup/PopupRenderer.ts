@@ -20,24 +20,27 @@
 */
 
 import browser from 'webextension-polyfill';
-import { MessagingService } from 'weeg-utils';
+import { CookieStore } from 'weeg-containers';
+import { Uint32 } from "weeg-types";
+
+import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
+
+import { MenulistTabElement } from "../components/menulist-tab";
+import { MenulistContainerElement } from "../components/menulist-container";
 
 import { Tab } from "../frameworks/tabs";
 import { UserContext } from "../frameworks/tabGroups";
-import { MenulistTabElement } from "../components/menulist-tab";
-import { MenulistContainerElement } from "../components/menulist-container";
-import * as containers from '../modules/containers';
 import { OriginAttributes } from "../frameworks/tabGroups";
 import { TabGroup } from "../frameworks/tabGroups";
-import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
+
+import * as containers from '../modules/containers';
 import { IndexTab } from "../modules/IndexTab";
-import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";
-import { PopupWindowListRenderer } from "./PopupWindowListRenderer";
-import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
-import { Uint32 } from "weeg-types";
+import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { UserContextService } from '../userContexts/UserContextService';
+
 import { PopupModalRenderer } from './PopupModalRenderer';
-import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
+import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";
+import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
 
 enum ContainerTabsState {
   NO_TABS,
@@ -49,11 +52,9 @@ enum ContainerTabsState {
 export class PopupRenderer {
   private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
   private readonly _userContextService = UserContextService.getInstance();
-  private readonly _messagingService = MessagingService.getInstance();
   private readonly _containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
-  public readonly windowListRenderer = new PopupWindowListRenderer(this);
   public readonly siteListRenderer = new PopupSiteListRenderer(this);
   public readonly modalRenderer = new PopupModalRenderer(this);
 
@@ -122,6 +123,7 @@ export class PopupRenderer {
   }
 
   private renderContainer(windowId: number, userContext: UserContext, isPrivate = false): MenulistContainerElement {
+    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStoreId;
     userContext = this._userContextService.fillDefaultValues(userContext);
     const element = this.createContainerElement(userContext, isPrivate);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
@@ -136,8 +138,7 @@ export class PopupRenderer {
       });
     });
     element.onContainerClick.addListener(async () => {
-      await containers.openNewTabInContainer(userContext.id, windowId);
-      window.close();
+      await this._containerTabOpenerService.openNewTabInContainer(cookieStoreId, true, windowId);
     });
     return element;
   }

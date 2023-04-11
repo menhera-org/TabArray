@@ -53,6 +53,18 @@ export class DisplayedContainerService {
       ... contextualIdentities,
     ];
   }
+
+  public async getDisplayedContainersByPrivateBrowsing(isPrivate: boolean): Promise<DisplayedContainer[]> {
+    if (isPrivate) {
+      const allowedInPrivateBrowsing = await this._extensionService.isAllowedInPrivateBrowsing();
+      return allowedInPrivateBrowsing ? [this._displayedContainerFactory.createFromCookieStore(CookieStore.PRIVATE)] : [];
+    }
+    const contextualIdentities = await this._contextualIdentityFactory.getAll();
+    return [
+      this._displayedContainerFactory.createFromCookieStore(CookieStore.DEFAULT),
+      ... contextualIdentities,
+    ];
+  }
 }
 
 ServiceRegistry.getInstance().registerService('DisplayedContainerService', DisplayedContainerService.getInstance());

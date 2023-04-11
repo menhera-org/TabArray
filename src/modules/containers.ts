@@ -23,13 +23,11 @@ import { CookieStore } from 'weeg-containers';
 import { CompatTabGroup, PinnedTabGroupFilter, WindowTabGroupFilter, CookieStoreTabGroupFilter } from 'weeg-tabs';
 
 import { TabService } from '../lib/TabService';
-import { setActiveUserContext } from './usercontext-state.js';
-import { TabGroupService } from '../frameworks/tabGroups';
+
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { WindowService } from '../frameworks/tabs/WindowService';
 
 const tabService = TabService.getInstance();
-const tabGroupService = TabGroupService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const windowService = WindowService.getInstance();
 
@@ -73,24 +71,4 @@ export const hideAll = async (aWindowId: number) => {
   for (const userContextId of userContextIds) {
     await userContextVisibilityService.hideContainerOnWindow(aWindowId, userContextId);
   }
-};
-
-export const openNewTabInContainer = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
-  const isPrivate = await windowService.isPrivateWindow(aWindowId);
-  if (isPrivate) {
-    await browser.tabs.create({
-      windowId: aWindowId,
-    });
-    return;
-  }
-  const windowId = aWindowId;
-  const cookieStore = CookieStore.fromParams({
-    userContextId: aUserContextId,
-    privateBrowsingId: 0 as Uint32.Uint32,
-  });
-  const userContextId = cookieStore.userContextId;
-  setActiveUserContext(windowId, userContextId);
-  const tabGroup = await tabGroupService.getTabGroupFromUserContextId(userContextId);
-  console.log('openNewTabInContainer: userContext=%d, windowId=%d', userContextId, windowId);
-  await tabGroup.openTabOnWindow(windowId);
 };

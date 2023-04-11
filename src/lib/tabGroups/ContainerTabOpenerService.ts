@@ -29,6 +29,7 @@ type TabOpenActionType = {
   tabId?: number;
   cookieStoreId: string;
   active: boolean;
+  windowId?: number;
 };
 
 const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number, active: boolean) => {
@@ -88,10 +89,14 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
   }
 };
 
-const openNewTabInContainer = async (cookieStoreId: string, active: boolean) => {
+const openNewTabInContainer = async (cookieStoreId: string, active: boolean, windowId?: number) => {
   try {
     console.debug('open_new_tab_in_container: cookieStoreId=%s', cookieStoreId);
-    const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => new CookieStore(cookieStoreId).isPrivate == browserWindow.incognito);
+    const cookieStore = new CookieStore(cookieStoreId);
+    const currentBrowserWindow = windowId == null ? await browser.windows.getCurrent() : await browser.windows.get(windowId);
+    const browserWindows = currentBrowserWindow.incognito == cookieStore.isPrivate
+    ? [currentBrowserWindow]
+    : (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => cookieStore.isPrivate == browserWindow.incognito);
     for (const browserWindow of browserWindows) {
       if (browserWindow.id == null) continue;
       const browserTab = await browser.tabs.create({
@@ -134,17 +139,17 @@ export class ContainerTabOpenerService extends BackgroundService<TabOpenActionTy
 
   protected override execute(input: TabOpenActionType): Promise<number> {
     if (input.tabId == null) {
-      return openNewTabInContainer(input.cookieStoreId, input.active);
+      return openNewTabInContainer(input.cookieStoreId, input.active, input.windowId);
     }
     return reopenTabInContainer(input.tabId, input.cookieStoreId, input.active);
   }
 
   public async reopenTabInContainer(tabId: number, cookieStoreId: string, active: boolean): Promise<number> {
-    return this.call({tabId, cookieStoreId, active});
+    return this.call({ tabId, cookieStoreId, active });
   }
 
-  public async openNewTabInContainer(cookieStoreId: string, active: boolean): Promise<number> {
-    return this.call({cookieStoreId, active});
+  public async openNewTabInContainer(cookieStoreId: string, active: boolean, windowId?: number): Promise<number> {
+    return this.call({ cookieStoreId, active, windowId });
   }
 }
 
