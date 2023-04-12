@@ -27,8 +27,8 @@ import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../../components/ctg/ctg-menu-item";
 import { PopupRendererService } from "../PopupRendererService";
-import { BrowserStateSnapshot } from "../../../frameworks/tabs/BrowserStateSnapshot";
-import { UserContext } from "../../../frameworks/tabGroups";
+import { BrowserStateSnapshot } from "../../../legacy-lib/tabs/BrowserStateSnapshot";
+import { UserContext } from "../../../legacy-lib/tabGroups";
 import { MenulistWindowElement } from "../../../components/menulist-window";
 import { ContainerTabOpenerService } from "../../../lib/tabGroups/ContainerTabOpenerService";
 

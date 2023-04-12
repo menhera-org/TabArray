@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { RegistrableDomainService } from 'weeg-domains';
-import { OriginAttributes } from '../../frameworks/tabGroups';
+import { OriginAttributes } from '../tabGroups';
 import { HostnameService } from 'weeg-domains';
 
 export class CookieProvider {

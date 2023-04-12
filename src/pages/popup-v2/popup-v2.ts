@@ -45,7 +45,7 @@ import { ContainerDetailsFragmentBuilder } from "./fragments/ContainerDetailsFra
 import { SiteDetailsFragmentBuilder } from "./fragments/SiteDetailsFragmentBuilder";
 
 import { ViewRefreshHandler } from "../../lib/rendering/ViewRefreshHandler";
-import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
+import { BrowserStateSnapshot } from "../../legacy-lib/tabs/BrowserStateSnapshot";
 import { config, privacyConfig } from '../../config/config';
 import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
 import { TabGroupDirectory } from "../../lib/tabGroups/TabGroupDirectory";

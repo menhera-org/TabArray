@@ -25,7 +25,7 @@ import { PromiseUtils } from "weeg-utils";
 
 import { OriginAttributes } from "./OriginAttributes";
 import { TabGroup } from "./TabGroup";
-import { RegistrableDomainService } from "../../legacy-lib/dns/RegistrableDomainService";
+import { RegistrableDomainService } from "../dns/RegistrableDomainService";
 
 type PublicSuffixListData = {
   rules: string[];

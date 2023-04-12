@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { TabPreviewService } from "../../frameworks/tabs";
+import { TabPreviewService } from "../../legacy-lib/tabs";
 
 const tabPreviewService = TabPreviewService.getInstance();
 

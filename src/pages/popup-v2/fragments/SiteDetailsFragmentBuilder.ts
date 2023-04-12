@@ -26,9 +26,9 @@ import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
 import { PopupRendererService } from "../PopupRendererService";
-import { BrowserStateSnapshot } from "../../../frameworks/tabs/BrowserStateSnapshot";
-import { UserContext } from "../../../frameworks/tabGroups";
-import { Tab } from "../../../frameworks/tabs";
+import { BrowserStateSnapshot } from "../../../legacy-lib/tabs/BrowserStateSnapshot";
+import { UserContext } from "../../../legacy-lib/tabGroups";
+import { Tab } from "../../../legacy-lib/tabs";
 
 export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;

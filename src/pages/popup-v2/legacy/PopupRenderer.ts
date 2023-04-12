@@ -28,10 +28,10 @@ import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOp
 import { MenulistTabElement } from "../../../components/menulist-tab";
 import { MenulistContainerElement } from "../../../components/menulist-container";
 
-import { Tab } from "../../../frameworks/tabs";
-import { UserContext } from "../../../frameworks/tabGroups";
-import { OriginAttributes } from "../../../frameworks/tabGroups";
-import { TabGroup } from "../../../frameworks/tabGroups";
+import { Tab } from "../../../legacy-lib/tabs";
+import { UserContext } from "../../../legacy-lib/tabGroups";
+import { OriginAttributes } from "../../../legacy-lib/tabGroups";
+import { TabGroup } from "../../../legacy-lib/tabGroups";
 
 import * as containers from '../../../legacy-lib/modules/containers';
 import { IndexTab } from "../../../legacy-lib/modules/IndexTab";

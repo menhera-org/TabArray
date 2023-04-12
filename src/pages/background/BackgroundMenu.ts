@@ -20,9 +20,10 @@
 */
 
 import browser from 'webextension-polyfill';
-import { UserContext } from '../../frameworks/tabGroups';
+import { UserContext } from '../../legacy-lib/tabGroups';
 import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
-import { MenuItem, PopupTabContextMenuItem } from '../../frameworks/menus';
+import { MenuItem } from '../../lib/menus/MenuItem';
+import { PopupTabContextMenuItem } from '../../lib/menus/PopupTabContextMenuItem';
 import { PopupUtils } from '../popup-v2/legacy/PopupUtils';
 
 const MENU_ID_TAB_HIDE_CONTAINER = 'tab-hide-container';

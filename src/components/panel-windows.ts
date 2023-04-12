@@ -24,9 +24,9 @@ import { EventSink } from "weeg-events";
 import { Uint32 } from "weeg-types";
 
 import { SupergroupEditorElement } from './supergroup-editor';
-import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
+import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
-import { UserContext } from "../frameworks/tabGroups";
+import { UserContext } from "../legacy-lib/tabGroups";
 import * as containers from '../legacy-lib/modules/containers';
 import { UserContextVisibilityService } from "../legacy-lib/userContexts/UserContextVisibilityService";
 import { TemporaryContainerService } from "../containers/TemporaryContainerService";

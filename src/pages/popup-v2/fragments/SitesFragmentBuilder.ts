@@ -27,7 +27,7 @@ import { HostnameService } from "weeg-domains";
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
-import { Tab } from "../../../frameworks/tabs";
+import { Tab } from "../../../legacy-lib/tabs";
 import { MenulistSiteElement } from "../../../components/menulist-site";
 
 export class SitesFragmentBuilder extends AbstractFragmentBuilder {

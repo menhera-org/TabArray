@@ -25,7 +25,7 @@ import { CompatTab, CompatTabGroup, PinnedTabGroupFilter, WindowTabGroupFilter, 
 import { TabService } from '../../lib/TabService';
 
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
-import { WindowService } from '../../frameworks/tabs/WindowService';
+import { WindowService } from '../tabs/WindowService';
 
 const tabService = TabService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();

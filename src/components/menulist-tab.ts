@@ -20,8 +20,8 @@
 */
 
 import browser from 'webextension-polyfill';
-import { UserContext } from "../frameworks/tabGroups";
-import { Tab } from "../frameworks/tabs";
+import { UserContext } from "../legacy-lib/tabGroups";
+import { Tab } from "../legacy-lib/tabs";
 import { EventSink } from "weeg-events";
 import { TabIconService } from '../legacy-lib/modules/TabIconService';
 

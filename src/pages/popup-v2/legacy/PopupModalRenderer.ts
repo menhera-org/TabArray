@@ -24,12 +24,12 @@ import { PromiseUtils } from 'weeg-utils';
 import { CookieStore } from 'weeg-containers';
 
 import { ContextualIdentityService } from '../../../lib/tabGroups/ContextualIdentityService';
-import { UserContext } from "../../../frameworks/tabGroups";
+import { UserContext } from "../../../legacy-lib/tabGroups";
 import { PopupRenderer } from './PopupRenderer';
 import { PopupUtils } from './PopupUtils';
 import { ColorPickerElement } from '../../../components/usercontext-colorpicker';
 import { IconPickerElement } from '../../../components/usercontext-iconpicker';
-import { PrivateBrowsingService } from '../../../frameworks/tabs';
+import { PrivateBrowsingService } from '../../../legacy-lib/tabs';
 import { ModalConfirmElement } from '../../../components/modal-confirm';
 import { ModalMenuElement } from '../../../components/modal-menu';
 import { ContainerEditorElement } from '../../../components/container-editor';

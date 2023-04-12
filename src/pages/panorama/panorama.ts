@@ -31,7 +31,7 @@ import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContaine
 
 import { PanoramaStateStore } from "./PanoramaStateStore";
 
-import { Tab } from "../../frameworks/tabs";
+import { Tab } from "../../legacy-lib/tabs";
 import { IndexTab } from "../../legacy-lib/modules/IndexTab";
 import * as i18n from '../../legacy-lib/modules/i18n';
 import { ViewRefreshHandler } from '../../lib/rendering/ViewRefreshHandler';

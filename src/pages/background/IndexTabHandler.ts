@@ -26,7 +26,7 @@ import { CompatTab, CompatTabGroup, CookieStoreTabGroupFilter, WindowTabGroupFil
 import * as containers from '../../legacy-lib/modules/containers';
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';
 
-import { WindowUserContextList } from '../../frameworks/tabGroups';
+import { WindowUserContextList } from '../../legacy-lib/tabGroups';
 
 import { config } from '../../config/config';
 import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';

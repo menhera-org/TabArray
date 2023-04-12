@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { EventSink } from "weeg-events";
-import { Tab } from '../tabs';
+import { Tab } from '../../legacy-lib/tabs';
 
 export type OnClickData = browser.Menus.OnClickData & {
   tab?: Tab;

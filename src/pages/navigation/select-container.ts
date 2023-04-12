@@ -23,11 +23,11 @@ import browser from 'webextension-polyfill';
 import { ExtensionService } from 'weeg-utils';
 
 import * as i18n from '../../legacy-lib/modules/i18n';
-import { Tab } from '../../frameworks/tabs';
+import { Tab } from '../../legacy-lib/tabs';
 import { config } from '../../config/config';
-import { UserContext } from '../../frameworks/tabGroups';
+import { UserContext } from '../../legacy-lib/tabGroups';
 import { UserContextService } from '../../legacy-lib/userContexts/UserContextService';
-import { PrivateBrowsingService } from '../../frameworks/tabs';
+import { PrivateBrowsingService } from '../../legacy-lib/tabs';
 import { ContainerEditorElement } from '../../components/container-editor';
 import { TemporaryContainerService } from '../../containers/TemporaryContainerService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
