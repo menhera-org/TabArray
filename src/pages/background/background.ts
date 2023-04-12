@@ -48,7 +48,7 @@ import '../../api/ApiDefinitions';
 import '../../overrides/fetch';
 import '../../languages/register-content-script';
 import '../../containers/background-temporary-containers';
-import '../../autodiscard/background-autodiscard';
+import './background-autodiscard';
 import '../../cookies/background-storage-observer';
 import { UaContentScriptRegistrar} from '../../overrides/UaContentScriptRegistrar';
 

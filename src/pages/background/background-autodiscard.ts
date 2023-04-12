@@ -20,11 +20,17 @@
 */
 
 import browser from 'webextension-polyfill';
-import { config } from '../config/config';
+import { Alarm } from 'weeg-utils';
 
-const AUTODISCARD_INTERVAL = 1000 * 60 * 5; // 5 minutes
+import { config } from '../../config/config';
 
-setInterval(async () => {
+const AUTODISCARD_INTERVAL_IN_MINUTES = 5; // 5 minutes
+
+const alarm = new Alarm('tab.autoDiscard', {
+  periodInMinutes: AUTODISCARD_INTERVAL_IN_MINUTES,
+});
+
+alarm.onAlarm.addListener(async () => {
   const minAge = await config['tab.autoDiscard.minAge'].getValue();
   if (minAge < 0) {
     return;
@@ -50,4 +56,4 @@ setInterval(async () => {
   } catch (e) {
     console.error(e);
   }
-}, AUTODISCARD_INTERVAL);
+});
