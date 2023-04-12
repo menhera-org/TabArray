@@ -40,7 +40,6 @@ import { UserContextService } from '../userContexts/UserContextService';
 
 import { PopupModalRenderer } from './PopupModalRenderer';
 import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";
-import { PopupSiteListRenderer } from "./PopupSiteListRenderer";
 
 enum ContainerTabsState {
   NO_TABS,
@@ -55,7 +54,6 @@ export class PopupRenderer {
   private readonly _containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
-  public readonly siteListRenderer = new PopupSiteListRenderer(this);
   public readonly modalRenderer = new PopupModalRenderer(this);
 
   public renderTab(tab: Tab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
