@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { LanguageSettings } from '../languages/LanguageSettings';
+import { LanguageSettings } from './LanguageSettings';
 import { UserAgentSettings } from './UserAgentSettings';
 import { config } from '../config/config';
 

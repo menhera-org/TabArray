@@ -24,7 +24,7 @@ import { EventSink } from "weeg-events";
 
 import { UserContext } from "../legacy-lib/tabGroups";
 import { Uint32 } from "weeg-types";
-import { LanguageSettings } from '../languages/LanguageSettings';
+import { LanguageSettings } from '../overrides/LanguageSettings';
 import { UserAgentSettings, UserAgentPreset } from '../overrides/UserAgentSettings';
 import { config } from '../config/config';
 

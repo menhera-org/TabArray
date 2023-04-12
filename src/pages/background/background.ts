@@ -46,7 +46,7 @@ import './KeyboardShortcurListeners';
 import './BrowserActionUpdater';
 import '../../api/ApiDefinitions';
 import '../../overrides/fetch';
-import '../../languages/register-content-script';
+import '../../overrides/language-content-script';
 import './background-temporary-containers';
 import './background-autodiscard';
 import '../../cookies/background-storage-observer';
