@@ -18,8 +18,9 @@
 */
 
 import browser from 'webextension-polyfill';
+import { CookieStore } from 'weeg-containers';
+
 import { WebExtensionsBroadcastChannel } from './broadcasting';
-import { UserContext } from '../frameworks/tabGroups';
 
 const syncActiveUserContextChannel = new WebExtensionsBroadcastChannel('sync_active_user_context');
 
@@ -28,10 +29,12 @@ const activeUserContextIdByWindow = new Map;
 const forceUpdate = () => {
   browser.tabs.query({active: true}).then((tabs) => {
     for (const tab of tabs) {
-      if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
+      if (!tab.cookieStoreId) continue;
+      const cookieStore = new CookieStore(tab.cookieStoreId);
+      if (cookieStore.isPrivate) {
         continue;
       }
-      const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
+      const userContextId = cookieStore.userContextId;
       if (tab.url == 'about:blank' && tab.status == 'loading' && activeUserContextIdByWindow.has(tab.windowId)) {
         continue;
       }
@@ -48,7 +51,9 @@ browser.windows.onRemoved.addListener((windowId) => {
 
 browser.tabs.onActivated.addListener(async ({tabId, /*windowId*/}) => {
   const tab = await browser.tabs.get(tabId);
-  const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
+  if (!tab.cookieStoreId) return;
+  const cookieStore = new CookieStore(tab.cookieStoreId);
+  const userContextId = cookieStore.userContextId;
   if (tab.status == 'loading' || tab.url == 'about:blank') {
     return;
   }
