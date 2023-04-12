@@ -19,28 +19,23 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ExtensionService } from "weeg-utils";
+import { CookieStoreService } from "../../lib/tabGroups/CookieStoreService";
 import { OriginAttributes } from "./OriginAttributes"
-import { UserContext } from "./UserContext";
 
 export class CookieStoreSet {
-  private readonly _extensionService = ExtensionService.getInstance();
+  private readonly _cookieStoreService = CookieStoreService.getInstance();
 
   public async getAll(): Promise<Iterable<OriginAttributes>> {
     const result = [];
-    const userContexts = await UserContext.getAll();
-    for (const userContext of userContexts) {
-      result.push(userContext.toOriginAttributes());
-    }
-
-    if (await this._extensionService.isAllowedInPrivateBrowsing()) {
-      result.push(OriginAttributes.PRIVATE);
+    const cookieStores = await this._cookieStoreService.getCookieStores();
+    for (const cookieStore of cookieStores) {
+      result.push(OriginAttributes.fromCookieStoreId(cookieStore.id));
     }
 
     return result;
   }
 
   public async getAllCookieStoreIds(): Promise<Iterable<string>> {
-    return [... await this.getAll()].map((originAttributes) => originAttributes.cookieStoreId);
+    return [... await this._cookieStoreService.getCookieStores()].map((cookieStore) => cookieStore.id);
   }
 }
