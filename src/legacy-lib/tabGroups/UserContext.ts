@@ -26,7 +26,7 @@ import { DisplayedContainer } from 'weeg-containers';
 
 import { OriginAttributes } from './OriginAttributes';
 import { TabGroup } from './TabGroup';
-import { ContentStorageStatistics } from '../../cookies/ContentStorageStatistics';
+import { ContentStorageStatistics } from '../cookies/ContentStorageStatistics';
 
 /**
  * Represents a user context (contextual identity or container).

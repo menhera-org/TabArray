@@ -23,9 +23,9 @@ import { StorageItem } from "weeg-storage";
 import { EventSink } from "weeg-events";
 import { ContextualIdentity } from "weeg-containers";
 
-import { ContextualIdentityService } from "../lib/tabGroups/ContextualIdentityService";
-import { ExternalServiceProvider } from "../lib/ExternalServiceProvider";
-import { CookieProvider } from "../legacy-lib/cookies/CookieProvider";
+import { ContextualIdentityService } from "../../lib/tabGroups/ContextualIdentityService";
+import { ExternalServiceProvider } from "../../lib/ExternalServiceProvider";
+import { CookieProvider } from "./CookieProvider";
 
 export type OriginStorageStatistics = {
   origin: string;

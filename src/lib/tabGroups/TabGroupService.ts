@@ -25,7 +25,7 @@ import { ServiceRegistry } from '../ServiceRegistry';
 import { TabGroupDirectory } from "./TabGroupDirectory";
 import { TabGroupOptionDirectory } from './TabGroupOptionDirectory';
 import { TabGroupAttributes } from './TabGroupAttributes';
-import { ContentStorageStatistics } from '../../cookies/ContentStorageStatistics';
+import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorageStatistics';
 
 /**
  * Doing operations on tab groups.

@@ -22,8 +22,8 @@
 import { MessagingService } from 'weeg-utils';
 import { CookieStore } from 'weeg-containers';
 
-import { ExternalServiceProvider } from '../lib/ExternalServiceProvider';
-import { ContentStorageStatistics } from './ContentStorageStatistics';
+import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
+import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorageStatistics';
 
 const serviceProvider = ExternalServiceProvider.getInstance();
 const statistics = new ContentStorageStatistics();

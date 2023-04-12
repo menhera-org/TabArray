@@ -26,7 +26,7 @@ import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
 
-import { ContentStorageStatistics } from '../../cookies/ContentStorageStatistics';
+import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorageStatistics';
 import { ViewRefreshHandler } from '../../lib/rendering/ViewRefreshHandler';
 
 const contentStorageStatistics = new ContentStorageStatistics();

@@ -49,7 +49,7 @@ import '../../overrides/fetch';
 import '../../overrides/language-content-script';
 import './background-temporary-containers';
 import './background-autodiscard';
-import '../../cookies/background-storage-observer';
+import './background-storage-observer';
 import { UaContentScriptRegistrar} from '../../overrides/UaContentScriptRegistrar';
 
 // watchdog
