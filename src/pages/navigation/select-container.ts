@@ -29,7 +29,7 @@ import { UserContext } from '../../legacy-lib/tabGroups';
 import { UserContextService } from '../../legacy-lib/userContexts/UserContextService';
 import { PrivateBrowsingService } from '../../legacy-lib/tabs';
 import { ContainerEditorElement } from '../../components/container-editor';
-import { TemporaryContainerService } from '../../containers/TemporaryContainerService';
+import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 

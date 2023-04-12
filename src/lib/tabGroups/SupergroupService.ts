@@ -27,7 +27,7 @@ import { TabGroupDirectory } from "./TabGroupDirectory";
 import { UserContextVisibilityService } from "../../legacy-lib/userContexts/UserContextVisibilityService";
 import * as containers from '../../legacy-lib/modules/containers';
 import { OriginAttributes, TabGroup } from "../../legacy-lib/tabGroups";
-import { TemporaryContainerService } from "../../containers/TemporaryContainerService";
+import { TemporaryContainerService } from "./TemporaryContainerService";
 
 const tabGroupDirectory = new TabGroupDirectory();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();

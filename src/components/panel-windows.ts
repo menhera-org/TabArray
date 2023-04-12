@@ -29,7 +29,7 @@ import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import { UserContext } from "../legacy-lib/tabGroups";
 import * as containers from '../legacy-lib/modules/containers';
 import { UserContextVisibilityService } from "../legacy-lib/userContexts/UserContextVisibilityService";
-import { TemporaryContainerService } from "../containers/TemporaryContainerService";
+import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
 import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
 
 export class PanelWindowsElement extends HTMLElement {

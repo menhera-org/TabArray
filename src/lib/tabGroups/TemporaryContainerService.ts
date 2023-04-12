@@ -23,8 +23,9 @@ import browser from 'webextension-polyfill';
 import { StorageItem } from 'weeg-storage';
 import { ContextualIdentity } from 'weeg-containers';
 
-import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
-import { TabGroupService } from '../lib/tabGroups/TabGroupService';
+import { ServiceRegistry } from '../ServiceRegistry';
+import { ContextualIdentityService } from './ContextualIdentityService';
+import { TabGroupService } from './TabGroupService';
 
 export class TemporaryContainerService {
   private static readonly _INSTANCE = new TemporaryContainerService();
@@ -92,3 +93,5 @@ export class TemporaryContainerService {
     return identity;
   }
 }
+
+ServiceRegistry.getInstance().registerService('TemporaryContainerService', TemporaryContainerService.getInstance());

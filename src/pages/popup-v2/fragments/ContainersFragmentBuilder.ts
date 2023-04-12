@@ -30,7 +30,7 @@ import { CtgMenuItemElement } from "../../../components/ctg/ctg-menu-item";
 import { ContainersStateSnapshot } from "../../../legacy-lib/tabs/ContainersStateSnapshot";
 import { PopupRendererService } from "../PopupRendererService";
 import { OriginAttributes, TabGroup, UserContext } from "../../../legacy-lib/tabGroups";
-import { TemporaryContainerService } from "../../../containers/TemporaryContainerService";
+import { TemporaryContainerService } from "../../../lib/tabGroups/TemporaryContainerService";
 import { SupergroupType, TabGroupDirectory } from "../../../lib/tabGroups/TabGroupDirectory";
 import { TabGroupAttributes } from "../../../lib/tabGroups/TabGroupAttributes";
 import { MenulistSupergroupElement } from "../../../components/menulist-supergroup";

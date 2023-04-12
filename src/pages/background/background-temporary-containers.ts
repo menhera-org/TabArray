@@ -21,8 +21,8 @@
 
 import browser from 'webextension-polyfill';
 
-import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
-import { TemporaryContainerService } from './TemporaryContainerService';
+import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
+import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
 
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
