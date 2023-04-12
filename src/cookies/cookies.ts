@@ -20,21 +20,20 @@
 */
 
 import browser from 'webextension-polyfill';
-import { Uint32 } from "weeg-types";
+import { CookieStore } from 'weeg-containers';
 
-import { OriginAttributes } from '../frameworks/tabGroups';
-import { UserContext } from '../frameworks/tabGroups';
-import { UserContextService } from '../userContexts/UserContextService';
-import { PrivateBrowsingService } from '../frameworks/tabs';
+import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
+import { DisplayedContainerService } from '../lib/tabGroups/DisplayedContainerService';
+import { TabGroupService } from '../lib/tabGroups/TabGroupService';
+
 import { ContentStorageStatistics } from './ContentStorageStatistics';
 import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
-import { TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
 
-const userContextService = UserContextService.getInstance();
-const privateBrowsingService = PrivateBrowsingService.getInstance();
 const contentStorageStatistics = new ContentStorageStatistics();
 const cookieProvider = contentStorageStatistics.cookieProvider;
 const tabGroupDirectory = new TabGroupDirectory();
+const displayedContainerService = DisplayedContainerService.getInstance();
+const tabGroupService = TabGroupService.getInstance();
 
 const selectContainers = document.querySelector('#selectContainers') as HTMLSelectElement;
 const cookieDomains = document.querySelector('#cookieDomains') as HTMLTableSectionElement;
@@ -53,43 +52,39 @@ cookiesHeadingDomain.textContent = browser.i18n.getMessage('cookiesHeadingDomain
 cookiesHeadingActions.textContent = browser.i18n.getMessage('cookiesHeadingActions');
 buttonContainerClearCookie.textContent = browser.i18n.getMessage('buttonContainerClearCookie');
 
-const getSelectedOriginAttributes = () => {
-  return OriginAttributes.fromString(selectContainers.value);
+const getSelectedCookieStore = () => {
+  return new CookieStore(selectContainers.value);
 };
 
 const render = async () => {
   const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
-  const userContexts = (await UserContext.getAll(false)).map((userContext) => userContextService.fillDefaultValues(userContext));
-  userContexts.sort((a, b) => {
-    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+  const displayedContainers = await displayedContainerService.getDisplayedContainers();
+  displayedContainers.sort((a, b) => {
+    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
   });
-  const containers: Map<OriginAttributes, string> = new Map;
-  for (const userContext of userContexts) {
-    containers.set(new OriginAttributes('', userContext.id, 0 as Uint32.Uint32), userContext.name);
+  const containers: Map<CookieStore, string> = new Map;
+  for (const displayedContainer of displayedContainers) {
+    containers.set(displayedContainer.cookieStore, displayedContainer.name);
   }
 
-  // private browsing.
-  const privateBrowsingName = browser.i18n.getMessage('privateBrowsing');
-  containers.set(new OriginAttributes('', 0 as Uint32.Uint32, 1 as Uint32.Uint32), privateBrowsingName);
-
   selectContainers.textContent = '';
-  for (const [originAttributes, name] of containers) {
+  for (const [cookieStore, name] of containers) {
     const option = document.createElement('option');
-    option.value = originAttributes.toString();
+    option.value = cookieStore.id;
     option.textContent = name;
     selectContainers.appendChild(option);
   }
 
-  const selectedOriginAttributes = getSelectedOriginAttributes();
-  await containerViewRefreshHandler.render(selectedOriginAttributes);
+  const selectedCookieStore = getSelectedCookieStore();
+  await containerViewRefreshHandler.render(selectedCookieStore);
 };
 
-const renderContainer = async (originAttributes: OriginAttributes) => {
-  const firstPartyDomains = await contentStorageStatistics.getFirstPartyDomainList(originAttributes.cookieStoreId);
+const renderContainer = async (cookieStore: CookieStore) => {
+  const firstPartyDomains = await contentStorageStatistics.getFirstPartyDomainList(cookieStore.id);
   cookieDomains.textContent = '';
 
   for (const firstPartyDomain of firstPartyDomains) {
-    const domains = await contentStorageStatistics.getDomainList(originAttributes.cookieStoreId, firstPartyDomain);
+    const domains = await contentStorageStatistics.getDomainList(cookieStore.id, firstPartyDomain);
 
     {
       const tr = document.createElement('tr');
@@ -111,11 +106,11 @@ const renderContainer = async (originAttributes: OriginAttributes) => {
       const button = document.createElement('button');
       button.classList.add('delete');
       button.addEventListener('click', async () => {
-        await cookieProvider.removeDataForDomain(originAttributes.cookieStoreId, domain);
-        await contentStorageStatistics.removeOriginStatistics(originAttributes.cookieStoreId, firstPartyDomain, `http://${domain}`);
-        await contentStorageStatistics.removeOriginStatistics(originAttributes.cookieStoreId, firstPartyDomain, `https://${domain}`);
-        console.log(`Removed browsing data for: *://${domain}^userContextId=${originAttributes.userContextId}&privateBrowsingId=${originAttributes.privateBrowsingId}`);
-        renderContainer(originAttributes);
+        await cookieProvider.removeDataForDomain(cookieStore.id, domain);
+        await contentStorageStatistics.removeOriginStatistics(cookieStore.id, firstPartyDomain, `http://${domain}`);
+        await contentStorageStatistics.removeOriginStatistics(cookieStore.id, firstPartyDomain, `https://${domain}`);
+        console.log(`Removed browsing data for: *://${domain}^userContextId=${cookieStore.userContextId}&privateBrowsingId=${cookieStore.privateBrowsingId}`);
+        renderContainer(cookieStore);
       });
       td2.appendChild(button);
       tr.appendChild(td);
@@ -128,24 +123,19 @@ const renderContainer = async (originAttributes: OriginAttributes) => {
 const containerViewRefreshHandler = new ViewRefreshHandler(renderContainer);
 
 selectContainers.addEventListener('change', () => {
-  const selectedOriginAttributes = getSelectedOriginAttributes();
-  containerViewRefreshHandler.renderInBackground(selectedOriginAttributes);
+  const selectedCookieStore = getSelectedCookieStore();
+  containerViewRefreshHandler.renderInBackground(selectedCookieStore);
 });
 
 buttonContainerClearCookie.addEventListener('click', async () => {
-  const selectedOriginAttributes = getSelectedOriginAttributes();
-  if (selectedOriginAttributes.isPrivateBrowsing()) {
-    await privateBrowsingService.clearBrowsingData();
-  } else if (selectedOriginAttributes.userContextId != null) {
-    const userContext = UserContext.createIncompleteUserContext(selectedOriginAttributes.userContextId);
-    await userContext.removeBrowsingData();
-  }
-  containerViewRefreshHandler.renderInBackground(selectedOriginAttributes);
+  const selectedCookieStore = getSelectedCookieStore();
+  await tabGroupService.removeBrowsingDataForTabGroupId(selectedCookieStore.id);
+  containerViewRefreshHandler.renderInBackground(selectedCookieStore);
 });
 
 contentStorageStatistics.onChanged.addListener(() => {
-  const selectedOriginAttributes = getSelectedOriginAttributes();
-  containerViewRefreshHandler.renderInBackground(selectedOriginAttributes);
+  const selectedCookieStore = getSelectedCookieStore();
+  containerViewRefreshHandler.renderInBackground(selectedCookieStore);
 });
 
 render().catch((e) => {
