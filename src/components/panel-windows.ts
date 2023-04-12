@@ -30,7 +30,7 @@ import { UserContext } from "../frameworks/tabGroups";
 import * as containers from '../modules/containers';
 import { UserContextVisibilityService } from "../userContexts/UserContextVisibilityService";
 import { TemporaryContainerService } from "../containers/TemporaryContainerService";
-import { PopupRendererService } from "../popup-v2/PopupRendererService";
+import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
 
 export class PanelWindowsElement extends HTMLElement {
   public readonly onCollapseContainersButtonClicked = new EventSink<void>();

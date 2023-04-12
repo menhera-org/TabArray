@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PopupUtils } from "../popup/PopupUtils";
+import { PopupUtils } from "../pages/popup-v2/legacy/PopupUtils";
 import browser from "webextension-polyfill";
 
 export class HelpBannerElement extends HTMLElement {

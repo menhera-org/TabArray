@@ -17,37 +17,40 @@ module.exports = {
   },
 
   entry: {
-    'background': './src/background.ts',
+    'background': {
+      import: './src/pages/background/background.ts',
+      filename: 'background.js',
+    },
     'index': {
-      import: './src/index/index-tab.ts',
+      import: './src/pages/index/index-tab.ts',
       filename: 'index/index-tab.js',
     },
     'navigation': {
-      import: './src/navigation/select-container.ts',
+      import: './src/pages/navigation/select-container.ts',
       filename: 'navigation/confirm.js',
     },
     'options': {
-      import: './src/options/options.ts',
+      import: './src/pages/options/options.ts',
       filename: 'options/options.js',
     },
     'panorama': {
-      import: './src/panorama/panorama.ts',
+      import: './src/pages/panorama/panorama.ts',
       filename: 'panorama/panorama.js',
     },
     'cookies': {
-      import: './src/cookies/cookies.ts',
+      import: './src/pages/cookies/cookies.ts',
       filename: 'cookies/cookies.js',
     },
-    'languages': {
+    'content': {
       import: './src/content/content.ts',
       filename: 'content/content.js',
     },
     'page-action': {
-      import: './src/page-action/page-action.ts',
+      import: './src/pages/page-action/page-action.ts',
       filename: 'page-action/page-action.js',
     },
     'popup-v2': {
-      import: './src/popup-v2/popup-v2.ts',
+      import: './src/pages/popup-v2/popup-v2.ts',
       filename: 'popup-v2/popup-v2.js',
     },
   },
