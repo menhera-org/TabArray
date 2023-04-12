@@ -47,7 +47,7 @@ import { SiteDetailsFragmentBuilder } from "./fragments/SiteDetailsFragmentBuild
 import { ViewRefreshHandler } from "../frameworks/rendering/ViewRefreshHandler";
 import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
 import { config, privacyConfig } from '../config/config';
-import { ConfigurationOption } from '../frameworks/config';
+import { ConfigurationOption } from '../lib/config/ConfigurationOption';
 import { TabGroupDirectory } from "../lib/tabGroups/TabGroupDirectory";
 import { ExternalServiceProvider } from "../lib/ExternalServiceProvider";
 

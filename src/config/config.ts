@@ -19,8 +19,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConfigurationOption, StorageConfigurationOption } from "../frameworks/config";
 import browser from 'webextension-polyfill';
+import { ConfigurationOption } from '../lib/config/ConfigurationOption';
+import { StorageConfigurationOption } from '../lib/config/StorageConfigurationOption';
 
 export type ExternalContainerOption = 'choose' | 'sticky' | 'disabled';
 export type PopupSize = 'standard' | 'large';

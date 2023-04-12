@@ -19,7 +19,7 @@
 
 import browser from 'webextension-polyfill';
 import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../config/config';
-import { ConfigurationOption } from '../frameworks/config';
+import { ConfigurationOption } from '../lib/config/ConfigurationOption';
 import { UserContext } from '../frameworks/tabGroups';
 import { UserContextService } from '../userContexts/UserContextService';
 import { ContainerOverridesElement } from '../components/container-overrides';

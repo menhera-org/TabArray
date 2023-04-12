@@ -19,7 +19,6 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * as config from './config';
 export * as dns from './dns';
 export * as tabGroups from './tabGroups';
 export * as tabs from './tabs';
