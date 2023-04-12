@@ -20,14 +20,19 @@
 */
 
 import browser from 'webextension-polyfill';
-import { UserContext } from "../frameworks/tabGroups";
-import { Uint32 } from "weeg-types";
 import { EventSink } from "weeg-events";
+import { DisplayedContainer } from 'weeg-containers';
+import { CompatTabGroup, CookieStoreTabGroupFilter } from 'weeg-tabs';
+
+import { TabService } from '../lib/TabService';
+
+const tabService = TabService.getInstance();
 
 /**
  * You must set tabCount to an appropriate value.
  */
 export class PanoramaContainerElement extends HTMLElement {
+  private _cookieStoreId: string;
   private _userContextId = 0;
   private _containerHeadingElement: HTMLDivElement;
   private _containerIconElement: HTMLDivElement;
@@ -40,8 +45,9 @@ export class PanoramaContainerElement extends HTMLElement {
   public readonly onContainerDeleteButtonClick = new EventSink<void>();
   public readonly onNewTabButtonClick = new EventSink<number>();
 
-  public constructor(userContext: UserContext = UserContext.DEFAULT) {
+  public constructor(displayedContainer: DisplayedContainer) {
     super();
+    this._cookieStoreId = displayedContainer.cookieStore.id;
     this._containerHeadingElement = document.createElement('div');
     this.append(this._containerHeadingElement);
     this._containerHeadingElement.classList.add('container-heading');
@@ -57,7 +63,7 @@ export class PanoramaContainerElement extends HTMLElement {
 
     const containerEditButton = document.createElement('button');
     this._containerHeadingElement.append(containerEditButton);
-    if (userContext.id == 0) {
+    if (displayedContainer.cookieStore.userContextId == 0) {
       containerEditButton.disabled = true;
     }
     containerEditButton.classList.add('container-edit');
@@ -68,7 +74,7 @@ export class PanoramaContainerElement extends HTMLElement {
 
     const containerDeleteButton = document.createElement('button');
     this._containerHeadingElement.append(containerDeleteButton);
-    if (userContext.id == 0) {
+    if (displayedContainer.cookieStore.userContextId == 0) {
       containerDeleteButton.disabled = true;
     }
     containerDeleteButton.classList.add('container-delete');
@@ -82,8 +88,9 @@ export class PanoramaContainerElement extends HTMLElement {
     this._containerCloseButtonElement.classList.add('container-close');
     this._containerCloseButtonElement.title = browser.i18n.getMessage('tooltipContainerCloseAll');
     this._containerCloseButtonElement.addEventListener('click', async () => {
-      const tabGroup = await UserContext.createIncompleteUserContext(this._userContextId as Uint32.Uint32).getTabGroup();
-      await tabGroup.tabList.closeTabs();
+      const tabQuery = new CompatTabGroup(new CookieStoreTabGroupFilter(this._cookieStoreId));
+      const tabs = await tabQuery.getTabs();
+      await tabService.closeTabs(tabs);
     });
 
     this._containerTabsElement = document.createElement('div');
@@ -98,18 +105,18 @@ export class PanoramaContainerElement extends HTMLElement {
       this.onNewTabButtonClick.dispatch(this._userContextId);
     });
 
-    this.setUserContext(userContext);
+    this.setUserContext(displayedContainer);
   }
 
-  public setUserContext(userContext: UserContext): void {
-    this._userContextId = userContext.id;
-    const iconUrl = userContext.iconUrl || '/img/material-icons/category.svg';
+  public setUserContext(displayedContainer: DisplayedContainer): void {
+    this._userContextId = displayedContainer.cookieStore.userContextId;
+    const iconUrl = displayedContainer.iconUrl || '/img/material-icons/category.svg';
     if (iconUrl.includes(')')) {
       throw new Error(`Invalid icon URL: ${iconUrl}`);
     }
     this._containerIconElement.style.mask = `url(${iconUrl}) center center/75% no-repeat`;
-    this._containerIconElement.style.backgroundColor = userContext.colorCode || '#000000';
-    this._containerLabelElement.textContent = userContext.name;
+    this._containerIconElement.style.backgroundColor = displayedContainer.colorCode || '#000000';
+    this._containerLabelElement.textContent = displayedContainer.name;
   }
 
   public get tabCount(): number {

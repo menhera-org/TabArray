@@ -33,7 +33,6 @@ import { PanoramaStateStore } from "./PanoramaStateStore";
 
 import { Tab } from "../frameworks/tabs";
 import { IndexTab } from "../modules/IndexTab";
-import { UserContext } from "../frameworks/tabGroups";
 import * as i18n from '../modules/i18n';
 import { ViewRefreshHandler } from '../frameworks/rendering/ViewRefreshHandler';
 import { TemporaryContainerService } from '../containers/TemporaryContainerService';
@@ -154,8 +153,7 @@ const renderContainer = async (displayedContainer: DisplayedContainer, isPrivate
     console.assert(displayedContainer.cookieStore.isPrivate == true);
   }
   const cookieStore = displayedContainer.cookieStore;
-  const userContext = UserContext.fromDisplayedContainer(displayedContainer);
-  const containerElement = new PanoramaContainerElement(userContext);
+  const containerElement = new PanoramaContainerElement(displayedContainer);
   containerElement.targetId = cookieStore.id;
   const compatTabGroup = new CompatTabGroup(new CookieStoreTabGroupFilter(cookieStore.id));
   const tabs = (await compatTabGroup.getTabs()).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
