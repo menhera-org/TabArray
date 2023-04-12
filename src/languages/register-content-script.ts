@@ -20,15 +20,16 @@
 */
 
 import browser from 'webextension-polyfill';
+
+import { CookieStoreService } from '../lib/tabGroups/CookieStoreService';
+
 import { LanguageSettings } from "./LanguageSettings";
-import { CookieStoreSet } from '../frameworks/tabGroups';
-import { OriginAttributes } from '../frameworks/tabGroups';
 import { config } from '../config/config';
 
 const languageSettings = LanguageSettings.getInstance();
 let languageSettingsValues = new Map<string, string>();
 const contentScripts = new Map<string, browser.ContentScripts.RegisteredContentScript>();
-const cookieStoreSet = new CookieStoreSet();
+const cookieStoreService = CookieStoreService.getInstance();
 
 const unregisterContentScript = (key: string) => {
   contentScripts.get(key)?.unregister();
@@ -63,13 +64,13 @@ const update = async () => {
     return;
   }
 
-  const cookieStores = await cookieStoreSet.getAll();
+  const cookieStores = await cookieStoreService.getCookieStores();
   const newValues = new Map<string, string>();
-  for (const originAttributes of cookieStores) {
-    const languages = languageSettings.getLanguages(originAttributes);
-    const originAttributesString = originAttributes.toString();
+  for (const cookieStore of cookieStores) {
+    const languages = languageSettings.getLanguages(cookieStore.id);
+    const cookieStoreId = cookieStore.id;
     if ('' === languages) continue;
-    newValues.set(originAttributesString, languages);
+    newValues.set(cookieStoreId, languages);
   }
   for (const key of contentScripts.keys()) {
     if (!newValues.has(key)) {
@@ -84,7 +85,7 @@ const update = async () => {
       unregisterContentScript(key);
     }
 
-    const cookieStoreId = OriginAttributes.fromString(key).cookieStoreId;
+    const cookieStoreId = key;
     const contentScript = await browser.contentScripts.register({
       js: [{
         code: `
@@ -106,8 +107,8 @@ const update = async () => {
   const browserTabs = await browser.tabs.query({});
   for (const browserTab of browserTabs) {
     if (!browserTab.cookieStoreId || null == browserTab.id) continue;
-    const originAttributes = OriginAttributes.fromCookieStoreId(browserTab.cookieStoreId);
-    const languages = languageSettings.getLanguages(originAttributes);
+    const cookieStoreId = browserTab.cookieStoreId;
+    const languages = languageSettings.getLanguages(cookieStoreId);
 
     browser.tabs.sendMessage(browserTab.id, {
       type: 'language-changed',

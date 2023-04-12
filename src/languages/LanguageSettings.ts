@@ -21,7 +21,6 @@
 
 import { StorageItem } from "weeg-storage";
 import { EventSink } from "weeg-events";
-import { OriginAttributes } from "../frameworks/tabGroups";
 
 type StorageType = {
   [cookieStoreId: string]: string;
@@ -47,10 +46,6 @@ export class LanguageSettings {
     }, true);
   }
 
-  private originAttributesToKey(originAttributes: OriginAttributes): string {
-    return originAttributes.cookieStoreId;
-  }
-
   private save() {
     this._storage.setValue(this._value).catch((e) => {
       console.error(e);
@@ -63,10 +58,10 @@ export class LanguageSettings {
     };
   }
 
-  public setLanguages(originAttributes: OriginAttributes, languages: string) {
+  public setLanguages(cookieStoreId: string, languages: string) {
     languages = languages.trim();
 
-    const key = this.originAttributesToKey(originAttributes);
+    const key = cookieStoreId;
     if ('' === languages && key in this._value) {
       delete this._value[key];
       this.save();
@@ -76,8 +71,8 @@ export class LanguageSettings {
     }
   }
 
-  public getLanguages(originAttributes: OriginAttributes): string {
-    const key = this.originAttributesToKey(originAttributes);
+  public getLanguages(cookieStoreId: string): string {
+    const key = cookieStoreId;
     const languages = this._value[key] ?? '';
     if ('' === languages) return '';
     const parts = languages.split(',')
@@ -90,8 +85,8 @@ export class LanguageSettings {
     return parts.join(',');
   }
 
-  public getAcceptLanguages(originAttributes: OriginAttributes): string {
-    const languages = this.getLanguages(originAttributes);
+  public getAcceptLanguages(cookieStoreId: string): string {
+    const languages = this.getLanguages(cookieStoreId);
     if ('' === languages) return '';
     const inputParts = languages.split(',');
     const outputParts = [];

@@ -20,7 +20,6 @@
 */
 
 import browser from 'webextension-polyfill';
-import { OriginAttributes } from '../frameworks/tabGroups';
 import { LanguageSettings } from '../languages/LanguageSettings';
 import { UserAgentSettings } from './UserAgentSettings';
 import { config } from '../config/config';
@@ -87,13 +86,14 @@ browser.webRequest.onBeforeSendHeaders.addListener((details) => {
     return;
   }
 
-  const userAgent = userAgentSettings.getUserAgent(details.cookieStoreId);
+  const cookieStoreId = details.cookieStoreId;
+
+  const userAgent = userAgentSettings.getUserAgent(cookieStoreId);
   if ('' !== userAgent && featureUserAgentOverridesEnabled) {
     setHeader(details, 'user-agent', userAgent);
   }
 
-  const originAttributes = OriginAttributes.fromCookieStoreId(details.cookieStoreId);
-  const acceptLanguages = languageSettings.getAcceptLanguages(originAttributes);
+  const acceptLanguages = languageSettings.getAcceptLanguages(cookieStoreId);
   if ('' !== acceptLanguages && featureLanguageOverridesEnabled) {
     setHeader(details, 'accept-language', acceptLanguages);
   }
