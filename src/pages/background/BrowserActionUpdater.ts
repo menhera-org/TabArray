@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { InitialWindowsService } from './InitialWindowsService';
-import { DarkThemeMonitor } from '../../frameworks/extension';
+import { DarkThemeMonitor } from '../../legacy-lib/extension/DarkThemeMonitor';
 import { config } from '../../config/config';
 
 const DARK_THEME_BACKGROUND_COLOR = '#cccccc';

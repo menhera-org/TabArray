@@ -26,12 +26,12 @@ import { Uint32 } from 'weeg-types';
 import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 
-import { isNewTabPage } from '../../modules/newtab';
-import { WebExtensionsBroadcastChannel } from '../../modules/broadcasting';
-import { getActiveUserContext, setActiveUserContext } from '../../modules/usercontext-state.js';
+import { isNewTabPage } from '../../legacy-lib/modules/newtab';
+import { WebExtensionsBroadcastChannel } from '../../legacy-lib/modules/broadcasting';
+import { getActiveUserContext, setActiveUserContext } from '../../legacy-lib/modules/usercontext-state.js';
 
 import { config } from '../../config/config';
-import { UserContextVisibilityService } from '../../userContexts/UserContextVisibilityService';
+import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 
 import { BeforeRequestHandler } from './BeforeRequestHandler';
 import { BackgroundUtils } from './BackgroundUtils';

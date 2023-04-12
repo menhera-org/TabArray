@@ -44,7 +44,7 @@ import { HelpFragmentBuilder } from "./fragments/HelpFragmentBuilder";
 import { ContainerDetailsFragmentBuilder } from "./fragments/ContainerDetailsFragmentBuilder";
 import { SiteDetailsFragmentBuilder } from "./fragments/SiteDetailsFragmentBuilder";
 
-import { ViewRefreshHandler } from "../../frameworks/rendering/ViewRefreshHandler";
+import { ViewRefreshHandler } from "../../lib/rendering/ViewRefreshHandler";
 import { BrowserStateSnapshot } from "../../frameworks/tabs/BrowserStateSnapshot";
 import { config, privacyConfig } from '../../config/config';
 import { ConfigurationOption } from '../../lib/config/ConfigurationOption';

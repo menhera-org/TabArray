@@ -20,9 +20,11 @@
 */
 
 import browser from 'webextension-polyfill';
+
 import { Theme } from './Theme';
-import { DarkThemeMonitor } from '../extension';
-import { CssColor, Srgb } from '../colors';
+import { DarkThemeMonitor } from '../extension/DarkThemeMonitor';
+import { CssColor } from '../colors/CssColor';
+import { Srgb } from '../colors/Srgb';
 import { EventSink } from "weeg-events";
 
 export class ThemeService {

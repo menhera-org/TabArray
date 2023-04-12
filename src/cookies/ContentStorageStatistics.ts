@@ -25,7 +25,7 @@ import { ContextualIdentity } from "weeg-containers";
 
 import { ContextualIdentityService } from "../lib/tabGroups/ContextualIdentityService";
 import { ExternalServiceProvider } from "../lib/ExternalServiceProvider";
-import { CookieProvider } from "../frameworks/cookies";
+import { CookieProvider } from "../legacy-lib/cookies/CookieProvider";
 
 export type OriginStorageStatistics = {
   origin: string;

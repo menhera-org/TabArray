@@ -24,7 +24,7 @@ import { PromiseUtils } from 'weeg-utils';
 import { CookieStore } from 'weeg-containers';
 
 import { Uint32 } from "weeg-types";
-import { UserContextVisibilityService } from '../../userContexts/UserContextVisibilityService';
+import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 
 export class BackgroundUtils {

@@ -25,7 +25,7 @@ import { MessagingService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 
 import { TabSortingProvider } from '../../lib/tabGroups/TabSortingProvider';
-import { getWindowIds } from '../../modules/windows';
+import { getWindowIds } from '../../legacy-lib/modules/windows';
 import { config } from '../../config/config';
 
 const tabSortingProvider = new TabSortingProvider();

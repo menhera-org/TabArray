@@ -27,8 +27,8 @@ import { TabGroupDirectorySnapshot } from '../../../lib/tabGroups/TabGroupDirect
 import { SupergroupType, TabGroupDirectory } from '../../../lib/tabGroups/TabGroupDirectory';
 import { PopupRenderer } from './PopupRenderer';
 import { MenulistWindowElement } from '../../../components/menulist-window';
-import * as containers from '../../../modules/containers';
-import { UserContextVisibilityService } from '../../../userContexts/UserContextVisibilityService';
+import * as containers from '../../../legacy-lib/modules/containers';
+import { UserContextVisibilityService } from '../../../legacy-lib/userContexts/UserContextVisibilityService';
 import { OriginAttributes, UserContext, TabGroup } from '../../../frameworks/tabGroups';
 import { WindowStateSnapshot } from '../../../frameworks/tabs/WindowStateSnapshot';
 import { MenulistContainerElement } from '../../../components/menulist-container';

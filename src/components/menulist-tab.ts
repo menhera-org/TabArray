@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 import { UserContext } from "../frameworks/tabGroups";
 import { Tab } from "../frameworks/tabs";
 import { EventSink } from "weeg-events";
-import { TabIconService } from '../modules/TabIconService';
+import { TabIconService } from '../legacy-lib/modules/TabIconService';
 
 export class MenulistTabElement extends HTMLElement {
   private _tabId = -1;

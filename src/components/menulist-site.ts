@@ -20,7 +20,7 @@
 */
 
 import { EventSink } from "weeg-events";
-import { TabIconService } from '../modules/TabIconService';
+import { TabIconService } from '../legacy-lib/modules/TabIconService';
 
 export class MenulistSiteElement extends HTMLElement {
   public readonly onSiteClicked = new EventSink<void>();

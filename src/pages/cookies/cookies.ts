@@ -27,7 +27,7 @@ import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContaine
 import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
 
 import { ContentStorageStatistics } from '../../cookies/ContentStorageStatistics';
-import { ViewRefreshHandler } from '../../frameworks/rendering/ViewRefreshHandler';
+import { ViewRefreshHandler } from '../../lib/rendering/ViewRefreshHandler';
 
 const contentStorageStatistics = new ContentStorageStatistics();
 const cookieProvider = contentStorageStatistics.cookieProvider;

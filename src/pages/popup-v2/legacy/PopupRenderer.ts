@@ -33,10 +33,10 @@ import { UserContext } from "../../../frameworks/tabGroups";
 import { OriginAttributes } from "../../../frameworks/tabGroups";
 import { TabGroup } from "../../../frameworks/tabGroups";
 
-import * as containers from '../../../modules/containers';
-import { IndexTab } from "../../../modules/IndexTab";
-import { UserContextVisibilityService } from '../../../userContexts/UserContextVisibilityService';
-import { UserContextService } from '../../../userContexts/UserContextService';
+import * as containers from '../../../legacy-lib/modules/containers';
+import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
+import { UserContextVisibilityService } from '../../../legacy-lib/userContexts/UserContextVisibilityService';
+import { UserContextService } from '../../../legacy-lib/userContexts/UserContextService';
 
 import { PopupModalRenderer } from './PopupModalRenderer';
 import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";

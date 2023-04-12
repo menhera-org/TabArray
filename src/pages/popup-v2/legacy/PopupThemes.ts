@@ -19,7 +19,8 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ThemeService, Theme } from "../../../frameworks/themes";
+import { ThemeService } from "../../../legacy-lib/themes/ThemeService";
+import { Theme } from "../../../legacy-lib/themes/Theme";
 
 const themeService = ThemeService.getInstance();
 

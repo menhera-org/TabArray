@@ -27,8 +27,8 @@ import { SupergroupEditorElement } from './supergroup-editor';
 import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import { UserContext } from "../frameworks/tabGroups";
-import * as containers from '../modules/containers';
-import { UserContextVisibilityService } from "../userContexts/UserContextVisibilityService";
+import * as containers from '../legacy-lib/modules/containers';
+import { UserContextVisibilityService } from "../legacy-lib/userContexts/UserContextVisibilityService";
 import { TemporaryContainerService } from "../containers/TemporaryContainerService";
 import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
 

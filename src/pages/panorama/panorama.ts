@@ -32,9 +32,9 @@ import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContaine
 import { PanoramaStateStore } from "./PanoramaStateStore";
 
 import { Tab } from "../../frameworks/tabs";
-import { IndexTab } from "../../modules/IndexTab";
-import * as i18n from '../../modules/i18n';
-import { ViewRefreshHandler } from '../../frameworks/rendering/ViewRefreshHandler';
+import { IndexTab } from "../../legacy-lib/modules/IndexTab";
+import * as i18n from '../../legacy-lib/modules/i18n';
+import { ViewRefreshHandler } from '../../lib/rendering/ViewRefreshHandler';
 import { TemporaryContainerService } from '../../containers/TemporaryContainerService';
 
 import { PanoramaTabElement } from "../../components/panorama-tab";

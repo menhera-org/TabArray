@@ -22,10 +22,10 @@ import { Uint32 } from "weeg-types";
 import { CookieStore } from 'weeg-containers';
 import { CompatTab, CompatTabGroup, PinnedTabGroupFilter, WindowTabGroupFilter, CookieStoreTabGroupFilter } from 'weeg-tabs';
 
-import { TabService } from '../lib/TabService';
+import { TabService } from '../../lib/TabService';
 
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
-import { WindowService } from '../frameworks/tabs/WindowService';
+import { WindowService } from '../../frameworks/tabs/WindowService';
 
 const tabService = TabService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();

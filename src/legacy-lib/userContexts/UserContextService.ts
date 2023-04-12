@@ -20,7 +20,7 @@
 */
 
 import browser from 'webextension-polyfill';
-import { UserContext } from "../frameworks/tabGroups";
+import { UserContext } from "../../frameworks/tabGroups";
 
 export class UserContextService {
   private static readonly DEFAULT_ICON_URL = browser.runtime.getURL('/img/material-icons/category.svg');

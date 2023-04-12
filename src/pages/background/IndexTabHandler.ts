@@ -23,13 +23,13 @@ import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
 import { CompatTab, CompatTabGroup, CookieStoreTabGroupFilter, WindowTabGroupFilter } from 'weeg-tabs';
 
-import * as containers from '../../modules/containers';
-import { IndexTab } from '../../modules/IndexTab';
+import * as containers from '../../legacy-lib/modules/containers';
+import { IndexTab } from '../../legacy-lib/modules/IndexTab';
 
 import { WindowUserContextList } from '../../frameworks/tabGroups';
 
 import { config } from '../../config/config';
-import { UserContextVisibilityService } from '../../userContexts/UserContextVisibilityService';
+import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 import { InitialWindowsService } from './InitialWindowsService';
 
 const userContextVisibilityService = UserContextVisibilityService.getInstance();

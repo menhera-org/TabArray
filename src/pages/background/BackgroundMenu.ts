@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { UserContext } from '../../frameworks/tabGroups';
-import { UserContextVisibilityService } from '../../userContexts/UserContextVisibilityService';
+import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 import { MenuItem, PopupTabContextMenuItem } from '../../frameworks/menus';
 import { PopupUtils } from '../popup-v2/legacy/PopupUtils';
 

@@ -20,15 +20,15 @@
 */
 
 import browser from 'webextension-polyfill';
-import { config } from '../config/config';
+import { config } from '../../config/config';
 import { Uint32 } from "weeg-types";
 import { WindowUserContextVisibilityHelper } from './WindowUserContextVisibilityHelper';
 import { IndexTab } from '../modules/IndexTab';
-import { UserContext } from '../frameworks/tabGroups';
-import { UserContextService } from '../userContexts/UserContextService';
-import { Tab } from '../frameworks/tabs';
-import { WindowService } from '../frameworks/tabs/WindowService';
-import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
+import { UserContext } from '../../frameworks/tabGroups';
+import { UserContextService } from './UserContextService';
+import { Tab } from '../../frameworks/tabs';
+import { WindowService } from '../../frameworks/tabs/WindowService';
+import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 //import { OriginAttributes } from '../frameworks/tabGroups';
 //import { TabGroup } from '../frameworks/tabGroups';
 
