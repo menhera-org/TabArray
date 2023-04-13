@@ -21,17 +21,16 @@
 
 import browser from 'webextension-polyfill';
 import { CookieStore } from 'weeg-containers';
-import { Uint32 } from "weeg-types";
 
 import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOpenerService';
+import { TabQueryService } from '../../../lib/TabQueryService';
+import { TabService } from '../../../lib/TabService';
 
 import { MenulistTabElement } from "../../../components/menulist-tab";
 import { MenulistContainerElement } from "../../../components/menulist-container";
 
 import { Tab } from "../../../legacy-lib/tabs";
 import { UserContext } from "../../../legacy-lib/tabGroups";
-import { OriginAttributes } from "../../../legacy-lib/tabGroups";
-import { TabGroup } from "../../../legacy-lib/tabGroups";
 
 import * as containers from '../../../legacy-lib/modules/containers';
 import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
@@ -52,6 +51,8 @@ export class PopupRenderer {
   private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
   private readonly _userContextService = UserContextService.getInstance();
   private readonly _containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
+  private readonly _tabQueryService = TabQueryService.getInstance();
+  private readonly _tabService = TabService.getInstance();
 
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly modalRenderer = new PopupModalRenderer(this);
@@ -108,10 +109,13 @@ export class PopupRenderer {
 
   public renderContainerForFirstPartyDomain(domain: string, userContext: UserContext = UserContext.DEFAULT, isPrivateBrowsing = false): MenulistContainerElement {
     const element = this.renderPartialContainerElement(userContext, isPrivateBrowsing);
+    const cookieStoreId = isPrivateBrowsing ? CookieStore.PRIVATE.id : userContext.cookieStoreId;
     element.onContainerClose.addListener(() => {
-      const originAttributes = new OriginAttributes(domain, userContext.id, (isPrivateBrowsing ? 1 : 0) as Uint32.Uint32);
-      TabGroup.createTabGroup(originAttributes).then((tabGroup) => {
-        return tabGroup.tabList.closeTabs();
+      this._tabQueryService.queryTabs({
+        tabGroupId: cookieStoreId,
+        registrableDomain: domain,
+      }).then((tabs) => {
+        return this._tabService.closeTabs(tabs);
       }).catch((e) => {
         console.error(e);
       });

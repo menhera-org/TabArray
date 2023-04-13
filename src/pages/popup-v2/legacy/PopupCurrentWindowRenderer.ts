@@ -25,21 +25,25 @@ import { CookieStore } from 'weeg-containers';
 
 import { TabGroupDirectorySnapshot } from '../../../lib/tabGroups/TabGroupDirectorySnapshot';
 import { SupergroupType, TabGroupDirectory } from '../../../lib/tabGroups/TabGroupDirectory';
+import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
+import { TabGroupAttributes } from '../../../lib/tabGroups/TabGroupAttributes';
+import { TabQueryService } from '../../../lib/TabQueryService';
+
 import { PopupRenderer } from './PopupRenderer';
+
 import { MenulistWindowElement } from '../../../components/menulist-window';
-import * as containers from '../../../legacy-lib/modules/containers';
-import { UserContextVisibilityService } from '../../../legacy-lib/userContexts/UserContextVisibilityService';
-import { OriginAttributes, UserContext, TabGroup } from '../../../legacy-lib/tabGroups';
-import { WindowStateSnapshot } from '../../../legacy-lib/tabs/WindowStateSnapshot';
 import { MenulistContainerElement } from '../../../components/menulist-container';
 import { MenulistSupergroupElement } from '../../../components/menulist-supergroup';
-import { Tab } from '../../../legacy-lib/tabs';
-import { TabGroupAttributes } from '../../../lib/tabGroups/TabGroupAttributes';
 import { ModalMenuElement } from '../../../components/modal-menu';
 import { SupergroupEditorElement } from '../../../components/supergroup-editor';
 import { ModalMoveGroupElement } from '../../../components/modal-move-group';
-import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
 import { ContainerEditorElement } from '../../../components/container-editor';
+
+import * as containers from '../../../legacy-lib/modules/containers';
+import { UserContextVisibilityService } from '../../../legacy-lib/userContexts/UserContextVisibilityService';
+import { UserContext } from '../../../legacy-lib/tabGroups';
+import { WindowStateSnapshot } from '../../../legacy-lib/tabs/WindowStateSnapshot';
+import { Tab } from '../../../legacy-lib/tabs';
 
 const tabGroupDirectory = new TabGroupDirectory();
 
@@ -47,6 +51,7 @@ export class PopupCurrentWindowRenderer {
   private readonly popupRenderer: PopupRenderer;
   private readonly userContextVisibilityService = UserContextVisibilityService.getInstance();
   private readonly supergroupService = SupergroupService.getInstance();
+  private readonly tabQueryService = TabQueryService.getInstance();
 
   public constructor(popupRenderer: PopupRenderer) {
     this.popupRenderer = popupRenderer;
@@ -100,12 +105,13 @@ export class PopupCurrentWindowRenderer {
     if (isPrivate) {
       console.assert(userContextId === 0, 'Private windows should only have userContextId 0');
     }
-    const tabGroup = isPrivate
-      ? await TabGroup.createTabGroup(OriginAttributes.PRIVATE)
-      : await UserContext.createIncompleteUserContext(userContextId).getTabGroup();
-    const tabList = tabGroup.tabList;
-    const tabs = (await tabList.getTabs()).filter((tab) => {
-      return tab.windowId === windowId;
+    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : CookieStore.fromParams({
+      userContextId,
+      privateBrowsingId: 0 as Uint32.Uint32,
+    }).id;
+    const tabs = await this.tabQueryService.queryTabs({
+      tabGroupId: cookieStoreId,
+      windowId,
     });
     if (tabs.length === 0) {
       return;

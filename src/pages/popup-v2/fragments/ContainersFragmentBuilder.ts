@@ -23,18 +23,23 @@ import browser from "webextension-polyfill";
 import { CookieStore } from "weeg-containers";
 import { EventSink } from "weeg-events";
 
-import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
-import { CtgMenuItemElement } from "../../../components/ctg/ctg-menu-item";
-import { ContainersStateSnapshot } from "../../../legacy-lib/tabs/ContainersStateSnapshot";
-import { PopupRendererService } from "../PopupRendererService";
-import { OriginAttributes, TabGroup, UserContext } from "../../../legacy-lib/tabGroups";
 import { TemporaryContainerService } from "../../../lib/tabGroups/TemporaryContainerService";
 import { SupergroupType, TabGroupDirectory } from "../../../lib/tabGroups/TabGroupDirectory";
 import { TabGroupAttributes } from "../../../lib/tabGroups/TabGroupAttributes";
-import { MenulistSupergroupElement } from "../../../components/menulist-supergroup";
 import { SupergroupService } from "../../../lib/tabGroups/SupergroupService";
+import { TabQueryService } from "../../../lib/TabQueryService";
+import { TabService } from "../../../lib/TabService";
+
+import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
+import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
+import { CtgMenuItemElement } from "../../../components/ctg/ctg-menu-item";
+import { MenulistSupergroupElement } from "../../../components/menulist-supergroup";
+
+import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
+import { PopupRendererService } from "../PopupRendererService";
+
+import { ContainersStateSnapshot } from "../../../legacy-lib/tabs/ContainersStateSnapshot";
+import { UserContext } from "../../../legacy-lib/tabGroups";
 
 export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onContainerSelected = new EventSink<string>();
@@ -43,6 +48,8 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
   private readonly _supergroupService = SupergroupService.getInstance();
+  private readonly _tabQueryService = TabQueryService.getInstance();
+  private readonly _tabService = TabService.getInstance();
 
   public getFragmentId(): string {
     return 'fragment-containers';
@@ -160,9 +167,11 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
 
         containerElement.onContainerClose.addListener(async () => {
           const cookieStoreId = userContext.cookieStoreId;
-          const originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId);
-          const tabGroup = await TabGroup.createTabGroup(originAttributes);
-          tabGroup.tabList.closeUnpinnedTabs();
+          const tabs = await this._tabQueryService.queryTabs({
+            tabGroupId: cookieStoreId,
+            pinned: false,
+          });
+          await this._tabService.closeTabs(tabs);
         });
 
         containerElement.onContainerClick.addListener(() => {
@@ -204,9 +213,11 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
 
       containerElement.onContainerClose.addListener(async () => {
         const cookieStoreId = userContext.cookieStoreId;
-        const originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId);
-        const tabGroup = await TabGroup.createTabGroup(originAttributes);
-        tabGroup.tabList.closeUnpinnedTabs();
+        const tabs = await this._tabQueryService.queryTabs({
+          tabGroupId: cookieStoreId,
+          pinned: false,
+        });
+        await this._tabService.closeTabs(tabs);
       });
 
       containerElement.onContainerClick.addListener(() => {
