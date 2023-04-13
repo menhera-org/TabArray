@@ -36,7 +36,7 @@ export class HelpBannerElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/help-banner.css';
+    styleSheet.href = '/css/components/help-banner.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const manifest = browser.runtime.getManifest();

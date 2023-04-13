@@ -20,7 +20,7 @@
 */
 
 @import 'chrome://browser/content/extension.css';
-@import '/theme.css';
+@import '/css/theme.css';
 
 @namespace url(http://www.w3.org/1999/xhtml);
 

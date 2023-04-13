@@ -19,23 +19,48 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-@import '/theme.css';
+@import url(/css/theme.css);
 
-@namespace url(http://www.w3.org/1999/xhtml);
-
-a {
-  text-decoration: none;
-  color: var(--accent-color);
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
-.help-banner * {
-  text-align: center !important;
+label {
+  font: inherit;
+  color: inherit;
 }
 
-.help-banner-image {
+#optionsPanes > div:not(.active) {
+  display: none;
+}
+
+.pane-header {
+  display: block grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: .5rem;
+  align-items: center;
+  box-shadow: 0 0 .25rem var(--border-color);
+}
+
+.pane-header > h2 {
+  font: inherit !important;
+  font-weight: bold !important;
+  font-size: 1.08em !important;
+  margin: 0;
+  padding: 0;
+}
+
+.pane-back {
+  padding: 0;
   display: block;
-  margin-inline: auto;
-  inline-size: 50%;
-  max-inline-size: 10em;
-  margin-block: 1rem;
+  inline-size: 3rem;
+  block-size: 3rem;
+  mask: url(/img/firefox-icons/back.svg) center center/50% no-repeat;
+  background-color: var(--text-color);
+}
+
+.text-link {
+  text-decoration: none;
+  color: var(--in-content-link-color);
 }

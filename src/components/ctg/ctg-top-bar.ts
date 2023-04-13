@@ -39,7 +39,7 @@ export class CtgTopBarElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/ctg/ctg-top-bar.css';
+    styleSheet.href = '/css/components/ctg/ctg-top-bar.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const drawerButton = new CtgMenuItemElement();

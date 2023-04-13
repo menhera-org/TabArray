@@ -44,7 +44,7 @@ export class TabGroupSorterElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/tab-group-sorter.css';
+    styleSheet.href = '/css/components/tab-group-sorter.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const sorterWrapperElement = document.createElement('div');

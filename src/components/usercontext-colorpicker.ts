@@ -39,7 +39,7 @@ export class ColorPickerElement extends HTMLElement {
     this.attachShadow({mode: 'open'});
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = '/components/usercontext.css';
+    css.href = '/css/components/usercontext.css';
     if (null == this.shadowRoot) {
       throw new Error('shadowRoot is null');
     }

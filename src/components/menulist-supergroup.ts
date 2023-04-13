@@ -47,7 +47,7 @@ export class MenulistSupergroupElement extends HTMLElement {
   private buildElement() {
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/menulist-supergroup.css';
+    styleSheet.href = '/css/components/menulist-supergroup.css';
     this.shadowRoot?.appendChild(styleSheet);
 
     const groupElement = document.createElement('div');

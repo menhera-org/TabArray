@@ -33,7 +33,7 @@ export class ModalMenuElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/modal-menu.css';
+    styleSheet.href = '/css/components/modal-menu.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const modalContent = document.createElement('div');

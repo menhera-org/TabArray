@@ -50,7 +50,7 @@ export class ContainerEditorElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/container-editor.css';
+    styleSheet.href = '/css/components/container-editor.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const modalContent = document.createElement('div');

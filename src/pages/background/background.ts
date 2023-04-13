@@ -65,11 +65,12 @@ window.addEventListener('error', () => {
 });
 
 // auto reload
+// this will not work with nonpersistent background pages
 const AUTO_RELOAD_MONITOR_INTERVAL = 5000;
 setInterval(() => {
   Promise.all([
     fetch('/manifest.json'),
-    fetch('/theme.css'),
+    fetch('/css/theme.css'),
   ]).catch(() => {
     browser.runtime.reload();
   });

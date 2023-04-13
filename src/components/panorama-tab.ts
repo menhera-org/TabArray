@@ -35,7 +35,7 @@ export class PanoramaTabElement extends HTMLElement {
     }
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = '/components/panorama-tab.css';
+    css.href = '/css/components/panorama-tab.css';
     this.shadowRoot.append(css);
     const tabPreview = document.createElement('button');
     tabPreview.id = 'tab-preview';

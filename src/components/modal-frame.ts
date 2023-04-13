@@ -31,7 +31,7 @@ export class ModalFrameElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/modal-frame.css';
+    styleSheet.href = '/css/components/modal-frame.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const modalContent = document.createElement('div');

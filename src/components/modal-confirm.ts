@@ -35,7 +35,7 @@ export class ModalConfirmElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/modal-confirm.css';
+    styleSheet.href = '/css/components/modal-confirm.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const modalContent = document.createElement('div');

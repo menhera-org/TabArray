@@ -33,7 +33,7 @@ export class CtgBottomNavigationElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/ctg/ctg-bottom-navigation.css';
+    styleSheet.href = '/css/components/ctg/ctg-bottom-navigation.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const targetsElement = document.createElement('div');

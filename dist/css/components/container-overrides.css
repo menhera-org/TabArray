@@ -19,28 +19,28 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-@import '/theme.css';
+@import '/css/theme.css';
 
 @namespace url(http://www.w3.org/1999/xhtml);
 
-#sorter-wrapper {
+#containers-wrapper {
   inline-size: max-content;
   max-inline-size: 100%;
   display: block grid;
-  grid-template-columns: 1fr min-content;
+  grid-template-columns: .5em 2em 1fr 8em auto auto .5em;
   border-radius: .5em;
   border: 1px solid var(--border-color);
   margin-block: .5em;
   box-sizing: border-box;
 }
 
-#groups {
+#containers {
   display: grid;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
 }
 
-#sorter-wrapper > .header {
+#containers-wrapper > .header {
   display: block grid;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
@@ -48,13 +48,21 @@
   background-color: var(--hover-color);
 }
 
-#sorter-wrapper > .header > * {
+#containers-wrapper > .header > * {
   text-align: center;
   padding: .5em;
 }
 
-#sorter-wrapper > .header > :not(:first-child) {
+#containers-wrapper > .header > :not(:first-child) {
   border-inline-start: 1px solid var(--border-color);
+}
+
+#containers-wrapper > .header > .header-container {
+  grid-column: 2 / 4;
+}
+
+#containers-wrapper > .header > .header-user-agent {
+  grid-column: 5 / 7;
 }
 
 .container {
@@ -64,22 +72,12 @@
   border-block-start: 1px solid var(--border-color);
 }
 
-.container-inner {
-  display: block flex;
-  flex-direction: row;
+.container::before, .container::after {
+  content: '';
+  display: block;
 }
 
-.container .icon {
-  inline-size: 2em;
-}
-
-.container .icon.masked {
-  background-color: var(--text-color);
-}
-
-.container .name {
-  flex: 1;
-  min-inline-size: 0;
+.container > .name {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -87,31 +85,28 @@
   padding: .5em;
 }
 
-.up, .down {
-  background-color: var(--text-color);
-  opacity: var(--opaque-opacity);
-  appearance: none;
-  border: none;
-  padding: 0;
+.container :is(.languages, .user-agent-custom) {
+  inline-size: 100%;
+  min-inline-size: 0;
+  box-sizing: border-box;
   margin: 0;
-  inline-size: 2em;
+  font: inherit;
+  border: none;
+  border-radius: 0;
+  padding: .5em;
+  color: inherit;
+  background-color: transparent;
+  align-self: stretch;
 }
 
-.up:hover, .up:focus, .down:hover, .down:focus {
-  opacity: 1;
+.container > .user-agent {
+  display: block grid;
+  grid-template-columns: subgrid;
+  grid-column: 5 / 7;
 }
 
-.up {
-  mask: url(/img/material-icons/arrow_upward.svg) no-repeat center / contain;
-}
-
-.down {
-  mask: url(/img/material-icons/arrow_downward.svg) no-repeat center / contain;
-}
-
-.options {
+.container > .user-agent > .user-agent-select {
+  margin-inline: .5rem;
   align-self: center;
-  margin-inline-start: 1em;
-  margin-bottom: unset;
-  text-align: center;
+  margin-block: 0 !important;
 }

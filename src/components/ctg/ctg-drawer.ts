@@ -34,7 +34,7 @@ export class CtgDrawerElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/ctg/ctg-drawer.css';
+    styleSheet.href = '/css/components/ctg/ctg-drawer.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const scrim = document.createElement('div');

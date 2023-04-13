@@ -61,7 +61,7 @@ export class MenulistContainerElement extends HTMLElement {
   private buildElement() {
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/menulist-container.css';
+    styleSheet.href = '/css/components/menulist-container.css';
     this.shadowRoot?.appendChild(styleSheet);
 
     const containerElement = document.createElement('div');

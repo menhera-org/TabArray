@@ -68,7 +68,7 @@ export class MenulistTabElement extends HTMLElement {
   private buildElement() {
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/menulist-tab.css';
+    styleSheet.href = '/css/components/menulist-tab.css';
     this.shadowRoot?.appendChild(styleSheet);
 
     const tabMenu = document.createElement('div');

@@ -46,7 +46,7 @@ export class IconPickerElement extends HTMLElement {
     }
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = '/components/usercontext.css';
+    css.href = '/css/components/usercontext.css';
     this.shadowRoot.append(css);
     const radios = document.createElement('form');
     this._radios = radios;

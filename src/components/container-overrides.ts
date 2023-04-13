@@ -42,7 +42,7 @@ export class ContainerOverridesElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/container-overrides.css';
+    styleSheet.href = '/css/components/container-overrides.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const containersWrapperElement = document.createElement('div');

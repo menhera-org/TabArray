@@ -57,7 +57,7 @@ export class PanelWindowsElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/panel-windows.css';
+    styleSheet.href = '/css/components/panel-windows.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const header = document.createElement('div');

@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-@import '/theme.css';
+@import '/css/theme.css';
 
 @namespace url(http://www.w3.org/1999/xhtml);
 
@@ -55,7 +55,7 @@
   background-color: var(--text-color);
   inline-size: 2em;
   block-size: 2em;
-  mask: url(../../img/firefox-icons/menu.svg) center / 75% no-repeat;
+  mask: url(/img/firefox-icons/menu.svg) center / 75% no-repeat;
 } */
 
 #back-button {
@@ -65,7 +65,7 @@
   background-color: var(--text-color);
   inline-size: 2em;
   block-size: 2em;
-  mask: url(../../img/firefox-icons/back.svg) center / 75% no-repeat;
+  mask: url(/img/firefox-icons/back.svg) center / 75% no-repeat;
 }
 
 #spinner {
@@ -75,7 +75,7 @@
   background-color: var(--text-color);
   inline-size: 2em;
   block-size: 2em;
-  mask: url(../../img/ring-resize.svg) center / 75% no-repeat;
+  mask: url(/img/ring-resize.svg) center / 75% no-repeat;
   opacity: 1;
 }
 

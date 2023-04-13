@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 
 /*
-  group Tab Groups
+  Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-@import '/theme.css';
+@import '/css/theme.css';
 
 @namespace url(http://www.w3.org/1999/xhtml);
 
@@ -46,17 +46,17 @@ button:focus {
   outline: none;
 }
 
-#group {
+#container {
   display: block;
 }
 
-#group-header {
+#container-header {
   display: block grid;
-  grid-template-columns: 1fr max-content max-content max-content max-content;
+  grid-template-columns: 2em 1fr max-content max-content max-content;
   padding-inline-end: 1em;
 }
 
-#group-name[data-tab-count]::after {
+#container-name[data-tab-count]::after {
   content: ' (' attr(data-tab-count) ')';
   opacity: var(--opaque-opacity);
 }
@@ -65,58 +65,50 @@ button[disabled] {
   visibility: hidden;
 }
 
-#group #group-visibility-toggle {
+#container #container-visibility-toggle {
   mask: url(/img/material-icons/expand_less.svg) center center/75% no-repeat;
   background-color: var(--text-color);
 }
 
-#group.hidden #group-visibility-toggle {
+#container.hidden #container-visibility-toggle {
   mask: url(/img/material-icons/expand_more.svg) center center/75% no-repeat;
 }
 
-#group-header > button:not(#group-button) {
+#container-header > button:not(#container-button) {
   opacity: var(--opaque-opacity);
   background-color: var(--text-color);
 }
 
-#group-header > button:not(#group-button):hover, #group-header > button:not(#group-button):focus {
+#container-header > button:not(#container-button):hover, #container-header > button:not(#container-button):focus {
   opacity: 1;
 }
 
-#group-close-button, #group-options-button, #group-highlight-button, #group-hide-button, #group-unhide-button {
+#container-close-button, #container-options-button, #container-highlight-button {
   inline-size: 2em;
 }
 
-#group-highlight-button {
+#container-highlight-button {
   mask: url(/img/material-icons/star_border.svg) center center/75% no-repeat;
 }
 
-:is(#group-highlight-button, #group-close-button):disabled {
+:is(#container-highlight-button, #container-close-button):disabled {
   display: none;
 }
 
-#group-close-button {
+#container-close-button {
   mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
 }
 
-#group-options-button {
+#container-options-button {
   mask: url(/img/material-icons/more_horiz.svg) center center/75% no-repeat;
 }
 
-#group-hide-button {
-  mask: url(/img/material-icons/unfold_less.svg) center center/75% no-repeat;
-}
-
-#group-unhide-button {
-  mask: url(/img/material-icons/unfold_more.svg) center center/75% no-repeat;
-}
-
-#group-button {
+#container-button {
   display: block grid;
   grid-template-columns: 2em 1fr;
 }
 
-#group-name {
+#container-name {
   padding-inline: .5em;
   padding-block: .5em;
   overflow: hidden;
@@ -124,24 +116,18 @@ button[disabled] {
   white-space: nowrap;
 }
 
-#group-icon {
+#container-icon {
   inline-size: 75%;
   block-size: 75%;
   align-self: center;
   justify-self: center;
-  background-color: var(--text-color);
-  mask: url(/img/material-icons/folder.svg) center/contain no-repeat;
 }
 
-#group-visibility-toggle {
+#container-visibility-toggle {
   background-size: 1.5em;
   background-repeat: no-repeat;
   background-position: center center;
   inline-size: 100%;
   block-size: 100%;
   opacity: var(--opaque-opacity);
-}
-
-#group-tabs {
-  padding-inline-start: 2em;
 }

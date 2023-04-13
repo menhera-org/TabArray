@@ -26,8 +26,8 @@
 export const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
 export const PRIVACY_POLICY_PAGE = 'https://menhera-org.github.io/TabArray/PRIVACY_POLICY.html';
 export const GITHUB_PAGE = 'https://github.com/menhera-org/TabArray';
-export const PANORAMA_PAGE = '/panorama/panorama.html';
-export const CONFIRM_PAGE = '/navigation/confirm.html';
-export const COOKIES_PAGE = '/cookies/cookies.html';
-export const POPUP_PAGE = '/popup-v2/popup-v2.html';
-export const INDEX_TAB_PAGE = '/index/index-tab.html';
+export const PANORAMA_PAGE = '/pages/panorama/panorama.html';
+export const CONFIRM_PAGE = '/pages/navigation/confirm.html';
+export const COOKIES_PAGE = '/pages/cookies/cookies.html';
+export const POPUP_PAGE = '/pages/popup-v2/popup-v2.html';
+export const INDEX_TAB_PAGE = '/pages/index/index-tab.html';

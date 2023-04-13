@@ -41,7 +41,7 @@ export class MenulistSiteElement extends HTMLElement {
     if (!this.shadowRoot) return;
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/menulist-site.css';
+    styleSheet.href = '/css/components/menulist-site.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const siteButton = document.createElement('button');

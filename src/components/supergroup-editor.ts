@@ -52,7 +52,7 @@ export class SupergroupEditorElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/supergroup-editor.css';
+    styleSheet.href = '/css/components/supergroup-editor.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const modalContent = document.createElement('div');

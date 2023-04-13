@@ -41,7 +41,7 @@ export class CtgMenuItemElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/ctg/ctg-menu-item.css';
+    styleSheet.href = '/css/components/ctg/ctg-menu-item.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const button = document.createElement('button');

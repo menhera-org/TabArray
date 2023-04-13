@@ -31,7 +31,7 @@ export class CtgFrameLayoutElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/ctg/ctg-frame-layout.css';
+    styleSheet.href = '/css/components/ctg/ctg-frame-layout.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const slot = document.createElement('slot');

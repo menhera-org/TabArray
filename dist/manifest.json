@@ -32,7 +32,7 @@
   ],
   "incognito": "spanning",
   "background": {
-    "page": "background.html"
+    "page": "background/background.html"
   },
   "browser_action": {
     "browser_style": true,
@@ -40,7 +40,7 @@
       "16": "img/toolbar/toolbar-icon-black.svg"
     },
     "default_title": "__MSG_browserActionTitle__",
-    "default_popup": "popup-v2/popup-v2.html?popup=1",
+    "default_popup": "pages/popup-v2/popup-v2.html?popup=1",
     "default_area": "tabstrip",
     "theme_icons": [
       {
@@ -51,7 +51,7 @@
     ]
   },
   "options_ui": {
-    "page": "options/options.html",
+    "page": "pages/options/options.html",
     "browser_style": true,
     "open_in_tab": false
   },
@@ -61,7 +61,7 @@
       "16": "icon.svg",
       "32": "icon.svg"
     },
-    "default_panel": "popup-v2/popup-v2.html"
+    "default_panel": "pages/popup-v2/popup-v2.html"
   },
   "page_action": {
     "browser_style": true,
@@ -70,7 +70,7 @@
       "38": "icon.svg"
     },
     "default_title": "__MSG_headingReopen__",
-    "default_popup": "page-action/page-action.html",
+    "default_popup": "pages/page-action/page-action.html",
     "show_matches": [
       "*://*/*"
     ]
