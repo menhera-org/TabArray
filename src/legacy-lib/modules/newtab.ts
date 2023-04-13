@@ -22,11 +22,6 @@
 import browser from 'webextension-polyfill';
 
 let newTabPage = 'about:newtab';
-const privilegedNewTabPages: ReadonlySet<string> = new Set([
-  'about:newtab',
-  'about:home',
-  'about:blank',
-]);
 
 browser.browserSettings.newTabPageOverride.get({}).then((details) => {
   if (!details) return;
@@ -41,4 +36,3 @@ browser.browserSettings.newTabPageOverride.onChange.addListener((details) => {
 });
 
 export const isNewTabPage = (url: string) => url == newTabPage;
-export const isPrivilegedNewTabPage = (url: string) => privilegedNewTabPages.has(url);
