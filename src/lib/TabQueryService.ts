@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CompatTab, CompatTabGroup, WindowTabGroupFilter, PinnedTabGroupFilter, DomainTabGroupFilter, TabGroupFilter } from "weeg-tabs";
+import { CompatTab, CompatTabGroup, WindowTabGroupFilter, PinnedTabGroupFilter, DomainTabGroupFilter, TabGroupFilter, StandardTabSorter } from "weeg-tabs";
 
 import { SupergroupTabGroupFilter } from "./SupergroupTabGroupFilter";
 import { ServiceRegistry } from "./ServiceRegistry";
@@ -37,6 +37,8 @@ export class TabQueryService {
   public static getInstance(): TabQueryService {
     return TabQueryService.INSTANCE;
   }
+
+  private readonly tabSorter = new StandardTabSorter();
 
   private constructor() {
     // Do nothing
@@ -57,7 +59,8 @@ export class TabQueryService {
       filters.push(new DomainTabGroupFilter(query.registrableDomain));
     }
     const compatTabGroup = new CompatTabGroup(... filters);
-    return compatTabGroup.getTabs();
+    const tabs = await compatTabGroup.getTabs();
+    return this.tabSorter.sortTabs(tabs);
   }
 }
 
