@@ -28,8 +28,8 @@ import { Uint32 } from 'weeg-types';
 import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 import { PageLoaderService } from '../../lib/PageLoaderService';
+import { NewTabPageService } from '../../lib/tabs/NewTabPageService';
 
-import { isNewTabPage } from '../../legacy-lib/modules/newtab';
 import { WebExtensionsBroadcastChannel } from '../../legacy-lib/modules/broadcasting';
 import { getActiveUserContext, setActiveUserContext } from '../../legacy-lib/modules/usercontext-state.js';
 
@@ -84,6 +84,7 @@ ExternalServiceProvider.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const tabSortingService = TabSortingService.getInstance<TabSortingService>();
 const utils = new BackgroundUtils();
+const newTabPageService = NewTabPageService.getInstance();
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
 
@@ -197,7 +198,7 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, browserTab*/) => {
   ],
 });
 
-browser.tabs.onUpdated.addListener((tabId, _changeInfo, browserTab) => {
+browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
   try {
     browserTab.id = tabId;
     if (browserTab.cookieStoreId == null || browserTab.url == null || browserTab.windowId == null) return;
@@ -206,10 +207,11 @@ browser.tabs.onUpdated.addListener((tabId, _changeInfo, browserTab) => {
     if (cookieStore.isPrivate) {
       return;
     }
+    const newTabPageUrl = await newTabPageService.getNewTabPageUrl();
     const userContextId = cookieStore.userContextId;
     const windowId = tab.windowId;
     const activeUserContextId = getActiveUserContext(tab.windowId);
-    if (configNewTabInContainerEnabled && isNewTabPage(tab.url) && 0 == userContextId && 0 != activeUserContextId) {
+    if (configNewTabInContainerEnabled && tab.url == newTabPageUrl && 0 == userContextId && 0 != activeUserContextId) {
       console.log('Reopening new tab in active user context: %d for window %d', activeUserContextId, tab.windowId);
       utils.reopenNewTabInContainer(tab.id, activeUserContextId, windowId).catch((e) => {
         console.error(e);
