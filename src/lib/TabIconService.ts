@@ -19,6 +19,8 @@
   @license
 **/
 
+import { ServiceRegistry } from "./ServiceRegistry";
+
 export class TabIconService {
   private static readonly MASKED_ICONS = new Map([
     ['chrome://global/skin/icons/settings.svg', '/img/firefox-icons/settings.svg'],
@@ -42,3 +44,5 @@ export class TabIconService {
     return TabIconService.MASKED_ICONS.get(iconUrl) || iconUrl;
   }
 }
+
+ServiceRegistry.getInstance().registerService('TabIconService', TabIconService.getInstance());
