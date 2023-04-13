@@ -22,10 +22,11 @@
 import browser from 'webextension-polyfill';
 import { EventSink } from "weeg-events";
 import { DisplayedContainer } from 'weeg-containers';
-import { CompatTabGroup, CookieStoreTabGroupFilter } from 'weeg-tabs';
 
+import { TabQueryService } from '../lib/TabQueryService';
 import { TabService } from '../lib/TabService';
 
+const tabQueryService = TabQueryService.getInstance();
 const tabService = TabService.getInstance();
 
 /**
@@ -88,8 +89,9 @@ export class PanoramaContainerElement extends HTMLElement {
     this._containerCloseButtonElement.classList.add('container-close');
     this._containerCloseButtonElement.title = browser.i18n.getMessage('tooltipContainerCloseAll');
     this._containerCloseButtonElement.addEventListener('click', async () => {
-      const tabQuery = new CompatTabGroup(new CookieStoreTabGroupFilter(this._cookieStoreId));
-      const tabs = await tabQuery.getTabs();
+      const tabs = await tabQueryService.queryTabs({
+        tabGroupId: this._cookieStoreId,
+      });
       await tabService.closeTabs(tabs);
     });
 

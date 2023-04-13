@@ -21,20 +21,23 @@
 
 import browser from "webextension-polyfill";
 import { EventSink } from "weeg-events";
-import { CompatTabGroup, DomainTabGroupFilter } from 'weeg-tabs';
 import { HostnameService } from "weeg-domains";
+
+import { TabQueryService } from "../../../lib/TabQueryService";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
-import { Tab } from "../../../legacy-lib/tabs";
 import { MenulistSiteElement } from "../../../components/menulist-site";
+
+import { Tab } from "../../../legacy-lib/tabs";
 
 export class SitesFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onSiteClicked = new EventSink<string>();
 
   private _siteCount = 0;
   private readonly _hostnameService = HostnameService.getInstance();
+  private readonly _tabQueryService = TabQueryService.getInstance();
 
   public getFragmentId(): string {
     return 'fragment-sites';
@@ -87,8 +90,9 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
       siteElement.onSiteCloseClicked.addListener(async () => {
         const siteDomain = domain;
         try {
-          const tabGroup = new CompatTabGroup(new DomainTabGroupFilter(siteDomain));
-          const tabs = await tabGroup.getTabs();
+          const tabs = await this._tabQueryService.queryTabs({
+            registrableDomain: siteDomain,
+          });
           const tabIds = tabs.map((tab) => tab.id);
           console.info(`Closing ${tabIds.length} tabs for ${siteDomain}...`);
           browser.tabs.remove(tabIds).catch((e) => {

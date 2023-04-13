@@ -22,20 +22,21 @@
 import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
 import { DisplayedContainer } from 'weeg-containers';
-import { CompatTab, CompatTabGroup, CookieStoreTabGroupFilter } from 'weeg-tabs';
+import { CompatTab } from 'weeg-tabs';
 
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
+import { ViewRefreshHandler } from '../../lib/rendering/ViewRefreshHandler';
+import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
+import { TabQueryService } from '../../lib/TabQueryService';
 
 import { PanoramaStateStore } from "./PanoramaStateStore";
 
 import { Tab } from "../../legacy-lib/tabs";
 import { IndexTab } from "../../legacy-lib/modules/IndexTab";
 import * as i18n from '../../legacy-lib/modules/i18n';
-import { ViewRefreshHandler } from '../../lib/rendering/ViewRefreshHandler';
-import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
 
 import { PanoramaTabElement } from "../../components/panorama-tab";
 import { PanoramaContainerElement } from "../../components/panorama-container";
@@ -51,6 +52,7 @@ const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const displayedContainerService = DisplayedContainerService.getInstance();
+const tabQueryService = TabQueryService.getInstance();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -155,8 +157,9 @@ const renderContainer = async (displayedContainer: DisplayedContainer, isPrivate
   const cookieStore = displayedContainer.cookieStore;
   const containerElement = new PanoramaContainerElement(displayedContainer);
   containerElement.targetId = cookieStore.id;
-  const compatTabGroup = new CompatTabGroup(new CookieStoreTabGroupFilter(cookieStore.id));
-  const tabs = (await compatTabGroup.getTabs()).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
+  const tabs = (await tabQueryService.queryTabs({
+    tabGroupId: cookieStore.id,
+  })).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
   containerElement.tabCount = tabs.length;
   containerElement.containerTabsElement.append(...tabs.map((tab) => {
     const tabElement = renderTab(tab);

@@ -21,10 +21,11 @@
 
 import browser from 'webextension-polyfill';
 import { ContextualIdentity } from 'weeg-containers';
-import { CompatTabGroup, CookieStoreTabGroupFilter } from 'weeg-tabs';
 
+import { TabQueryService } from '../../lib/TabQueryService';
 import { TabService } from '../../lib/TabService';
 
+const tabQueryService = TabQueryService.getInstance();
 const tabService = TabService.getInstance();
 
 browser.contextualIdentities.onRemoved.addListener(async ({contextualIdentity: browserContextualIdentity}) => {
@@ -33,8 +34,9 @@ browser.contextualIdentities.onRemoved.addListener(async ({contextualIdentity: b
     const cookieStoreId = contextualIdentity.cookieStore.id;
     const name = contextualIdentity.name;
     console.info('contextualIdentity %s (%s) removed', name, cookieStoreId);
-    const compatTabGroup = new CompatTabGroup(new CookieStoreTabGroupFilter(cookieStoreId));
-    const tabs = await compatTabGroup.getTabs();
+    const tabs = await tabQueryService.queryTabs({
+      tabGroupId: cookieStoreId,
+    });
     if (tabs.length > 0) {
       await tabService.closeTabs(tabs);
       console.info('closed %d tabs in %s (%s)', tabs.length, name, cookieStoreId);

@@ -21,11 +21,12 @@
 
 import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
-import { CompatTab, CompatTabGroup, CookieStoreTabGroupFilter, WindowTabGroupFilter } from 'weeg-tabs';
+import { CompatTab } from 'weeg-tabs';
+
+import { TabQueryService } from '../../lib/TabQueryService';
 
 import * as containers from '../../legacy-lib/modules/containers';
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';
-
 import { WindowUserContextList } from '../../legacy-lib/tabGroups';
 
 import { config } from '../../config/config';
@@ -35,6 +36,7 @@ import { InitialWindowsService } from './InitialWindowsService';
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const initialWindowsService = InitialWindowsService.getInstance();
 const indexTabUserContextMap = new Map<number, Uint32.Uint32>();
+const tabQueryService = TabQueryService.getInstance();
 
 const handleClosedIndexTab = async (tabId: number, windowId: number) => {
   const indexTabUserContextId = indexTabUserContextMap.get(tabId);
@@ -136,8 +138,10 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, browserTab) => {
 
   const indexTabOption = await config['tab.groups.indexOption'].getValue();
   if (indexTabOption != 'always') return;
-  const compatTabGroup = new CompatTabGroup(new CookieStoreTabGroupFilter(tab.cookieStore.id), new WindowTabGroupFilter(tab.windowId));
-  compatTabGroup.getTabs().then((tabs) => {
+  tabQueryService.queryTabs({
+    tabGroupId: tab.cookieStore.id,
+    windowId: tab.windowId,
+  }).then((tabs) => {
     let hasIndexTab = false;
     for (const tab of tabs) {
       if (IndexTab.isIndexTabUrl(tab.url)) {

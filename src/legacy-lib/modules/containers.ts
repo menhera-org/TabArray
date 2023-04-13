@@ -20,13 +20,15 @@
 import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
 import { CookieStore } from 'weeg-containers';
-import { CompatTab, CompatTabGroup, PinnedTabGroupFilter, WindowTabGroupFilter, CookieStoreTabGroupFilter } from 'weeg-tabs';
+import { CompatTab } from 'weeg-tabs';
 
+import { TabQueryService } from '../../lib/TabQueryService';
 import { TabService } from '../../lib/TabService';
 
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { WindowService } from '../tabs/WindowService';
 
+const tabQueryService = TabQueryService.getInstance();
 const tabService = TabService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const windowService = WindowService.getInstance();
@@ -41,8 +43,11 @@ export const closeAllTabsOnWindow = async (aUserContextId: Uint32.Uint32, aWindo
   });
   const isPrivate = await windowService.isPrivateWindow(aWindowId);
   const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : cookieStore.id;
-  const compatTabGroup = new CompatTabGroup(new CookieStoreTabGroupFilter(cookieStoreId), new WindowTabGroupFilter(aWindowId), new PinnedTabGroupFilter(false));
-  const tabs = await compatTabGroup.getTabs();
+  const tabs = await tabQueryService.queryTabs({
+    tabGroupId: cookieStoreId,
+    windowId: aWindowId,
+    pinned: false,
+  });
   if (tabs.length > 0) {
     await tabService.closeTabs(tabs);
   }
