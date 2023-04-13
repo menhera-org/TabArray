@@ -21,15 +21,17 @@
 
 import { diffArrays } from 'diff';
 import browser from 'webextension-polyfill';
-import { MessagingService } from 'weeg-utils';
+import { MessagingService, BackgroundService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 
 import { TabSortingProvider } from '../../lib/tabGroups/TabSortingProvider';
-import { getWindowIds } from '../../legacy-lib/modules/windows';
+import { TagService } from '../../lib/tabGroups/TagService';
+
 import { config } from '../../config/config';
 
 const tabSortingProvider = new TabSortingProvider();
 const messagingService = MessagingService.getInstance();
+const tagService = TagService.getInstance();
 
 let tabSorting = false;
 
@@ -81,55 +83,58 @@ const sortTabsByWindow = async (windowId: number) => {
   }
 };
 
-const sortTabs = async () => {
-  const enabled = await config['tab.sorting.enabled'].getValue();
-  if (!enabled) return;
-  if (tabSorting) {
-    console.debug('Tab sorting is already in progress.');
-    return;
+export class TabSortingService extends BackgroundService<void, void> {
+  public override getServiceName(): string {
+    return 'TabSortingService';
   }
-  tabSorting = true;
-  const startTime = Date.now();
-  messagingService.sendMessageAndIgnoreResponse('tab-sorting-started', { startTime });
-  const promises: Promise<void>[] = [];
-  let success = false;
-  try {
-    for (const windowId of await getWindowIds()) {
-      promises.push(sortTabsByWindow(windowId));
+
+  protected override initializeBackground(): void {
+    // only executed in background page.
+    tabSortingProvider.onChanged.addListener(() => this.sortTabs());
+    tagService.onChanged.addListener(() => this.sortTabs());
+  }
+
+  private async getWindowIds(): Promise<number[]> {
+    const browserWindows = await browser.windows.getAll({windowTypes: ['normal']});
+    return browserWindows.filter((browserWindow) => browserWindow.id != null).map((browserWindow) => browserWindow.id as number);
+  }
+
+  protected override async execute(): Promise<void> {
+    const enabled = await config['tab.sorting.enabled'].getValue();
+    if (!enabled) return;
+    if (tabSorting) {
+      console.debug('Tab sorting is already in progress.');
+      return;
     }
-    await Promise.all(promises);
-    success = true;
-  } catch (e) {
-    console.error(e);
-  } finally {
-    const endTime = Date.now();
-    const sortingDuration = endTime - startTime;
-    if (success) {
-      if (sortingDuration > 500) {
-        console.info('Tab sorting took %d ms', sortingDuration);
+    tabSorting = true;
+    const startTime = Date.now();
+    messagingService.sendMessageAndIgnoreResponse('tab-sorting-started', { startTime });
+    const promises: Promise<void>[] = [];
+    let success = false;
+    try {
+      for (const windowId of await this.getWindowIds()) {
+        promises.push(sortTabsByWindow(windowId));
       }
-    } else {
-      console.error('Tab sorting failed in %d ms', sortingDuration);
+      await Promise.all(promises);
+      success = true;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      const endTime = Date.now();
+      const sortingDuration = endTime - startTime;
+      if (success) {
+        if (sortingDuration > 500) {
+          console.info('Tab sorting took %d ms', sortingDuration);
+        }
+      } else {
+        console.error('Tab sorting failed in %d ms', sortingDuration);
+      }
+      messagingService.sendMessageAndIgnoreResponse('tab-sorting-ended', { endTime });
+      tabSorting = false;
     }
-    messagingService.sendMessageAndIgnoreResponse('tab-sorting-ended', { endTime });
-    tabSorting = false;
-  }
-};
-
-tabSortingProvider.onChanged.addListener(sortTabs);
-
-export class TabSortingService {
-  private static readonly INSTANCE = new TabSortingService();
-
-  public static getInstance(): TabSortingService {
-    return TabSortingService.INSTANCE;
-  }
-
-  private constructor() {
-    // nothing.
   }
 
   public async sortTabs() {
-    await sortTabs();
+    await this.call();
   }
 }

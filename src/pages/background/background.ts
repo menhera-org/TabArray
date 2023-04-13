@@ -77,7 +77,7 @@ const TAB_SORTING_INTERVAL = 10000;
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 ExternalServiceProvider.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
-const tabSortingService = TabSortingService.getInstance();
+const tabSortingService = TabSortingService.getInstance<TabSortingService>();
 const utils = new BackgroundUtils();
 
 const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
