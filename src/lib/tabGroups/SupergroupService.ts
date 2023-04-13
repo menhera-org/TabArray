@@ -25,14 +25,16 @@ import { ServiceRegistry } from "../ServiceRegistry";
 import { ContextualIdentityService } from "./ContextualIdentityService";
 import { TabGroupDirectory } from "./TabGroupDirectory";
 import { UserContextVisibilityService } from "../../legacy-lib/userContexts/UserContextVisibilityService";
-import * as containers from '../../legacy-lib/modules/containers';
-import { OriginAttributes, TabGroup } from "../../legacy-lib/tabGroups";
 import { TemporaryContainerService } from "./TemporaryContainerService";
+import { TabService } from "../TabService";
+import { TabQueryService } from "../TabQueryService";
 
 const tabGroupDirectory = new TabGroupDirectory();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
+const tabService = TabService.getInstance();
+const tabQueryService = TabQueryService.getInstance();
 
 export class SupergroupService {
   private static readonly INSTANCE = new SupergroupService();
@@ -70,25 +72,20 @@ export class SupergroupService {
   }
 
   public async closeUnpinnedSupergroupTabsOnWindow(tabGroupId: string, windowId: number): Promise<void> {
-    const childContainers = await tabGroupDirectory.getChildContainers(tabGroupId);
-    const promises: Promise<void>[] = [];
-    for (const childContainer of childContainers) {
-      const cookieStore = new CookieStore(childContainer);
-      promises.push(containers.closeAllTabsOnWindow(cookieStore.userContextId, windowId).catch(() => {
-        // ignore (errors for private windows)
-      }));
-    }
-    await Promise.all(promises);
+    const tabs = await tabQueryService.queryTabs({
+      windowId,
+      tabGroupId,
+      pinned: false,
+    });
+    await tabService.closeTabs(tabs);
   }
 
   public async closeUnpinnedSupergroupTabs(tabGroupId: string): Promise<void> {
-    const childContainers = await tabGroupDirectory.getChildContainers(tabGroupId);
-    const promises: Promise<void>[] = [];
-    for (const childContainer of childContainers) {
-      const originAttributes = OriginAttributes.fromCookieStoreId(childContainer);
-      promises.push(TabGroup.createTabGroup(originAttributes).then((tabGroup) => tabGroup.tabList.closeUnpinnedTabs()));
-    }
-    await Promise.all(promises);
+    const tabs = await tabQueryService.queryTabs({
+      tabGroupId,
+      pinned: false,
+    });
+    await tabService.closeTabs(tabs);
   }
 
   /**
