@@ -21,9 +21,9 @@
 
 import browser from 'webextension-polyfill';
 import { EventSink } from "weeg-events";
-
-import { UserContext } from "../legacy-lib/tabGroups";
 import { Uint32 } from "weeg-types";
+import { DisplayedContainer } from 'weeg-containers';
+
 import { LanguageSettings } from '../overrides/LanguageSettings';
 import { UserAgentSettings, UserAgentPreset } from '../overrides/UserAgentSettings';
 import { config } from '../config/config';
@@ -33,7 +33,7 @@ export class ContainerOverridesElement extends HTMLElement {
   private readonly _userAgentSettings = UserAgentSettings.getInstance();
   public readonly onChanged = new EventSink<Uint32.Uint32[]>();
 
-  public constructor(userContexts: UserContext[]) {
+  public constructor(displayedContainers: DisplayedContainer[]) {
     super();
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
@@ -72,7 +72,7 @@ export class ContainerOverridesElement extends HTMLElement {
     containersElement.id = 'containers';
     containersWrapperElement.appendChild(containersElement);
 
-    this.setUserContexts(userContexts);
+    this.setDisplayedContainers(displayedContainers);
   }
 
   private get containersElement(): HTMLDivElement {
@@ -83,8 +83,8 @@ export class ContainerOverridesElement extends HTMLElement {
     return element as HTMLDivElement;
   }
 
-  private createLanguageOptionsElement(userContext: UserContext): HTMLInputElement {
-    const cookieStoreId = userContext.cookieStoreId;
+  private createLanguageOptionsElement(displayedContainer: DisplayedContainer): HTMLInputElement {
+    const cookieStoreId = displayedContainer.cookieStore.id;
     const languages = this._languageSettings.getLanguages(cookieStoreId);
     const input = document.createElement('input');
     input.classList.add('languages');
@@ -103,8 +103,7 @@ export class ContainerOverridesElement extends HTMLElement {
     return input;
   }
 
-  private setUserAgentOptions(userContext: UserContext, select: HTMLSelectElement, input: HTMLInputElement, preset: UserAgentPreset, userAgent?: string) {
-    const originAttributes = userContext.toOriginAttributes();
+  private setUserAgentOptions(displayedContainer: DisplayedContainer, select: HTMLSelectElement, input: HTMLInputElement, preset: UserAgentPreset, userAgent?: string) {
     select.value = preset;
     if (preset === 'custom') {
       input.readOnly = false;
@@ -112,19 +111,18 @@ export class ContainerOverridesElement extends HTMLElement {
       // this._languageSettings.setUserAgent(originAttributes, userAgent);
     } else {
       input.readOnly = true;
-      input.value = this._userAgentSettings.getUserAgent(originAttributes.cookieStoreId) || navigator.userAgent;
+      input.value = this._userAgentSettings.getUserAgent(displayedContainer.cookieStore.id) || navigator.userAgent;
     }
   }
 
-  private handleUserAgentChange(userContext: UserContext, select: HTMLSelectElement, input: HTMLInputElement) {
+  private handleUserAgentChange(displayedContainer: DisplayedContainer, select: HTMLSelectElement, input: HTMLInputElement) {
     const preset = select.value;
     const userAgent = input.value.trim();
-    this.setUserAgentOptions(userContext, select, input, preset as UserAgentPreset, userAgent);
-    const originAttributes = userContext.toOriginAttributes();
-    this._userAgentSettings.setUserAgent(originAttributes.cookieStoreId, preset as UserAgentPreset, userAgent || undefined);
+    this.setUserAgentOptions(displayedContainer, select, input, preset as UserAgentPreset, userAgent);
+    this._userAgentSettings.setUserAgent(displayedContainer.cookieStore.id, preset as UserAgentPreset, userAgent || undefined);
   }
 
-  private createUserAgentSelectElement(userContext: UserContext, input: HTMLInputElement): HTMLSelectElement {
+  private createUserAgentSelectElement(displayedContainer: DisplayedContainer, input: HTMLInputElement): HTMLSelectElement {
     const select = document.createElement('select');
     select.classList.add('user-agent-select');
     select.classList.add('browser-style');
@@ -141,33 +139,32 @@ export class ContainerOverridesElement extends HTMLElement {
       select.appendChild(option);
     }
     select.addEventListener('change', () => {
-      this.handleUserAgentChange(userContext, select, input);
+      this.handleUserAgentChange(displayedContainer, select, input);
     });
     return select;
   }
 
-  private createUserAgentOptionsElement(userContext: UserContext): HTMLDivElement {
-    const originAttributes = userContext.toOriginAttributes();
-    const initialParams = this._userAgentSettings.getUserAgentParams(originAttributes.cookieStoreId);
+  private createUserAgentOptionsElement(displayedContainer: DisplayedContainer): HTMLDivElement {
+    const initialParams = this._userAgentSettings.getUserAgentParams(displayedContainer.cookieStore.id);
     const element = document.createElement('div');
     element.classList.add('user-agent');
 
     const input = document.createElement('input');
 
-    const select = this.createUserAgentSelectElement(userContext, input);
+    const select = this.createUserAgentSelectElement(displayedContainer, input);
     element.appendChild(select);
 
     input.classList.add('user-agent-custom');
     input.type = 'text';
     input.placeholder = navigator.userAgent;
     input.addEventListener('change', () => {
-      this.handleUserAgentChange(userContext, select, input);
+      this.handleUserAgentChange(displayedContainer, select, input);
     });
     this._userAgentSettings.onChanged.addListener(() => {
-      const {preset, userAgent} = this._userAgentSettings.getUserAgentParams(originAttributes.cookieStoreId);
-      this.setUserAgentOptions(userContext, select, input, preset, userAgent);
+      const {preset, userAgent} = this._userAgentSettings.getUserAgentParams(displayedContainer.cookieStore.id);
+      this.setUserAgentOptions(displayedContainer, select, input, preset, userAgent);
     });
-    this.setUserAgentOptions(userContext, select, input, initialParams.preset, initialParams.userAgent);
+    this.setUserAgentOptions(displayedContainer, select, input, initialParams.preset, initialParams.userAgent);
     element.appendChild(input);
 
     config['feature.uaOverrides'].observe((enabled) => {
@@ -177,36 +174,35 @@ export class ContainerOverridesElement extends HTMLElement {
     return element;
   }
 
-  private renderUserContext(userContext: UserContext): HTMLDivElement {
+  private renderDisplayedContainer(displayedContainer: DisplayedContainer): HTMLDivElement {
     const element = document.createElement('div');
     element.classList.add('container');
-    element.dataset.userContextId = userContext.id.toString();
 
     const iconElement = document.createElement('div');
     iconElement.classList.add('icon');
-    iconElement.style.mask = `url(${userContext.iconUrl}) center center / 75% no-repeat`;
-    iconElement.style.backgroundColor = userContext.colorCode;
+    iconElement.style.mask = `url(${displayedContainer.iconUrl}) center center / 75% no-repeat`;
+    iconElement.style.backgroundColor = displayedContainer.colorCode;
     element.appendChild(iconElement);
 
     const nameElement = document.createElement('div');
     nameElement.classList.add('name');
-    nameElement.textContent = userContext.name;
+    nameElement.textContent = displayedContainer.name;
     element.appendChild(nameElement);
 
-    const languageOptions = this.createLanguageOptionsElement(userContext);
+    const languageOptions = this.createLanguageOptionsElement(displayedContainer);
     element.appendChild(languageOptions);
 
-    const userAgentOptions = this.createUserAgentOptionsElement(userContext);
+    const userAgentOptions = this.createUserAgentOptionsElement(displayedContainer);
     element.appendChild(userAgentOptions);
 
     return element;
   }
 
-  public setUserContexts(userContexts: UserContext[]) {
+  public setDisplayedContainers(displayedContainers: DisplayedContainer[]) {
     const containersElement = this.containersElement;
     containersElement.textContent = '';
-    for (const userContext of userContexts) {
-      containersElement.appendChild(this.renderUserContext(userContext));
+    for (const userContext of displayedContainers) {
+      containersElement.appendChild(this.renderDisplayedContainer(userContext));
     }
   }
 }

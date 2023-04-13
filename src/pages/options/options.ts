@@ -18,21 +18,27 @@
 */
 
 import browser from 'webextension-polyfill';
-import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../../config/config';
+
 import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
-import { UserContext } from '../../legacy-lib/tabGroups';
-import { UserContextService } from '../../legacy-lib/userContexts/UserContextService';
-import { ContainerOverridesElement } from '../../components/container-overrides';
-import './options-i18n';
-import { TabGroupSorterElement } from '../../components/tab-group-sorter';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
+import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
+import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
+
+import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../../config/config';
+
+import { ContainerOverridesElement } from '../../components/container-overrides';
+import { TabGroupSorterElement } from '../../components/tab-group-sorter';
+
+import './options-i18n';
 
 interface HTMLFormInput extends HTMLElement {
   value: string;
 }
 
 const tabGroupDirectory = new TabGroupDirectory();
-const userContextService = UserContextService.getInstance();
+const displayedContainerService = DisplayedContainerService.getInstance();
+const contextualIdentityService = ContextualIdentityService.getInstance();
+const contextualIdentityFactory = contextualIdentityService.getFactory();
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
@@ -97,28 +103,28 @@ const selectAutoDiscardMinAge = document.querySelector<HTMLSelectElement>('#sele
 const tabGroupSorter = new TabGroupSorterElement();
 paneContainers?.appendChild(tabGroupSorter);
 
-UserContext.getAll().then(async (userContexts) => {
+displayedContainerService.getDisplayedContainersByPrivateBrowsing(false).then(async (displayedContainers) => {
   const snapshot = await tabGroupDirectory.getSnapshot();
-  const sortedUserContext = userContexts.map((userContext) => userContextService.fillDefaultValues(userContext)).sort((a, b) => {
-    return snapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+  const sortedContainers = [... displayedContainers].sort((a, b) => {
+    return snapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
   });
 
-  const containerOverrides = new ContainerOverridesElement(sortedUserContext);
+  const containerOverrides = new ContainerOverridesElement(sortedContainers);
   paneContainerOverrides?.appendChild(containerOverrides);
 
   const callback = async () => {
-    const userContexts = (await UserContext.getAll()).map((userContext) => userContextService.fillDefaultValues(userContext));
+    const displayedContainers = await displayedContainerService.getDisplayedContainersByPrivateBrowsing(false);
     const snapshot = await tabGroupDirectory.getSnapshot();
-    const sortedUserContexts = [... userContexts].sort((a, b) => {
-      return snapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+    const sortedContainers = [... displayedContainers].sort((a, b) => {
+      return snapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
-    containerOverrides.setUserContexts(sortedUserContexts);
+    containerOverrides.setDisplayedContainers(sortedContainers);
   };
 
   tabGroupDirectory.onChanged.addListener(callback);
-  UserContext.onCreated.addListener(callback);
-  UserContext.onRemoved.addListener(callback);
-  UserContext.onUpdated.addListener(callback);
+  contextualIdentityFactory.onCreated.addListener(callback);
+  contextualIdentityFactory.onRemoved.addListener(callback);
+  contextualIdentityFactory.onUpdated.addListener(callback);
 });
 
 // tab.sorting.enabled setting
