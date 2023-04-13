@@ -22,7 +22,9 @@
 import browser from 'webextension-polyfill';
 import { CookieStore } from 'weeg-containers';
 import { BackgroundService } from 'weeg-utils';
+import { CompatTab } from 'weeg-tabs';
 
+import { TagService } from './TagService';
 import { ServiceRegistry } from '../ServiceRegistry';
 
 type TabOpenActionType = {
@@ -30,7 +32,10 @@ type TabOpenActionType = {
   cookieStoreId: string;
   active: boolean;
   windowId?: number;
+  tagId?: number;
 };
+
+const tagService = TagService.getInstance();
 
 const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number, active: boolean) => {
   const browserTab = await browser.tabs.create({
@@ -89,7 +94,7 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
   }
 };
 
-const openNewTabInContainer = async (cookieStoreId: string, active: boolean, windowId?: number) => {
+const openNewTabInContainer = async (cookieStoreId: string, active: boolean, windowId?: number, tagId?: number) => {
   try {
     console.debug('open_new_tab_in_container: cookieStoreId=%s', cookieStoreId);
     const cookieStore = new CookieStore(cookieStoreId);
@@ -104,6 +109,10 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
         windowId: browserWindow.id,
         active,
       });
+      const tab = new CompatTab(browserTab);
+      if (tagId) {
+        await tagService.setTagIdForTab(tab, tagId);
+      }
       if (active) {
         await browser.windows.update(browserWindow.id, {
           focused: true,
@@ -116,11 +125,16 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
       incognito: new CookieStore(cookieStoreId).isPrivate,
       focused: active,
     });
-    const openedBrowserTabs = await browser.tabs.query({windowId: openedBrowserWindow.id});
+    const openedBrowserTabs = await browser.tabs.query({ windowId: openedBrowserWindow.id });
     if (openedBrowserTabs.length === 0) {
       return browser.tabs.TAB_ID_NONE;
     }
-    const openedTabId = openedBrowserTabs[openedBrowserTabs.length - 1]?.id ?? browser.tabs.TAB_ID_NONE;
+    const openedBrowserTab = openedBrowserTabs[openedBrowserTabs.length - 1] as browser.Tabs.Tab;
+    const openedTab = new CompatTab(openedBrowserTab);
+    if (tagId) {
+      await tagService.setTagIdForTab(openedTab, tagId);
+    }
+    const openedTabId = openedBrowserTab.id ?? browser.tabs.TAB_ID_NONE;
     return openedTabId;
   } catch (e) {
     console.warn(e);
@@ -139,7 +153,7 @@ export class ContainerTabOpenerService extends BackgroundService<TabOpenActionTy
 
   protected override execute(input: TabOpenActionType): Promise<number> {
     if (input.tabId == null) {
-      return openNewTabInContainer(input.cookieStoreId, input.active, input.windowId);
+      return openNewTabInContainer(input.cookieStoreId, input.active, input.windowId, input.tagId);
     }
     return reopenTabInContainer(input.tabId, input.cookieStoreId, input.active);
   }
@@ -148,8 +162,8 @@ export class ContainerTabOpenerService extends BackgroundService<TabOpenActionTy
     return this.call({ tabId, cookieStoreId, active });
   }
 
-  public async openNewTabInContainer(cookieStoreId: string, active: boolean, windowId?: number): Promise<number> {
-    return this.call({ cookieStoreId, active, windowId });
+  public async openNewTabInContainer(cookieStoreId: string, active: boolean, windowId?: number, tagId?: number): Promise<number> {
+    return this.call({ cookieStoreId, active, windowId, tagId });
   }
 }
 
