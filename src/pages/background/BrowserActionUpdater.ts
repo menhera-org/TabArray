@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 
 import { InitialWindowsService } from './InitialWindowsService';
-import { DarkThemeMonitor } from '../../legacy-lib/extension/DarkThemeMonitor';
+import { DarkThemeMonitor } from '../../legacy-lib/themes/DarkThemeMonitor';
 
 import { config } from '../../config/config';
 import { POPUP_PAGE } from '../../defs';
