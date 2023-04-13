@@ -1,10 +1,6 @@
-// -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=2 sw=2 et ai :
-
-import { Uint32 } from "weeg-types";
-import { UserContext } from "./UserContext";
-
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -20,7 +16,12 @@ import { UserContext } from "./UserContext";
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
+
+import { Uint32 } from "weeg-types";
+
+import { UserContext } from "./UserContext";
 
 export class DefinedUserContextList {
   public static async create(isPrivateBrowsing: boolean): Promise<DefinedUserContextList> {

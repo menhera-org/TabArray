@@ -1,5 +1,6 @@
-// vim: ts=2 sw=2 et ai
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -15,7 +16,8 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
 export const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
 export const PRIVACY_POLICY_PAGE = 'https://menhera-org.github.io/TabArray/PRIVACY_POLICY.html';
