@@ -101,12 +101,6 @@ export class PopupRenderer {
     });
   }
 
-  public renderContainerForWindow(windowId: number, userContext: UserContext = UserContext.DEFAULT, isPrivate = false): MenulistContainerElement {
-    const element = this.renderPartialContainerElement(userContext, isPrivate);
-    this.defineContainerCloseListenerForWindow(element, windowId, userContext);
-    return element;
-  }
-
   public renderContainerForFirstPartyDomain(domain: string, userContext: UserContext = UserContext.DEFAULT, isPrivateBrowsing = false): MenulistContainerElement {
     const element = this.renderPartialContainerElement(userContext, isPrivateBrowsing);
     const cookieStoreId = isPrivateBrowsing ? CookieStore.PRIVATE.id : userContext.cookieStoreId;
