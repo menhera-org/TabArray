@@ -21,18 +21,11 @@
 
 import browser from 'webextension-polyfill';
 import { RegistrableDomainService } from 'weeg-domains';
-import { OriginAttributes } from '../tabGroups';
 import { HostnameService } from 'weeg-domains';
 
 export class CookieProvider {
   private readonly _registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
   private readonly _hostnameService = HostnameService.getInstance();
-
-  private validateOriginAttributes(originAttributes: OriginAttributes): void {
-    if (!originAttributes.hasCookieStoreId()) {
-      throw new Error('OriginAttributes must have a cookieStoreId');
-    }
-  }
 
   private getDomainsForCookies(cookies: browser.Cookies.Cookie[]): string[] {
     const domains: Set<string> = new Set;
@@ -62,20 +55,6 @@ export class CookieProvider {
     return await this._registrableDomainService.getUniqueRegistrableDomains(domains.map((domain) => `http://${domain}`));
   }
 
-  private async getCookiesForOriginAttributes(originAttributes: OriginAttributes): Promise<browser.Cookies.Cookie[]> {
-    this.validateOriginAttributes(originAttributes);
-    const domain = originAttributes.hasFirstpartyDomain() ? originAttributes.firstpartyDomain : undefined;
-    const cookieStoreId = originAttributes.cookieStoreId;
-    const partitionKey = {};
-    const firstPartyDomain = null;
-    return await browser.cookies.getAll({
-      domain,
-      firstPartyDomain,
-      storeId: cookieStoreId,
-      partitionKey,
-    });
-  }
-
   public async getFirstPartyDomainsForCookieStoreId(cookieStoreId: string): Promise<string[]> {
     const partitionKey = {};
     const cookies = await browser.cookies.getAll({
@@ -90,30 +69,8 @@ export class CookieProvider {
     return this._hostnameService.sortDomains(domains);
   }
 
-  private async getCookieDomainsForOriginAttributes(originAttributes: OriginAttributes): Promise<string[]> {
-    const cookies = await this.getCookiesForOriginAttributes(originAttributes);
-    return this.getDomainsForCookies(cookies);
-  }
-
   public async removeDataForDomain(cookieStoreId: string, domain: string): Promise<void> {
     const hostnames = [domain];
-    await browser.browsingData.remove({
-      hostnames,
-      originTypes: {
-        unprotectedWeb: true,
-      },
-      cookieStoreId,
-    }, {
-      cookies: true,
-      localStorage: true,
-      indexedDB: true,
-    });
-  }
-
-  public async removeDataForOriginAttributes(originAttributes: OriginAttributes): Promise<void> {
-    this.validateOriginAttributes(originAttributes);
-    const hostnames = await this.getCookieDomainsForOriginAttributes(originAttributes);
-    const cookieStoreId = originAttributes.cookieStoreId;
     await browser.browsingData.remove({
       hostnames,
       originTypes: {
