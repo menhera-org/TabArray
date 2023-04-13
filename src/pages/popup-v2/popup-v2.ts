@@ -21,6 +21,11 @@
 
 import browser from "webextension-polyfill";
 import { MessagingService } from "weeg-utils";
+import { ViewRefreshHandler } from "weeg-utils";
+
+import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
+import { TabGroupDirectory } from "../../lib/tabGroups/TabGroupDirectory";
+import { ExternalServiceProvider } from "../../lib/ExternalServiceProvider";
 
 import "../../components/ctg/ctg-vertical-layout";
 import "../../components/ctg/ctg-drawer";
@@ -44,12 +49,9 @@ import { HelpFragmentBuilder } from "./fragments/HelpFragmentBuilder";
 import { ContainerDetailsFragmentBuilder } from "./fragments/ContainerDetailsFragmentBuilder";
 import { SiteDetailsFragmentBuilder } from "./fragments/SiteDetailsFragmentBuilder";
 
-import { ViewRefreshHandler } from "../../lib/rendering/ViewRefreshHandler";
 import { BrowserStateSnapshot } from "../../legacy-lib/tabs/BrowserStateSnapshot";
+
 import { config, privacyConfig } from '../../config/config';
-import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
-import { TabGroupDirectory } from "../../lib/tabGroups/TabGroupDirectory";
-import { ExternalServiceProvider } from "../../lib/ExternalServiceProvider";
 
 import { PopupRendererService } from "./PopupRendererService";
 import { PopupFocusHandlers } from "./PopupFocusHandlers";

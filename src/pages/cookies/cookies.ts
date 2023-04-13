@@ -21,13 +21,13 @@
 
 import browser from 'webextension-polyfill';
 import { CookieStore } from 'weeg-containers';
+import { ViewRefreshHandler } from 'weeg-utils';
 
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
 
 import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorageStatistics';
-import { ViewRefreshHandler } from '../../lib/rendering/ViewRefreshHandler';
 
 const contentStorageStatistics = new ContentStorageStatistics();
 const cookieProvider = contentStorageStatistics.cookieProvider;

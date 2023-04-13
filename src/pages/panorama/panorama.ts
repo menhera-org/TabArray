@@ -23,12 +23,12 @@ import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
 import { DisplayedContainer } from 'weeg-containers';
 import { CompatTab } from 'weeg-tabs';
+import { ViewRefreshHandler } from 'weeg-utils';
 
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
-import { ViewRefreshHandler } from '../../lib/rendering/ViewRefreshHandler';
 import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
 import { TabQueryService } from '../../lib/TabQueryService';
 
