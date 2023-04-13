@@ -38,6 +38,7 @@ export class PageLoaderService extends BackgroundService<string, void> {
   }
 
   protected override async execute(url: string): Promise<void> {
+    url = new URL(url, location.href).href;
     const browserTabs = await browser.tabs.query({ url });
     if (browserTabs.length === 0) {
       await browser.tabs.create({ url });
