@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
 import { CompatTab } from 'weeg-tabs';
 
-import { TabQueryService } from '../../lib/TabQueryService';
+import { TabQueryService } from '../../lib/tabs/TabQueryService';
 
 import * as containers from '../../legacy-lib/modules/containers';
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';

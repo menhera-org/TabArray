@@ -24,8 +24,9 @@ import browser from 'webextension-polyfill';
 import { MessagingService, BackgroundService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 
-import { TabSortingProvider } from '../../lib/tabGroups/TabSortingProvider';
-import { TagService } from '../../lib/tabGroups/TagService';
+import { ServiceRegistry } from '../ServiceRegistry';
+import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
+import { TagService } from '../tabGroups/TagService';
 
 import { config } from '../../config/config';
 
@@ -33,6 +34,7 @@ const tabSortingProvider = new TabSortingProvider();
 const messagingService = MessagingService.getInstance();
 const tagService = TagService.getInstance();
 
+// the fact that this value is not preserved long-term in nonpersistent background page is not a problem.
 let tabSorting = false;
 
 // https://qiita.com/piroor/items/5e338ec2799dc1d75e6f
@@ -138,3 +140,5 @@ export class TabSortingService extends BackgroundService<void, void> {
     await this.call();
   }
 }
+
+ServiceRegistry.getInstance().registerService('TabSortingService', TabSortingService.getInstance<TabSortingService>());

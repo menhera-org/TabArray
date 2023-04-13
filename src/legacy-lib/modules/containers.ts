@@ -22,8 +22,8 @@ import { Uint32 } from "weeg-types";
 import { CookieStore } from 'weeg-containers';
 import { CompatTab } from 'weeg-tabs';
 
-import { TabQueryService } from '../../lib/TabQueryService';
-import { TabService } from '../../lib/TabService';
+import { TabQueryService } from '../../lib/tabs/TabQueryService';
+import { TabService } from '../../lib/tabs/TabService';
 
 import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
 import { WindowService } from '../tabs/WindowService';

@@ -26,8 +26,8 @@ import { ContextualIdentityService } from "./ContextualIdentityService";
 import { TabGroupDirectory } from "./TabGroupDirectory";
 import { UserContextVisibilityService } from "../../legacy-lib/userContexts/UserContextVisibilityService";
 import { TemporaryContainerService } from "./TemporaryContainerService";
-import { TabService } from "../TabService";
-import { TabQueryService } from "../TabQueryService";
+import { TabService } from "../tabs/TabService";
+import { TabQueryService } from "../tabs/TabQueryService";
 
 const tabGroupDirectory = new TabGroupDirectory();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();

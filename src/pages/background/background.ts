@@ -35,7 +35,7 @@ import { UserContextVisibilityService } from '../../legacy-lib/userContexts/User
 
 import { BeforeRequestHandler } from './BeforeRequestHandler';
 import { BackgroundUtils } from './BackgroundUtils';
-import { TabSortingService } from './TabSortingService';
+import { TabSortingService } from '../../lib/tabs/TabSortingService';
 import './IndexTabHandler';
 import './BackgroundContainerObservers';
 import './BackgroundMenu';

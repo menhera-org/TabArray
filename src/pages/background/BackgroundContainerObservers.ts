@@ -22,8 +22,8 @@
 import browser from 'webextension-polyfill';
 import { ContextualIdentity } from 'weeg-containers';
 
-import { TabQueryService } from '../../lib/TabQueryService';
-import { TabService } from '../../lib/TabService';
+import { TabQueryService } from '../../lib/tabs/TabQueryService';
+import { TabService } from '../../lib/tabs/TabService';
 
 const tabQueryService = TabQueryService.getInstance();
 const tabService = TabService.getInstance();

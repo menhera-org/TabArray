@@ -22,8 +22,8 @@
 import browser from 'webextension-polyfill';
 import { CompatTab, TabGroupFilter } from "weeg-tabs";
 
-import { TabGroupAttributes } from './tabGroups/TabGroupAttributes';
-import { TabGroupDirectory } from "./tabGroups/TabGroupDirectory";
+import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
+import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
 
 const tabGroupDirectory = new TabGroupDirectory();
 

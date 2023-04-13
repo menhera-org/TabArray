@@ -25,7 +25,7 @@ import { CookieStore } from 'weeg-containers';
 
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
-import { TabQueryService } from '../../lib/TabQueryService';
+import { TabQueryService } from '../../lib/tabs/TabQueryService';
 
 import { config } from '../../config/config';
 import { WindowUserContextVisibilityHelper } from './WindowUserContextVisibilityHelper';

@@ -22,7 +22,7 @@
 import { CompatTab, CompatTabGroup, WindowTabGroupFilter, PinnedTabGroupFilter, DomainTabGroupFilter, TabGroupFilter, StandardTabSorter } from "weeg-tabs";
 
 import { SupergroupTabGroupFilter } from "./SupergroupTabGroupFilter";
-import { ServiceRegistry } from "./ServiceRegistry";
+import { ServiceRegistry } from "../ServiceRegistry";
 
 export type TabQuery = {
   windowId?: number;

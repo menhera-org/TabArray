@@ -23,8 +23,8 @@ import browser from 'webextension-polyfill';
 import { CookieStore } from 'weeg-containers';
 
 import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOpenerService';
-import { TabQueryService } from '../../../lib/TabQueryService';
-import { TabService } from '../../../lib/TabService';
+import { TabQueryService } from '../../../lib/tabs/TabQueryService';
+import { TabService } from '../../../lib/tabs/TabService';
 
 import { MenulistTabElement } from "../../../components/menulist-tab";
 import { MenulistContainerElement } from "../../../components/menulist-container";

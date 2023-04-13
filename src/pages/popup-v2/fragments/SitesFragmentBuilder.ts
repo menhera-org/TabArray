@@ -23,7 +23,7 @@ import browser from "webextension-polyfill";
 import { EventSink } from "weeg-events";
 import { HostnameService } from "weeg-domains";
 
-import { TabQueryService } from "../../../lib/TabQueryService";
+import { TabQueryService } from "../../../lib/tabs/TabQueryService";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";

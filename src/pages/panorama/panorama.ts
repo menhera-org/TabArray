@@ -30,7 +30,7 @@ import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
-import { TabQueryService } from '../../lib/TabQueryService';
+import { TabQueryService } from '../../lib/tabs/TabQueryService';
 
 import { PanoramaStateStore } from "./PanoramaStateStore";
 

@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { CompatTab } from 'weeg-tabs';
 
-import { ServiceRegistry } from './ServiceRegistry';
+import { ServiceRegistry } from '../ServiceRegistry';
 
 export class TabService {
   private static readonly INSTANCE = new TabService();

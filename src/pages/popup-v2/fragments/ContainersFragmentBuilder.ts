@@ -27,8 +27,8 @@ import { TemporaryContainerService } from "../../../lib/tabGroups/TemporaryConta
 import { SupergroupType, TabGroupDirectory } from "../../../lib/tabGroups/TabGroupDirectory";
 import { TabGroupAttributes } from "../../../lib/tabGroups/TabGroupAttributes";
 import { SupergroupService } from "../../../lib/tabGroups/SupergroupService";
-import { TabQueryService } from "../../../lib/TabQueryService";
-import { TabService } from "../../../lib/TabService";
+import { TabQueryService } from "../../../lib/tabs/TabQueryService";
+import { TabService } from "../../../lib/tabs/TabService";
 
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";

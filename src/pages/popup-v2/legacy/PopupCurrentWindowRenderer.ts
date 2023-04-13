@@ -27,7 +27,7 @@ import { TabGroupDirectorySnapshot } from '../../../lib/tabGroups/TabGroupDirect
 import { SupergroupType, TabGroupDirectory } from '../../../lib/tabGroups/TabGroupDirectory';
 import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
 import { TabGroupAttributes } from '../../../lib/tabGroups/TabGroupAttributes';
-import { TabQueryService } from '../../../lib/TabQueryService';
+import { TabQueryService } from '../../../lib/tabs/TabQueryService';
 
 import { PopupRenderer } from './PopupRenderer';
 
