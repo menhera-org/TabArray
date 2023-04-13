@@ -41,6 +41,15 @@ export class DisplayedContainerService {
     // nothing.
   }
 
+  public async getDisplayedContainer(cookieStoreId: string): Promise<DisplayedContainer> {
+    if (cookieStoreId == CookieStore.DEFAULT.id) {
+      return this._displayedContainerFactory.createFromCookieStore(CookieStore.DEFAULT);
+    } else if (cookieStoreId == CookieStore.PRIVATE.id) {
+      return this._displayedContainerFactory.createFromCookieStore(CookieStore.PRIVATE);
+    }
+    return this._contextualIdentityFactory.get(cookieStoreId);
+  }
+
   public async getDisplayedContainers(): Promise<DisplayedContainer[]> {
     const [contextualIdentities, allowedInPrivateBrowsing] = await Promise.all([
       this._contextualIdentityFactory.getAll(),

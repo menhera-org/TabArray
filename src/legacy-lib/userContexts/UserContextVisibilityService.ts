@@ -20,17 +20,19 @@
 */
 
 import browser from 'webextension-polyfill';
-import { config } from '../../config/config';
 import { Uint32 } from "weeg-types";
+import { CookieStore } from 'weeg-containers';
+
+import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
+import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
+import { TabQueryService } from '../../lib/TabQueryService';
+
+import { config } from '../../config/config';
 import { WindowUserContextVisibilityHelper } from './WindowUserContextVisibilityHelper';
 import { IndexTab } from '../modules/IndexTab';
 import { UserContext } from '../tabGroups';
-import { UserContextService } from './UserContextService';
 import { Tab } from '../tabs';
 import { WindowService } from '../tabs/WindowService';
-import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
-//import { OriginAttributes } from '../frameworks/tabGroups';
-//import { TabGroup } from '../frameworks/tabGroups';
 
 // 'never' -- do not show indices
 // 'collapsed' -- show indices for collapsed containers
@@ -52,6 +54,8 @@ export class UserContextVisibilityService {
 
   private readonly _windowService = WindowService.getInstance();
   private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
+  private readonly _displayedContainerService = DisplayedContainerService.getInstance();
+  private readonly _tabQueryService = TabQueryService.getInstance();
 
   private constructor() {
     // nothing.
@@ -61,19 +65,18 @@ export class UserContextVisibilityService {
    * You should not create index tabs for private windows (useless).
    */
   public async createIndexTab(windowId: number, userContextId: Uint32.Uint32): Promise<Tab> {
-    const rawUserContext = await UserContext.get(userContextId);
-    const userContext = UserContextService.getInstance().fillDefaultValues(rawUserContext);
-    let iconUrl: string;
-    if (userContext.id == 0) {
-      const params = this._contextualIdentityService.getDefaultParams(userContext.cookieStoreId);
-      iconUrl = params.iconUrl;
-    } else {
-      iconUrl = ContextualIdentityService.getIconUrl(userContext.icon, userContext.color);
-    }
-    const url = IndexTab.getUrl(userContext.name, userContext.icon, userContext.colorCode, iconUrl).url;
-    const cookieStoreId = UserContext.toCookieStoreId(userContextId);
-    const browserTabs = await browser.tabs.query({ windowId, cookieStoreId });
-    const minIndex = browserTabs.reduce((min, browserTab) => Math.min(min, browserTab.index), Number.MAX_SAFE_INTEGER);
+    const cookieStore = CookieStore.fromParams({
+      userContextId,
+      privateBrowsingId: 0 as Uint32.Uint32,
+    });
+    const displayedContainer = await this._displayedContainerService.getDisplayedContainer(cookieStore.id);
+    const url = IndexTab.getUrl(displayedContainer.name, '', displayedContainer.colorCode, displayedContainer.iconUrl).url;
+    const cookieStoreId = cookieStore.id;
+    const tabs = await this._tabQueryService.queryTabs({
+      windowId,
+      tabGroupId: cookieStoreId,
+    });
+    const minIndex = tabs.reduce((min, tab) => Math.min(min, tab.index), Number.MAX_SAFE_INTEGER);
     const browserTab = await browser.tabs.create({
       url,
       cookieStoreId,

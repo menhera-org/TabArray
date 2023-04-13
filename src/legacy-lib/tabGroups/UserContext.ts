@@ -25,8 +25,8 @@ import { EventSink } from "weeg-events";
 import { DisplayedContainer } from 'weeg-containers';
 
 import { OriginAttributes } from './OriginAttributes';
-import { TabGroup } from './TabGroup';
 import { ContentStorageStatistics } from '../cookies/ContentStorageStatistics';
+
 
 /**
  * Represents a user context (contextual identity or container).
@@ -272,21 +272,6 @@ export class UserContext {
     return false;
   }
 
-  /**
-   * Removes this identity forever.
-   */
-  public async remove(closeTabs = true, removeBrowsingData = true): Promise<void> {
-    if (!this.isRemovable()) {
-      throw new TypeError('This container cannot be deleted');
-    }
-    if (closeTabs) {
-      const tabGroup = await this.getTabGroup();
-      await tabGroup.tabList.closeTabs();
-    }
-    if (removeBrowsingData) await this.removeBrowsingData();
-    await browser.contextualIdentities.remove(this.cookieStoreId);
-  }
-
   public async removeBrowsingData(): Promise<void> {
     await browser.browsingData.remove({
       cookieStoreId: this.cookieStoreId,
@@ -309,10 +294,6 @@ export class UserContext {
 
   public toOriginAttributes(): OriginAttributes {
     return OriginAttributes.fromCookieStoreId(this.cookieStoreId);
-  }
-
-  public getTabGroup(): Promise<TabGroup> {
-    return TabGroup.createTabGroup(this.toOriginAttributes());
   }
 }
 
