@@ -26,37 +26,6 @@ export class UserContextService {
   private static readonly DEFAULT_ICON_URL = browser.runtime.getURL('/img/material-icons/category.svg');
   private static readonly DEFAULT_COLOR_CODE = '#7c7c7d';
 
-  /**
-   * Valid colors for containers.
-   */
-  private static readonly COLORS: ReadonlyArray<string> = [
-    "blue",
-    "turquoise",
-    "green",
-    "yellow",
-    "orange",
-    "red",
-    "pink",
-    "purple",
-    "toolbar",
-  ];
-
-  private static readonly ICONS: ReadonlyArray<string> = [
-    "fingerprint",
-    "briefcase",
-    "dollar",
-    "cart",
-    "circle",
-    "gift",
-    "vacation",
-    "food",
-    "fruit",
-    "pet",
-    "tree",
-    "chill",
-    "fence",
-  ];
-
   private static readonly INSTANCE = new UserContextService();
 
   public static getInstance(): UserContextService {
@@ -65,29 +34,6 @@ export class UserContextService {
 
   private constructor() {
     // nothing to do.
-  }
-
-  private validateValue(aValue: string, aOptions: ReadonlyArray<string>): string {
-    let value = String(aValue).toLowerCase();
-    if (!aOptions[0]) {
-      throw new Error('Default value is not defined'); // this should not happen
-    }
-    if (!aOptions.includes(value)) {
-      value = aOptions[0];
-    }
-    return value;
-  }
-
-  private validateColor(aColor: string): string {
-    return this.validateValue(aColor, UserContextService.COLORS);
-  }
-
-  private validateIcon(aIcon: string): string {
-    return this.validateValue(aIcon, UserContextService.ICONS);
-  }
-
-  private validateName(aName: string): string {
-    return String(aName).trim();
   }
 
   private getDefaultName(aId: number): string {
@@ -112,36 +58,5 @@ export class UserContextService {
       attrs.color = 'toolbar';
     }
     return new UserContext(attrs.id, attrs.name, attrs.color, attrs.colorCode, attrs.icon, attrs.iconUrl, attrs.defined);
-  }
-
-  public async create(aName: string, aColor: string, aIcon: string): Promise<UserContext> {
-    const color = this.validateColor(aColor);
-    const icon = this.validateIcon(aIcon);
-    let name = this.validateName(aName);
-    const isUnnamed = '' === name;
-    if (isUnnamed) {
-      name = '_unnamed_container_';
-    }
-    let userContext = await UserContext.define(name, color, icon);
-    console.log('userContext %d created', userContext.id);
-    if (isUnnamed) {
-      userContext = await userContext.updateProperties(
-        browser.i18n.getMessage('defaultContainerName', String(userContext.id)),
-        color,
-        icon
-      );
-    }
-    return userContext;
-  }
-
-  public async updateProperties(aUserContext: UserContext, aName: string, aColor: string, aIcon: string): Promise<UserContext> {
-    const color = this.validateColor(aColor);
-    const icon = this.validateIcon(aIcon);
-    let name = this.validateName(aName);
-    const isUnnamed = '' === name;
-    if (isUnnamed) {
-      name = browser.i18n.getMessage('defaultContainerName', String(aUserContext.id));
-    }
-    return aUserContext.updateProperties(name, color, icon);
   }
 }
