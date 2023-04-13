@@ -21,23 +21,30 @@
 
 import browser from 'webextension-polyfill';
 import { ExtensionService } from 'weeg-utils';
+import { CompatTab } from 'weeg-tabs';
+import { DisplayedContainer } from 'weeg-containers';
 
-import * as i18n from '../../legacy-lib/modules/i18n';
-import { Tab } from '../../legacy-lib/tabs';
-import { config } from '../../config/config';
-import { UserContext } from '../../legacy-lib/tabGroups';
-import { UserContextService } from '../../legacy-lib/userContexts/UserContextService';
-import { PrivateBrowsingService } from '../../legacy-lib/tabs';
-import { ContainerEditorElement } from '../../components/container-editor';
 import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
+import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
+import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
+
+import { config } from '../../config/config';
+
+import * as i18n from '../../legacy-lib/modules/i18n';
+import { PrivateBrowsingService } from '../../legacy-lib/tabs';
+
+import { ContainerEditorElement } from '../../components/container-editor';
 
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const extensionService = ExtensionService.getInstance();
 const privateBrowsingService = PrivateBrowsingService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
+const contextualIdentityService = ContextualIdentityService.getInstance();
+const contextualIdentityFactory = contextualIdentityService.getFactory();
+const displayedContainerService = DisplayedContainerService.getInstance();
 
 const params = new URLSearchParams(location.search);
 
@@ -118,12 +125,11 @@ const renderButton = (tooltipText: string, name: string, iconUrl: string, useIco
   return userContextElement;
 };
 
-const renderUserContext = (origUserContext: UserContext, aUserContextElement: HTMLButtonElement | null = null) => {
-  const userContext = UserContextService.getInstance().fillDefaultValues(origUserContext);
-  const tooltipText = i18n.getMessage('defaultContainerName', String(userContext.id));
-  const iconUrl = userContext.iconUrl || '/img/material-icons/category.svg';
-  const userContextElement = renderButton(tooltipText, userContext.name, iconUrl, true, userContext.colorCode || '#000', aUserContextElement);
-  return userContextElement;
+const renderContainer = (displayedContainer: DisplayedContainer, aContainerElement: HTMLButtonElement | null = null) => {
+  const tooltipText = i18n.getMessage('defaultContainerName', String(displayedContainer.cookieStore.userContextId));
+  const iconUrl = displayedContainer.iconUrl || '/img/material-icons/category.svg';
+  const containerElement = renderButton(tooltipText, displayedContainer.name, iconUrl, true, displayedContainer.colorCode || '#000', aContainerElement);
+  return containerElement;
 };
 
 const createPrivateBrowsingButton = () => {
@@ -150,26 +156,26 @@ const createTemporaryContainerButton = () => {
   return button;
 };
 
-const createUserContextElement = (userContext: UserContext) => {
-  const userContextElement = renderUserContext(userContext);
-  const cookieStoreId = userContext.cookieStoreId;
-  containersElement.append(userContextElement);
-  userContextElement.addEventListener('click', () => {
+const createContainerElement = (displayedContainer: DisplayedContainer) => {
+  const containerElement = renderContainer(displayedContainer);
+  const cookieStoreId = displayedContainer.cookieStore.id;
+  containersElement.append(containerElement);
+  containerElement.addEventListener('click', () => {
     reopenInContainer(cookieStoreId);
   });
-  UserContext.onRemoved.addListener((removedUserContext) => {
-    if (removedUserContext == userContext.id) {
-      userContextElement.remove();
+  contextualIdentityFactory.onRemoved.addListener((removedContextualIdentity) => {
+    if (removedContextualIdentity.cookieStore.id == displayedContainer.cookieStore.id) {
+      containerElement.remove();
     }
   });
-  UserContext.onUpdated.addListener((updatedUserContext) => {
-    if (updatedUserContext.id == userContext.id) {
-      renderUserContext(updatedUserContext, userContextElement);
+  contextualIdentityFactory.onUpdated.addListener((updatedContextualIdentity) => {
+    if (updatedContextualIdentity.cookieStore.id == displayedContainer.cookieStore.id) {
+      renderContainer(updatedContextualIdentity, containerElement);
     }
   });
 };
 
-UserContext.getAll().then(async (userContexts) => {
+displayedContainerService.getDisplayedContainersByPrivateBrowsing(false).then(async (displayedContainers) => {
   const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
   const privateBrowsingSupported = await extensionService.isAllowedInPrivateBrowsing();
   if (privateBrowsingSupported) {
@@ -201,21 +207,21 @@ UserContext.getAll().then(async (userContexts) => {
     const identity = await temporaryContainerService.createTemporaryContainer();
     reopenInContainer(identity.cookieStore.id);
   });
-  [... userContexts].sort((a, b) => {
-    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
-  }).forEach(createUserContextElement);
+  [... displayedContainers].sort((a, b) => {
+    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
+  }).forEach(createContainerElement);
 });
 
-UserContext.onCreated.addListener(createUserContextElement);
+contextualIdentityFactory.onCreated.addListener(createContainerElement);
 
 browser.tabs.getCurrent().then((browserTab) => {
-  const tab = new Tab(browserTab);
-  if (tab.isPrivate()) {
+  const tab = new CompatTab(browserTab);
+  if (tab.isPrivate) {
     // no containers in private mode
     location.href = url;
     return;
   }
-  if (tab.isContainer()) {
+  if (tab.cookieStore.userContextId != 0) {
     // already in a container
     location.href = url;
     return;
