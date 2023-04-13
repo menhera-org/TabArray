@@ -20,11 +20,13 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { UserContext } from '../../legacy-lib/tabGroups';
-import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
+
 import { MenuItem } from '../../lib/menus/MenuItem';
 import { PopupTabContextMenuItem } from '../../lib/menus/PopupTabContextMenuItem';
-import { PopupUtils } from '../popup-v2/legacy/PopupUtils';
+import { ExtensionPageService } from '../../lib/ExtensionPageService';
+
+import { UserContext } from '../../legacy-lib/tabGroups';
+import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 
 const MENU_ID_TAB_HIDE_CONTAINER = 'tab-hide-container';
 
@@ -43,8 +45,8 @@ const MENU_ID_ACTION_SETTINGS = 'action-settings';
 const MENU_ID_TOOLS_PANORAMA_GRID = 'tools-panorama-grid';
 const MENU_ID_TOOLS_SETTINGS = 'tools-settings';
 
+const extensionPageService = ExtensionPageService.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
-const popupUtils = new PopupUtils();
 
 export const menus = {
   [MENU_ID_CONTEXT_TAB_NEW_TAB]: new PopupTabContextMenuItem({
@@ -234,7 +236,7 @@ menus[MENU_ID_ACTION_SETTINGS].onClicked.addListener(() => {
 });
 
 menus[MENU_ID_TOOLS_PANORAMA_GRID].onClicked.addListener(() => {
-  popupUtils.openPanoramaPage();
+  extensionPageService.openInBackground(ExtensionPageService.PANORAMA);
 });
 
 menus[MENU_ID_TOOLS_SETTINGS].onClicked.addListener(() => {

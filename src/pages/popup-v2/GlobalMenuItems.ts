@@ -19,15 +19,17 @@
   @license
 **/
 
+import browser from "webextension-polyfill";
+
+import { ExtensionPageService } from "../../lib/ExtensionPageService";
+
 import { CtgDrawerElement } from "../../components/ctg/ctg-drawer";
 import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../components/ctg/ctg-menu-item";
-import browser from "webextension-polyfill";
-import { PopupUtils } from "./legacy/PopupUtils";
+
+const extensionPageService = ExtensionPageService.getInstance();
 
 export class GlobalMenuItems {
-  private _popupUtils = new PopupUtils();
-
   public defineTopBarMenuItems(topBarElement: CtgTopBarElement) {
     const panoramaGridMenuItem = new CtgMenuItemElement();
     panoramaGridMenuItem.labelText = browser.i18n.getMessage('panoramaGrid');
@@ -79,41 +81,39 @@ export class GlobalMenuItems {
   private defineEventHandlers(topbarElement: CtgTopBarElement) {
     const panoramaGridMenuItem  = topbarElement.getMenuItem('panorama-grid') as CtgMenuItemElement;
     panoramaGridMenuItem.addEventListener('click', () => {
-      this._popupUtils.openPanoramaPage();
+      extensionPageService.openInBackground(ExtensionPageService.PANORAMA);
     });
 
     if (document.body.classList.contains('popup')) {
       const openSidebarMenuItem = topbarElement.getOverflowMenuItem('open-sidebar') as CtgMenuItemElement;
       openSidebarMenuItem.addEventListener('click', () => {
-        this._popupUtils.toggleSidebar();
+        extensionPageService.openInBackground(ExtensionPageService.SIDEBAR);
       });
     } else {
       const openPopupMenuItem = topbarElement.getOverflowMenuItem('open-popup') as CtgMenuItemElement;
       openPopupMenuItem.addEventListener('click', () => {
-        browser.browserAction.openPopup().catch((e) => {
-          console.error(e);
-        });
+        extensionPageService.openInBackground(ExtensionPageService.BROWSER_ACTION);
       });
     }
 
     const viewCookiesMenuItem = topbarElement.getOverflowMenuItem('view-cookies') as CtgMenuItemElement;
     viewCookiesMenuItem.addEventListener('click', () => {
-      this._popupUtils.openCookiesPage();
+      extensionPageService.openInBackground(ExtensionPageService.COOKIES);
     });
 
     const addonPageMenuItem = topbarElement.getOverflowMenuItem('addon-page') as CtgMenuItemElement;
     addonPageMenuItem.addEventListener('click', () => {
-      this._popupUtils.openAddonPage();
+      extensionPageService.openInBackground(ExtensionPageService.AMO);
     });
 
     const privacyPolicyMenuItem = topbarElement.getOverflowMenuItem('privacy-policy') as CtgMenuItemElement;
     privacyPolicyMenuItem.addEventListener('click', () => {
-      this._popupUtils.openPrivacyPolicyPage();
+      extensionPageService.openInBackground(ExtensionPageService.PRIVACY_POLICY);
     });
 
     const settingsMenuItem = topbarElement.getMenuItem('settings') as CtgMenuItemElement;
     settingsMenuItem.addEventListener('click', () => {
-      this._popupUtils.openOptionsPage();
+      extensionPageService.openInBackground(ExtensionPageService.OPTIONS);
     });
   }
 }

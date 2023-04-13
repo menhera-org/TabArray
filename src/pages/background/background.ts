@@ -27,6 +27,7 @@ import { Uint32 } from 'weeg-types';
 
 import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
+import { PageLoaderService } from '../../lib/PageLoaderService';
 
 import { isNewTabPage } from '../../legacy-lib/modules/newtab';
 import { WebExtensionsBroadcastChannel } from '../../legacy-lib/modules/broadcasting';
@@ -76,6 +77,7 @@ setInterval(() => {
 
 const TAB_SORTING_INTERVAL = 10000;
 
+PageLoaderService.getInstance<PageLoaderService>();
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 ExternalServiceProvider.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();

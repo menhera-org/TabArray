@@ -20,7 +20,6 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { PANORAMA_PAGE, COOKIES_PAGE, ADDON_PAGE, PRIVACY_POLICY_PAGE, GITHUB_PAGE } from '../../../defs';
 
 export class PopupUtils {
   public getActiveElement(): HTMLElement | null {
@@ -65,56 +64,6 @@ export class PopupUtils {
       throw new Error(`Element not found: ${query}`);
     }
     return element as T;
-  }
-
-  public openAddonPage() {
-    this.handlePopupClose(browser.tabs.create({
-      active: true,
-      windowId: browser.windows.WINDOW_ID_CURRENT,
-      url: browser.runtime.getURL(ADDON_PAGE),
-    }));
-  }
-
-  public openPrivacyPolicyPage() {
-    this.handlePopupClose(browser.tabs.create({
-      active: true,
-      windowId: browser.windows.WINDOW_ID_CURRENT,
-      url: browser.runtime.getURL(PRIVACY_POLICY_PAGE),
-    }));
-  }
-
-  public openPanoramaPage() {
-    this.handlePopupClose(browser.tabs.create({
-      active: true,
-      windowId: browser.windows.WINDOW_ID_CURRENT,
-      url: browser.runtime.getURL(PANORAMA_PAGE),
-    }));
-  }
-
-  public openCookiesPage() {
-    this.handlePopupClose(browser.tabs.create({
-      active: true,
-      windowId: browser.windows.WINDOW_ID_CURRENT,
-      url: browser.runtime.getURL(COOKIES_PAGE),
-    }));
-  }
-
-  public openGithubPage() {
-    this.handlePopupClose(browser.tabs.create({
-      active: true,
-      windowId: browser.windows.WINDOW_ID_CURRENT,
-      url: browser.runtime.getURL(GITHUB_PAGE),
-    }));
-  }
-
-  public openOptionsPage() {
-    this.handlePopupClose(browser.runtime.openOptionsPage().then(() => {
-      window.close();
-    }));
-  }
-
-  public toggleSidebar() {
-    browser.sidebarAction.toggle();
   }
 
   public openNewWindow(isPrivate: boolean) {

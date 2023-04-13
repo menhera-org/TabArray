@@ -20,20 +20,21 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { PANORAMA_PAGE } from '../../defs';
+
+import { ExtensionPageService } from '../../lib/ExtensionPageService';
+
+const extensionPageService = ExtensionPageService.getInstance();
 
 browser.commands.onCommand.addListener(async (command) => {
   try {
     switch (command) {
       case 'open_panorama_grid': {
-        await browser.tabs.create({
-          url: PANORAMA_PAGE,
-        });
+        await extensionPageService.open(ExtensionPageService.PANORAMA);
         break;
       }
 
       case 'open_settings_view': {
-        await browser.runtime.openOptionsPage();
+        await extensionPageService.open(ExtensionPageService.OPTIONS);
         break;
       }
     }

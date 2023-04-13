@@ -19,11 +19,13 @@
   @license
 **/
 
-import { PopupUtils } from "../pages/popup-v2/legacy/PopupUtils";
 import browser from "webextension-polyfill";
 
+import { ExtensionPageService } from "../lib/ExtensionPageService";
+
+const extensionPageService = ExtensionPageService.getInstance();
+
 export class HelpBannerElement extends HTMLElement {
-  private readonly _popupUtils = new PopupUtils();
 
   public constructor() {
     super();
@@ -82,7 +84,7 @@ export class HelpBannerElement extends HTMLElement {
 
     helpBannerAmoLink.addEventListener('click', (ev) => {
       ev.preventDefault();
-      this._popupUtils.openAddonPage();
+      extensionPageService.openInBackground(ExtensionPageService.AMO);
     });
 
     const helpBannerParagraph2 = document.createElement('p');
@@ -95,7 +97,7 @@ export class HelpBannerElement extends HTMLElement {
 
     helpBannerPrivacyPolicyLink.addEventListener('click', (ev) => {
       ev.preventDefault();
-      this._popupUtils.openPrivacyPolicyPage();
+      extensionPageService.openInBackground(ExtensionPageService.PRIVACY_POLICY);
     });
 
     const helpBannerParagraph3 = document.createElement('p');
@@ -108,7 +110,7 @@ export class HelpBannerElement extends HTMLElement {
 
     helpBannerSourceCodeLink.addEventListener('click', (ev) => {
       ev.preventDefault();
-      this._popupUtils.openGithubPage();
+      extensionPageService.openInBackground(ExtensionPageService.GITHUB);
     });
 
   }
