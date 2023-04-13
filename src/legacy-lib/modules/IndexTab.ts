@@ -21,7 +21,9 @@
 
 import browser from 'webextension-polyfill';
 
-const indexPageUrl = browser.runtime.getURL('/index/index-tab.html');
+import { INDEX_TAB_PAGE } from '../../defs';
+
+const indexPageUrl = browser.runtime.getURL(INDEX_TAB_PAGE);
 const defaultIconUrl = browser.runtime.getURL('/img/material-icons/category.svg');
 
 export class IndexTab {
