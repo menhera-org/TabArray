@@ -21,5 +21,5 @@
 
 export { Tab } from './Tab';
 export { TabPreviewService } from './TabPreviewService';
-export { WindowService, ActiveTabsByWindow } from './WindowService';
+export { WindowService } from './WindowService';
 export { PrivateBrowsingService } from './PrivateBrowsingService';

@@ -21,12 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
-import { EventSink } from "weeg-events";
-import { DisplayedContainer } from 'weeg-containers';
-
-import { OriginAttributes } from './OriginAttributes';
-import { ContentStorageStatistics } from '../cookies/ContentStorageStatistics';
-
+import { DisplayedContainer, CookieStore } from 'weeg-containers';
 
 /**
  * Represents a user context (contextual identity or container).
@@ -36,9 +31,6 @@ import { ContentStorageStatistics } from '../cookies/ContentStorageStatistics';
 export class UserContext {
   private static readonly DEFAULT_STORE = 'firefox-default';
   private static readonly PRIVATE_STORE = 'firefox-private';
-  private static readonly CONTAINER_STORE = 'firefox-container-';
-
-  private static readonly _contentStorageStatistics = new ContentStorageStatistics();
 
   /**
    * User context ID for "No Container" container (0).
@@ -55,27 +47,10 @@ export class UserContext {
    */
   public static readonly PRIVATE: UserContext =  new UserContext(UserContext.ID_DEFAULT, browser.i18n.getMessage('privateBrowsing'), '', '', '', '/img/firefox-icons/private-browsing-icon.svg', true, true);
 
-  // event listeners.
-
-  /**
-   * Fired when the identity is created.
-   */
-  public static readonly onCreated = new EventSink<UserContext>();
-
-  /**
-   * Fired when the identity is removed.
-   */
-  public static readonly onRemoved = new EventSink<Uint32.Uint32>();
-
-  /**
-   * Fired when the identity is updated.
-   */
-  public static readonly onUpdated = new EventSink<UserContext>();
-
   /**
     * Returns true if the given id is a valid user context id.
     */
-  public static validateUserContextId(id: Uint32.Uint32): boolean {
+  private static validateUserContextId(id: Uint32.Uint32): boolean {
     return 0 <= id;
   }
 
@@ -84,40 +59,25 @@ export class UserContext {
     return new UserContext(id, '', '', '', '', '', defined);
   }
 
-  public static isCookieStoreIdPrivateBrowsing(cookieStoreId: string): boolean {
-    return cookieStoreId == UserContext.PRIVATE_STORE;
-  }
-
   /**
     * Converts a cookie store ID to a user context ID.
     */
-  public static fromCookieStoreId(cookieStoreId: string): Uint32.Uint32 {
-    if (cookieStoreId == UserContext.DEFAULT_STORE) {
-      return 0 as Uint32.Uint32;
-    } else if (UserContext.isCookieStoreIdPrivateBrowsing(cookieStoreId)) {
-      throw new TypeError('Cannot convert private browsing cookie store ID to user context ID');
-    }
-    if (!cookieStoreId.startsWith(UserContext.CONTAINER_STORE)) {
-      throw new TypeError('Invalid cookie store ID');
-    }
-    const userContextIdString = cookieStoreId.slice(UserContext.CONTAINER_STORE.length);
-    return Uint32.fromString(userContextIdString);
+  private static fromCookieStoreId(cookieStoreId: string): Uint32.Uint32 {
+    const cookieStore = new CookieStore(cookieStoreId);
+    return cookieStore.userContextId;
   }
 
   /**
     * Converts a user context ID to a cookie store ID.
     */
-  public static toCookieStoreId(userContextId: Uint32.Uint32): string {
-    if (!UserContext.validateUserContextId(userContextId)) {
-      throw new TypeError('Invalid user context ID');
-    }
-    if (userContextId == 0) {
-      return UserContext.DEFAULT_STORE;
-    }
-    return UserContext.CONTAINER_STORE + userContextId;
+  private static toCookieStoreId(userContextId: Uint32.Uint32): string {
+    return CookieStore.fromParams({
+      userContextId,
+      privateBrowsingId: 0 as Uint32.Uint32,
+    }).id;
   }
 
-  public static fromBrowserContextualIdentity(identity: browser.ContextualIdentities.ContextualIdentity): UserContext {
+  private static fromBrowserContextualIdentity(identity: browser.ContextualIdentities.ContextualIdentity): UserContext {
     const userContextId = UserContext.fromCookieStoreId(identity.cookieStoreId);
     return new UserContext(
       userContextId,
@@ -127,22 +87,6 @@ export class UserContext {
       identity.icon,
       identity.iconUrl,
     );
-  }
-
-  public static async get(userContextId: Uint32.Uint32) {
-    if (0 == userContextId) {
-      return UserContext.DEFAULT;
-    }
-    const cookieStoreId = UserContext.toCookieStoreId(userContextId);
-    try {
-      const identity = await browser.contextualIdentities.get(cookieStoreId);
-      if (!identity) {
-        throw new Error('Identity not found');
-      }
-      return UserContext.fromBrowserContextualIdentity(identity);
-    } catch (_e) {
-      return UserContext.createIncompleteUserContext(userContextId);
-    }
   }
 
   public static async getAll(isPrivateBrowsing = false): Promise<UserContext[]> {
@@ -156,28 +100,6 @@ export class UserContext {
     userContexts.push(UserContext.DEFAULT);
     userContexts.sort((a, b) => a.id - b.id);
     return userContexts;
-  }
-
-  public static async getAllActiveIds(): Promise<Uint32.Uint32[]> {
-    const tabs = await browser.tabs.query({});
-    const userContextIds = new Set<Uint32.Uint32>();
-    for (const tab of tabs) {
-      if (tab.incognito) {
-        continue;
-      }
-      userContextIds.add(UserContext.fromCookieStoreId(tab.cookieStoreId ?? UserContext.DEFAULT_STORE));
-    }
-    return Array.from(userContextIds);
-  }
-
-  public static async define(name: string, color: string, icon: string): Promise<UserContext> {
-    const identity = await browser.contextualIdentities.create({
-      name,
-      color,
-      icon,
-    });
-    const userContext = UserContext.fromBrowserContextualIdentity(identity);
-    return userContext;
   }
 
   // this is a hack. we should move to a better way of doing this.
@@ -271,47 +193,4 @@ export class UserContext {
     if (this.icon == '' || this.iconUrl == '') return true;
     return false;
   }
-
-  public async removeBrowsingData(): Promise<void> {
-    await browser.browsingData.remove({
-      cookieStoreId: this.cookieStoreId,
-    }, {
-      cookies: true,
-      localStorage: true, // not supported on old Firefox
-      indexedDB: true,
-    });
-    await UserContext._contentStorageStatistics.removeCookieStore(this.cookieStoreId);
-  }
-
-  public async updateProperties(name: string, color: string, icon: string): Promise<UserContext> {
-    const identity = await browser.contextualIdentities.update(this.cookieStoreId, {
-      name,
-      color,
-      icon,
-    });
-    return UserContext.fromBrowserContextualIdentity(identity);
-  }
-
-  public toOriginAttributes(): OriginAttributes {
-    return OriginAttributes.fromCookieStoreId(this.cookieStoreId);
-  }
 }
-
-// call event listeners
-browser.contextualIdentities.onCreated.addListener((changeInfo) => {
-  const {contextualIdentity} = changeInfo;
-  const userContext = UserContext.fromBrowserContextualIdentity(contextualIdentity);
-  UserContext.onCreated.dispatch(userContext);
-});
-
-browser.contextualIdentities.onRemoved.addListener((changeInfo) => {
-  const {contextualIdentity} = changeInfo;
-  const userContextId = UserContext.fromCookieStoreId(contextualIdentity.cookieStoreId);
-  UserContext.onRemoved.dispatch(userContextId);
-});
-
-browser.contextualIdentities.onUpdated.addListener((changeInfo) => {
-  const {contextualIdentity} = changeInfo;
-  const userContext = UserContext.fromBrowserContextualIdentity(contextualIdentity);
-  UserContext.onUpdated.dispatch(userContext);
-});

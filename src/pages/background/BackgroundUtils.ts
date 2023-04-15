@@ -22,10 +22,11 @@
 import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
 import { CookieStore } from 'weeg-containers';
-
 import { Uint32 } from "weeg-types";
-import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
+
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
+
+import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 
 export class BackgroundUtils {
   private static readonly userContextVisibilityService = UserContextVisibilityService.getInstance();

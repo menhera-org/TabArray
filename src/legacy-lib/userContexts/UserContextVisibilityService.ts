@@ -30,7 +30,6 @@ import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { config } from '../../config/config';
 import { WindowUserContextVisibilityHelper } from './WindowUserContextVisibilityHelper';
 import { IndexTab } from '../modules/IndexTab';
-import { UserContext } from '../tabGroups';
 import { Tab } from '../tabs';
 import { WindowService } from '../tabs/WindowService';
 
@@ -105,7 +104,11 @@ export class UserContextVisibilityService {
     if (browserWindow.incognito) {
       throw new Error('Private windows are not supported here.');
     }
-    const cookieStoreId = UserContext.toCookieStoreId(userContextId);
+    const cookieStore = CookieStore.fromParams({
+      userContextId,
+      privateBrowsingId: 0 as Uint32.Uint32,
+    });
+    const cookieStoreId = cookieStore.id;
     const brwoserTabs = await browser.tabs.query({ windowId, cookieStoreId });
     const tabs = brwoserTabs.map((browserTab) => new Tab(browserTab));
     return tabs;

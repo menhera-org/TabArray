@@ -20,12 +20,12 @@
 **/
 
 import browser from 'webextension-polyfill';
+import { CookieStore } from 'weeg-containers';
 
 import { MenuItem } from '../../lib/menus/MenuItem';
 import { PopupTabContextMenuItem } from '../../lib/menus/PopupTabContextMenuItem';
 import { ExtensionPageService } from '../../lib/ExtensionPageService';
 
-import { UserContext } from '../../legacy-lib/tabGroups';
 import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 
 const MENU_ID_TAB_HIDE_CONTAINER = 'tab-hide-container';
@@ -134,12 +134,14 @@ menus[MENU_ID_TAB_HIDE_CONTAINER].onClicked.addListener((info) => {
   if (tab == null) return;
   if (tab.cookieStoreId == null) return;
 
+  const cookieStore = new CookieStore(tab.cookieStoreId);
+
   if (info.menuItemId == MENU_ID_TAB_HIDE_CONTAINER) {
-    if (UserContext.isCookieStoreIdPrivateBrowsing(tab.cookieStoreId)) {
+    if (cookieStore.isPrivate) {
       return;
     }
 
-    const userContextId = UserContext.fromCookieStoreId(tab.cookieStoreId);
+    const userContextId = cookieStore.userContextId;
     if (tab.windowId == null) {
       return;
     }

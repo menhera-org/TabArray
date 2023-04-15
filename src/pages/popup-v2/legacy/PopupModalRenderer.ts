@@ -21,12 +21,13 @@
 
 import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
-import { CookieStore } from 'weeg-containers';
+import { CookieStore, DisplayedContainer, ContextualIdentity } from 'weeg-containers';
 
 import { ContextualIdentityService } from '../../../lib/tabGroups/ContextualIdentityService';
+import { TabGroupService } from '../../../lib/tabGroups/TabGroupService';
+import { DisplayedContainerService } from '../../../lib/tabGroups/DisplayedContainerService';
 
 import { UserContext } from "../../../legacy-lib/tabGroups";
-import { PrivateBrowsingService } from '../../../legacy-lib/tabs';
 
 import { PopupRenderer } from './PopupRenderer';
 import { PopupUtils } from './PopupUtils';
@@ -54,9 +55,10 @@ export class PopupModalRenderer {
   private readonly _popupRenderer: PopupRenderer;
   private readonly _utils: PopupUtils;
   private readonly _keyHandlersStack = new Array<KeyHandlers>();
-  private readonly _privateBrowsingService = PrivateBrowsingService.getInstance();
   private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
   private readonly _contextualIdentityFactory = this._contextualIdentityService.getFactory();
+  private readonly _tabGroupService = TabGroupService.getInstance();
+  private readonly _displayedContainerService = DisplayedContainerService.getInstance();
 
   constructor(popupRenderer: PopupRenderer) {
     this._popupRenderer = popupRenderer;
@@ -194,7 +196,7 @@ export class PopupModalRenderer {
     return { name, icon, color };
   }
 
-  public async showNewContainerPanelAsync(): Promise<UserContext | null> {
+  public async showNewContainerPanelAsync(): Promise<ContextualIdentity | null> {
     const editorElement = new ContainerEditorElement();
     document.body.appendChild(editorElement);
     return new Promise((res) => {
@@ -202,9 +204,8 @@ export class PopupModalRenderer {
         res(null);
       });
       editorElement.onContainerCreated.addListener((cookieStoreId) => {
-        const cookieStore = new CookieStore(cookieStoreId);
-        UserContext.get(cookieStore.userContextId).then((userContext) => {
-          res(userContext);
+        this._contextualIdentityFactory.get(cookieStoreId).then((contextualIdentity) => {
+          res(contextualIdentity);
         }).catch(() => {
           res(null);
         });
@@ -212,45 +213,34 @@ export class PopupModalRenderer {
     });
   }
 
-  public async showEditContainerPanelAsync(userContext: UserContext): Promise<UserContext> {
+  public async showEditContainerPanelAsync(contextualIdentity: ContextualIdentity): Promise<ContextualIdentity> {
     try {
-      const contextualIdentity = await this._contextualIdentityFactory.get(userContext.cookieStoreId);
       const editorElement = new ContainerEditorElement(contextualIdentity);
       document.body.appendChild(editorElement);
       return await new Promise((res) => {
         editorElement.onCancel.addListener(() => {
-          res(userContext);
+          res(contextualIdentity);
         });
         editorElement.onContainerUpdated.addListener((cookieStoreId) => {
-          const cookieStore = new CookieStore(cookieStoreId);
-          UserContext.get(cookieStore.userContextId).then((userContext) => {
-            res(userContext);
+          this._contextualIdentityFactory.get(cookieStoreId).then((contextualIdentity) => {
+            res(contextualIdentity);
           }).catch(() => {
-            res(userContext);
+            res(contextualIdentity);
           });
         });
       });
     } catch (e) {
-      return userContext;
+      return contextualIdentity;
     }
   }
 
   public showContainerClearCookieModal(userContext: UserContext, isPrivate = false): void {
-    if (isPrivate) {
-      this.confirmAsync(browser.i18n.getMessage('confirmPrivateBrowsingClearCookie')).then((result) => {
-        if (!result) return;
-        this._privateBrowsingService.clearBrowsingData().then(() => {
-          console.log('Removed browsing data for private browsing');
-        }).catch((e) => {
-          console.error(e);
-        });
-      });
-      return;
-    }
-    this.confirmAsync(browser.i18n.getMessage('confirmContainerClearCookie', userContext.name)).then((result) => {
+    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStoreId;
+    const confirmTitle = isPrivate ? browser.i18n.getMessage('confirmPrivateBrowsingClearCookie') : browser.i18n.getMessage('confirmContainerClearCookie', userContext.name);
+    this.confirmAsync(confirmTitle).then((result) => {
       if (!result) return;
-      userContext.removeBrowsingData().then(() => {
-        console.log('Removed browsing data for container', userContext);
+      this._tabGroupService.removeBrowsingDataForTabGroupId(cookieStoreId).then(() => {
+        console.log('Removed browsing data for cookie store', cookieStoreId);
       }).catch((e) => {
         console.error(e);
       });
@@ -269,14 +259,19 @@ export class PopupModalRenderer {
   }
 
   public async showContainerOptionsPanelAsync(userContext: UserContext, isPrivate = false): Promise<void> {
+    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStoreId;
+    let contextualIdentity: ContextualIdentity | DisplayedContainer;
     const message = browser.i18n.getMessage('containerOptions', isPrivate ? browser.i18n.getMessage('privateBrowsing') : userContext.name);
 
     const modalMenuElement = new ModalMenuElement(message);
     document.body.appendChild(modalMenuElement);
 
     if (!isPrivate && userContext.id != 0) {
+      contextualIdentity = await this._contextualIdentityFactory.get(cookieStoreId);
       modalMenuElement.defineAction('edit', browser.i18n.getMessage('buttonEditContainer'), false);
       modalMenuElement.defineAction('delete', browser.i18n.getMessage('buttonDeleteContainer'), false);
+    } else {
+      contextualIdentity = await this._displayedContainerService.getDisplayedContainer(cookieStoreId);
     }
 
     modalMenuElement.defineAction('clearCookie', browser.i18n.getMessage('buttonContainerClearCookie'), false);
@@ -288,9 +283,11 @@ export class PopupModalRenderer {
         modalMenuElement.onActionClicked.removeListener(actionHandler);
         switch (action) {
           case 'edit': {
-            this.showEditContainerPanelAsync(userContext).catch((e) => {
-              console.error(e);
-            });
+            if (contextualIdentity instanceof ContextualIdentity) {
+              this.showEditContainerPanelAsync(contextualIdentity).catch((e) => {
+                console.error(e);
+              });
+            }
             break;
           }
 
