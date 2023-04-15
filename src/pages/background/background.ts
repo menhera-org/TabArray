@@ -30,7 +30,6 @@ import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpene
 import { PageLoaderService } from '../../lib/PageLoaderService';
 import { NewTabPageService } from '../../lib/tabs/NewTabPageService';
 
-import { WebExtensionsBroadcastChannel } from '../../legacy-lib/modules/broadcasting';
 import { getActiveUserContext, setActiveUserContext } from '../../legacy-lib/modules/usercontext-state.js';
 
 import { config } from '../../config/config';
@@ -86,8 +85,6 @@ const tabSortingService = TabSortingService.getInstance<TabSortingService>();
 const utils = new BackgroundUtils();
 const newTabPageService = NewTabPageService.getInstance();
 
-const tabChangeChannel = new WebExtensionsBroadcastChannel('tab_change');
-
 // Set<number>
 // Set of tab IDs.
 const openTabs = new Set<number>();
@@ -111,7 +108,6 @@ config['tab.external.containerOption'].observe((value) => {
 
 browser.tabs.onAttached.addListener(async () => {
   await tabSortingService.sortTabs();
-  tabChangeChannel.postMessage(true);
 });
 
 browser.tabs.onCreated.addListener((browserTab) => {
@@ -138,23 +134,8 @@ browser.tabs.onCreated.addListener((browserTab) => {
     } else if (tab.pinned) {
       console.log('Pinned tab: %d', tab.id);
       openTabs.add(tab.id);
-    } else if (tab.url == 'about:blank') {
-      // handles the case when the new tab page is about:blank
-      const tabId = tab.id;
-      setTimeout(() => {
-        browser.tabs.get(tabId).then((browserTab) => {
-          if (browserTab.url == 'about:blank' && browserTab.status != 'loading') {
-            openTabs.add(tabId);
-            if (browserTab.active) {
-              setActiveUserContext(browserTab.windowId, userContextId);
-            }
-          }
-        });
-      }, 3000);
     }
-    tabSortingService.sortTabs().then(() => {
-      tabChangeChannel.postMessage(true);
-    }).catch((e) => {
+    tabSortingService.sortTabs().catch((e) => {
       console.error(e);
     });
   } catch (e) {
@@ -173,7 +154,6 @@ browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
       return;
     }
     await tabSortingService.sortTabs();
-    tabChangeChannel.postMessage(true);
   } catch (e) {
     console.error(e);
   }
@@ -181,7 +161,6 @@ browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
 
 browser.tabs.onUpdated.addListener((/*tabId, changeInfo, browserTab*/) => {
   //console.log('tab %d hidden on window %d', tabId, tab.windowId);
-  tabChangeChannel.postMessage(true);
 }, {
   properties: [
     'hidden',
@@ -234,6 +213,12 @@ browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
       if (activeUserContextId != userContextId) {
         console.log('setActiveUserContext for window %d and user context %d', tab.windowId, userContextId);
         setActiveUserContext(tab.windowId, userContextId);
+      }
+    }
+    if (browserTab.url == 'about:blank' && browserTab.status != 'loading') {
+      openTabs.add(tabId);
+      if (browserTab.active) {
+        setActiveUserContext(browserTab.windowId, userContextId);
       }
     }
   } catch (e) {
