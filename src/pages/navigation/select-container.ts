@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { ExtensionService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
-import { DisplayedContainer } from 'weeg-containers';
+import { CookieStore, DisplayedContainer } from 'weeg-containers';
 
 import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
@@ -33,13 +33,11 @@ import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContaine
 import { config } from '../../config/config';
 
 import * as i18n from '../../legacy-lib/modules/i18n';
-import { PrivateBrowsingService } from '../../legacy-lib/tabs';
 
 import { ContainerEditorElement } from '../../components/container-editor';
 
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const extensionService = ExtensionService.getInstance();
-const privateBrowsingService = PrivateBrowsingService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
 const contextualIdentityService = ContextualIdentityService.getInstance();
@@ -83,20 +81,11 @@ settingsButton.addEventListener('click', () => {
 });
 
 const reopenInContainer = (cookieStoreId: string) => {
-  Promise.all([
-    browser.tabs.getCurrent(),
-    browser.tabs.create({
-      active: true,
-      windowId: browser.windows.WINDOW_ID_CURRENT,
-      cookieStoreId,
-      url,
-    }),
-  ]).then(([currentTabObj, createdTabObj]) => {
-    console.debug('Created tab', createdTabObj);
-    if (undefined == currentTabObj.id) {
+  browser.tabs.getCurrent().then((currentBrowserTab) => {
+    if (null == currentBrowserTab.id) {
       throw new Error('Current tab has no ID');
     }
-    return browser.tabs.remove(currentTabObj.id);
+    return containerTabOpenerService.reopenTabInContainer(currentBrowserTab.id, cookieStoreId, true);
   }).catch((e) => {
     console.error(e);
   });
@@ -182,15 +171,7 @@ displayedContainerService.getDisplayedContainersByPrivateBrowsing(false).then(as
     const privateBrowsingButton = createPrivateBrowsingButton();
     containersElement.append(privateBrowsingButton);
     privateBrowsingButton.addEventListener('click', () => {
-      privateBrowsingService.openTabInPrivateBrowsing(url).then(async () => {
-        const currentTab = await browser.tabs.getCurrent();
-        if (undefined == currentTab.id) {
-          throw new Error('Current tab has no ID');
-        }
-        await browser.tabs.remove(currentTab.id);
-      }).catch((e) => {
-        console.error(e);
-      });
+      reopenInContainer(CookieStore.PRIVATE.id);
     });
   }
 
