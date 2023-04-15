@@ -20,25 +20,25 @@
 **/
 
 import browser from 'webextension-polyfill';
+
+import { ExtensionVersionMigrationRegistry } from '../../lib/ExtensionVersionMigrationRegistry';
+
 import { ADDON_PAGE } from '../../defs';
 
 /**
  * Codes to run on first installation.
  */
 
-/* browser.runtime.onInstalled.addListener((details) => {
-  // Enable FPI by defailt on installation
-  const previousMajorVersion = parseInt((details.previousVersion ?? '0').split('.')[0] ?? '0', 10);
-  if ('install' == details.reason || 'update' == details.reason && 3 > previousMajorVersion) {
-    browser.privacy.websites.firstPartyIsolate.get({}).then((details) => {
-      if (!details.value) {
-        // FPI disabled
-        browser.privacy.websites.firstPartyIsolate.set({
-          value: true,
-        }).catch((e) => console.error(e));
-      }
-    });
-  }
-}); */
+const migrations = new ExtensionVersionMigrationRegistry();
+
+// define migrations here
+
+browser.runtime.onInstalled.addListener((details) => {
+  const previousVersion = details.previousVersion ?? '0';
+  const newVersion = browser.runtime.getManifest().version;
+  migrations.migrate(previousVersion, newVersion).catch((e) => {
+    console.error(e);
+  });
+});
 
 browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
