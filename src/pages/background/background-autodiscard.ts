@@ -42,7 +42,9 @@ alarm.onAlarm.addListener(async () => {
   // Filter tabs that are not discarded and are older than minAge
   const now = Date.now();
   const tabsToDiscard = tabs.filter((tab) => {
-    return !tab.discarded && !tab.active && !tab.pinned && null != tab.lastAccessed && tab.lastAccessed + minAge * 1000 < now;
+    const url = new URL(tab.url ?? 'about:blank');
+    const isHttpScheme = url.protocol.startsWith('http');
+    return isHttpScheme && !tab.discarded && !tab.active && !tab.pinned && null != tab.lastAccessed && tab.lastAccessed + minAge * 1000 < now;
   });
 
   // Discard the tabs
