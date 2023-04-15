@@ -28,4 +28,3 @@ export { FirstPartyTabMap } from './FirstPartyTabMap';
 export { WindowUserContextList } from './WindowUserContextList';
 export { DefinedUserContextList } from './DefinedUserContextList';
 export { FirstPartyUserContextList } from './FirstPartyUserContextList';
-export { CookieStoreSet } from './CookieStoreSet';
