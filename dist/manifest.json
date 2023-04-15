@@ -136,6 +136,6 @@
     "96": "icon.svg"
   },
   "web_accessible_resources": [
-    "navigation/confirm.html"
+    "pages/navigation/confirm.html"
   ]
 }
