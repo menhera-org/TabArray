@@ -20,7 +20,13 @@
 **/
 
 import browser from 'webextension-polyfill';
+import { PromiseUtils } from 'weeg-utils';
 
+import { StartupService } from '../../lib/StartupService';
+
+/**
+ * This file should only be loaded by the background script.
+ */
 export class InitialWindowsService {
   private static readonly _instance = new InitialWindowsService();
 
@@ -28,13 +34,22 @@ export class InitialWindowsService {
     return this._instance;
   }
 
-  private readonly _initialWindowsPromise = browser.windows.getAll({
-    populate: true,
-    windowTypes: ['normal'],
-  });
+  private readonly _startupService = StartupService.getInstance();
+
+  private readonly _initialWindowsPromise: Promise<browser.Windows.Window[]>;
 
   private constructor() {
     // Do nothing
+    const {promise, resolve} = PromiseUtils.createPromise<browser.Windows.Window[]>();
+    this._initialWindowsPromise = promise;
+    this._startupService.onStartup.addListener(() => {
+      browser.windows.getAll({
+        populate: true,
+        windowTypes: ['normal'],
+      }).then(resolve).catch((e) => {
+        console.error(e);
+      });
+    });
   }
 
   public async getInitialWindows(): Promise<browser.Windows.Window[]> {
