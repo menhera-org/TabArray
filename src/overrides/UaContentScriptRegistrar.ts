@@ -42,9 +42,9 @@ export class UaContentScriptRegistrar extends ContentScriptRegistrar {
     return config['feature.uaOverrides'].getValue();
   }
 
-  public getContentScriptString(cookieStoreId: string): string {
-    const ua = this.settings.getUserAgent(cookieStoreId);
-    const emulationMode = this.settings.getEmulationMode(cookieStoreId);
+  public async getContentScriptString(cookieStoreId: string): Promise<string> {
+    const ua = await this.settings.getUserAgent(cookieStoreId);
+    const emulationMode = await this.settings.getEmulationMode(cookieStoreId);
     const code = `
       globalThis.gUaStore = globalThis.gUaStore || {};
       gUaStore.userAgent = ${JSON.stringify(ua)};

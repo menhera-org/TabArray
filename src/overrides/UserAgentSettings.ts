@@ -32,7 +32,7 @@ export type UserAgentParams = {
   userAgent?: string;
 };
 
-type StorageType = {
+export type UserAgentStorageType = {
   [cookieStoreId: string]: UserAgentParams;
 };
 
@@ -44,70 +44,67 @@ export class UserAgentSettings {
     return UserAgentSettings.INSTANCE;
   }
 
-  private readonly _storage = new StorageItem<StorageType>(UserAgentSettings.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
-  private _value: StorageType = {};
+  private readonly _storage = new StorageItem<UserAgentStorageType>(UserAgentSettings.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
+  private _value: UserAgentStorageType = {};
   private readonly _chromeReleaseService = ChromiumReleaseService.getInstance();
 
   public readonly onChanged = new EventSink<void>();
 
   private constructor() {
-    this._storage.observe((newValue) => {
-      this._value = newValue;
+    this._storage.onChanged.addListener(() => {
       this.onChanged.dispatch();
-    }, true);
-  }
-
-  private save() {
-    this._storage.setValue(this._value).catch((e) => {
-      console.error(e);
     });
   }
 
-  public getValue(): StorageType {
-    return {
-      ... this._value,
-    };
+  private async saveValue(value: UserAgentStorageType) {
+    await this._storage.setValue(value);
   }
 
-  public setUserAgent(cookieStoreId: string, preset: UserAgentPreset, userAgent?: string) {
+  public async getValue(): Promise<UserAgentStorageType> {
+    return this._storage.getValue();
+  }
+
+  public async setUserAgent(cookieStoreId: string, preset: UserAgentPreset, userAgent?: string) {
+    const value = await this.getValue();
     switch (preset) {
       case 'default': {
-        delete this._value[cookieStoreId];
+        delete value[cookieStoreId];
         break;
       }
 
       case 'chrome': {
-        this._value[cookieStoreId] = {
+        value[cookieStoreId] = {
           preset: 'chrome',
         };
         break;
       }
 
       case 'googlebot': {
-        this._value[cookieStoreId] = {
+        value[cookieStoreId] = {
           preset: 'googlebot',
         };
         break;
       }
 
       default: {
-        this._value[cookieStoreId] = {
+        value[cookieStoreId] = {
           preset: 'custom',
           userAgent,
         };
       }
     }
 
-    this.save();
+    await this.saveValue(value);
   }
 
   /**
    * Returns the user agent string set for the given cookie store id.
    * @param cookieStoreId
-   * @returns the user agent string, or empty string if not set
+   * @returns Promise of the user agent string, or empty string if not set
    */
-  public getUserAgent(cookieStoreId: string): string {
-    const params = this._value[cookieStoreId];
+  public async getUserAgent(cookieStoreId: string): Promise<string> {
+    const value = await this.getValue();
+    const params = value[cookieStoreId];
     if (!params) {
       return '';
     }
@@ -125,8 +122,9 @@ export class UserAgentSettings {
     return params.userAgent || '';
   }
 
-  public getUserAgentParams(cookieStoreId: string): UserAgentParams {
-    const params = this._value[cookieStoreId];
+  public async getUserAgentParams(cookieStoreId: string): Promise<UserAgentParams> {
+    const value = await this.getValue();
+    const params = value[cookieStoreId];
     if (!params) {
       return {
         preset: 'default',
@@ -136,8 +134,8 @@ export class UserAgentSettings {
     return params;
   }
 
-  public getEmulationMode(cookieStoreId: string): UserAgentEmulationMode {
-    const ua = this.getUserAgent(cookieStoreId);
+  public async getEmulationMode(cookieStoreId: string): Promise<UserAgentEmulationMode> {
+    const ua = await this.getUserAgent(cookieStoreId);
     if (!ua) {
       return 'none';
     }

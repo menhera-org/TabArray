@@ -38,8 +38,8 @@ config['feature.uaOverrides'].observe((newValue) => {
   featureUserAgentOverridesEnabled = newValue;
 });
 
-const getSecChUa = (cookieStoreId: string) => {
-  const userAgent = userAgentSettings.getUserAgent(cookieStoreId);
+const getSecChUa = async (cookieStoreId: string) => {
+  const userAgent = await userAgentSettings.getUserAgent(cookieStoreId);
   const chrome = userAgent.match(/Chrome\/([0-9]+)/);
   if (!chrome) {
     return '';
@@ -81,26 +81,26 @@ const setHeader = (details: browser.WebRequest.OnBeforeSendHeadersDetailsType, h
   }
 };
 
-browser.webRequest.onBeforeSendHeaders.addListener((details) => {
+browser.webRequest.onBeforeSendHeaders.addListener(async (details) => {
   if (!details.cookieStoreId) {
-    return;
+    return {};
   }
 
   const cookieStoreId = details.cookieStoreId;
 
-  const userAgent = userAgentSettings.getUserAgent(cookieStoreId);
+  const userAgent = await userAgentSettings.getUserAgent(cookieStoreId);
   if ('' !== userAgent && featureUserAgentOverridesEnabled) {
     setHeader(details, 'user-agent', userAgent);
   }
 
-  const acceptLanguages = languageSettings.getAcceptLanguages(cookieStoreId);
+  const acceptLanguages = await languageSettings.getAcceptLanguages(cookieStoreId);
   if ('' !== acceptLanguages && featureLanguageOverridesEnabled) {
     setHeader(details, 'accept-language', acceptLanguages);
   }
 
   // this feature is only available in secure contexts.
   if (featureUserAgentOverridesEnabled && details.url?.startsWith('https://')) {
-    const secChUa = getSecChUa(details.cookieStoreId);
+    const secChUa = await getSecChUa(details.cookieStoreId);
     if ('' !== secChUa) {
       setHeader(details, 'sec-ch-ua', secChUa);
       const secChUaFullVersionList = secChUa.replaceAll(/v="(\d+)"/g, 'v="$1.0.0.0"');

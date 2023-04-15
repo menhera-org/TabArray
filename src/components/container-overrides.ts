@@ -111,7 +111,10 @@ export class ContainerOverridesElement extends HTMLElement {
       // this._languageSettings.setUserAgent(originAttributes, userAgent);
     } else {
       input.readOnly = true;
-      input.value = this._userAgentSettings.getUserAgent(displayedContainer.cookieStore.id) || navigator.userAgent;
+      const promise = Promise.resolve(this._userAgentSettings.getUserAgent(displayedContainer.cookieStore.id));
+      promise.then((userAgent) => {
+        input.value = userAgent || navigator.userAgent;
+      });
     }
   }
 
@@ -161,10 +164,13 @@ export class ContainerOverridesElement extends HTMLElement {
       this.handleUserAgentChange(displayedContainer, select, input);
     });
     this._userAgentSettings.onChanged.addListener(() => {
-      const {preset, userAgent} = this._userAgentSettings.getUserAgentParams(displayedContainer.cookieStore.id);
-      this.setUserAgentOptions(displayedContainer, select, input, preset, userAgent);
+      this._userAgentSettings.getUserAgentParams(displayedContainer.cookieStore.id).then(({preset, userAgent}) => {
+        this.setUserAgentOptions(displayedContainer, select, input, preset, userAgent);
+      });
     });
-    this.setUserAgentOptions(displayedContainer, select, input, initialParams.preset, initialParams.userAgent);
+    initialParams.then((initialParams) => {
+      this.setUserAgentOptions(displayedContainer, select, input, initialParams.preset, initialParams.userAgent);
+    });
     element.appendChild(input);
 
     config['feature.uaOverrides'].observe((enabled) => {
