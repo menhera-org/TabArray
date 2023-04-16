@@ -45,6 +45,7 @@ import './background-autodiscard';
 import './background-storage-observer';
 import './background-active-container';
 import './background-redirector';
+import './background-tab-sorter';
 import { everyMinuteAlarm } from './background-alarms';
 
 import '../../api/ApiDefinitions';
