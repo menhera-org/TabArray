@@ -20,25 +20,21 @@
 **/
 
 import './background-install-handler';
+
 import browser from 'webextension-polyfill';
 import { CompatTab } from 'weeg-tabs';
-import { CookieStore } from 'weeg-containers';
 import { Alarm } from 'weeg-utils';
 
 import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 import { PageLoaderService } from '../../lib/PageLoaderService';
-import { OpenTabsService } from '../../lib/states/OpenTabsService';
-import { ActiveContainerService } from '../../lib/states/ActiveContainerService';
-import { ElapsedTimeService } from '../../lib/ElapsedTimeService';
 import { ContainerCreatorService } from '../../lib/tabGroups/ContainerCreatorService';
-
-import { config } from '../../config/config';
+import { TabSortingService } from '../../lib/tabs/TabSortingService';
+import { SanityCheckService } from '../../lib/SenityCheckService';
+import { StartupService } from '../../lib/StartupService';
 
 import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 
-import { BeforeRequestHandler } from './BeforeRequestHandler';
-import { TabSortingService } from '../../lib/tabs/TabSortingService';
 import './background-index-tab';
 import './background-container-observer';
 import './background-menus';
@@ -46,32 +42,16 @@ import './background-cookie-autoclean';
 import './FramingHeadersService';
 import './background-commands';
 import './background-update-browserAction';
-import '../../api/ApiDefinitions';
-import '../../overrides/fetch';
-import '../../overrides/language-content-script';
 import './background-temporary-containers';
 import './background-autodiscard';
 import './background-storage-observer';
 import './background-active-container';
+import './background-redirector';
+
+import '../../api/ApiDefinitions';
+import '../../overrides/fetch';
+import '../../overrides/language-content-script';
 import { UaContentScriptRegistrar} from '../../overrides/UaContentScriptRegistrar';
-
-// auto reload
-const AUTO_RELOAD_MONITOR_INTERVAL_IN_MINUTES = 1;
-
-const autoReloadAlarm = new Alarm('autoReload', {
-  periodInMinutes: AUTO_RELOAD_MONITOR_INTERVAL_IN_MINUTES,
-});
-
-autoReloadAlarm.onAlarm.addListener(() => {
-  Promise.all([
-    fetch('/manifest.json'),
-    fetch('/css/theme.css'),
-  ]).catch(() => {
-    browser.runtime.reload();
-  });
-});
-
-const TAB_SORTING_INTERVAL_IN_MINUTES = 1;
 
 // external services must be registered here
 ExternalServiceProvider.getInstance();
@@ -83,11 +63,25 @@ PageLoaderService.getInstance<PageLoaderService>();
 ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const tabSortingService = TabSortingService.getInstance<TabSortingService>();
 
+// must be instantiated here
+new UaContentScriptRegistrar();
+
 // other services used by this script
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
-const openTabsService = OpenTabsService.getInstance();
-const activeContainerService = ActiveContainerService.getInstance();
-const elapsedTimeService = ElapsedTimeService.getInstance();
+const sanityCheckService = SanityCheckService.getInstance();
+const startupService = StartupService.getInstance();
+
+const everyMinuteAlarm = new Alarm('background.everyMinute', {
+  periodInMinutes: 1,
+});
+
+// auto reload the extension if the sanity check fails
+everyMinuteAlarm.onAlarm.addListener(() => {
+  sanityCheckService.checkForFiles().catch((e) => {
+    console.error('Sanity check failed, reloading', e);
+    browser.runtime.reload();
+  });
+});
 
 browser.tabs.onAttached.addListener(async () => {
   await tabSortingService.sortTabs();
@@ -177,74 +171,14 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   }
 });
 
-tabSortingService.sortTabs().catch((e) => {
-  console.error(e);
-});
-
-const tabSortingAlarm = new Alarm('tabSorting', {
-  periodInMinutes: TAB_SORTING_INTERVAL_IN_MINUTES,
-});
-
-tabSortingAlarm.onAlarm.addListener(() => {
+startupService.onStartup.addListener(() => {
   tabSortingService.sortTabs().catch((e) => {
     console.error(e);
   });
 });
 
-const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
-  // This is never called for private tabs.
-  try {
-    // do not redirect if the tab is loaded when the browser is started
-    const elapsedTime = await elapsedTimeService.getElapsedTime();
-    if (elapsedTime < 2000) return false;
-    if (details.cookieStoreId == null || details.tabId == -1 || details.frameId != 0 || details.originUrl || details.incognito) return false;
-    const cookieStoreId = details.cookieStoreId;
-
-    const externalTabContainerOption = await config['tab.external.containerOption'].getValue();
-    if (cookieStoreId != CookieStore.DEFAULT.id || externalTabContainerOption == 'disabled') {
-      return false;
-    }
-
-    if (await openTabsService.hasTab(details.tabId)) {
-      console.info('Ignoring manually navigated tab: %d', details.tabId);
-      return false;
-    }
-
-    const {tabId, url} = details;
-
-    const browserTab = await browser.tabs.get(tabId);
-    const tab = new CompatTab(browserTab);
-    const {windowId} = tab;
-    if (tab.discarded) {
-      return false;
-    }
-
-    if ('sticky' == externalTabContainerOption) {
-      const activeCookieStoreId = await activeContainerService.getActiveContainer(windowId);
-      if (cookieStoreId == activeCookieStoreId || activeCookieStoreId == null) {
-        console.log('Tab %d in active cookie store %s', tabId, cookieStoreId);
-        return false;
-      } else {
-        browser.tabs.create({
-          cookieStoreId: activeCookieStoreId,
-          url,
-          windowId,
-        }).then(() => {
-          console.log('Reopened %s in container id %s', url, activeCookieStoreId);
-          return browser.tabs.remove(tabId);
-        }).catch((e) => {
-          console.error(e);
-        });
-      }
-    }
-
-    console.log('Capturing request for tab %d: %s', tabId, url);
-    return true;
-  } catch (e) {
+everyMinuteAlarm.onAlarm.addListener(() => {
+  tabSortingService.sortTabs().catch((e) => {
     console.error(e);
-    return false;
-  }
+  });
 });
-beforeRequestHandler.startListening();
-
-new UaContentScriptRegistrar();
