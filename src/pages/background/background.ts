@@ -38,14 +38,14 @@ import { UserContextVisibilityService } from '../../legacy-lib/userContexts/User
 
 import { BeforeRequestHandler } from './BeforeRequestHandler';
 import { TabSortingService } from '../../lib/tabs/TabSortingService';
-import './IndexTabHandler';
-import './BackgroundContainerObservers';
-import './BackgroundMenu';
-import './BackgroundCookieAutoclean';
+import './background-index-tab';
+import './background-container-observer';
+import './background-menus';
+import './background-cookie-autoclean';
 import './FramingHeadersService';
-import './BackgroundMessageListeners';
-import './KeyboardShortcurListeners';
-import './BrowserActionUpdater';
+import './background-container-creator';
+import './background-commands';
+import './background-update-browserAction';
 import '../../api/ApiDefinitions';
 import '../../overrides/fetch';
 import '../../overrides/language-content-script';
