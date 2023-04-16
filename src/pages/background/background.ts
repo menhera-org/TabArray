@@ -23,7 +23,6 @@ import './background-install-handler';
 
 import browser from 'webextension-polyfill';
 import { CompatTab } from 'weeg-tabs';
-import { Alarm } from 'weeg-utils';
 
 import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
@@ -31,7 +30,6 @@ import { PageLoaderService } from '../../lib/PageLoaderService';
 import { ContainerCreatorService } from '../../lib/tabGroups/ContainerCreatorService';
 import { TabSortingService } from '../../lib/tabs/TabSortingService';
 import { SanityCheckService } from '../../lib/SenityCheckService';
-import { StartupService } from '../../lib/StartupService';
 
 import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 
@@ -47,6 +45,7 @@ import './background-autodiscard';
 import './background-storage-observer';
 import './background-active-container';
 import './background-redirector';
+import { everyMinuteAlarm } from './background-alarms';
 
 import '../../api/ApiDefinitions';
 import '../../overrides/fetch';
@@ -61,7 +60,7 @@ ExternalServiceProvider.getInstance();
 ContainerCreatorService.getInstance<ContainerCreatorService>();
 PageLoaderService.getInstance<PageLoaderService>();
 ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
-const tabSortingService = TabSortingService.getInstance<TabSortingService>();
+TabSortingService.getInstance<TabSortingService>();
 
 // must be instantiated here
 new UaContentScriptRegistrar();
@@ -69,11 +68,6 @@ new UaContentScriptRegistrar();
 // other services used by this script
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const sanityCheckService = SanityCheckService.getInstance();
-const startupService = StartupService.getInstance();
-
-const everyMinuteAlarm = new Alarm('background.everyMinute', {
-  periodInMinutes: 1,
-});
 
 // auto reload the extension if the sanity check fails
 everyMinuteAlarm.onAlarm.addListener(() => {
@@ -83,54 +77,11 @@ everyMinuteAlarm.onAlarm.addListener(() => {
   });
 });
 
-browser.tabs.onAttached.addListener(async () => {
-  await tabSortingService.sortTabs();
-});
-
-browser.tabs.onCreated.addListener((browserTab) => {
-  try {
-    if (null == browserTab.cookieStoreId || null == browserTab.windowId || null == browserTab.id || null == browserTab.url) return;
-    const tab = new CompatTab(browserTab);
-    const cookieStore = tab.cookieStore;
-    if (cookieStore.isPrivate) {
-      return;
-    }
-
-    tabSortingService.sortTabs().catch((e) => {
-      console.error(e);
-    });
-  } catch (e) {
-    console.error(e);
-  }
-});
-
-browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
-  try {
-    const browserTab = await browser.tabs.get(tabId);
-    if (browserTab.pinned) {
-      return;
-    }
-    await tabSortingService.sortTabs();
-  } catch (e) {
-    console.error(e);
-  }
-});
-
 browser.tabs.onUpdated.addListener((/*tabId, changeInfo, browserTab*/) => {
   //console.log('tab %d hidden on window %d', tabId, tab.windowId);
 }, {
   properties: [
     'hidden',
-  ],
-});
-
-browser.tabs.onUpdated.addListener((/*tabId, changeInfo, browserTab*/) => {
-  tabSortingService.sortTabs().catch((e) => {
-    console.error(e);
-  });
-}, {
-  properties: [
-    'pinned',
   ],
 });
 
@@ -169,16 +120,4 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   } catch (e) {
     console.error(e);
   }
-});
-
-startupService.onStartup.addListener(() => {
-  tabSortingService.sortTabs().catch((e) => {
-    console.error(e);
-  });
-});
-
-everyMinuteAlarm.onAlarm.addListener(() => {
-  tabSortingService.sortTabs().catch((e) => {
-    console.error(e);
-  });
 });
