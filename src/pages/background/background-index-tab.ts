@@ -24,19 +24,19 @@ import { Uint32 } from "weeg-types";
 import { CompatTab } from 'weeg-tabs';
 
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
+import { IndexTabService } from '../../lib/tabs/IndexTabService';
 
 import * as containers from '../../legacy-lib/modules/containers';
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';
 import { WindowUserContextList } from '../../legacy-lib/tabGroups';
 
 import { config } from '../../config/config';
-import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 import { InitialWindowsService } from './InitialWindowsService';
 
-const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const initialWindowsService = InitialWindowsService.getInstance();
 const indexTabUserContextMap = new Map<number, Uint32.Uint32>();
 const tabQueryService = TabQueryService.getInstance();
+const indexTabService = IndexTabService.getInstance();
 
 const handleClosedIndexTab = async (tabId: number, windowId: number) => {
   const indexTabUserContextId = indexTabUserContextMap.get(tabId);
@@ -61,7 +61,7 @@ browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) =>
 
       // if the only remaining tab is an index tab, close it
       if (tabs[0] && tabs.length == 1 && IndexTab.isIndexTabUrl(tabs[0].url)) {
-        await userContextVisibilityService.unregisterIndexTab(tabs[0].id);
+        await indexTabService.unregisterIndexTab(tabs[0].id);
         await tabs[0].close();
       }
     }
@@ -87,6 +87,7 @@ initialWindowsService.getInitialWindows().then(async (browserWindows) => {
     const windowUserContextList = await WindowUserContextList.create(browserWindow.id);
     const userContexts = windowUserContextList.getOpenUserContexts();
     for (const userContext of userContexts) {
+      const cookieStoreId = userContext.cookieStoreId;
       const tabs = [... windowUserContextList.getUserContextTabs(userContext.id)];
       let hasIndexTab = false;
       let hidden = false;
@@ -99,7 +100,7 @@ initialWindowsService.getInitialWindows().then(async (browserWindows) => {
         }
       }
       if (!hasIndexTab && (hidden || indexTabOption == 'always')) {
-        await userContextVisibilityService.createIndexTab(browserWindow.id, userContext.id);
+        await indexTabService.createIndexTab(browserWindow.id, cookieStoreId);
       }
     }
   }
@@ -129,6 +130,7 @@ browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, browserTab) => {
   browserTab.id = tabId;
   const tab = new CompatTab(browserTab);
+  const cookieStoreId = tab.cookieStore.id;
   const userContextId = tab.cookieStore.userContextId;
   if (!IndexTab.isIndexTabUrl(tab.url)) {
     indexTabUserContextMap.delete(tab.id);
@@ -151,7 +153,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, browserTab) => {
     }
 
     if (!hasIndexTab) {
-      userContextVisibilityService.createIndexTab(tab.windowId, userContextId).catch((e) => {
+      indexTabService.createIndexTab(tab.windowId, cookieStoreId).catch((e) => {
         console.error(e);
       });
     }

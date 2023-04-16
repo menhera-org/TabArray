@@ -20,31 +20,31 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { Uint32 } from "weeg-types";
-import { Tab } from '../tabs';
+import { CompatTab } from 'weeg-tabs';
+
 import { IndexTab } from '../modules/IndexTab';
 
-export class WindowUserContextVisibilityHelper {
-  private _tabsToHide: Tab[] = [];
-  private _tabsToShow: Tab[] = [];
+export class WindowContainerHidingHelper {
+  private _tabsToHide: CompatTab[] = [];
+  private _tabsToShow: CompatTab[] = [];
   private _hasIndexTab = false;
   private _isActive = false;
 
-  public static async create(windowId: number, userContextId: Uint32.Uint32): Promise<WindowUserContextVisibilityHelper> {
+  public static async create(windowId: number, cookieStoreId: string): Promise<WindowContainerHidingHelper> {
     const browserWindow = await browser.windows.get(windowId, { populate: true });
-    return new WindowUserContextVisibilityHelper(browserWindow, userContextId);
+    return new WindowContainerHidingHelper(browserWindow, cookieStoreId);
   }
 
-  private constructor(browserWindow: browser.Windows.Window, userContextId: Uint32.Uint32) {
+  private constructor(browserWindow: browser.Windows.Window, cookieStoreId: string) {
     if (!browserWindow.tabs) {
       throw new Error('browserWindow.tabs is undefined');
     }
     if (browserWindow.incognito) {
       throw new Error('browserWindow is incognito');
     }
-    const tabs = browserWindow.tabs.map((browserTab) => new Tab(browserTab));
+    const tabs = browserWindow.tabs.map((browserTab) => new CompatTab(browserTab));
     for (const tab of tabs) {
-      const userContextMatches = tab.originAttributes.userContextId === userContextId;
+      const userContextMatches = tab.cookieStore.id === cookieStoreId;
       if (userContextMatches && tab.active) {
         this._isActive = true;
       }
@@ -66,7 +66,7 @@ export class WindowUserContextVisibilityHelper {
     return this._hasIndexTab;
   }
 
-  public get tabsToHide(): ReadonlyArray<Tab> {
+  public get tabsToHide(): ReadonlyArray<CompatTab> {
     return this._tabsToHide;
   }
 
@@ -74,7 +74,7 @@ export class WindowUserContextVisibilityHelper {
     return this._isActive;
   }
 
-  public get tabToActivate(): Tab | undefined {
+  public get tabToActivate(): CompatTab | undefined {
     if (this._tabsToShow.length < 1) {
       return undefined;
     }
