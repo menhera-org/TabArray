@@ -45,7 +45,6 @@ export class UserAgentSettings {
   }
 
   private readonly _storage = new StorageItem<UserAgentStorageType>(UserAgentSettings.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
-  private _value: UserAgentStorageType = {};
   private readonly _chromeReleaseService = ChromiumReleaseService.getInstance();
 
   public readonly onChanged = new EventSink<void>();
