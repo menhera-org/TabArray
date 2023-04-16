@@ -31,14 +31,6 @@ import { WindowContainerHidingHelper } from './WindowContainerHidingHelper';
 import { IndexTab } from '../modules/IndexTab';
 import { WindowService } from '../tabs/WindowService';
 
-// 'never' -- do not show indices
-// 'collapsed' -- show indices for collapsed containers
-// 'always' -- always show indices
-let configGroupIndexOption = 'never';
-config['tab.groups.indexOption'].observe((value) => {
-  configGroupIndexOption = value;
-});
-
 /**
  * This does not support private windows.
  */
@@ -73,6 +65,7 @@ export class UserContextVisibilityService {
   public async hideContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
     const isPrivate = await this._windowService.isPrivateWindow(windowId);
     if (isPrivate) return;
+    const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
     const cookieStoreId = CookieStore.fromParams({
       userContextId,
       privateBrowsingId: 0 as Uint32.Uint32,
@@ -101,6 +94,7 @@ export class UserContextVisibilityService {
   public async showContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
     const isPrivate = await this._windowService.isPrivateWindow(windowId);
     if (isPrivate) return;
+    const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
     const tabs = await this.getContainerTabsOnWindow(windowId, userContextId); // throws for private windows.
     if (tabs.length < 1) {
       console.log('No tabs to show on window %d for userContext %d', windowId, userContextId);
