@@ -25,6 +25,8 @@ import { EventSink } from 'weeg-events';
 import { ContextualIdentity } from 'weeg-containers';
 
 import { SupergroupService } from '../lib/tabGroups/SupergroupService';
+import { ContainerCreatorService } from '../lib/tabGroups/ContainerCreatorService';
+
 import { ColorPickerElement } from './usercontext-colorpicker';
 import { IconPickerElement } from './usercontext-iconpicker';
 
@@ -35,6 +37,7 @@ export class ContainerEditorElement extends HTMLElement {
   private _contextualIdentity: ContextualIdentity | undefined;
   private readonly _messagingService = MessagingService.getInstance();
   private readonly _supergroupService = SupergroupService.getInstance();
+  private readonly _containerCreatorService = ContainerCreatorService.getInstance<ContainerCreatorService>();
 
   public readonly onContainerCreated = new EventSink<string>();
   public readonly onContainerUpdated = new EventSink<string>();
@@ -119,23 +122,23 @@ export class ContainerEditorElement extends HTMLElement {
           });
           this.onContainerCreated.dispatch(contextualIdentity.cookieStore.id);
         } else {
-          const cookieStoreId = await this._messagingService.sendMessage('container_create', {
+          const cookieStoreId = await this._containerCreatorService.create(
             name,
-            icon,
             color,
-          }) as string;
+            icon,
+          ) as string;
           this.onContainerCreated.dispatch(cookieStoreId);
         }
       } else if (this._mode === 'edit') {
         if (!this._contextualIdentity) {
           throw new Error('Container attributes is null');
         }
-        const cookieStoreId = await this._messagingService.sendMessage('container_update', {
-          cookieStoreId: this._contextualIdentity.cookieStore.id,
+        const cookieStoreId = await this._containerCreatorService.update(
+          this._contextualIdentity.cookieStore.id,
           name,
-          icon,
           color,
-        }) as string;
+          icon,
+        );
         this.onContainerUpdated.dispatch(cookieStoreId);
       }
       this.remove();

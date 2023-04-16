@@ -31,6 +31,7 @@ import { PageLoaderService } from '../../lib/PageLoaderService';
 import { OpenTabsService } from '../../lib/states/OpenTabsService';
 import { ActiveContainerService } from '../../lib/states/ActiveContainerService';
 import { ElapsedTimeService } from '../../lib/ElapsedTimeService';
+import { ContainerCreatorService } from '../../lib/tabGroups/ContainerCreatorService';
 
 import { config } from '../../config/config';
 
@@ -43,7 +44,6 @@ import './background-container-observer';
 import './background-menus';
 import './background-cookie-autoclean';
 import './FramingHeadersService';
-import './background-container-creator';
 import './background-commands';
 import './background-update-browserAction';
 import '../../api/ApiDefinitions';
@@ -73,11 +73,18 @@ autoReloadAlarm.onAlarm.addListener(() => {
 
 const TAB_SORTING_INTERVAL_IN_MINUTES = 1;
 
+// external services must be registered here
+ExternalServiceProvider.getInstance();
+
+// background services need to be instantiated here
+// so that the listeners are registered
+ContainerCreatorService.getInstance<ContainerCreatorService>();
 PageLoaderService.getInstance<PageLoaderService>();
 ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
-ExternalServiceProvider.getInstance();
-const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const tabSortingService = TabSortingService.getInstance<TabSortingService>();
+
+// other services used by this script
+const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const openTabsService = OpenTabsService.getInstance();
 const activeContainerService = ActiveContainerService.getInstance();
 const elapsedTimeService = ElapsedTimeService.getInstance();

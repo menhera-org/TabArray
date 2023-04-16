@@ -19,12 +19,19 @@
   @license
 **/
 
-import { MessagingService } from 'weeg-utils';
+import { BackgroundService } from 'weeg-utils';
 
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
+import { ServiceRegistry } from '../ServiceRegistry';
+
+type MessageType = {
+  cookieStoreId?: string;
+  name: string;
+  color: string;
+  icon: string;
+};
 
 const contextualIdentityService = ContextualIdentityService.getInstance();
-const messagingService = MessagingService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 
 const containerCreate = async (name: string, color: string, icon: string): Promise<string> => {
@@ -33,21 +40,35 @@ const containerCreate = async (name: string, color: string, icon: string): Promi
   return contextualIdentity.cookieStore.id;
 };
 
-const containerUpdate = async (name: string, color: string, icon: string, cookieStoreId: string): Promise<void> => {
+const containerUpdate = async (name: string, color: string, icon: string, cookieStoreId: string): Promise<string> => {
   console.debug('container_update: name=%s, color=%s, icon=%s, cookieStoreId=%s', name, color, icon, cookieStoreId);
   await contextualIdentityFactory.setParams(cookieStoreId, {name, color, icon});
+  return cookieStoreId;
 };
 
-messagingService.addListener('container_create', async (message) => {
-  if (null == message || typeof message != 'object' || !('name' in message) || !('color' in message) || !('icon' in message)) return;
-  const {name, color, icon} = message;
-  const cookieStoreId = await containerCreate(name as string, color as string, icon as string);
-  return cookieStoreId;
-});
+export class ContainerCreatorService extends BackgroundService<MessageType, string> {
+  public override getServiceName(): string {
+    return 'ContainerCreatorService';
+  }
 
-messagingService.addListener('container_update', async (message) => {
-  if (null == message || typeof message != 'object' || !('name' in message) || !('color' in message) || !('icon' in message) || !('cookieStoreId' in message)) return;
-  const {name, color, icon, cookieStoreId} = message;
-  await containerUpdate(name as string, color as string, icon as string, cookieStoreId as string);
-  return cookieStoreId;
-});
+  protected override initializeBackground(): void {
+    // nothing to do
+  }
+
+  protected override execute(input: MessageType): Promise<string> {
+    if (null != input.cookieStoreId) {
+      return containerUpdate(input.name, input.color, input.icon, input.cookieStoreId);
+    }
+    return containerCreate(input.name, input.color, input.icon);
+  }
+
+  public create(name: string, color: string, icon: string): Promise<string> {
+    return this.call({name, color, icon});
+  }
+
+  public update(cookieStoreId: string, name: string, color: string, icon: string): Promise<string> {
+    return this.call({cookieStoreId, name, color, icon});
+  }
+}
+
+ServiceRegistry.getInstance().registerService('ContainerCreatorService', ContainerCreatorService.getInstance<ContainerCreatorService>());
