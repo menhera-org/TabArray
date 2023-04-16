@@ -44,7 +44,7 @@ export class StartupService {
       throw new Error("This class is only for the background page.");
     }
     assertTopLevel();
-    browser.runtime.onStartup.addListener(() => {
+    browser.runtime.onInstalled.addListener(() => {
       this.onStartup.dispatch();
     });
   }

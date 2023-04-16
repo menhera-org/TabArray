@@ -57,6 +57,7 @@ export class ExtensionVersionMigrationRegistry {
     for (const version of versions) {
       const versionObj = ExtensionVersion.fromString(version);
       if (versionObj.isGreaterThan(oldVersionObj) && !versionObj.isGreaterThan(newVersionObj)) {
+        console.info('Running migration for version', version);
         await this.callMigration(version);
       }
     }

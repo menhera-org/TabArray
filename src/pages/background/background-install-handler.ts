@@ -36,6 +36,7 @@ const migrations = new ExtensionVersionMigrationRegistry();
 browser.runtime.onInstalled.addListener((details) => {
   const previousVersion = details.previousVersion ?? '0';
   const newVersion = browser.runtime.getManifest().version;
+  console.info('onInstalled: %s -> %s', previousVersion, newVersion);
   migrations.migrate(previousVersion, newVersion).catch((e) => {
     console.error(e);
   });
