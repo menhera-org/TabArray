@@ -23,20 +23,20 @@ import './background-install-handler';
 import browser from 'webextension-polyfill';
 import { CompatTab } from 'weeg-tabs';
 import { CookieStore } from 'weeg-containers';
-import { Uint32 } from 'weeg-types';
+import { Alarm } from 'weeg-utils';
 
 import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 import { PageLoaderService } from '../../lib/PageLoaderService';
-import { NewTabPageService } from '../../lib/tabs/NewTabPageService';
-
-import { getActiveUserContext, setActiveUserContext } from '../../legacy-lib/modules/usercontext-state.js';
+import { OpenTabsService } from '../../lib/states/OpenTabsService';
+import { ActiveContainerService } from '../../lib/states/ActiveContainerService';
+import { ElapsedTimeService } from '../../lib/ElapsedTimeService';
 
 import { config } from '../../config/config';
+
 import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
 
 import { BeforeRequestHandler } from './BeforeRequestHandler';
-import { BackgroundUtils } from './BackgroundUtils';
 import { TabSortingService } from '../../lib/tabs/TabSortingService';
 import './IndexTabHandler';
 import './BackgroundContainerObservers';
@@ -52,59 +52,35 @@ import '../../overrides/language-content-script';
 import './background-temporary-containers';
 import './background-autodiscard';
 import './background-storage-observer';
+import './background-active-container';
 import { UaContentScriptRegistrar} from '../../overrides/UaContentScriptRegistrar';
 
-// watchdog
-let scriptCompleted = false;
-const scriptStart = Date.now();
-window.addEventListener('error', () => {
-  if (!scriptCompleted) {
-    setTimeout(() => location.reload(), 10000);
-  }
+// auto reload
+const AUTO_RELOAD_MONITOR_INTERVAL_IN_MINUTES = 1;
+
+const autoReloadAlarm = new Alarm('autoReload', {
+  periodInMinutes: AUTO_RELOAD_MONITOR_INTERVAL_IN_MINUTES,
 });
 
-// auto reload
-// this will not work with nonpersistent background pages
-const AUTO_RELOAD_MONITOR_INTERVAL = 5000;
-setInterval(() => {
+autoReloadAlarm.onAlarm.addListener(() => {
   Promise.all([
     fetch('/manifest.json'),
     fetch('/css/theme.css'),
   ]).catch(() => {
     browser.runtime.reload();
   });
-}, AUTO_RELOAD_MONITOR_INTERVAL);
+});
 
-const TAB_SORTING_INTERVAL = 10000;
+const TAB_SORTING_INTERVAL_IN_MINUTES = 1;
 
 PageLoaderService.getInstance<PageLoaderService>();
-const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
+ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 ExternalServiceProvider.getInstance();
 const userContextVisibilityService = UserContextVisibilityService.getInstance();
 const tabSortingService = TabSortingService.getInstance<TabSortingService>();
-const utils = new BackgroundUtils();
-const newTabPageService = NewTabPageService.getInstance();
-
-// Set<number>
-// Set of tab IDs.
-const openTabs = new Set<number>();
-
-let configNewTabInContainerEnabled = true;
-let configExternalTabChooseContainer = true;
-let configExternalTabContainerOption = 'choose';
-config['newtab.keepContainer'].observe((value) => {
-  configNewTabInContainerEnabled = value;
-});
-
-config['tab.external.containerOption'].observe((value) => {
-  configExternalTabContainerOption = value;
-
-  if (value == 'disabled') {
-    configExternalTabChooseContainer = false;
-  } else {
-    configExternalTabChooseContainer = true;
-  }
-});
+const openTabsService = OpenTabsService.getInstance();
+const activeContainerService = ActiveContainerService.getInstance();
+const elapsedTimeService = ElapsedTimeService.getInstance();
 
 browser.tabs.onAttached.addListener(async () => {
   await tabSortingService.sortTabs();
@@ -118,33 +94,13 @@ browser.tabs.onCreated.addListener((browserTab) => {
     if (cookieStore.isPrivate) {
       return;
     }
-    const userContextId = cookieStore.userContextId;
-    const activeUserContextId = getActiveUserContext(tab.windowId);
-    const windowId = tab.windowId;
-    if (configNewTabInContainerEnabled && tab.url == 'about:newtab' && 0 == userContextId && 0 != activeUserContextId) {
-      utils.reopenNewTabInContainer(tab.id, activeUserContextId, windowId).catch((e) => {
-        console.error(e);
-      });
-      return;
-    }
 
-    if (tab.url != 'about:blank' && browserTab.status != 'loading') {
-      console.log('Manually opened tab: %d', tab.id);
-      openTabs.add(tab.id);
-    } else if (tab.pinned) {
-      console.log('Pinned tab: %d', tab.id);
-      openTabs.add(tab.id);
-    }
     tabSortingService.sortTabs().catch((e) => {
       console.error(e);
     });
   } catch (e) {
     console.error(e);
   }
-});
-
-browser.tabs.onRemoved.addListener(async (tabId) => {
-  openTabs.delete(tabId);
 });
 
 browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
@@ -177,66 +133,12 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, browserTab*/) => {
   ],
 });
 
-browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
-  try {
-    browserTab.id = tabId;
-    if (browserTab.cookieStoreId == null || browserTab.url == null || browserTab.windowId == null) return;
-    const tab = new CompatTab(browserTab);
-    const cookieStore = tab.cookieStore;
-    if (cookieStore.isPrivate) {
-      return;
-    }
-    const newTabPageUrl = await newTabPageService.getNewTabPageUrl();
-    const userContextId = cookieStore.userContextId;
-    const windowId = tab.windowId;
-    const activeUserContextId = getActiveUserContext(tab.windowId);
-    if (configNewTabInContainerEnabled && tab.url == newTabPageUrl && 0 == userContextId && 0 != activeUserContextId) {
-      console.log('Reopening new tab in active user context: %d for window %d', activeUserContextId, tab.windowId);
-      utils.reopenNewTabInContainer(tab.id, activeUserContextId, windowId).catch((e) => {
-        console.error(e);
-      });
-      return;
-    }
-    if (tab.url != 'about:blank' && browserTab.status != 'loading') {
-      if (!openTabs.has(tab.id)) {
-        console.log('Manually opened tab: %d', tab.id);
-        openTabs.add(tab.id);
-      }
-    } else if (tab.pinned) {
-      if (!openTabs.has(tab.id)) {
-        console.log('Pinned tab: %d', tab.id);
-        openTabs.add(tab.id);
-      }
-    }
-    if (tab.url != 'about:blank' && browserTab.status != 'loading' && tab.active) {
-      const activeUserContextId: number = getActiveUserContext(tab.windowId);
-      if (activeUserContextId != userContextId) {
-        console.log('setActiveUserContext for window %d and user context %d', tab.windowId, userContextId);
-        setActiveUserContext(tab.windowId, userContextId);
-      }
-    }
-    if (browserTab.url == 'about:blank' && browserTab.status != 'loading') {
-      openTabs.add(tabId);
-      if (browserTab.active) {
-        setActiveUserContext(browserTab.windowId, userContextId);
-      }
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}, {
-  properties: [
-    'url',
-    'status',
-  ],
-});
-
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   try {
     const browserTab = await browser.tabs.get(tabId);
+    if (browserTab.cookieStoreId == null || browserTab.id == null) return;
     const tab = new CompatTab(browserTab);
     const cookieStore = tab.cookieStore;
-    if (browserTab.cookieStoreId == null || browserTab.id == null) return;
     if (cookieStore.isPrivate) {
       return;
     }
@@ -268,51 +170,64 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   }
 });
 
-tabSortingService.sortTabs();
+tabSortingService.sortTabs().catch((e) => {
+  console.error(e);
+});
 
-setInterval(() => {
-  tabSortingService.sortTabs();
-}, TAB_SORTING_INTERVAL);
+const tabSortingAlarm = new Alarm('tabSorting', {
+  periodInMinutes: TAB_SORTING_INTERVAL_IN_MINUTES,
+});
+
+tabSortingAlarm.onAlarm.addListener(() => {
+  tabSortingService.sortTabs().catch((e) => {
+    console.error(e);
+  });
+});
 
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   // This is never called for private tabs.
   try {
     // do not redirect if the tab is loaded when the browser is started
-    if (Date.now() - scriptStart < 2000) return false;
-    if (details.cookieStoreId == null || details.tabId == -1) return false;
-    const cookieStore = new CookieStore(details.cookieStoreId);
-    const userContextId = cookieStore.userContextId;
-    if (details.frameId != 0 || 0 != userContextId || details.originUrl || details.incognito || !configExternalTabChooseContainer) {
+    const elapsedTime = await elapsedTimeService.getElapsedTime();
+    if (elapsedTime < 2000) return false;
+    if (details.cookieStoreId == null || details.tabId == -1 || details.frameId != 0 || details.originUrl || details.incognito) return false;
+    const cookieStoreId = details.cookieStoreId;
+
+    const externalTabContainerOption = await config['tab.external.containerOption'].getValue();
+    if (cookieStoreId != CookieStore.DEFAULT.id || externalTabContainerOption == 'disabled') {
       return false;
     }
-    if (openTabs.has(details.tabId)) {
+
+    if (await openTabsService.hasTab(details.tabId)) {
       console.info('Ignoring manually navigated tab: %d', details.tabId);
       return false;
     }
-    const tabId = details.tabId;
-    const {url} = details;
+
+    const {tabId, url} = details;
 
     const browserTab = await browser.tabs.get(tabId);
     const tab = new CompatTab(browserTab);
     const {windowId} = tab;
-    const activeUserContextId = getActiveUserContext(windowId);
     if (tab.discarded) {
       return false;
     }
-    if ('sticky' == configExternalTabContainerOption) {
-      if (userContextId == activeUserContextId) {
-        console.log('Tab %d in active user context %d', tabId, userContextId);
-        openTabs.add(tabId);
+
+    if ('sticky' == externalTabContainerOption) {
+      const activeCookieStoreId = await activeContainerService.getActiveContainer(windowId);
+      if (cookieStoreId == activeCookieStoreId || activeCookieStoreId == null) {
+        console.log('Tab %d in active cookie store %s', tabId, cookieStoreId);
         return false;
       } else {
-        // this tab is never private
-        const cookieStoreId = CookieStore.fromParams({
-          userContextId: activeUserContextId,
-          privateBrowsingId: 0 as Uint32.Uint32,
-        }).id;
-
-        await containerTabOpenerService.reopenTabInContainer(tabId, cookieStoreId, true);
-        console.log('Reopened %s in container id %d', url, activeUserContextId);
+        browser.tabs.create({
+          cookieStoreId: activeCookieStoreId,
+          url,
+          windowId,
+        }).then(() => {
+          console.log('Reopened %s in container id %s', url, activeCookieStoreId);
+          return browser.tabs.remove(tabId);
+        }).catch((e) => {
+          console.error(e);
+        });
       }
     }
 
@@ -326,6 +241,3 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
 beforeRequestHandler.startListening();
 
 new UaContentScriptRegistrar();
-
-console.log('background.js loaded in %d ms', Date.now() - scriptStart);
-scriptCompleted = true;

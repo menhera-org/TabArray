@@ -30,8 +30,6 @@ import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpene
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 
-import { config } from '../../config/config';
-
 import * as i18n from '../../legacy-lib/modules/i18n';
 
 import { ContainerEditorElement } from '../../components/container-editor';
@@ -212,23 +210,4 @@ browser.tabs.getCurrent().then((browserTab) => {
     location.href = url;
     return;
   }
-
-  config['tab.external.containerOption'].getValue().then(async (optionValue) => {
-    try {
-      if ('sticky' == optionValue) {
-        const activeTabs = await browser.tabs.query({
-          windowId: browserTab.windowId,
-          active: true,
-        });
-        for (const activeTab of activeTabs) {
-          if (!activeTab.cookieStoreId) continue;
-          const {cookieStoreId} = activeTab;
-          await containerTabOpenerService.reopenTabInContainer(tab.id, cookieStoreId, true);
-          break;
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  });
 });

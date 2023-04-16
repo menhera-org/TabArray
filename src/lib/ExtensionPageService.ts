@@ -24,7 +24,7 @@ import browser from "webextension-polyfill";
 import { ServiceRegistry } from "./ServiceRegistry";
 import { PageLoaderService } from "./PageLoaderService";
 
-import { PANORAMA_PAGE, ADDON_PAGE, PRIVACY_POLICY_PAGE, GITHUB_PAGE, COOKIES_PAGE } from '../defs';
+import { PANORAMA_PAGE, ADDON_PAGE, PRIVACY_POLICY_PAGE, GITHUB_PAGE, COOKIES_PAGE, CONFIRM_PAGE } from '../defs';
 
 export type ExtensionPage = 'sidebar' | 'browserAction' | 'pageAction' | 'options' | 'panorama' | 'cookies' | 'amo' | 'privacyPolicy' | 'github';
 
@@ -112,6 +112,14 @@ export class ExtensionPageService {
     this.open(input).catch((e) => {
       console.error(e);
     });
+  }
+
+  public isConfirmPage(url: string): boolean {
+    const confirmPageUrlObj = new URL(CONFIRM_PAGE, location.href);
+    const urlObj = new URL(url, location.href);
+    urlObj.hash = '';
+    urlObj.search = '';
+    return urlObj.href === confirmPageUrlObj.href;
   }
 }
 
