@@ -20,11 +20,10 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { Uint32 } from "weeg-types";
-import { CookieStore } from 'weeg-containers';
 import { CompatTab } from 'weeg-tabs';
 
 import { IndexTabService } from '../../lib/tabs/IndexTabService';
+import { ServiceRegistry } from '../../lib/ServiceRegistry';
 
 import { config } from '../../config/config';
 import { WindowContainerHidingHelper } from './WindowContainerHidingHelper';
@@ -34,11 +33,11 @@ import { WindowService } from '../tabs/WindowService';
 /**
  * This does not support private windows.
  */
-export class UserContextVisibilityService {
-  private static readonly INSTANCE = new UserContextVisibilityService();
+export class ContainerVisibilityService {
+  private static readonly INSTANCE = new ContainerVisibilityService();
 
-  public static getInstance(): UserContextVisibilityService {
-    return UserContextVisibilityService.INSTANCE;
+  public static getInstance(): ContainerVisibilityService {
+    return ContainerVisibilityService.INSTANCE;
   }
 
   private readonly _windowService = WindowService.getInstance();
@@ -51,29 +50,20 @@ export class UserContextVisibilityService {
   /**
    * Private windows are not supported.
    */
-  private async getContainerTabsOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<CompatTab[]> {
-    const cookieStore = CookieStore.fromParams({
-      userContextId,
-      privateBrowsingId: 0 as Uint32.Uint32,
-    });
-    const cookieStoreId = cookieStore.id;
+  private async getContainerTabsOnWindow(windowId: number, cookieStoreId: string): Promise<CompatTab[]> {
     const browserTabs = await browser.tabs.query({ windowId, cookieStoreId });
     const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
     return tabs;
   }
 
-  public async hideContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
+  public async hideContainerOnWindow(windowId: number, cookieStoreId: string): Promise<void> {
     const isPrivate = await this._windowService.isPrivateWindow(windowId);
     if (isPrivate) return;
     const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
-    const cookieStoreId = CookieStore.fromParams({
-      userContextId,
-      privateBrowsingId: 0 as Uint32.Uint32,
-    }).id;
     console.log('hideContainerOnWindow(): windowId=%d, cookieStoreId=%s', windowId, cookieStoreId);
     const helper = await WindowContainerHidingHelper.create(windowId, cookieStoreId); // throws for private windows.
     if (helper.tabsToHide.length < 1) {
-      console.log('No tabs to hide on window %d for userContext %d', windowId, userContextId);
+      console.log('No tabs to hide on window %d for cookie store %s', windowId, cookieStoreId);
       return;
     }
     if ('collapsed' == configGroupIndexOption && !helper.hasIndexTab) {
@@ -83,7 +73,7 @@ export class UserContextVisibilityService {
       const tabToActivate = helper.tabToActivate;
       if (!tabToActivate) {
         // TODO: create a new tab if there is no one to activate.
-        console.log('No tab to activate on window %d for userContext %d', windowId, userContextId);
+        console.log('No tab to activate on window %d for cookie store %s', windowId, cookieStoreId);
         return;
       }
       await tabToActivate.focus();
@@ -91,20 +81,20 @@ export class UserContextVisibilityService {
     await browser.tabs.hide(helper.tabsToHide.map((tab) => tab.id));
   }
 
-  public async showContainerOnWindow(windowId: number, userContextId: Uint32.Uint32): Promise<void> {
+  public async showContainerOnWindow(windowId: number, cookieStoreId: string): Promise<void> {
     const isPrivate = await this._windowService.isPrivateWindow(windowId);
     if (isPrivate) return;
     const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
-    const tabs = await this.getContainerTabsOnWindow(windowId, userContextId); // throws for private windows.
+    const tabs = await this.getContainerTabsOnWindow(windowId, cookieStoreId); // throws for private windows.
     if (tabs.length < 1) {
-      console.log('No tabs to show on window %d for userContext %d', windowId, userContextId);
+      console.log('No tabs to show on window %d for cookie store %s', windowId, cookieStoreId);
       return;
     }
     const tabIdsToShow: number[] = [];
     for (const tab of tabs) {
       if (IndexTab.isIndexTabUrl(tab.url)) {
         if ('collapsed' == configGroupIndexOption) {
-          console.log('Unregistering an index tab on window %d for userContext %d', windowId, userContextId);
+          console.log('Unregistering an index tab on window %d for cookie store %s', windowId, cookieStoreId);
           await this._indexTabService.unregisterIndexTab(tab.id);
           await tab.close();
         }
@@ -117,7 +107,7 @@ export class UserContextVisibilityService {
     if (tabIdsToShow.length < 1) {
       return;
     }
-    console.log('showContainerOnWindow(): windowId=%d, userContextId=%d', windowId, userContextId);
+    console.log('showContainerOnWindow(): windowId=%d, cookieStoreId=%s', windowId, cookieStoreId);
     await browser.tabs.show(tabIdsToShow);
   }
 
@@ -131,3 +121,5 @@ export class UserContextVisibilityService {
     await browser.tabs.show(tabs.map((tab) => tab.id));
   }
 }
+
+ServiceRegistry.getInstance().registerService('ContainerVisibilityService', ContainerVisibilityService.getInstance());

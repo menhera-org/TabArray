@@ -27,12 +27,12 @@ import { CompatTab } from 'weeg-tabs';
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { TabService } from '../../lib/tabs/TabService';
 
-import { UserContextVisibilityService } from '../userContexts/UserContextVisibilityService';
+import { ContainerVisibilityService } from '../userContexts/ContainerVisibilityService';
 import { WindowService } from '../tabs/WindowService';
 
 const tabQueryService = TabQueryService.getInstance();
 const tabService = TabService.getInstance();
-const userContextVisibilityService = UserContextVisibilityService.getInstance();
+const userContextVisibilityService = ContainerVisibilityService.getInstance();
 const windowService = WindowService.getInstance();
 
 /**
@@ -61,14 +61,14 @@ export const getInactiveIds = async (aWindowId: number) => {
     pinned: false,
   });
   const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
-  const userContextIds = new Set([... tabs].map((tab) => tab.cookieStore.userContextId));
+  const cookieStoreIds = new Set([... tabs].map((tab) => tab.cookieStore.id));
   for (const tab of tabs) {
-    const userContextId = tab.cookieStore.userContextId;
+    const cookieStoreId = tab.cookieStore.id;
     if (tab.active) {
-      userContextIds.delete(userContextId);
+      cookieStoreIds.delete(cookieStoreId);
     }
   }
-  return [... userContextIds].sort((a, b) => a - b);
+  return [... cookieStoreIds];
 };
 
 export const hideAll = async (aWindowId: number) => {
@@ -77,8 +77,10 @@ export const hideAll = async (aWindowId: number) => {
     console.log('hideAll: skip for private window');
     return;
   }
-  const userContextIds = await getInactiveIds(aWindowId);
-  for (const userContextId of userContextIds) {
-    await userContextVisibilityService.hideContainerOnWindow(aWindowId, userContextId);
+  const cookieStoreIds = await getInactiveIds(aWindowId);
+  const promises: Promise<void>[] = [];
+  for (const cookieStoreId of cookieStoreIds) {
+    promises.push(userContextVisibilityService.hideContainerOnWindow(aWindowId, cookieStoreId));
   }
+  await Promise.all(promises);
 };

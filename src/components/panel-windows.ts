@@ -28,7 +28,7 @@ import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import { UserContext } from "../legacy-lib/tabGroups";
 import * as containers from '../legacy-lib/modules/containers';
-import { UserContextVisibilityService } from "../legacy-lib/userContexts/UserContextVisibilityService";
+import { ContainerVisibilityService } from "../legacy-lib/userContexts/ContainerVisibilityService";
 import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
 import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
 
@@ -42,7 +42,7 @@ export class PanelWindowsElement extends HTMLElement {
 
   private _selectedWindowId: number = browser.windows.WINDOW_ID_NONE;
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
-  private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
+  private readonly _userContextVisibilityService = ContainerVisibilityService.getInstance();
   private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
   private _isSearching = false;
   private _browserStateSnapshot: BrowserStateSnapshot | null = null;

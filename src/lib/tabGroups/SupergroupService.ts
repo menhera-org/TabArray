@@ -24,13 +24,13 @@ import { ContextualIdentity, ContextualIdentityParams, CookieStore } from "weeg-
 import { ServiceRegistry } from "../ServiceRegistry";
 import { ContextualIdentityService } from "./ContextualIdentityService";
 import { TabGroupDirectory } from "./TabGroupDirectory";
-import { UserContextVisibilityService } from "../../legacy-lib/userContexts/UserContextVisibilityService";
+import { ContainerVisibilityService } from "../../legacy-lib/userContexts/ContainerVisibilityService";
 import { TemporaryContainerService } from "./TemporaryContainerService";
 import { TabService } from "../tabs/TabService";
 import { TabQueryService } from "../tabs/TabQueryService";
 
 const tabGroupDirectory = new TabGroupDirectory();
-const userContextVisibilityService = UserContextVisibilityService.getInstance();
+const userContextVisibilityService = ContainerVisibilityService.getInstance();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 const tabService = TabService.getInstance();
@@ -52,7 +52,7 @@ export class SupergroupService {
     const promises: Promise<void>[] = [];
     for (const childContainer of childContainers) {
       const cookieStore = new CookieStore(childContainer);
-      promises.push(userContextVisibilityService.hideContainerOnWindow(windowId, cookieStore.userContextId).catch(() => {
+      promises.push(userContextVisibilityService.hideContainerOnWindow(windowId, cookieStore.id).catch(() => {
         // ignore (errors for private windows)
       }));
     }
@@ -64,7 +64,7 @@ export class SupergroupService {
     const promises: Promise<void>[] = [];
     for (const childContainer of childContainers) {
       const cookieStore = new CookieStore(childContainer);
-      promises.push(userContextVisibilityService.showContainerOnWindow(windowId, cookieStore.userContextId).catch(() => {
+      promises.push(userContextVisibilityService.showContainerOnWindow(windowId, cookieStore.id).catch(() => {
         // ignore (errors for private windows)
       }));
     }

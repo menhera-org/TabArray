@@ -26,7 +26,7 @@ import { MenuItem } from '../../lib/menus/MenuItem';
 import { PopupTabContextMenuItem } from '../../lib/menus/PopupTabContextMenuItem';
 import { ExtensionPageService } from '../../lib/ExtensionPageService';
 
-import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
+import { ContainerVisibilityService } from '../../legacy-lib/userContexts/ContainerVisibilityService';
 
 const MENU_ID_TAB_HIDE_CONTAINER = 'tab-hide-container';
 
@@ -46,7 +46,7 @@ const MENU_ID_TOOLS_PANORAMA_GRID = 'tools-panorama-grid';
 const MENU_ID_TOOLS_SETTINGS = 'tools-settings';
 
 const extensionPageService = ExtensionPageService.getInstance();
-const userContextVisibilityService = UserContextVisibilityService.getInstance();
+const userContextVisibilityService = ContainerVisibilityService.getInstance();
 
 export const menus = {
   [MENU_ID_CONTEXT_TAB_NEW_TAB]: new PopupTabContextMenuItem({
@@ -141,11 +141,10 @@ menus[MENU_ID_TAB_HIDE_CONTAINER].onClicked.addListener((info) => {
       return;
     }
 
-    const userContextId = cookieStore.userContextId;
     if (tab.windowId == null) {
       return;
     }
-    userContextVisibilityService.hideContainerOnWindow(tab.windowId, userContextId).catch(e => console.error(e));
+    userContextVisibilityService.hideContainerOnWindow(tab.windowId, cookieStore.id).catch(e => console.error(e));
   }
 });
 

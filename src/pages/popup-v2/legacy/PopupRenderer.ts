@@ -34,7 +34,7 @@ import { UserContext } from "../../../legacy-lib/tabGroups";
 
 import * as containers from '../../../legacy-lib/modules/containers';
 import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
-import { UserContextVisibilityService } from '../../../legacy-lib/userContexts/UserContextVisibilityService';
+import { ContainerVisibilityService } from '../../../legacy-lib/userContexts/ContainerVisibilityService';
 import { UserContextService } from '../../../legacy-lib/userContexts/UserContextService';
 
 import { PopupModalRenderer } from './PopupModalRenderer';
@@ -48,7 +48,7 @@ enum ContainerTabsState {
 
 // This needs some refactoring.
 export class PopupRenderer {
-  private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
+  private readonly _userContextVisibilityService = ContainerVisibilityService.getInstance();
   private readonly _userContextService = UserContextService.getInstance();
   private readonly _containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
   private readonly _tabQueryService = TabQueryService.getInstance();
@@ -124,12 +124,12 @@ export class PopupRenderer {
     const element = this.createContainerElement(userContext, isPrivate);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     element.onContainerHide.addListener(() => {
-      this._userContextVisibilityService.hideContainerOnWindow(windowId, userContext.id).catch(() => {
+      this._userContextVisibilityService.hideContainerOnWindow(windowId, cookieStoreId).catch(() => {
         // ignore. (errors for private windows)
       });
     });
     element.onContainerUnhide.addListener(() => {
-      this._userContextVisibilityService.showContainerOnWindow(windowId, userContext.id).catch(() => {
+      this._userContextVisibilityService.showContainerOnWindow(windowId, cookieStoreId).catch(() => {
         // ignore. (errors for private windows)
       });
     });

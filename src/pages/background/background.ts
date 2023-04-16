@@ -31,7 +31,7 @@ import { ContainerCreatorService } from '../../lib/tabGroups/ContainerCreatorSer
 import { TabSortingService } from '../../lib/tabs/TabSortingService';
 import { SanityCheckService } from '../../lib/SenityCheckService';
 
-import { UserContextVisibilityService } from '../../legacy-lib/userContexts/UserContextVisibilityService';
+import { ContainerVisibilityService } from '../../legacy-lib/userContexts/ContainerVisibilityService';
 
 import './background-index-tab';
 import './background-container-observer';
@@ -67,7 +67,7 @@ TabSortingService.getInstance<TabSortingService>();
 new UaContentScriptRegistrar();
 
 // other services used by this script
-const userContextVisibilityService = UserContextVisibilityService.getInstance();
+const userContextVisibilityService = ContainerVisibilityService.getInstance();
 const sanityCheckService = SanityCheckService.getInstance();
 
 // auto reload the extension if the sanity check fails
@@ -87,7 +87,6 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
     if (cookieStore.isPrivate) {
       return;
     }
-    const userContextId = cookieStore.userContextId;
     try {
       const indexTabUrl = await browser.sessions.getTabValue(browserTab.id, 'indexTabUrl');
       if (!indexTabUrl) {
@@ -108,7 +107,7 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
     }
 
     if (!browserTab.pinned) {
-      await userContextVisibilityService.showContainerOnWindow(windowId, userContextId);
+      await userContextVisibilityService.showContainerOnWindow(windowId, cookieStore.id);
     }
   } catch (e) {
     console.error(e);

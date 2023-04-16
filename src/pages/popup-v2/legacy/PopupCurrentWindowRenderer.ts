@@ -40,7 +40,7 @@ import { ModalMoveGroupElement } from '../../../components/modal-move-group';
 import { ContainerEditorElement } from '../../../components/container-editor';
 
 import * as containers from '../../../legacy-lib/modules/containers';
-import { UserContextVisibilityService } from '../../../legacy-lib/userContexts/UserContextVisibilityService';
+import { ContainerVisibilityService } from '../../../legacy-lib/userContexts/ContainerVisibilityService';
 import { UserContext } from '../../../legacy-lib/tabGroups';
 import { WindowStateSnapshot } from '../../../legacy-lib/tabs/WindowStateSnapshot';
 import { Tab } from '../../../legacy-lib/tabs';
@@ -49,7 +49,7 @@ const tabGroupDirectory = new TabGroupDirectory();
 
 export class PopupCurrentWindowRenderer {
   private readonly popupRenderer: PopupRenderer;
-  private readonly userContextVisibilityService = UserContextVisibilityService.getInstance();
+  private readonly userContextVisibilityService = ContainerVisibilityService.getInstance();
   private readonly supergroupService = SupergroupService.getInstance();
   private readonly tabQueryService = TabQueryService.getInstance();
 
