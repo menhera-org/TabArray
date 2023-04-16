@@ -19,10 +19,7 @@
   @license
 **/
 
-import './background-install-handler';
-
 import browser from 'webextension-polyfill';
-import { CompatTab } from 'weeg-tabs';
 
 import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
@@ -31,8 +28,7 @@ import { ContainerCreatorService } from '../../lib/tabGroups/ContainerCreatorSer
 import { TabSortingService } from '../../lib/tabs/TabSortingService';
 import { SanityCheckService } from '../../lib/SenityCheckService';
 
-import { ContainerVisibilityService } from '../../legacy-lib/userContexts/ContainerVisibilityService';
-
+import './background-install-handler';
 import './background-index-tab';
 import './background-container-observer';
 import './background-menus';
@@ -46,6 +42,7 @@ import './background-storage-observer';
 import './background-active-container';
 import './background-redirector';
 import './background-tab-sorter';
+import './background-activated-tabs';
 import { everyMinuteAlarm } from './background-alarms';
 
 import '../../api/ApiDefinitions';
@@ -67,7 +64,6 @@ TabSortingService.getInstance<TabSortingService>();
 new UaContentScriptRegistrar();
 
 // other services used by this script
-const userContextVisibilityService = ContainerVisibilityService.getInstance();
 const sanityCheckService = SanityCheckService.getInstance();
 
 // auto reload the extension if the sanity check fails
@@ -76,40 +72,4 @@ everyMinuteAlarm.onAlarm.addListener(() => {
     console.error('Sanity check failed, reloading', e);
     browser.runtime.reload();
   });
-});
-
-browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
-  try {
-    const browserTab = await browser.tabs.get(tabId);
-    if (browserTab.cookieStoreId == null || browserTab.id == null) return;
-    const tab = new CompatTab(browserTab);
-    const cookieStore = tab.cookieStore;
-    if (cookieStore.isPrivate) {
-      return;
-    }
-    try {
-      const indexTabUrl = await browser.sessions.getTabValue(browserTab.id, 'indexTabUrl');
-      if (!indexTabUrl) {
-        throw void 0;
-      }
-      const nextTabs = await browser.tabs.query({
-        windowId: browserTab.windowId,
-        index: browserTab.index + 1,
-      });
-      for (const nextTab of nextTabs) {
-        await browser.tabs.update(nextTab.id, {
-          active: true,
-        });
-        break;
-      }
-    } catch (e) {
-      // nothing.
-    }
-
-    if (!browserTab.pinned) {
-      await userContextVisibilityService.showContainerOnWindow(windowId, cookieStore.id);
-    }
-  } catch (e) {
-    console.error(e);
-  }
 });
