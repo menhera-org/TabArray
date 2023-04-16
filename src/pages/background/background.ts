@@ -78,14 +78,6 @@ everyMinuteAlarm.onAlarm.addListener(() => {
   });
 });
 
-browser.tabs.onUpdated.addListener((/*tabId, changeInfo, browserTab*/) => {
-  //console.log('tab %d hidden on window %d', tabId, tab.windowId);
-}, {
-  properties: [
-    'hidden',
-  ],
-});
-
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   try {
     const browserTab = await browser.tabs.get(tabId);
