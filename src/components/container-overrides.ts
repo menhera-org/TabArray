@@ -85,17 +85,20 @@ export class ContainerOverridesElement extends HTMLElement {
 
   private createLanguageOptionsElement(displayedContainer: DisplayedContainer): HTMLInputElement {
     const cookieStoreId = displayedContainer.cookieStore.id;
-    const languages = this._languageSettings.getLanguages(cookieStoreId);
     const input = document.createElement('input');
     input.classList.add('languages');
     input.type = 'text';
-    input.value = languages;
+    this._languageSettings.getLanguages(cookieStoreId).then((languages) => {
+      input.value = languages;
+    });
     input.placeholder = navigator.languages.join(',');
     input.addEventListener('change', () => {
       this._languageSettings.setLanguages(cookieStoreId, input.value);
     });
     this._languageSettings.onChanged.addListener(() => {
-      input.value = this._languageSettings.getLanguages(cookieStoreId);
+      this._languageSettings.getLanguages(cookieStoreId).then((languages) => {
+        input.value = languages;
+      });
     });
     config['feature.languageOverrides'].observe((enabled) => {
       input.disabled = !enabled;

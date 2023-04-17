@@ -88,12 +88,15 @@ browser.webRequest.onBeforeSendHeaders.addListener(async (details) => {
 
   const cookieStoreId = details.cookieStoreId;
 
-  const userAgent = await userAgentSettings.getUserAgent(cookieStoreId);
+  const [userAgent, acceptLanguages] = await Promise.all([
+    userAgentSettings.getUserAgent(cookieStoreId),
+    languageSettings.getAcceptLanguages(cookieStoreId),
+  ]);
+
   if ('' !== userAgent && featureUserAgentOverridesEnabled) {
     setHeader(details, 'user-agent', userAgent);
   }
 
-  const acceptLanguages = await languageSettings.getAcceptLanguages(cookieStoreId);
   if ('' !== acceptLanguages && featureLanguageOverridesEnabled) {
     setHeader(details, 'accept-language', acceptLanguages);
   }

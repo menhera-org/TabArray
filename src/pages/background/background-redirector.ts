@@ -41,29 +41,30 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
     // do not redirect if the tab is loaded when the browser is started
     const elapsedTime = await elapsedTimeService.getElapsedTime();
     if (elapsedTime < 2000) return false;
-    if (details.cookieStoreId == null || details.tabId == -1 || details.frameId != 0 || details.originUrl || details.incognito) return false;
+    if (details.cookieStoreId == null || details.cookieStoreId != CookieStore.DEFAULT.id || details.tabId == -1 || details.frameId != 0 || details.originUrl || details.incognito) return false;
     const cookieStoreId = details.cookieStoreId;
 
-    const externalTabContainerOption = await config['tab.external.containerOption'].getValue();
-    if (cookieStoreId != CookieStore.DEFAULT.id || externalTabContainerOption == 'disabled') {
+    const [externalTabContainerOption, tabIsPreviouslyOpen] = await Promise.all([
+      config['tab.external.containerOption'].getValue(),
+      openTabsService.hasTab(details.tabId),
+    ]);
+
+    if (externalTabContainerOption == 'disabled') {
       return false;
     }
 
-    if (await openTabsService.hasTab(details.tabId)) {
+    if (tabIsPreviouslyOpen) {
       console.info('Ignoring manually navigated tab: %d', details.tabId);
       return false;
     }
 
     const {tabId, url} = details;
 
-    const browserTab = await browser.tabs.get(tabId);
-    const tab = new CompatTab(browserTab);
-    const {windowId} = tab;
-    if (tab.discarded) {
-      return false;
-    }
-
     if ('sticky' == externalTabContainerOption) {
+      const browserTab = await browser.tabs.get(tabId);
+      const tab = new CompatTab(browserTab);
+      const {windowId} = tab;
+
       const activeCookieStoreId = await activeContainerService.getActiveContainer(windowId);
       if (cookieStoreId == activeCookieStoreId || activeCookieStoreId == null) {
         console.log('Tab %d in active cookie store %s', tabId, cookieStoreId);

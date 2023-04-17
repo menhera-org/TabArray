@@ -43,6 +43,7 @@ import './background-active-container';
 import './background-redirector';
 import './background-tab-sorter';
 import './background-activated-tabs';
+import './background-content-script-responder';
 import { everyMinuteAlarm } from './background-alarms';
 
 import '../../api/ApiDefinitions';

@@ -35,45 +35,39 @@ export class LanguageSettings {
   }
 
   private readonly _storage = new StorageItem<StorageType>(LanguageSettings.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
-  private _value: StorageType = {};
 
   public readonly onChanged = new EventSink<void>();
 
   private constructor() {
-    this._storage.observe((newValue) => {
-      this._value = newValue;
-      this.onChanged.dispatch();
-    }, true);
+    // nothing
   }
 
-  private save() {
-    this._storage.setValue(this._value).catch((e) => {
-      console.error(e);
-    });
+  private async getValue(): Promise<StorageType> {
+    return this._storage.getValue();
   }
 
-  public getValue(): StorageType {
-    return {
-      ... this._value,
-    };
+  private async setValue(value: StorageType) {
+    return this._storage.setValue(value);
   }
 
-  public setLanguages(cookieStoreId: string, languages: string) {
+  public async setLanguages(cookieStoreId: string, languages: string) {
     languages = languages.trim();
+    const value = await this.getValue();
 
     const key = cookieStoreId;
-    if ('' === languages && key in this._value) {
-      delete this._value[key];
-      this.save();
-    } else if ('' !== languages && this._value[key] !== languages) {
-      this._value[key] = languages;
-      this.save();
+    if ('' === languages && key in value) {
+      delete value[key];
+      this.setValue(value);
+    } else if ('' !== languages && value[key] !== languages) {
+      value[key] = languages;
+      this.setValue(value);
     }
   }
 
-  public getLanguages(cookieStoreId: string): string {
+  public async getLanguages(cookieStoreId: string): Promise<string> {
     const key = cookieStoreId;
-    const languages = this._value[key] ?? '';
+    const value = await this.getValue();
+    const languages = value[key] ?? '';
     if ('' === languages) return '';
     const parts = languages.split(',')
       .map((language) => language.trim())
@@ -85,8 +79,8 @@ export class LanguageSettings {
     return parts.join(',');
   }
 
-  public getAcceptLanguages(cookieStoreId: string): string {
-    const languages = this.getLanguages(cookieStoreId);
+  public async getAcceptLanguages(cookieStoreId: string): Promise<string> {
+    const languages = await this.getLanguages(cookieStoreId);
     if ('' === languages) return '';
     const inputParts = languages.split(',');
     const outputParts = [];
