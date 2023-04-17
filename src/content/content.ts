@@ -70,6 +70,7 @@ const navigatorPrototypeWrapped = navigatorPrototype.wrappedJSObject;
 
 let languageSetupDone = false;
 const setUpLanguageOverrides = () => {
+  console.debug('Original language values: languages=%s, language=%s', window.navigator.languages, window.navigator.language);
   // this is configurable, so deletable
   delete navigatorPrototypeWrapped.languages;
 
@@ -127,6 +128,7 @@ const getUaDataPlatform = () => {
 
 let uaSetupDone = false;
 const setupUaOverrides = () => {
+  console.debug('Original user agent: ', window.navigator.userAgent);
   try {
     // this is configurable, so deletable
     delete navigatorPrototypeWrapped.userAgent;
