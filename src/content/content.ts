@@ -40,7 +40,7 @@ browser.runtime.sendMessage({
   // ignore.
 });
 
-let languages = null;
+let languages: string | null = null;
 if (globalThis.gLanguageStore) {
   languages = gLanguageStore.languages;
 }
@@ -49,8 +49,8 @@ if (languages) {
   gLanguageStore.languages = languages;
 }
 
-let userAgent = null;
-let emulationMode = null;
+let userAgent: string | null = null;
+let emulationMode: string | null = null;
 if (globalThis.gUaStore) {
   userAgent = gUaStore.userAgent;
   emulationMode = gUaStore.emulationMode;
