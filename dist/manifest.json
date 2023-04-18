@@ -28,7 +28,8 @@
     "sessions",
     "browsingData",
     "theme",
-    "alarms"
+    "alarms",
+    "scripting"
   ],
   "incognito": "spanning",
   "background": {
