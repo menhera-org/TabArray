@@ -194,6 +194,9 @@ export class TabGroupSorterElement extends HTMLElement {
       });
     });
 
+    const options = this.createOptionsElement(tabGroupId);
+    element.appendChild(options);
+
     return element;
   }
 
