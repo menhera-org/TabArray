@@ -111,9 +111,6 @@ export class SupergroupService {
     }
   }
 
-  /**
-   * @todo fill default options from supergroup defaults
-   */
   public async createChildContainer(parentTabGroupId: string, params: ContextualIdentityParams): Promise<ContextualIdentity> {
     const contextualIdentity = await contextualIdentityService.getFactory().create(params);
     await tabGroupDirectory.moveTabGroupToSupergroup(contextualIdentity.cookieStore.id, parentTabGroupId);
@@ -121,9 +118,6 @@ export class SupergroupService {
     return contextualIdentity;
   }
 
-  /**
-   * @todo fill default options from supergroup defaults
-   */
   public async createChildTemporaryContainer(parentTabGroupId: string): Promise<ContextualIdentity> {
     const supergroup = await tabGroupDirectory.getSupergroup(parentTabGroupId);
     if (!supergroup) {
@@ -140,6 +134,13 @@ export class SupergroupService {
     });
     await this.copySettingsToChildTabGroup(parentTabGroupId, contextualIdentity.cookieStore.id);
     return contextualIdentity;
+  }
+
+  public async createChildSupergroup(parentTabGroupId: string, name: string): Promise<string> {
+    const tabGroupId = await tabGroupDirectory.createSupergroup(name);
+    await tabGroupDirectory.moveTabGroupToSupergroup(tabGroupId, parentTabGroupId);
+    await this.copySettingsToChildTabGroup(parentTabGroupId, tabGroupId);
+    return tabGroupId;
   }
 }
 
