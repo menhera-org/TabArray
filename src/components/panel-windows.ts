@@ -23,13 +23,16 @@ import browser from 'webextension-polyfill';
 import { EventSink } from "weeg-events";
 import { Uint32 } from "weeg-types";
 
-import { SupergroupEditorElement } from './supergroup-editor';
-import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
+import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
+
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
+import { SupergroupEditorElement } from './supergroup-editor';
+import { TagEditorElement } from './tag-editor';
+
+import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
 import { UserContext } from "../legacy-lib/tabGroups";
 import * as containers from '../legacy-lib/modules/containers';
 import { ContainerVisibilityService } from "../legacy-lib/userContexts/ContainerVisibilityService";
-import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
 import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
 
 export class PanelWindowsElement extends HTMLElement {
@@ -39,6 +42,7 @@ export class PanelWindowsElement extends HTMLElement {
   public readonly onCreateContainerButtonClicked = new EventSink<void>();
   public readonly onCreateTemporaryContainerButtonClicked = new EventSink<void>();
   public readonly onCreateGroupButtonClicked = new EventSink<void>();
+  public readonly onCreateTagButtonClicked = new EventSink<void>();
 
   private _selectedWindowId: number = browser.windows.WINDOW_ID_NONE;
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
@@ -99,6 +103,9 @@ export class PanelWindowsElement extends HTMLElement {
     search.type = 'search';
     search.placeholder = browser.i18n.getMessage('searchPlaceholder');
     searchWrapper.appendChild(search);
+
+    const newTagMenuItem = this.createMenuItem('new-tag', 'buttonNewTag', '/img/material-icons/new_label.svg', this.onCreateTagButtonClicked);
+    headerContainer.appendChild(newTagMenuItem);
 
     const newGroupMenuItem = this.createMenuItem('new-group', 'buttonNewGroup', '/img/material-icons/create_new_folder.svg', this.onCreateGroupButtonClicked);
     headerContainer.appendChild(newGroupMenuItem);
@@ -185,6 +192,10 @@ export class PanelWindowsElement extends HTMLElement {
       document.body.appendChild(new SupergroupEditorElement());
     });
 
+    this.onCreateTagButtonClicked.addListener(() => {
+      document.body.appendChild(new TagEditorElement());
+    });
+
     if (!this.shadowRoot) return;
     const search = this.shadowRoot.querySelector('#search') as HTMLInputElement;
     search.addEventListener('input', () => {
@@ -256,11 +267,11 @@ export class PanelWindowsElement extends HTMLElement {
 
     const activeContainersElement = this.shadowRoot.querySelector('.active-containers') as HTMLDivElement;
     activeContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderOpenContainers(currentWindowState, definedUserContexts, activeContainersElement, tabGroupDirectorySnapshot);
+    this._popupRenderer.currentWindowRenderer.renderOpenContainers(currentWindowState, definedUserContexts, activeContainersElement, tabGroupDirectorySnapshot, browserStateSnapshot.getTabAttributeMap());
 
     const inactiveContainersElement = this.shadowRoot.querySelector('.inactive-containers') as HTMLDivElement;
     inactiveContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(currentWindowState, definedUserContexts, inactiveContainersElement, tabGroupDirectorySnapshot);
+    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(currentWindowState, definedUserContexts, inactiveContainersElement, tabGroupDirectorySnapshot, browserStateSnapshot.getTabAttributeMap());
 
     this.renderActions();
   }

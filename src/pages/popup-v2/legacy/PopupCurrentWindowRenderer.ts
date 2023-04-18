@@ -28,10 +28,10 @@ import { SupergroupType, TabGroupDirectory } from '../../../lib/tabGroups/TabGro
 import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
 import { TabGroupAttributes } from '../../../lib/tabGroups/TabGroupAttributes';
 import { TabQueryService } from '../../../lib/tabs/TabQueryService';
+import { TabAttributeMap } from '../../../lib/tabGroups/TabAttributeMap';
 
 import { PopupRenderer } from './PopupRenderer';
 
-import { MenulistWindowElement } from '../../../components/menulist-window';
 import { MenulistContainerElement } from '../../../components/menulist-container';
 import { MenulistSupergroupElement } from '../../../components/menulist-supergroup';
 import { ModalMenuElement } from '../../../components/modal-menu';
@@ -55,35 +55,6 @@ export class PopupCurrentWindowRenderer {
 
   public constructor(popupRenderer: PopupRenderer) {
     this.popupRenderer = popupRenderer;
-  }
-
-  /**
-   * You should also set the tab count.
-   */
-  public renderCurrentWindowLabel(windowId: number): MenulistWindowElement {
-    const windowLabel = new MenulistWindowElement(windowId, true);
-    windowLabel.onCollapseButtonClicked.addListener(() => {
-      containers.hideAll(windowId).catch((e) => {
-        console.error(e);
-      });
-    });
-    windowLabel.onExpandButtonClicked.addListener(() => {
-      this.userContextVisibilityService.showAllOnWindow(windowId).catch((e) => {
-        console.error(e);
-      });
-    });
-    windowLabel.onCloseButtonClicked.addListener(() => {
-      browser.windows.remove(windowId).catch((e) => {
-        console.error(e);
-      });
-    });
-    return windowLabel;
-  }
-
-  public renderMoreContainersLabel(): MenulistWindowElement {
-    const moreContainersLabel = new MenulistWindowElement();
-    moreContainersLabel.windowName = browser.i18n.getMessage('currentWindowMoreContainers');
-    return moreContainersLabel;
   }
 
   /**
@@ -132,8 +103,8 @@ export class PopupCurrentWindowRenderer {
     return containerElement;
   }
 
-  private renderOpenContainer(windowStateSnapshot: WindowStateSnapshot, userContext: UserContext, tabs: Tab[]): MenulistContainerElement {
-    const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, tabs, windowStateSnapshot.isPrivate);
+  private renderOpenContainer(windowStateSnapshot: WindowStateSnapshot, userContext: UserContext, tabs: Tab[], tabAttributeMap: TabAttributeMap): MenulistContainerElement {
+    const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, tabs, windowStateSnapshot.isPrivate, tabAttributeMap);
     containerElement.containerHighlightButtonEnabled = true;
     containerElement.onContainerHighlight.addListener(async () => {
       await this.focusContainerOnWindow(windowStateSnapshot.id, userContext.id, windowStateSnapshot.isPrivate);
@@ -202,7 +173,7 @@ export class PopupCurrentWindowRenderer {
     });
   }
 
-  private renderSupergroup(supergroup: SupergroupType, windowStateSnapshot: WindowStateSnapshot, definedUserContexts: UserContext[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, element: HTMLElement): number {
+  private renderSupergroup(supergroup: SupergroupType, windowStateSnapshot: WindowStateSnapshot, definedUserContexts: UserContext[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, element: HTMLElement, tabAttributeMap: TabAttributeMap): number {
     let tabCount = 0;
     const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
     const supergroupElement = new MenulistSupergroupElement();
@@ -224,11 +195,11 @@ export class PopupCurrentWindowRenderer {
           supergroupElement.appendChild(containerElement);
           continue;
         }
-        const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs);
+        const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs, tabAttributeMap);
         supergroupElement.appendChild(containerElement);
       } else {
         const supergroup = tabGroupDirectorySnapshot.getSupergroup(memberTabGroupId) as SupergroupType;
-        tabCount += this.renderSupergroup(supergroup, windowStateSnapshot, [... definedUserContexts], tabGroupDirectorySnapshot, supergroupElement);
+        tabCount += this.renderSupergroup(supergroup, windowStateSnapshot, [... definedUserContexts], tabGroupDirectorySnapshot, supergroupElement, tabAttributeMap);
       }
     }
     supergroupElement.tabCount = tabCount;
@@ -273,7 +244,7 @@ export class PopupCurrentWindowRenderer {
    *
    * @returns the number of tabs.
    */
-  public renderOpenContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot): number {
+  public renderOpenContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap): number {
     const openUserContexts = definedUserContexts.filter((userContext) => {
       return windowStateSnapshot.activeUserContexts.includes(userContext.id);
     });
@@ -283,7 +254,7 @@ export class PopupCurrentWindowRenderer {
       for (const openUserContext of openUserContexts) {
         const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(openUserContext.id) ?? []];
         tabCount += tabs.length;
-        const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs);
+        const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs, tabAttributeMap);
         element.appendChild(containerElement);
       }
     } else {
@@ -306,18 +277,18 @@ export class PopupCurrentWindowRenderer {
             element.appendChild(containerElement);
             continue;
           }
-          const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs);
+          const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs, tabAttributeMap);
           element.appendChild(containerElement);
         } else {
           const supergroup = tabGroupDirectorySnapshot.getSupergroup(memberTabGroupId) as SupergroupType;
-          tabCount += this.renderSupergroup(supergroup, windowStateSnapshot, [... definedUserContexts], tabGroupDirectorySnapshot, element);
+          tabCount += this.renderSupergroup(supergroup, windowStateSnapshot, [... definedUserContexts], tabGroupDirectorySnapshot, element, tabAttributeMap);
         }
       }
     }
     return tabCount;
   }
 
-  public renderInactiveContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot): void {
+  public renderInactiveContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap): void {
     const inactiveUserContexts = definedUserContexts.filter((userContext) => {
       return !windowStateSnapshot.activeUserContexts.includes(userContext.id);
     });
@@ -344,7 +315,7 @@ export class PopupCurrentWindowRenderer {
           element.appendChild(containerElement);
         } else {
           const supergroup = tabGroupDirectorySnapshot.getSupergroup(memberTabGroupId) as SupergroupType;
-          this.renderSupergroup(supergroup, windowStateSnapshot, [... definedUserContexts], tabGroupDirectorySnapshot, element);
+          this.renderSupergroup(supergroup, windowStateSnapshot, [... definedUserContexts], tabGroupDirectorySnapshot, element, tabAttributeMap);
         }
       }
 

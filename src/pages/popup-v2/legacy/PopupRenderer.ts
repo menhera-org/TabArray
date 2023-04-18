@@ -25,9 +25,11 @@ import { CookieStore } from 'weeg-containers';
 import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOpenerService';
 import { TabQueryService } from '../../../lib/tabs/TabQueryService';
 import { TabService } from '../../../lib/tabs/TabService';
+import { TabAttributeMap } from '../../../lib/tabGroups/TabAttributeMap';
 
 import { MenulistTabElement } from "../../../components/menulist-tab";
 import { MenulistContainerElement } from "../../../components/menulist-container";
+import { MenulistTagElement } from '../../../components/menulist-tag';
 
 import { Tab } from "../../../legacy-lib/tabs";
 import { UserContext } from "../../../legacy-lib/tabGroups";
@@ -139,13 +141,21 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderContainerWithTabs(windowId: number, userContext: UserContext, tabs: Tab[], isPrivate = false): MenulistContainerElement {
+  public renderContainerWithTabs(windowId: number, userContext: UserContext, tabs: Tab[], isPrivate = false, tabAttributeMap?: TabAttributeMap): MenulistContainerElement {
     if (isPrivate) {
       userContext = UserContext.PRIVATE;
+    }
+    if (tabAttributeMap) {
+      tabs.sort((a, b) => {
+        const aTag = tabAttributeMap.getTagIdForTab(a.id) ?? 0;
+        const bTag = tabAttributeMap.getTagIdForTab(b.id) ?? 0;
+        return aTag - bTag;
+      });
     }
     const element = this.renderContainer(windowId, userContext, isPrivate);
     let tabCount = 0;
     let state = ContainerTabsState.NO_TABS;
+    let tagId = 0;
     for (const tab of tabs) {
       if (IndexTab.isIndexTabUrl(tab.url)) {
         continue;
@@ -154,6 +164,19 @@ export class PopupRenderer {
       if (tab.hidden) {
         state = ContainerTabsState.HIDDEN_TABS;
         continue;
+      }
+
+      if (tabAttributeMap) {
+        const newTag = tabAttributeMap.getTagIdForTab(tab.id) ?? 0;
+        if (tagId != newTag) {
+          tagId = newTag;
+          const tag = tabAttributeMap.getTagForTab(tab.id);
+          if (tag) {
+            const tagElement = new MenulistTagElement();
+            tagElement.groupName = tag.name;
+            element.appendChild(tagElement);
+          }
+        }
       }
 
       const tabElement = this.renderTab(tab, userContext);
