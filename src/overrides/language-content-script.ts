@@ -31,21 +31,23 @@ let languageSettingsValues = new Map<string, string>();
 const contentScripts = new Map<string, browser.ContentScripts.RegisteredContentScript>();
 const cookieStoreService = CookieStoreService.getInstance();
 
-const unregisterContentScript = (key: string) => {
-  contentScripts.get(key)?.unregister();
+const unregisterContentScript = async (key: string) => {
+  await contentScripts.get(key)?.unregister();
   contentScripts.delete(key);
 };
 
-const unregisterAllContentScripts = () => {
+const unregisterAllContentScripts = async () => {
+  const promises = [];
   for (const key of contentScripts.keys()) {
-    unregisterContentScript(key);
+    promises.push(unregisterContentScript(key));
   }
+  await Promise.all(promises);
 };
 
 const update = async () => {
   const enabled = await config['feature.languageOverrides'].getValue();
   if (!enabled) {
-    unregisterAllContentScripts();
+    await unregisterAllContentScripts();
     return;
   }
 
@@ -57,17 +59,19 @@ const update = async () => {
     if ('' === languages) continue;
     newValues.set(cookieStoreId, languages);
   }
+  const promises = [];
   for (const key of contentScripts.keys()) {
     if (!newValues.has(key)) {
-      unregisterContentScript(key);
+      promises.push(unregisterContentScript(key));
     }
   }
+  await Promise.all(promises);
 
   for (const [key, languages] of newValues) {
     if (languageSettingsValues.has(key)) {
       if (languageSettingsValues.get(key) === languages) continue;
 
-      unregisterContentScript(key);
+      await unregisterContentScript(key);
     }
 
     const cookieStoreId = key;
