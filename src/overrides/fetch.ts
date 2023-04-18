@@ -24,10 +24,13 @@ import { LanguageSettings } from './LanguageSettings';
 import { UserAgentSettings } from './UserAgentSettings';
 import { config } from '../config/config';
 import { UaDataService } from '../lib/overrides/UaDataService';
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
 
 const languageSettings = LanguageSettings.getInstance();
 const userAgentSettings = UserAgentSettings.getInstance();
 const uaDataService = UaDataService.getInstance();
+const contextualIdentityService = ContextualIdentityService.getInstance();
+const contextualIdentityFactory = contextualIdentityService.getFactory();
 
 let featureLanguageOverridesEnabled = false;
 let featureUserAgentOverridesEnabled = false;
@@ -98,3 +101,13 @@ browser.webRequest.onBeforeSendHeaders.addListener(async (details) => {
 }, {
   urls: ['<all_urls>'],
 }, ["blocking", "requestHeaders"]);
+
+contextualIdentityFactory.onRemoved.addListener((contextualIdentity) => {
+  const cookieStoreId = contextualIdentity.cookieStore.id;
+  userAgentSettings.removeCookieStore(cookieStoreId).catch((e) => {
+    console.error(e);
+  });
+  languageSettings.removeCookieStore(cookieStoreId).catch((e) => {
+    console.error(e);
+  });
+});

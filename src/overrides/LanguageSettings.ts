@@ -97,4 +97,13 @@ export class LanguageSettings {
     }
     return outputParts.join(',');
   }
+
+  public async removeCookieStore(cookieStoreId: string) {
+    const value = await this.getValue();
+    const key = cookieStoreId;
+    if (key in value) {
+      delete value[key];
+      this.setValue(value);
+    }
+  }
 }

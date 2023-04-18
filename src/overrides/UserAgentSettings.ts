@@ -140,4 +140,12 @@ export class UserAgentSettings {
     }
     return ua.match(/Chrome\/\d/) ? 'chrome' : 'none';
   }
+
+  public async removeCookieStore(cookieStoreId: string): Promise<void> {
+    const value = await this.getValue();
+    if (cookieStoreId in value) {
+      delete value[cookieStoreId];
+      await this.saveValue(value);
+    }
+  }
 }
