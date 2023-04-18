@@ -24,8 +24,8 @@ import { EventSink } from "weeg-events";
 import { Uint32 } from "weeg-types";
 import { DisplayedContainer } from 'weeg-containers';
 
-import { LanguageSettings } from '../overrides/LanguageSettings';
-import { UserAgentSettings, UserAgentPreset } from '../overrides/UserAgentSettings';
+import { LanguageSettings } from '../lib/overrides/LanguageSettings';
+import { UserAgentSettings, UserAgentPreset } from '../lib/overrides/UserAgentSettings';
 import { config } from '../config/config';
 
 export class ContainerOverridesElement extends HTMLElement {

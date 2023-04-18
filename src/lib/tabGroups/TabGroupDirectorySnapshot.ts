@@ -33,6 +33,15 @@ export class TabGroupDirectorySnapshot {
     return structuredClone(this._value);
   }
 
+  public getTabGroupIds(): string[] {
+    const value = this.value;
+    const tabGroupIds: string[] = [];
+    for (const tabGroupId in value) {
+      tabGroupIds.push(tabGroupId);
+    }
+    return tabGroupIds;
+  }
+
   public getSupergroup(tabGroupId: string): SupergroupType | undefined {
     const value = this.value;
     return value[tabGroupId];

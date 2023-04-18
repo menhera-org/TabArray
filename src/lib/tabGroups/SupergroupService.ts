@@ -28,6 +28,9 @@ import { ContainerVisibilityService } from "../../legacy-lib/userContexts/Contai
 import { TemporaryContainerService } from "./TemporaryContainerService";
 import { TabService } from "../tabs/TabService";
 import { TabQueryService } from "../tabs/TabQueryService";
+import { TabGroupService } from "./TabGroupService";
+import { LanguageSettings } from "../overrides/LanguageSettings";
+import { UserAgentSettings } from "../overrides/UserAgentSettings";
 
 const tabGroupDirectory = new TabGroupDirectory();
 const userContextVisibilityService = ContainerVisibilityService.getInstance();
@@ -35,6 +38,9 @@ const contextualIdentityService = ContextualIdentityService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 const tabService = TabService.getInstance();
 const tabQueryService = TabQueryService.getInstance();
+const tabGroupService = TabGroupService.getInstance();
+const languageSettings = LanguageSettings.getInstance();
+const userAgentSettings = UserAgentSettings.getInstance();
 
 export class SupergroupService {
   private static readonly INSTANCE = new SupergroupService();
@@ -88,12 +94,30 @@ export class SupergroupService {
     await tabService.closeTabs(tabs);
   }
 
+  private async copySettingsToChildTabGroup(parentTabGroupId: string, childTabGroupId: string): Promise<void> {
+    const [autoCleanEnabled, languages, uaParams] = await Promise.all([
+      tabGroupService.optionDirectory.getAutocleanForTabGroupId(parentTabGroupId),
+      languageSettings.getLanguages(parentTabGroupId),
+      userAgentSettings.getUserAgentParams(parentTabGroupId),
+    ]);
+    if (autoCleanEnabled) {
+      await tabGroupService.optionDirectory.setAutocleanForTabGroupId(childTabGroupId, true);
+    }
+    if ('' != languages) {
+      await languageSettings.setLanguages(childTabGroupId, languages);
+    }
+    if (uaParams.preset != 'default') {
+      await userAgentSettings.setUserAgent(childTabGroupId, uaParams.preset, uaParams.userAgent);
+    }
+  }
+
   /**
    * @todo fill default options from supergroup defaults
    */
   public async createChildContainer(parentTabGroupId: string, params: ContextualIdentityParams): Promise<ContextualIdentity> {
     const contextualIdentity = await contextualIdentityService.getFactory().create(params);
     await tabGroupDirectory.moveTabGroupToSupergroup(contextualIdentity.cookieStore.id, parentTabGroupId);
+    await this.copySettingsToChildTabGroup(parentTabGroupId, contextualIdentity.cookieStore.id);
     return contextualIdentity;
   }
 
@@ -114,6 +138,7 @@ export class SupergroupService {
       icon: contextualIdentity.icon,
       color: contextualIdentity.color,
     });
+    await this.copySettingsToChildTabGroup(parentTabGroupId, contextualIdentity.cookieStore.id);
     return contextualIdentity;
   }
 }

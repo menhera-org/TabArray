@@ -26,6 +26,9 @@ import { TabGroupDirectory } from "./TabGroupDirectory";
 import { TabGroupOptionDirectory } from './TabGroupOptionDirectory';
 import { TabGroupAttributes } from './TabGroupAttributes';
 import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorageStatistics';
+import { CookieStoreService } from './CookieStoreService';
+
+const cookieStoreService = CookieStoreService.getInstance();
 
 /**
  * Doing operations on tab groups.
@@ -43,6 +46,17 @@ export class TabGroupService {
 
   private constructor() {
     // nothing.
+  }
+
+  public async getTabGroupIds(): Promise<string[]> {
+    const [cookieStores, tabGroupDirectorySnapshot] = await Promise.all([
+      cookieStoreService.getCookieStores(),
+      this.directory.getSnapshot(),
+    ]);
+    return [
+      ... cookieStores.map((cookieStore) => cookieStore.id),
+      ... tabGroupDirectorySnapshot.getTabGroupIds(),
+    ];
   }
 
   /**

@@ -20,17 +20,19 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { LanguageSettings } from './LanguageSettings';
-import { UserAgentSettings } from './UserAgentSettings';
+import { LanguageSettings } from '../lib/overrides/LanguageSettings';
+import { UserAgentSettings } from '../lib/overrides/UserAgentSettings';
 import { config } from '../config/config';
 import { UaDataService } from '../lib/overrides/UaDataService';
 import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
+import { TabGroupService } from '../lib/tabGroups/TabGroupService';
 
 const languageSettings = LanguageSettings.getInstance();
 const userAgentSettings = UserAgentSettings.getInstance();
 const uaDataService = UaDataService.getInstance();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
+const tabGroupService = TabGroupService.getInstance();
 
 let featureLanguageOverridesEnabled = false;
 let featureUserAgentOverridesEnabled = false;
@@ -104,10 +106,28 @@ browser.webRequest.onBeforeSendHeaders.addListener(async (details) => {
 
 contextualIdentityFactory.onRemoved.addListener((contextualIdentity) => {
   const cookieStoreId = contextualIdentity.cookieStore.id;
-  userAgentSettings.removeCookieStore(cookieStoreId).catch((e) => {
+  userAgentSettings.removeTabGroup(cookieStoreId).catch((e) => {
     console.error(e);
   });
-  languageSettings.removeCookieStore(cookieStoreId).catch((e) => {
+  languageSettings.removeTabGroup(cookieStoreId).catch((e) => {
     console.error(e);
+  });
+});
+
+tabGroupService.directory.onChanged.addListener(async () => {
+  const availableTabGroupIds = await tabGroupService.getTabGroupIds();
+  userAgentSettings.getTabGroupIds().then(async (tabGroupIds) => {
+    for (const tabGroupId of tabGroupIds) {
+      if (!availableTabGroupIds.includes(tabGroupId)) {
+        await userAgentSettings.removeTabGroup(tabGroupId);
+      }
+    }
+  });
+  languageSettings.getTabGroupIds().then(async (tabGroupIds) => {
+    for (const tabGroupId of tabGroupIds) {
+      if (!availableTabGroupIds.includes(tabGroupId)) {
+        await languageSettings.removeTabGroup(tabGroupId);
+      }
+    }
   });
 });

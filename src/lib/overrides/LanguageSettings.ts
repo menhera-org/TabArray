@@ -50,6 +50,11 @@ export class LanguageSettings {
     return this._storage.setValue(value);
   }
 
+  public async getTabGroupIds(): Promise<string[]> {
+    const value = await this.getValue();
+    return Object.keys(value);
+  }
+
   public async setLanguages(cookieStoreId: string, languages: string) {
     languages = languages.trim();
     const value = await this.getValue();
@@ -98,7 +103,7 @@ export class LanguageSettings {
     return outputParts.join(',');
   }
 
-  public async removeCookieStore(cookieStoreId: string) {
+  public async removeTabGroup(cookieStoreId: string) {
     const value = await this.getValue();
     const key = cookieStoreId;
     if (key in value) {

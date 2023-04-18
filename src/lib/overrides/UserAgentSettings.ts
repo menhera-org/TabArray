@@ -59,8 +59,13 @@ export class UserAgentSettings {
     await this._storage.setValue(value);
   }
 
-  public async getValue(): Promise<UserAgentStorageType> {
+  private async getValue(): Promise<UserAgentStorageType> {
     return this._storage.getValue();
+  }
+
+  public async getTabGroupIds(): Promise<string[]> {
+    const value = await this.getValue();
+    return Object.keys(value);
   }
 
   public async setUserAgent(cookieStoreId: string, preset: UserAgentPreset, userAgent?: string) {
@@ -141,7 +146,7 @@ export class UserAgentSettings {
     return ua.match(/Chrome\/\d/) ? 'chrome' : 'none';
   }
 
-  public async removeCookieStore(cookieStoreId: string): Promise<void> {
+  public async removeTabGroup(cookieStoreId: string): Promise<void> {
     const value = await this.getValue();
     if (cookieStoreId in value) {
       delete value[cookieStoreId];

@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 
 import { CookieStoreService } from '../lib/tabGroups/CookieStoreService';
 
-import { LanguageSettings } from "./LanguageSettings";
+import { LanguageSettings } from "../lib/overrides/LanguageSettings";
 import { config } from '../config/config';
 
 const languageSettings = LanguageSettings.getInstance();
@@ -44,54 +44,61 @@ const unregisterAllContentScripts = async () => {
   await Promise.all(promises);
 };
 
+let updating = false;
 const update = async () => {
-  const enabled = await config['feature.languageOverrides'].getValue();
-  if (!enabled) {
-    await unregisterAllContentScripts();
-    return;
-  }
-
-  const cookieStores = await cookieStoreService.getCookieStores();
-  const newValues = new Map<string, string>();
-  for (const cookieStore of cookieStores) {
-    const languages = await languageSettings.getLanguages(cookieStore.id);
-    const cookieStoreId = cookieStore.id;
-    if ('' === languages) continue;
-    newValues.set(cookieStoreId, languages);
-  }
-  const promises = [];
-  for (const key of contentScripts.keys()) {
-    if (!newValues.has(key)) {
-      promises.push(unregisterContentScript(key));
-    }
-  }
-  await Promise.all(promises);
-
-  for (const [key, languages] of newValues) {
-    if (languageSettingsValues.has(key)) {
-      if (languageSettingsValues.get(key) === languages) continue;
-
-      await unregisterContentScript(key);
+  if (updating) return;
+  updating = true;
+  try {
+    const enabled = await config['feature.languageOverrides'].getValue();
+    if (!enabled) {
+      await unregisterAllContentScripts();
+      return;
     }
 
-    const cookieStoreId = key;
-    const contentScript = await browser.contentScripts.register({
-      js: [{
-        code: `
-          globalThis.gLanguageStore = globalThis.gLanguageStore ?? {};
-          gLanguageStore.languages = ${JSON.stringify(languages)};
-        `,
-      }],
-      matches: ['<all_urls>'],
-      allFrames: true,
-      runAt: 'document_start',
-      cookieStoreId,
-    });
-    // console.log(contentScript);
-    contentScripts.set(key, contentScript);
-  }
+    const cookieStores = await cookieStoreService.getCookieStores();
+    const newValues = new Map<string, string>();
+    for (const cookieStore of cookieStores) {
+      const languages = await languageSettings.getLanguages(cookieStore.id);
+      const cookieStoreId = cookieStore.id;
+      if ('' === languages) continue;
+      newValues.set(cookieStoreId, languages);
+    }
+    const promises = [];
+    for (const key of contentScripts.keys()) {
+      if (!newValues.has(key)) {
+        promises.push(unregisterContentScript(key));
+      }
+    }
+    await Promise.all(promises);
 
-  languageSettingsValues = newValues;
+    for (const [key, languages] of newValues) {
+      if (languageSettingsValues.has(key)) {
+        if (languageSettingsValues.get(key) === languages) continue;
+
+        await unregisterContentScript(key);
+      }
+
+      const cookieStoreId = key;
+      const contentScript = await browser.contentScripts.register({
+        js: [{
+          code: `
+            globalThis.gLanguageStore = globalThis.gLanguageStore ?? {};
+            gLanguageStore.languages = ${JSON.stringify(languages)};
+          `,
+        }],
+        matches: ['<all_urls>'],
+        allFrames: true,
+        runAt: 'document_start',
+        cookieStoreId,
+      });
+      // console.log(contentScript);
+      contentScripts.set(key, contentScript);
+    }
+
+    languageSettingsValues = newValues;
+  } finally {
+    updating = false;
+  }
 };
 
 config['feature.languageOverrides'].observe(update);

@@ -42,6 +42,11 @@ export class TabGroupOptionDirectory {
     return tabGroupIds;
   }
 
+  public async getAutocleanForTabGroupId(tabGroupId: string): Promise<boolean> {
+    const tabGroupIds = await this.getAutocleanEnabledTabGroupIds();
+    return tabGroupIds.includes(tabGroupId);
+  }
+
   public async setAutocleanForTabGroupId(tabGroupId: string, enabled: boolean): Promise<void> {
     const tabGroupIds = await this.getAutocleanEnabledTabGroupIds();
     if (enabled) {
