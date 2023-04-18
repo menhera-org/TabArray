@@ -23,9 +23,11 @@ import browser from 'webextension-polyfill';
 import { LanguageSettings } from './LanguageSettings';
 import { UserAgentSettings } from './UserAgentSettings';
 import { config } from '../config/config';
+import { UaDataService } from '../lib/overrides/UaDataService';
 
 const languageSettings = LanguageSettings.getInstance();
 const userAgentSettings = UserAgentSettings.getInstance();
+const uaDataService = UaDataService.getInstance();
 
 let featureLanguageOverridesEnabled = false;
 let featureUserAgentOverridesEnabled = false;
@@ -38,27 +40,8 @@ config['feature.uaOverrides'].observe((newValue) => {
   featureUserAgentOverridesEnabled = newValue;
 });
 
-const getSecChUa = async (cookieStoreId: string) => {
-  const userAgent = await userAgentSettings.getUserAgent(cookieStoreId);
-  const chrome = userAgent.match(/Chrome\/([0-9]+)/);
-  if (!chrome) {
-    return '';
-  }
-  const chromeVersion = chrome[1] || '108';
-  const brands = [
-    {
-      "brand": "Not?A_Brand",
-      "version": Math.floor(100 * Math.random()).toFixed(0),
-    },
-    {
-      "brand": "Chromium",
-      "version": chromeVersion,
-    },
-    {
-      "brand": "Google Chrome",
-      "version": chromeVersion,
-    },
-  ];
+const getSecChUa = (userAgent: string) => {
+  const brands = uaDataService.getBrands(userAgent);
   const brandStrings = brands.map((brandInfo) => {
     return `"${brandInfo.brand}";v="${brandInfo.version}"`;
   });
@@ -103,7 +86,7 @@ browser.webRequest.onBeforeSendHeaders.addListener(async (details) => {
 
   // this feature is only available in secure contexts.
   if (featureUserAgentOverridesEnabled && details.url?.startsWith('https://')) {
-    const secChUa = await getSecChUa(details.cookieStoreId);
+    const secChUa = getSecChUa(userAgent);
     if ('' !== secChUa) {
       setHeader(details, 'sec-ch-ua', secChUa);
       const secChUaFullVersionList = secChUa.replaceAll(/v="(\d+)"/g, 'v="$1.0.0.0"');

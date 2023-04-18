@@ -49,7 +49,6 @@ import { everyMinuteAlarm } from './background-alarms';
 import '../../api/ApiDefinitions';
 import '../../overrides/fetch';
 import '../../overrides/language-content-script';
-import { UaContentScriptRegistrar} from '../../overrides/UaContentScriptRegistrar';
 
 // external services must be registered here
 ExternalServiceProvider.getInstance();
@@ -60,9 +59,6 @@ ContainerCreatorService.getInstance<ContainerCreatorService>();
 PageLoaderService.getInstance<PageLoaderService>();
 ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 TabSortingService.getInstance<TabSortingService>();
-
-// must be instantiated here
-new UaContentScriptRegistrar();
 
 // other services used by this script
 const sanityCheckService = SanityCheckService.getInstance();

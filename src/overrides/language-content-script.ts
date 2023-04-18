@@ -42,25 +42,10 @@ const unregisterAllContentScripts = () => {
   }
 };
 
-const emptyLanguageList = async () => {
-  const browserTabs = await browser.tabs.query({});
-  for (const browserTab of browserTabs) {
-    if (null == browserTab.id) continue;
-
-    browser.tabs.sendMessage(browserTab.id, {
-      type: 'language-changed',
-      languages: '',
-    }).catch(() => {
-      // ignore.
-    });
-  }
-}
-
 const update = async () => {
   const enabled = await config['feature.languageOverrides'].getValue();
   if (!enabled) {
     unregisterAllContentScripts();
-    await emptyLanguageList();
     return;
   }
 
@@ -103,20 +88,6 @@ const update = async () => {
   }
 
   languageSettingsValues = newValues;
-
-  const browserTabs = await browser.tabs.query({});
-  for (const browserTab of browserTabs) {
-    if (!browserTab.cookieStoreId || null == browserTab.id) continue;
-    const cookieStoreId = browserTab.cookieStoreId;
-    const languages = languageSettings.getLanguages(cookieStoreId);
-
-    browser.tabs.sendMessage(browserTab.id, {
-      type: 'language-changed',
-      languages,
-    }).catch(() => {
-      // ignore.
-    });
-  }
 };
 
 config['feature.languageOverrides'].observe(update);
