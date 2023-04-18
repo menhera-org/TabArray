@@ -115,7 +115,7 @@ const setupUaOverrides = () => {
   try {
     const brands = uaDataService.getBrands(window.navigator.userAgent);
     const highEntropyBrands = uaDataService.getHighEntropyBrands(window.navigator.userAgent);
-    const uaDataEnabled = Object.keys(brands).length > 0;
+    const uaDataEnabled = brands.length > 0;
 
     // this is configurable, so deletable
     delete navigatorPrototypeWrapped.userAgentData;
@@ -163,15 +163,6 @@ const setupUaOverrides = () => {
     console.error(String(e));
   }
 };
-
-browser.runtime.onMessage.addListener((message) => {
-  if (message.type === 'language-changed') {
-    const languages = String(message.languages ?? '');
-    if (gLanguageStore.languages !== languages) {
-      gLanguageStore.languages = languages;
-    }
-  }
-});
 
 if (gLanguageStore.language !== '') {
   setUpLanguageOverrides();
