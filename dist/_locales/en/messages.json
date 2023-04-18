@@ -645,5 +645,17 @@
     "noTag": {
         "message": "(no Tag)",
         "description": "No tag name."
+    },
+    "setTag": {
+        "message": "Set Tag",
+        "description": "Set a tag to a tab."
+    },
+    "buttonEditTag": {
+        "message": "Edit Tag",
+        "description": "Button to edit a tag."
+    },
+    "buttonDeleteTag": {
+        "message": "Delete Tag",
+        "description": "Button to delete a tag."
     }
 }

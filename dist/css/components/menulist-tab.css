@@ -124,7 +124,7 @@ button:focus {
 
 #tab-main {
   display: block grid;
-  grid-template-columns: 2em 1fr 2em;
+  grid-template-columns: 2em 1fr 2em 2em;
   border: none;
   border-inline-start: solid .25rem transparent;
 }
@@ -185,7 +185,13 @@ button:focus {
   opacity: var(--opaque-opacity);
 }
 
-#tab-close-button:hover, #tab-close-button:focus {
+#tab-set-tag-button {
+  mask: url(/img/material-icons/label.svg) center center/50% no-repeat;
+  background-color: var(--text-color);
+  opacity: var(--opaque-opacity);
+}
+
+:is(#tab-close-button, #tab-set-tag-button):is(:hover, :focus) {
   opacity: 1;
 }
 

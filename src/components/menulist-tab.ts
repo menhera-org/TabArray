@@ -24,6 +24,7 @@ import { UserContext } from "../legacy-lib/tabGroups";
 import { Tab } from "../legacy-lib/tabs";
 import { EventSink } from "weeg-events";
 import { TabIconService } from '../lib/TabIconService';
+import { ModalSetTagElement } from './modal-set-tag';
 
 export class MenulistTabElement extends HTMLElement {
   private _tabId = -1;
@@ -63,6 +64,9 @@ export class MenulistTabElement extends HTMLElement {
         this.onClose.dispatch(this.tabId);
       }
     };
+    this.setTagButton.onclick = () => {
+      document.body.appendChild(new ModalSetTagElement(this.tabId));
+    };
   }
 
   private buildElement() {
@@ -99,6 +103,10 @@ export class MenulistTabElement extends HTMLElement {
     const tabTitle = document.createElement('span');
     tabTitle.id = 'tab-title';
     tabButton.appendChild(tabTitle);
+
+    const tabSetTagButton = document.createElement('button');
+    tabSetTagButton.id = 'tab-set-tag-button';
+    tabMain.appendChild(tabSetTagButton);
 
     const tabCloseButton = document.createElement('button');
     tabCloseButton.id = 'tab-close-button';
@@ -173,6 +181,10 @@ export class MenulistTabElement extends HTMLElement {
 
   private get closeButton(): HTMLButtonElement {
     return this.getButton("tab-close-button");
+  }
+
+  private get setTagButton(): HTMLButtonElement {
+    return this.getButton("tab-set-tag-button");
   }
 
   private get iconElement(): HTMLSpanElement {

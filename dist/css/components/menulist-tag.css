@@ -52,9 +52,9 @@ button:focus {
 
 #group-header {
   display: block grid;
-  grid-template-columns: 1fr max-content;
+  grid-template-columns: 1fr max-content max-content;
   padding-inline-end: 1em;
-  padding-inline-start: 2em;
+  padding-inline-start: 3em;
 }
 
 #group-name[data-tab-count]::after {
@@ -75,16 +75,20 @@ button[disabled] {
   opacity: 1;
 }
 
-#group-close-button {
+#tag-edit-button, #tag-delete-button {
   inline-size: 2em;
 }
 
-:is(#group-close-button):disabled {
+:is(#tag-edit-button, #tag-delete-button):disabled {
   display: none;
 }
 
-#group-close-button {
-  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
+#tag-edit-button {
+  mask: url(/img/material-icons/edit.svg) center center/50% no-repeat;
+}
+
+#tag-delete-button {
+  mask: url(/img/material-icons/delete_forever.svg) center center / 50% no-repeat;
 }
 
 #group-button {

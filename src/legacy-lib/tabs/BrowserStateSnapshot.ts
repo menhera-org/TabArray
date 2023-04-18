@@ -66,6 +66,7 @@ export class BrowserStateSnapshot {
       }
     }
 
+    console.debug('CompatTabs: ', compatTabMap.size);
     const tabAttributeMap = await TabAttributeMap.create(compatTabMap.values());
     return new BrowserStateSnapshot(userContexts, browserWindows, currentBrowserWindow.id, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot, tabAttributeMap);
   }

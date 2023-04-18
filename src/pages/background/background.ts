@@ -27,6 +27,7 @@ import { PageLoaderService } from '../../lib/PageLoaderService';
 import { ContainerCreatorService } from '../../lib/tabGroups/ContainerCreatorService';
 import { TabSortingService } from '../../lib/tabs/TabSortingService';
 import { SanityCheckService } from '../../lib/SenityCheckService';
+import { TabConverterService } from '../../lib/tabs/TabConverterService';
 
 import './background-install-handler';
 import './background-index-tab';
@@ -59,6 +60,9 @@ ContainerCreatorService.getInstance<ContainerCreatorService>();
 PageLoaderService.getInstance<PageLoaderService>();
 ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 TabSortingService.getInstance<TabSortingService>();
+
+// register the tab converter service
+TabConverterService.getInstance();
 
 // other services used by this script
 const sanityCheckService = SanityCheckService.getInstance();

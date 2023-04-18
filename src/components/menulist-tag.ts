@@ -20,23 +20,28 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { EventSink } from "weeg-events";
+
+import { TagDirectory, TagType } from '../lib/tabGroups/TagDirectory';
+
+import { TagEditorElement } from './tag-editor';
+
+const tagDirectory = new TagDirectory();
 
 export class MenulistTagElement extends HTMLElement {
-  private _tabCount = 0;
+  private readonly tag: TagType;
 
-  public readonly onGroupClose = new EventSink<void>();
-
-  public constructor() {
+  public constructor(tag: TagType) {
     super();
+    this.tag = tag;
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
       throw new Error("Shadow root is null");
     }
     this.buildElement();
-    this.tagCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
-    this.tabCount = 0;
+    this.tagEditButton.title = browser.i18n.getMessage('buttonEditTag');
+    this.tagDeleteButton.title = browser.i18n.getMessage('buttonDeleteTag');
     this.registerEventListeners();
+    this.groupName = tag.name;
   }
 
   private buildElement() {
@@ -65,9 +70,13 @@ export class MenulistTagElement extends HTMLElement {
     groupNameElement.id = 'group-name';
     groupButton.appendChild(groupNameElement);
 
-    const groupCloseButton = document.createElement('button');
-    groupCloseButton.id = 'group-close-button';
-    groupHeaderElement.appendChild(groupCloseButton);
+    const tagDeleteButton = document.createElement('button');
+    tagDeleteButton.id = 'tag-delete-button';
+    groupHeaderElement.appendChild(tagDeleteButton);
+
+    const tagEditButton = document.createElement('button');
+    tagEditButton.id = 'tag-edit-button';
+    groupHeaderElement.appendChild(tagEditButton);
 
     const groupTabsElement = document.createElement('div');
     groupTabsElement.id = 'group-tabs';
@@ -78,8 +87,13 @@ export class MenulistTagElement extends HTMLElement {
   }
 
   private registerEventListeners() {
-    this.tagCloseButton.onclick = () => {
-      this.onGroupClose.dispatch();
+    this.tagEditButton.onclick = () => {
+      document.body.appendChild(new TagEditorElement(this.tag));
+    };
+    this.tagDeleteButton.onclick = () => {
+      tagDirectory.deleteTag(this.tag.tagId).catch((e) => {
+        console.error(e);
+      });
     };
   }
 
@@ -87,30 +101,20 @@ export class MenulistTagElement extends HTMLElement {
     return this.shadowRoot?.querySelector('#group-name') as HTMLSpanElement;
   }
 
-  private get tagCloseButton(): HTMLButtonElement {
-    return this.shadowRoot?.querySelector('#group-close-button') as HTMLButtonElement;
+  private get tagDeleteButton(): HTMLButtonElement {
+    return this.shadowRoot?.querySelector('#tag-delete-button') as HTMLButtonElement;
   }
 
-  public get groupName(): string {
+  private get tagEditButton(): HTMLButtonElement {
+    return this.shadowRoot?.querySelector('#tag-edit-button') as HTMLButtonElement;
+  }
+
+  private get groupName(): string {
     return this.tagNameElement.textContent || '';
   }
 
-  public set groupName(groupName: string) {
+  private set groupName(groupName: string) {
     this.tagNameElement.textContent = groupName;
-  }
-
-  public get tabCount(): number {
-    return this._tabCount;
-  }
-
-  public set tabCount(tabCount: number) {
-    this._tabCount = tabCount;
-    this.tagNameElement.dataset.tabCount = String(tabCount);
-    if (0 == tabCount) {
-      this.tagCloseButton.disabled = true;
-    } else {
-      this.tagCloseButton.disabled = false;
-    }
   }
 }
 

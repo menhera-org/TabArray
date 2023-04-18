@@ -39,8 +39,9 @@ export class TabAttributeMap {
   private readonly _tabIds: number[] = [];
 
   public static async create(tabs: Iterable<CompatTab>): Promise<TabAttributeMap> {
+    const tabArray = Array.from(tabs);
     const [attributesSets, snapshot] = await Promise.all([
-      this._tabAttributeProvider.getAttributeSets(tabs),
+      this._tabAttributeProvider.getAttributeSets(tabArray),
       this._tagDirectory.getSnapshot(),
     ]);
     return new TabAttributeMap(attributesSets, snapshot);

@@ -62,11 +62,9 @@ export class TabSortingProvider {
         if (IndexTab.isIndexTabUrl(b.url)) {
           return 1;
         }
-        const aTagId = tabAttributeMap.getTagIdForTab(a.id);
-        const bTagId = tabAttributeMap.getTagIdForTab(b.id);
+        const aTagId = tabAttributeMap.getTagForTab(a.id)?.tagId ?? 0;
+        const bTagId = tabAttributeMap.getTagForTab(b.id)?.tagId ?? 0;
         if (aTagId != bTagId) {
-          if (aTagId == null) return 1;
-          if (bTagId == null) return -1;
           return aTagId - bTagId;
         }
       }

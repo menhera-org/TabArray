@@ -147,11 +147,14 @@ export class PopupRenderer {
     }
     if (tabAttributeMap) {
       tabs.sort((a, b) => {
-        const aTag = tabAttributeMap.getTagIdForTab(a.id) ?? 0;
-        const bTag = tabAttributeMap.getTagIdForTab(b.id) ?? 0;
+        const aTag = tabAttributeMap.getTagForTab(a.id)?.tagId ?? 0;
+        const bTag = tabAttributeMap.getTagForTab(b.id)?.tagId ?? 0;
         return aTag - bTag;
       });
+    } else {
+      console.debug('No tab attribute map');
     }
+
     const element = this.renderContainer(windowId, userContext, isPrivate);
     let tabCount = 0;
     let state = ContainerTabsState.NO_TABS;
@@ -167,13 +170,13 @@ export class PopupRenderer {
       }
 
       if (tabAttributeMap) {
-        const newTag = tabAttributeMap.getTagIdForTab(tab.id) ?? 0;
+        const newTag = tabAttributeMap.getTagForTab(tab.id)?.tagId ?? 0;
         if (tagId != newTag) {
           tagId = newTag;
+          console.debug('New tag ID', tagId);
           const tag = tabAttributeMap.getTagForTab(tab.id);
           if (tag) {
-            const tagElement = new MenulistTagElement();
-            tagElement.groupName = tag.name;
+            const tagElement = new MenulistTagElement(tag);
             element.appendChild(tagElement);
           }
         }

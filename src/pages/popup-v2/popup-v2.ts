@@ -26,6 +26,8 @@ import { ViewRefreshHandler } from "weeg-utils";
 import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
 import { TabGroupDirectory } from "../../lib/tabGroups/TabGroupDirectory";
 import { ExternalServiceProvider } from "../../lib/ExternalServiceProvider";
+import { TagDirectory } from "../../lib/tabGroups/TagDirectory";
+import { TagService } from "../../lib/tabGroups/TagService";
 
 import "../../components/ctg/ctg-vertical-layout";
 import "../../components/ctg/ctg-drawer";
@@ -67,8 +69,10 @@ if (searchParams.get('popup') == '1') {
 
 ExternalServiceProvider.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
+const tagDirectory = new TagDirectory();
 const popupRenderer = PopupRendererService.getInstance().popupRenderer;
 const messagingService = MessagingService.getInstance();
+const tagService = TagService.getInstance();
 
 const extensionName = browser.runtime.getManifest().name;
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
@@ -171,6 +175,8 @@ browser.contextualIdentities.onUpdated.addListener(renderInBackground);
 browser.contextualIdentities.onRemoved.addListener(renderInBackground);
 
 tabGroupDirectory.onChanged.addListener(renderInBackground);
+tagDirectory.onChanged.addListener(renderInBackground);
+tagService.onChanged.addListener(renderInBackground);
 
 renderer.renderInBackground();
 
