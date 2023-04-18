@@ -214,6 +214,7 @@ export class TabGroupDirectory {
     const value = await this.getValue();
     const supergroup = value[tabGroupId] as SupergroupType;
     if (!supergroup) return;
+    if (supergroup.supergroupId == 0) return;
     const parentTabGroupId = await this.getParentTabGroupId(tabGroupId) ?? TabGroupDirectory.getRootSupergroupId();
     const parentSupergroup = value[parentTabGroupId] as SupergroupType;
     for (const memberTabGroupId of supergroup.members) {
