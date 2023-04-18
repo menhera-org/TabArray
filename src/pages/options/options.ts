@@ -22,25 +22,17 @@
 import browser from 'webextension-polyfill';
 
 import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
-import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
-import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
-import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 
 import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../../config/config';
 
-import { ContainerOverridesElement } from '../../components/container-overrides';
 import { TabGroupSorterElement } from '../../components/tab-group-sorter';
+import { TabGroupOverridesElement } from '../../components/tab-group-overrides';
 
 import './options-i18n';
 
 interface HTMLFormInput extends HTMLElement {
   value: string;
 }
-
-const tabGroupDirectory = new TabGroupDirectory();
-const displayedContainerService = DisplayedContainerService.getInstance();
-const contextualIdentityService = ContextualIdentityService.getInstance();
-const contextualIdentityFactory = contextualIdentityService.getFactory();
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
@@ -105,29 +97,8 @@ const selectAutoDiscardMinAge = document.querySelector<HTMLSelectElement>('#sele
 const tabGroupSorter = new TabGroupSorterElement();
 paneContainers?.appendChild(tabGroupSorter);
 
-displayedContainerService.getDisplayedContainersByPrivateBrowsing(false).then(async (displayedContainers) => {
-  const snapshot = await tabGroupDirectory.getSnapshot();
-  const sortedContainers = [... displayedContainers].sort((a, b) => {
-    return snapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-  });
-
-  const containerOverrides = new ContainerOverridesElement(sortedContainers);
-  paneContainerOverrides?.appendChild(containerOverrides);
-
-  const callback = async () => {
-    const displayedContainers = await displayedContainerService.getDisplayedContainersByPrivateBrowsing(false);
-    const snapshot = await tabGroupDirectory.getSnapshot();
-    const sortedContainers = [... displayedContainers].sort((a, b) => {
-      return snapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-    });
-    containerOverrides.setDisplayedContainers(sortedContainers);
-  };
-
-  tabGroupDirectory.onChanged.addListener(callback);
-  contextualIdentityFactory.onCreated.addListener(callback);
-  contextualIdentityFactory.onRemoved.addListener(callback);
-  contextualIdentityFactory.onUpdated.addListener(callback);
-});
+const tabGroupOverrides = new TabGroupOverridesElement();
+paneContainerOverrides?.appendChild(tabGroupOverrides);
 
 // tab.sorting.enabled setting
 config['tab.sorting.enabled'].observe((value) => {

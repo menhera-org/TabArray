@@ -27,14 +27,18 @@ import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentitySe
 import { TabGroupAttributes } from '../lib/tabGroups/TabGroupAttributes';
 import { TabGroupDirectorySnapshot } from '../lib/tabGroups/TabGroupDirectorySnapshot';
 import { TabGroupService } from '../lib/tabGroups/TabGroupService';
+import { LanguageSettings } from '../lib/overrides/LanguageSettings';
+import { UserAgentSettings, UserAgentPreset } from '../lib/overrides/UserAgentSettings';
+import { config } from '../config/config';
 
-export class TabGroupSorterElement extends HTMLElement {
+export class TabGroupOverridesElement extends HTMLElement {
   private readonly _tabGroupService = TabGroupService.getInstance();
   private readonly _tabGroupDirectory = this._tabGroupService.directory;
-  private readonly _tabGroupOptionDirectory = this._tabGroupService.optionDirectory;
   private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
   private readonly _contextualIdentityFactory = this._contextualIdentityService.getFactory();
   private readonly _displayedContainerFactory = this._contextualIdentityService.getDisplayedContainerFactory();
+  private readonly _languageSettings = LanguageSettings.getInstance();
+  private readonly _userAgentSettings = UserAgentSettings.getInstance();
 
   public constructor() {
     super();
@@ -45,7 +49,7 @@ export class TabGroupSorterElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/css/components/tab-group-sorter.css';
+    styleSheet.href = '/css/components/tab-group-overrides.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const sorterWrapperElement = document.createElement('div');
@@ -61,10 +65,15 @@ export class TabGroupSorterElement extends HTMLElement {
     headerContainerElement.textContent = browser.i18n.getMessage('menuItemMain');
     headerElement.appendChild(headerContainerElement);
 
-    const headerAutocleanElement = document.createElement('div');
-    headerAutocleanElement.classList.add('header-autoclean');
-    headerAutocleanElement.textContent = browser.i18n.getMessage('enableCookiesAutoclean');
-    headerElement.appendChild(headerAutocleanElement);
+    const headerLanguagesElement = document.createElement('div');
+    headerLanguagesElement.classList.add('header-languages');
+    headerLanguagesElement.textContent = browser.i18n.getMessage('optionsLabelLanguages');
+    headerElement.appendChild(headerLanguagesElement);
+
+    const headerUserAgentElement = document.createElement('div');
+    headerUserAgentElement.classList.add('header-user-agent');
+    headerUserAgentElement.textContent = browser.i18n.getMessage('optionsLabelUserAgent');
+    headerElement.appendChild(headerUserAgentElement);
 
     const groupsElement = document.createElement('div');
     groupsElement.id = 'groups';
@@ -81,30 +90,108 @@ export class TabGroupSorterElement extends HTMLElement {
     });
   }
 
-  private createOptionsElement(cookieStoreId: string): HTMLDivElement {
-    const options = document.createElement('div');
-    options.classList.add('options');
-    options.classList.add('browser-style');
-    const autocleanCheckbox = document.createElement('input');
-    autocleanCheckbox.type = 'checkbox';
-
-    this._tabGroupOptionDirectory.getAutocleanEnabledTabGroupIds().then((tabGroupIds) => {
-      if (tabGroupIds.includes(cookieStoreId)) {
-        autocleanCheckbox.checked = true;
-      } else {
-        autocleanCheckbox.checked = false;
-      }
+  private createLanguageOptionsElement(tabGroupId: string): HTMLInputElement {
+    const input = document.createElement('input');
+    input.classList.add('languages');
+    input.type = 'text';
+    this._languageSettings.getLanguages(tabGroupId).then((languages) => {
+      input.value = languages;
     });
-    autocleanCheckbox.addEventListener('change', () => {
-      this._tabGroupOptionDirectory.setAutocleanForTabGroupId(cookieStoreId, autocleanCheckbox.checked).catch((e) => {
-        console.error(e);
+    input.placeholder = navigator.languages.join(',');
+    input.addEventListener('change', () => {
+      this._languageSettings.setLanguages(tabGroupId, input.value);
+    });
+    this._languageSettings.onChanged.addListener(() => {
+      this._languageSettings.getLanguages(tabGroupId).then((languages) => {
+        input.value = languages;
       });
     });
-    options.appendChild(autocleanCheckbox);
-    return options;
+    config['feature.languageOverrides'].observe((enabled) => {
+      input.disabled = !enabled;
+    });
+    return input;
   }
 
-  private renderUserContext(nestingCount: number, displayedContainer: DisplayedContainer): HTMLDivElement {
+  private setUserAgentOptions(tabGroupId: string, select: HTMLSelectElement, input: HTMLInputElement, preset: UserAgentPreset, userAgent?: string) {
+    select.value = preset;
+    if (preset === 'custom') {
+      input.readOnly = false;
+      input.value = userAgent || navigator.userAgent;
+      // this._languageSettings.setUserAgent(originAttributes, userAgent);
+    } else {
+      input.readOnly = true;
+      const promise = Promise.resolve(this._userAgentSettings.getUserAgent(tabGroupId));
+      promise.then((userAgent) => {
+        input.value = userAgent || navigator.userAgent;
+      });
+    }
+  }
+
+  private handleUserAgentChange(tabGroupId: string, select: HTMLSelectElement, input: HTMLInputElement) {
+    const preset = select.value;
+    const userAgent = input.value.trim();
+    this.setUserAgentOptions(tabGroupId, select, input, preset as UserAgentPreset, userAgent);
+    this._userAgentSettings.setUserAgent(tabGroupId, preset as UserAgentPreset, userAgent || undefined).catch((e) => {
+      console.error(e);
+    });
+  }
+
+  private createUserAgentSelectElement(tabGroupId: string, input: HTMLInputElement): HTMLSelectElement {
+    const select = document.createElement('select');
+    select.classList.add('user-agent-select');
+    select.classList.add('browser-style');
+    const options = {
+      'default': 'userAgentDefault',
+      'chrome': 'userAgentChrome',
+      'googlebot': 'userAgentGooglebot',
+      'custom': 'userAgentCustom',
+    };
+    for (const [value, message] of Object.entries(options)) {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = browser.i18n.getMessage(message);
+      select.appendChild(option);
+    }
+    select.addEventListener('change', () => {
+      this.handleUserAgentChange(tabGroupId, select, input);
+    });
+    return select;
+  }
+
+  private createUserAgentOptionsElement(tabGroupId: string): HTMLDivElement {
+    const initialParams = this._userAgentSettings.getUserAgentParams(tabGroupId);
+    const element = document.createElement('div');
+    element.classList.add('user-agent');
+
+    const input = document.createElement('input');
+
+    const select = this.createUserAgentSelectElement(tabGroupId, input);
+    element.appendChild(select);
+
+    input.classList.add('user-agent-custom');
+    input.type = 'text';
+    input.placeholder = navigator.userAgent;
+    input.addEventListener('change', () => {
+      this.handleUserAgentChange(tabGroupId, select, input);
+    });
+    this._userAgentSettings.onChanged.addListener(() => {
+      this._userAgentSettings.getUserAgentParams(tabGroupId).then(({preset, userAgent}) => {
+        this.setUserAgentOptions(tabGroupId, select, input, preset, userAgent);
+      });
+    });
+    initialParams.then((initialParams) => {
+      this.setUserAgentOptions(tabGroupId, select, input, initialParams.preset, initialParams.userAgent);
+    });
+    element.appendChild(input);
+
+    config['feature.uaOverrides'].observe((enabled) => {
+      select.disabled = !enabled;
+      input.disabled = !enabled;
+    });
+    return element;
+  }
+
+  private renderCookieStore(nestingCount: number, displayedContainer: DisplayedContainer): HTMLDivElement {
     const element = document.createElement('div');
     element.classList.add('container');
 
@@ -130,26 +217,11 @@ export class TabGroupSorterElement extends HTMLElement {
     nameElement.textContent = displayedContainer.name;
     containerInnerElement.appendChild(nameElement);
 
-    const upButton = document.createElement('button');
-    upButton.classList.add('up');
-    containerInnerElement.appendChild(upButton);
-    upButton.addEventListener('click', () => {
-      this._tabGroupDirectory.moveTabGroupUp(displayedContainer.cookieStore.id).catch((e) => {
-        console.error(e);
-      });
-    });
+    const languageOptions = this.createLanguageOptionsElement(displayedContainer.cookieStore.id);
+    element.appendChild(languageOptions);
 
-    const downButton = document.createElement('button');
-    downButton.classList.add('down');
-    containerInnerElement.appendChild(downButton);
-    downButton.addEventListener('click', () => {
-      this._tabGroupDirectory.moveTabGroupDown(displayedContainer.cookieStore.id).catch((e) => {
-        console.error(e);
-      });
-    });
-
-    const options = this.createOptionsElement(displayedContainer.cookieStore.id);
-    element.appendChild(options);
+    const userAgentOptions = this.createUserAgentOptionsElement(displayedContainer.cookieStore.id);
+    element.appendChild(userAgentOptions);
 
     return element;
   }
@@ -177,26 +249,11 @@ export class TabGroupSorterElement extends HTMLElement {
 
     const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
 
-    const upButton = document.createElement('button');
-    upButton.classList.add('up');
-    containerInnerElement.appendChild(upButton);
-    upButton.addEventListener('click', () => {
-      this._tabGroupDirectory.moveTabGroupUp(tabGroupId).catch((e) => {
-        console.error(e);
-      });
-    });
+    const languageOptions = this.createLanguageOptionsElement(tabGroupId);
+    element.appendChild(languageOptions);
 
-    const downButton = document.createElement('button');
-    downButton.classList.add('down');
-    containerInnerElement.appendChild(downButton);
-    downButton.addEventListener('click', () => {
-      this._tabGroupDirectory.moveTabGroupDown(tabGroupId).catch((e) => {
-        console.error(e);
-      });
-    });
-
-    const options = this.createOptionsElement(tabGroupId);
-    element.appendChild(options);
+    const userAgentOptions = this.createUserAgentOptionsElement(tabGroupId);
+    element.appendChild(userAgentOptions);
 
     return element;
   }
@@ -207,7 +264,7 @@ export class TabGroupSorterElement extends HTMLElement {
       if (attributes.tabGroupType == 'cookieStore') {
         const contextualIdentity = displayedContainerMap.get(tabGroupId);
         if (!contextualIdentity) continue;
-        const containerElement = this.renderUserContext(nestingCount, contextualIdentity);
+        const containerElement = this.renderCookieStore(nestingCount, contextualIdentity);
         element.appendChild(containerElement);
       } else {
         const supergroup = tabGroupDirectorySnapshot.getSupergroup(tabGroupId) as SupergroupType;
@@ -240,4 +297,4 @@ export class TabGroupSorterElement extends HTMLElement {
   }
 }
 
-customElements.define('tab-group-sorter', TabGroupSorterElement);
+customElements.define('tab-group-overrides', TabGroupOverridesElement);
