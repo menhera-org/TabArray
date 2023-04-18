@@ -19,6 +19,8 @@
   @license
 **/
 
+// https://www.fincher.org/Utilities/CountryLanguageList.shtml
+
 export const CODES: { [code: string]: { code: string; name: string; } } = {
   "af": {
     "code": "af",
