@@ -45,6 +45,7 @@ import './background-redirector';
 import './background-tab-sorter';
 import './background-activated-tabs';
 import './background-content-script-responder';
+import './background-tags';
 import { everyMinuteAlarm } from './background-alarms';
 
 import '../../api/ApiDefinitions';
