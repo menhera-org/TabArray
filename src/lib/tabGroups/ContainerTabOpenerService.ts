@@ -25,6 +25,7 @@ import { BackgroundService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 
 import { TagService } from './TagService';
+import { ActiveContainerService } from '../states/ActiveContainerService';
 import { ServiceRegistry } from '../ServiceRegistry';
 
 type TabOpenActionType = {
@@ -36,6 +37,7 @@ type TabOpenActionType = {
 };
 
 const tagService = TagService.getInstance();
+const activeContainerService = ActiveContainerService.getInstance();
 
 const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number, active: boolean) => {
   const browserTab = await browser.tabs.create({
@@ -104,6 +106,7 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
     : (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => cookieStore.isPrivate == browserWindow.incognito);
     for (const browserWindow of browserWindows) {
       if (browserWindow.id == null) continue;
+      activeContainerService.setActiveContainer(browserWindow.id, cookieStoreId);
       const browserTab = await browser.tabs.create({
         cookieStoreId,
         windowId: browserWindow.id,
