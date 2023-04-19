@@ -32,7 +32,7 @@ import { MenulistTabElement } from "../../../components/menulist-tab";
 import { MenulistContainerElement } from "../../../components/menulist-container";
 import { MenulistTagElement } from '../../../components/menulist-tag';
 
-import { UserContext } from "../../../legacy-lib/tabGroups";
+import { UserContext } from "../../../legacy-lib/tabGroups/UserContext";
 
 import * as containers from '../../../legacy-lib/modules/containers';
 import { IndexTab } from "../../../legacy-lib/modules/IndexTab";

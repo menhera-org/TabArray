@@ -28,7 +28,7 @@ import { IndexTabService } from '../../lib/tabs/IndexTabService';
 
 import * as containers from '../../legacy-lib/modules/containers';
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';
-import { WindowUserContextList } from '../../legacy-lib/tabGroups';
+import { WindowUserContextList } from '../../legacy-lib/tabGroups/WindowUserContextList';
 
 import { config } from '../../config/config';
 import { InitialWindowsService } from './InitialWindowsService';

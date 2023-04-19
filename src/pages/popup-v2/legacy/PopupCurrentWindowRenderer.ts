@@ -41,7 +41,7 @@ import { ModalMoveGroupElement } from '../../../components/modal-move-group';
 import { ContainerEditorElement } from '../../../components/container-editor';
 
 import * as containers from '../../../legacy-lib/modules/containers';
-import { UserContext } from '../../../legacy-lib/tabGroups';
+import { UserContext } from '../../../legacy-lib/tabGroups/UserContext';
 import { WindowStateSnapshot } from '../../../legacy-lib/tabs/WindowStateSnapshot';
 
 const tabGroupDirectory = new TabGroupDirectory();

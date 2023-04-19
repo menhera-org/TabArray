@@ -27,7 +27,7 @@ import { ContextualIdentityService } from '../../../lib/tabGroups/ContextualIden
 import { TabGroupService } from '../../../lib/tabGroups/TabGroupService';
 import { DisplayedContainerService } from '../../../lib/tabGroups/DisplayedContainerService';
 
-import { UserContext } from "../../../legacy-lib/tabGroups";
+import { UserContext } from "../../../legacy-lib/tabGroups/UserContext";
 
 import { PopupRenderer } from './PopupRenderer';
 import { PopupUtils } from './PopupUtils';

@@ -28,7 +28,7 @@ import { RegistrableDomainService } from 'weeg-domains';
 
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
-import { UserContext } from '../tabGroups';
+import { UserContext } from '../tabGroups/UserContext';
 import { WindowStateSnapshot } from './WindowStateSnapshot';
 import { ContainersStateSnapshot } from './ContainersStateSnapshot';
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';

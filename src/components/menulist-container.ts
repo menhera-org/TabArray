@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { UserContext } from "../legacy-lib/tabGroups";
+import { UserContext } from "../legacy-lib/tabGroups/UserContext";
 import { EventSink } from "weeg-events";
 
 export class MenulistContainerElement extends HTMLElement {

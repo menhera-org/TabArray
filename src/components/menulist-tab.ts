@@ -25,7 +25,7 @@ import { CompatTab } from 'weeg-tabs';
 
 import { TabIconService } from '../lib/TabIconService';
 
-import { UserContext } from "../legacy-lib/tabGroups";
+import { UserContext } from "../legacy-lib/tabGroups/UserContext";
 import { ModalSetTagElement } from './modal-set-tag';
 
 export class MenulistTabElement extends HTMLElement {

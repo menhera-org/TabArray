@@ -39,7 +39,7 @@ import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { PopupRendererService } from "../PopupRendererService";
 
 import { ContainersStateSnapshot } from "../../../legacy-lib/tabs/ContainersStateSnapshot";
-import { UserContext } from "../../../legacy-lib/tabGroups";
+import { UserContext } from "../../../legacy-lib/tabGroups/UserContext";
 
 export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onContainerSelected = new EventSink<string>();

@@ -30,7 +30,7 @@ import { SupergroupEditorElement } from './supergroup-editor';
 import { TagEditorElement } from './tag-editor';
 
 import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
-import { UserContext } from "../legacy-lib/tabGroups";
+import { UserContext } from "../legacy-lib/tabGroups/UserContext";
 import * as containers from '../legacy-lib/modules/containers';
 import { ContainerVisibilityService } from "../legacy-lib/userContexts/ContainerVisibilityService";
 
