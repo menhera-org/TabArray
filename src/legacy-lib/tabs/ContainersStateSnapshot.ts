@@ -20,16 +20,16 @@
 **/
 
 import { DisplayedContainer } from "weeg-containers";
+import { CompatTab } from "weeg-tabs";
 
-import { Tab } from "./Tab";
 import { TabGroupDirectorySnapshot } from "../../lib/tabGroups/TabGroupDirectorySnapshot";
 
 export class ContainersStateSnapshot {
   public readonly displayedContainers: readonly DisplayedContainer[];
-  private readonly _tabsByContainer = new Map<string, Tab[]>();
+  private readonly _tabsByContainer = new Map<string, CompatTab[]>();
   public readonly tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
 
-  public constructor(displayedContainers: DisplayedContainer[], tabs: Tab[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot) {
+  public constructor(displayedContainers: DisplayedContainer[], tabs: CompatTab[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot) {
     this.displayedContainers = displayedContainers;
     this.tabGroupDirectorySnapshot = tabGroupDirectorySnapshot;
     tabs.sort((a, b) => {
@@ -39,7 +39,7 @@ export class ContainersStateSnapshot {
       return a.windowId - b.windowId;
     });
     for (const tab of tabs) {
-      const cookieStoreId = tab.cookieStoreId;
+      const cookieStoreId = tab.cookieStore.id;
       let tabs = this._tabsByContainer.get(cookieStoreId);
       if (!tabs) {
         tabs = [];
@@ -49,7 +49,7 @@ export class ContainersStateSnapshot {
     }
   }
 
-  public getTabsByContainer(cookieStoreId: string): readonly Tab[] {
+  public getTabsByContainer(cookieStoreId: string): readonly CompatTab[] {
     const tabs = this._tabsByContainer.get(cookieStoreId);
     if (tabs) {
       return tabs;

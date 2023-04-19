@@ -20,9 +20,8 @@
 **/
 
 import { CompatTab } from "weeg-tabs";
-import { OriginAttributes } from "../tabGroups";
 import browser from 'webextension-polyfill';
-import { Uint32 } from "weeg-types";
+import { CookieStore } from "weeg-containers";
 
 /**
  * Thin wrapper around browser.tabs
@@ -33,7 +32,6 @@ export class Tab {
   public readonly title: string;
   public readonly favIconUrl: string;
   public readonly windowId: number;
-  public readonly originAttributes: OriginAttributes;
   public readonly discarded: boolean;
   public readonly hidden: boolean;
   public readonly active: boolean;
@@ -42,6 +40,7 @@ export class Tab {
   public readonly isSharing: boolean;
   public readonly lastAccessed: number;
   public readonly muted: boolean;
+  public readonly cookieStore: CookieStore;
 
   public static async get(id: number): Promise<Tab> {
     const tab = await browser.tabs.get(id);
@@ -72,8 +71,7 @@ export class Tab {
     if (browserTab instanceof CompatTab) {
       this.muted = browserTab.muted;
       this.isSharing = browserTab.isSharing;
-      const cookieStoreId = browserTab.cookieStore.id;
-      this.originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId, this.url);
+      this.cookieStore = browserTab.cookieStore;
     } else {
       this.muted = browserTab.mutedInfo?.muted ?? false;
       if (browserTab.sharingState !== undefined) {
@@ -82,7 +80,7 @@ export class Tab {
         this.isSharing = false;
       }
       const cookieStoreId = browserTab.cookieStoreId ?? Tab.getDefaultCookieStoreId(browserTab.incognito);
-      this.originAttributes = OriginAttributes.fromCookieStoreId(cookieStoreId, this.url);
+      this.cookieStore = new CookieStore(cookieStoreId);
     }
   }
 
@@ -92,20 +90,8 @@ export class Tab {
       || (sharingState.camera ?? false);
   }
 
-  public get cookieStoreId(): string {
-    return this.originAttributes.cookieStoreId;
-  }
-
-  public get userContextId(): Uint32.Uint32 {
-    return this.originAttributes.userContextId ?? 0 as Uint32.Uint32;
-  }
-
-  public isPrivate(): boolean {
-    return this.originAttributes.isPrivateBrowsing();
-  }
-
-  public isContainer(): boolean {
-    return this.userContextId !== 0;
+  public get isPrivate(): boolean {
+    return this.cookieStore.isPrivate;
   }
 
   /**

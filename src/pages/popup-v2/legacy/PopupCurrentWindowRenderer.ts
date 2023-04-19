@@ -65,7 +65,7 @@ export class PopupCurrentWindowRenderer {
     const pinnedTabs = windowStateSnapshot.pinnedTabs;
     let tabCount = 0;
     for (const tab of pinnedTabs) {
-      const tabElement = this.popupRenderer.renderTab(tab, definedUserContexts.get(tab.userContextId));
+      const tabElement = this.popupRenderer.renderTab(new Tab(tab), definedUserContexts.get(tab.cookieStore.userContextId));
       element.appendChild(tabElement);
       tabCount++;
     }
@@ -195,7 +195,8 @@ export class PopupCurrentWindowRenderer {
           supergroupElement.appendChild(containerElement);
           continue;
         }
-        const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs, tabAttributeMap);
+        const legacyTabs = tabs.map((tab) => new Tab(tab));
+        const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, legacyTabs, tabAttributeMap);
         supergroupElement.appendChild(containerElement);
       } else {
         const supergroup = tabGroupDirectorySnapshot.getSupergroup(memberTabGroupId) as SupergroupType;
@@ -254,7 +255,8 @@ export class PopupCurrentWindowRenderer {
       for (const openUserContext of openUserContexts) {
         const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(openUserContext.id) ?? []];
         tabCount += tabs.length;
-        const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs, tabAttributeMap);
+        const legacyTabs = tabs.map((tab) => new Tab(tab));
+        const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, legacyTabs, tabAttributeMap);
         element.appendChild(containerElement);
       }
     } else {
@@ -277,7 +279,8 @@ export class PopupCurrentWindowRenderer {
             element.appendChild(containerElement);
             continue;
           }
-          const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs, tabAttributeMap);
+          const legacyTabs = tabs.map((tab) => new Tab(tab));
+          const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, legacyTabs, tabAttributeMap);
           element.appendChild(containerElement);
         } else {
           const supergroup = tabGroupDirectorySnapshot.getSupergroup(memberTabGroupId) as SupergroupType;

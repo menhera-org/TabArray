@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { Tab } from "../tabs";
+import { CompatTab } from 'weeg-tabs';
 
 /**
  * Readonly list of Tab IDs.
@@ -44,11 +44,11 @@ export class TabList {
     return this._tabIds.includes(tabId);
   }
 
-  public async getTabs(): Promise<Tab[]> {
+  public async getTabs(): Promise<CompatTab[]> {
     const tabs = [];
     for (const tabId of this._tabIds) {
       try {
-        const tab = await Tab.get(tabId);
+        const tab = new CompatTab(await browser.tabs.get(tabId));
         tabs.push(tab);
       } catch (e) {
         // ignore.
@@ -58,7 +58,7 @@ export class TabList {
     return tabs;
   }
 
-  public async getUnpinnedTabs(): Promise<Tab[]> {
+  public async getUnpinnedTabs(): Promise<CompatTab[]> {
     const tabs = await this.getTabs();
     return tabs.filter((tab) => !tab.pinned);
   }

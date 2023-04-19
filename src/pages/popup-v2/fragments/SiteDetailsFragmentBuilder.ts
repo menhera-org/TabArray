@@ -21,6 +21,7 @@
 
 import browser from "webextension-polyfill";
 import { Uint32, SetMap } from "weeg-types";
+import { CompatTab } from "weeg-tabs";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
@@ -36,11 +37,11 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private _domain = '(none)';
   private _tabCount = 0;
-  private _firstPartyStateSnapshot: ReadonlyMap<string, ReadonlySet<Tab>> | null = null;
+  private _firstPartyStateSnapshot: ReadonlyMap<string, ReadonlySet<CompatTab>> | null = null;
   private _browserStateSnapshot: BrowserStateSnapshot | null = null;
   private _isPrivate = false;
   private _definedUserContexts: UserContext[] = [];
-  private _tabs: Tab[] = [];
+  private _tabs: CompatTab[] = [];
 
   public getFragmentId(): string {
     return 'fragment-site-details';
@@ -108,9 +109,9 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
     if (this._firstPartyStateSnapshot == null) {
       return;
     }
-    const tabsByUserContextId = new SetMap<Uint32.Uint32, Tab>();
+    const tabsByUserContextId = new SetMap<Uint32.Uint32, CompatTab>();
     for (const tab of this._tabs) {
-      const userContextId = tab.userContextId;
+      const userContextId = tab.cookieStore.userContextId;
       tabsByUserContextId.addItem(userContextId, tab);
     }
     const userContextMap = new Map<Uint32.Uint32, UserContext>();
@@ -135,7 +136,7 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
       fragment.appendChild(userContextElement);
       let tabCount = 0;
       for (const tab of tabs) {
-        const tabElement = this._popupRenderer.renderTab(tab, userContext);
+        const tabElement = this._popupRenderer.renderTab(new Tab(tab), userContext);
         userContextElement.appendChild(tabElement);
         tabCount++;
       }

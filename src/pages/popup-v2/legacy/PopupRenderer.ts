@@ -191,7 +191,7 @@ export class PopupRenderer {
           id: tab.id,
           index: tab.index,
           pinned: tab.pinned,
-          cookieStoreId: tab.cookieStoreId,
+          cookieStoreId: tab.cookieStore.id,
         }));
         ev.dataTransfer.dropEffect = 'move';
       });
@@ -200,7 +200,7 @@ export class PopupRenderer {
         const json = ev.dataTransfer.getData('application/json');
         const data = JSON.parse(json);
         if ('tab' != data.type || data.pinned) return;
-        if (data.cookieStoreId != tab.cookieStoreId) return;
+        if (data.cookieStoreId != tab.cookieStore.id) return;
         ev.preventDefault();
       });
       tabElement.addEventListener('drop', (ev) => {
@@ -208,7 +208,7 @@ export class PopupRenderer {
         const json = ev.dataTransfer.getData('application/json');
         const data = JSON.parse(json);
         if ('tab' != data.type || data.pinned) return;
-        if (data.cookieStoreId != tab.cookieStoreId) return;
+        if (data.cookieStoreId != tab.cookieStore.id) return;
         ev.preventDefault();
         browser.tabs.move(data.id, { index: tab.index }).catch((e) => {
           console.error(e);

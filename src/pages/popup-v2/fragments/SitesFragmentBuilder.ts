@@ -22,6 +22,7 @@
 import browser from "webextension-polyfill";
 import { EventSink } from "weeg-events";
 import { HostnameService } from "weeg-domains";
+import { CompatTab } from "weeg-tabs";
 
 import { TabQueryService } from "../../../lib/tabs/TabQueryService";
 
@@ -29,8 +30,6 @@ import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
 import { MenulistSiteElement } from "../../../components/menulist-site";
-
-import { Tab } from "../../../legacy-lib/tabs";
 
 export class SitesFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onSiteClicked = new EventSink<string>();
@@ -64,7 +63,7 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
     topBarElement.headingText = browser.i18n.getMessage('sitesN', this._siteCount.toFixed(0));
   }
 
-  public render(firstPartyStateSnapshot: ReadonlyMap<string, ReadonlySet<Tab>>): void {
+  public render(firstPartyStateSnapshot: ReadonlyMap<string, ReadonlySet<CompatTab>>): void {
     this._siteCount = firstPartyStateSnapshot.size;
     if (this.active) {
       this.renderTopBarWithGlobalItems();

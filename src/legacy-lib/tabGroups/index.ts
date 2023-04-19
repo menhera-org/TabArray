@@ -20,7 +20,6 @@
 **/
 
 export { OriginAttributes } from './OriginAttributes';
-export { FirstPartyService } from './FirstPartyService';
 export { TabGroup } from './TabGroup';
 export { UserContext } from './UserContext';
 export { TabList } from './TabList';

@@ -19,7 +19,7 @@
   @license
 **/
 
-import { Tab } from "../tabs";
+import { CompatTab } from "weeg-tabs";
 import { Uint32 } from "weeg-types";
 import { DefinedUserContextList } from "./DefinedUserContextList";
 import { OriginAttributes } from "./OriginAttributes";
@@ -38,19 +38,19 @@ export class FirstPartyUserContextList {
   }
 
   private readonly _firstPartyDomain: string;
-  private readonly _tabs: Tab[];
+  private readonly _tabs: CompatTab[];
   private readonly _definedUserContexts: DefinedUserContextList;
   private readonly _openUserContexts = new Map<Uint32.Uint32, UserContext>;
-  private _userContextTabMap: Map<Uint32.Uint32, Tab[]> = new Map();
+  private _userContextTabMap: Map<Uint32.Uint32, CompatTab[]> = new Map();
   private _isPrivateBrowsing: boolean;
 
-  private constructor(firstPartyDomain: string, tabs: Tab[], definedUserContexts: DefinedUserContextList, isPrivateBrowsing: boolean) {
+  private constructor(firstPartyDomain: string, tabs: CompatTab[], definedUserContexts: DefinedUserContextList, isPrivateBrowsing: boolean) {
     this._firstPartyDomain = firstPartyDomain;
     this._tabs = tabs;
     this._definedUserContexts = definedUserContexts;
     this._isPrivateBrowsing = isPrivateBrowsing;
     for (const tab of tabs) {
-      const userContextId = tab.originAttributes.userContextId;
+      const userContextId = tab.cookieStore.userContextId;
       if (userContextId == null) {
         continue;
       }
@@ -70,7 +70,7 @@ export class FirstPartyUserContextList {
     return this._openUserContexts.values();
   }
 
-  public getUserContextTabs(userContextId: Uint32.Uint32): Iterable<Tab> {
+  public getUserContextTabs(userContextId: Uint32.Uint32): Iterable<CompatTab> {
     const tabs = [... (this._userContextTabMap.get(userContextId) ?? [])];
     tabs.sort((a, b) => {
       let sortOrder = a.windowId - b.windowId;

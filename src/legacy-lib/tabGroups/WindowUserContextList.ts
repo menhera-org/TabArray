@@ -21,7 +21,8 @@
 
 import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
-import { Tab } from '../tabs';
+import { CompatTab } from 'weeg-tabs';
+
 import { UserContext } from './UserContext';
 import { DefinedUserContextList } from './DefinedUserContextList';
 
@@ -35,8 +36,8 @@ export class WindowUserContextList {
 
   private _openUserContexts = new Map<Uint32.Uint32, UserContext>();
   private _inactiveUserContexts: UserContext[] = [];
-  private _pinnedTabs: Tab[] = [];
-  private _userContextTabMap: Map<Uint32.Uint32, Tab[]> = new Map();
+  private _pinnedTabs: CompatTab[] = [];
+  private _userContextTabMap: Map<Uint32.Uint32, CompatTab[]> = new Map();
   private _isPrivate = false;
   private _windowId: number;
   private _userContexts: DefinedUserContextList;
@@ -50,19 +51,19 @@ export class WindowUserContextList {
     }
     this._userContexts = userContexts;
     this._windowId = browserWindow.id ?? browser.windows.WINDOW_ID_NONE;
-    const tabs = browserWindow.tabs.map((browserTab) => new Tab(browserTab));
+    const tabs = browserWindow.tabs.map((browserTab) => new CompatTab(browserTab));
     for (const tab of tabs) {
       if (tab.pinned) {
         this._pinnedTabs.push(tab);
         continue;
       }
-      if (tab.originAttributes.userContextId == null) {
+      if (tab.cookieStore.userContextId == null) {
         continue;
       }
-      this._openUserContexts.set(tab.originAttributes.userContextId, userContexts.getUserContext(tab.originAttributes.userContextId));
-      const userContextTabs = this._userContextTabMap.get(tab.originAttributes.userContextId) ?? [];
+      this._openUserContexts.set(tab.cookieStore.userContextId, userContexts.getUserContext(tab.cookieStore.userContextId));
+      const userContextTabs = this._userContextTabMap.get(tab.cookieStore.userContextId) ?? [];
       userContextTabs.push(tab);
-      this._userContextTabMap.set(tab.originAttributes.userContextId, userContextTabs);
+      this._userContextTabMap.set(tab.cookieStore.userContextId, userContextTabs);
     }
     this._addInactiveUserContexts(userContexts);
   }
@@ -89,13 +90,13 @@ export class WindowUserContextList {
     return this._inactiveUserContexts.values();
   }
 
-  public getUserContextTabs(userContextId: Uint32.Uint32): Iterable<Tab> {
+  public getUserContextTabs(userContextId: Uint32.Uint32): Iterable<CompatTab> {
     const tabs = [... (this._userContextTabMap.get(userContextId) ?? [])];
     tabs.sort((a, b) => a.index - b.index);
     return tabs.values();
   }
 
-  public getPinnedTabs(): Iterable<Tab> {
+  public getPinnedTabs(): Iterable<CompatTab> {
     const tabs = [... this._pinnedTabs];
     tabs.sort((a, b) => a.index - b.index);
     return tabs.values();

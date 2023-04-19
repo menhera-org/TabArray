@@ -128,7 +128,7 @@ export class MenulistTabElement extends HTMLElement {
       this.pinButton.title = browser.i18n.getMessage('tooltipTabPinButton');
     }
 
-    if (tab.isPrivate()) {
+    if (tab.isPrivate) {
       this.privateIconElement.style.visibility = "visible";
     } else {
       this.privateIconElement.style.visibility = "hidden";

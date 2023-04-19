@@ -20,7 +20,6 @@
 **/
 
 import { Uint32 } from "weeg-types";
-import { FirstPartyService } from "./FirstPartyService";
 
 /**
  * The origin attributes of a tab.
@@ -77,12 +76,8 @@ export class OriginAttributes {
     return new OriginAttributes(attrs.firstpartyDomain, attrs.userContextId, attrs.privateBrowsingId);
   }
 
-  public static fromCookieStoreId(cookieStoreId: string, url?: string): OriginAttributes {
-    const firstPartyService = FirstPartyService.getInstance();
-    let firstPartyDomain = '';
-    if (url) {
-      firstPartyDomain = firstPartyService.getRegistrableDomain(new URL(url));
-    }
+  public static fromCookieStoreId(cookieStoreId: string): OriginAttributes {
+    const firstPartyDomain = '';
     if (cookieStoreId === OriginAttributes.DEFAULT_STORE) {
       return new OriginAttributes(firstPartyDomain, 0 as Uint32.Uint32, 0 as Uint32.Uint32);
     }

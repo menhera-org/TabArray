@@ -22,9 +22,9 @@
 import browser from 'webextension-polyfill';
 import { UrlService, RegistrableDomainService } from 'weeg-domains';
 import { PromiseUtils } from 'weeg-utils';
+import { CompatTab } from 'weeg-tabs';
 
 import { OriginAttributes } from "./OriginAttributes";
-import { Tab } from "../tabs";
 import { TabList } from './TabList';
 import { WindowService } from '../tabs';
 
@@ -157,8 +157,9 @@ export class TabGroup {
         console.warn('Tab ID is undefined');
         continue;
       }
-      const tab = new Tab(browserTab);
-      if (this.originAttributes.hasFirstpartyDomain() && tab.originAttributes.firstpartyDomain !== this.matchedFirstPartyDomain) {
+      const tab = new CompatTab(browserTab);
+      const firstpartyDomain = await this._registrableDomainService.getRegistrableDomain(tab.url);
+      if (this.originAttributes.hasFirstpartyDomain() && firstpartyDomain !== this.matchedFirstPartyDomain) {
         continue;
       }
       this._tabIds.add(browserTab.id);
@@ -189,7 +190,7 @@ export class TabGroup {
     return firstPartyDomain === this.matchedFirstPartyDomain;
   }
 
-  public async openTabOnWindow(windowId: number | undefined, url: URL | null = null, active = true): Promise<Tab> {
+  public async openTabOnWindow(windowId: number | undefined, url: URL | null = null, active = true): Promise<CompatTab> {
     if (url) {
       if (await this.isUrlValidInGroup(url)) {
         throw new Error('URL is not in the same first-party domain');
@@ -214,12 +215,12 @@ export class TabGroup {
       index,
       active,
     });
-    const tab = new Tab(browserTab);
+    const tab = new CompatTab(browserTab);
     return tab;
   }
 
-  public async reopenTabInGroup(tabId: number, active = true): Promise<Tab> {
-    const tab = await Tab.get(tabId);
+  public async reopenTabInGroup(tabId: number, active = true): Promise<CompatTab> {
+    const tab = new CompatTab(await browser.tabs.get(tabId));
     if (this.tabList.hasTabId(tabId)) {
       return tab;
     }
@@ -228,7 +229,7 @@ export class TabGroup {
       url = null;
     }
     let windowId: number | undefined = tab.windowId;
-    if (tab.isPrivate() != this.originAttributes.isPrivateBrowsing()) {
+    if (tab.isPrivate != this.originAttributes.isPrivateBrowsing()) {
       windowId = undefined;
     }
     const newTab = await this.openTabOnWindow(windowId, url, active);

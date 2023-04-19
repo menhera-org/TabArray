@@ -19,26 +19,26 @@
   @license
 **/
 
-import { Tab } from "./Tab";
+import { CompatTab } from "weeg-tabs";
 import { Uint32 } from "weeg-types";
 
 export class WindowStateSnapshot {
   public readonly id: number;
   public readonly isPrivate: boolean;
-  public readonly tabs: readonly Tab[];
-  public readonly activeTabs: readonly Tab[];
-  public readonly pinnedTabs: readonly Tab[];
+  public readonly tabs: readonly CompatTab[];
+  public readonly activeTabs: readonly CompatTab[];
+  public readonly pinnedTabs: readonly CompatTab[];
   public readonly activeUserContexts: readonly Uint32.Uint32[];
-  public readonly userContextUnpinnedTabMap: ReadonlyMap<Uint32.Uint32, readonly Tab[]>;
+  public readonly userContextUnpinnedTabMap: ReadonlyMap<Uint32.Uint32, readonly CompatTab[]>;
 
-  public constructor(windowId: number, isPrivate: boolean, tabs: Tab[]) {
+  public constructor(windowId: number, isPrivate: boolean, tabs: CompatTab[]) {
     this.id = windowId;
     this.isPrivate = isPrivate;
     this.tabs = tabs;
 
     const activeTabs = [];
     const pinnedTabs = [];
-    const userContextUnpinnedTabMap = new Map<Uint32.Uint32, Tab[]>();
+    const userContextUnpinnedTabMap = new Map<Uint32.Uint32, CompatTab[]>();
     const activeUserContexts = new Set<Uint32.Uint32>();
     for (const tab of this.tabs) {
       if (tab.active) {
@@ -47,15 +47,15 @@ export class WindowStateSnapshot {
       if (tab.pinned) {
         pinnedTabs.push(tab);
       } else {
-        activeUserContexts.add(tab.userContextId);
-        if (userContextUnpinnedTabMap.has(tab.userContextId)) {
-          const userContextUnpinnedTabs = userContextUnpinnedTabMap.get(tab.userContextId);
+        activeUserContexts.add(tab.cookieStore.userContextId);
+        if (userContextUnpinnedTabMap.has(tab.cookieStore.userContextId)) {
+          const userContextUnpinnedTabs = userContextUnpinnedTabMap.get(tab.cookieStore.userContextId);
           if (userContextUnpinnedTabs == null) {
             throw new Error('userContextUnpinnedTabs is null'); // This should never happen
           }
           userContextUnpinnedTabs.push(tab);
         } else {
-          userContextUnpinnedTabMap.set(tab.userContextId, [tab]);
+          userContextUnpinnedTabMap.set(tab.cookieStore.userContextId, [tab]);
         }
       }
     }

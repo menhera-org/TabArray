@@ -121,7 +121,7 @@ export const menus = {
 
 menus[MENU_ID_TAB_HIDE_CONTAINER].onShown.addListener((info) => {
   const { tab } = info;
-  if (!tab || tab.isPrivate()) {
+  if (!tab || tab.isPrivate) {
     menus[MENU_ID_TAB_HIDE_CONTAINER].disable();
   } else {
     menus[MENU_ID_TAB_HIDE_CONTAINER].enable();
@@ -132,9 +132,9 @@ menus[MENU_ID_TAB_HIDE_CONTAINER].onClicked.addListener((info) => {
   const { tab } = info;
 
   if (tab == null) return;
-  if (tab.cookieStoreId == null) return;
+  if (tab.cookieStore.id == null) return;
 
-  const cookieStore = new CookieStore(tab.cookieStoreId);
+  const cookieStore = new CookieStore(tab.cookieStore.id);
 
   if (info.menuItemId == MENU_ID_TAB_HIDE_CONTAINER) {
     if (cookieStore.isPrivate) {
