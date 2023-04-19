@@ -77,9 +77,7 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    library: {
-      name: ['CTG', '[name]'],
-    },
+    library: ['CTG', '[name]'],
   },
 
   module: {
