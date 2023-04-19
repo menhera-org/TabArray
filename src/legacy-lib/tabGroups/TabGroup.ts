@@ -26,7 +26,7 @@ import { CompatTab } from 'weeg-tabs';
 
 import { OriginAttributes } from "./OriginAttributes";
 import { TabList } from './TabList';
-import { WindowService } from '../tabs';
+import { WindowService } from '../tabs/WindowService';
 
 type TabGroupObserver = (tabGroup: TabGroup) => void;
 
