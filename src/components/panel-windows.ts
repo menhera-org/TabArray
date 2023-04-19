@@ -33,7 +33,6 @@ import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
 import { UserContext } from "../legacy-lib/tabGroups";
 import * as containers from '../legacy-lib/modules/containers';
 import { ContainerVisibilityService } from "../legacy-lib/userContexts/ContainerVisibilityService";
-import { Tab } from '../legacy-lib/tabs';
 
 import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
 
@@ -307,7 +306,7 @@ export class PanelWindowsElement extends HTMLElement {
     const pinnedTabsElement = this.shadowRoot.querySelector('.pinned-tabs') as HTMLDivElement;
     pinnedTabsElement.textContent = '';
     for (const pinnedTab of pinnedTabs) {
-      const tabElement = this._popupRenderer.renderTab(new Tab(pinnedTab), userContextMap.get(pinnedTab.cookieStore.userContextId) || UserContext.DEFAULT);
+      const tabElement = this._popupRenderer.renderTab(pinnedTab, userContextMap.get(pinnedTab.cookieStore.userContextId) || UserContext.DEFAULT);
       tabElement.draggable = true;
       tabElement.addEventListener('dragstart', (ev) => {
         if (!ev.dataTransfer) return;
@@ -421,7 +420,7 @@ export class PanelWindowsElement extends HTMLElement {
       searchResultsContainersElement.appendChild(containerElement);
     }
     for (const tab of tabs) {
-      const tabElement = this._popupRenderer.renderTab(new Tab(tab), userContextMap.get(tab.cookieStore.userContextId) || UserContext.DEFAULT);
+      const tabElement = this._popupRenderer.renderTab(tab, userContextMap.get(tab.cookieStore.userContextId) || UserContext.DEFAULT);
       searchResultsTabsElement.appendChild(tabElement);
     }
   }

@@ -34,7 +34,6 @@ import { TabQueryService } from '../../lib/tabs/TabQueryService';
 
 import { PanoramaStateStore } from "./PanoramaStateStore";
 
-import { Tab } from "../../legacy-lib/tabs";
 import { IndexTab } from "../../legacy-lib/modules/IndexTab";
 import * as i18n from '../../legacy-lib/modules/i18n';
 
@@ -272,7 +271,7 @@ browser.tabs.onRemoved.addListener(() => handler.render());
 browser.tabs.onUpdated.addListener(() => handler.render(), { properties: ['favIconUrl', 'title', 'url'] });
 browser.tabs.onCreated.addListener(() => handler.render());
 browser.tabs.query({}).then((browserTabs) => {
-  const tabs = browserTabs.map((browserTab) => new Tab(browserTab));
+  const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
   panoramaStateStore.updatePreviewUrls(tabs.map((tab) => tab.id)).then(() => {
     handler.render().catch((e) => {
       console.error(e);

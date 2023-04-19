@@ -19,6 +19,5 @@
   @license
 **/
 
-export { Tab } from './Tab';
 export { TabPreviewService } from './TabPreviewService';
 export { WindowService } from './WindowService';

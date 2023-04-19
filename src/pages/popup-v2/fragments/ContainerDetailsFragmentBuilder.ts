@@ -32,7 +32,6 @@ import { UserContext } from "../../../legacy-lib/tabGroups";
 import { MenulistWindowElement } from "../../../components/menulist-window";
 import { ContainerTabOpenerService } from "../../../lib/tabGroups/ContainerTabOpenerService";
 
-import { Tab } from "../../../legacy-lib/tabs";
 
 export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
@@ -137,7 +136,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
         fragment.appendChild(windowElement);
       }
       windowId = tab.windowId;
-      const tabElement = this._popupRenderer.renderTab(new Tab(tab), userContext);
+      const tabElement = this._popupRenderer.renderTab(tab, userContext);
       fragment.appendChild(tabElement);
     }
   }

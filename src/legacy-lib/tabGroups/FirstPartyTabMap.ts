@@ -21,11 +21,11 @@
 
 import browser from 'webextension-polyfill';
 import { RegistrableDomainService } from 'weeg-domains';
-import { Tab } from "../tabs";
+import { CompatTab } from 'weeg-tabs';
 import { UrlService } from 'weeg-domains';
 import { HostnameService } from 'weeg-domains';
 
-type ImplementedMap = ReadonlyMap<string, ReadonlyArray<Tab>>;
+type ImplementedMap = ReadonlyMap<string, ReadonlyArray<CompatTab>>;
 
 export class FirstPartyTabMap implements ImplementedMap {
   private static readonly registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
@@ -33,12 +33,12 @@ export class FirstPartyTabMap implements ImplementedMap {
   public static async create(isPrivate = false): Promise<FirstPartyTabMap> {
     const browserTabs = await browser.tabs.query({});
     const tabs = [];
-    const registrableDomainMap = new WeakMap<Tab, string>();
+    const registrableDomainMap = new WeakMap<CompatTab, string>();
     for (const browserTab of browserTabs) {
       if (browserTab.incognito != isPrivate) {
         continue;
       }
-      const tab = new Tab(browserTab);
+      const tab = new CompatTab(browserTab);
       tabs.push(tab);
       const registrableDomain = (await FirstPartyTabMap.registrableDomainService.getRegistrableDomains([tab.url]))[0] as string;
       registrableDomainMap.set(tab, registrableDomain);
@@ -48,9 +48,9 @@ export class FirstPartyTabMap implements ImplementedMap {
 
   private readonly urlService = UrlService.getInstance();
   private readonly hostnameService = HostnameService.getInstance();
-  private readonly tabMap = new Map<string, Tab[]>();
+  private readonly tabMap = new Map<string, CompatTab[]>();
 
-  private constructor(tabs: Tab[], registrableDomainMap: WeakMap<Tab, string>) {
+  private constructor(tabs: CompatTab[], registrableDomainMap: WeakMap<CompatTab, string>) {
     for (const tab of tabs) {
       const url = new URL(tab.url);
       if (!this.urlService.isHttpScheme(url)) {
@@ -70,11 +70,11 @@ export class FirstPartyTabMap implements ImplementedMap {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public forEach(callbackfn: (value: readonly Tab[], key: string, map: ImplementedMap) => void, thisArg?: any): void {
+  public forEach(callbackfn: (value: readonly CompatTab[], key: string, map: ImplementedMap) => void, thisArg?: any): void {
     this.tabMap.forEach(callbackfn, thisArg);
   }
 
-  public get(key: string): readonly Tab[] | undefined {
+  public get(key: string): readonly CompatTab[] | undefined {
     return this.tabMap.get(key);
   }
 
@@ -86,7 +86,7 @@ export class FirstPartyTabMap implements ImplementedMap {
     return this.tabMap.size;
   }
 
-  public * entries(): IterableIterator<[string, readonly Tab[]]> {
+  public * entries(): IterableIterator<[string, readonly CompatTab[]]> {
     const keys = this.keys();
     for (const key of keys) {
       const value = this.tabMap.get(key);
@@ -102,11 +102,11 @@ export class FirstPartyTabMap implements ImplementedMap {
     return [... this.tabMap.keys()].sort((a, b) => this.hostnameService.compareDomains(a, b)).values();
   }
 
-  public values(): IterableIterator<readonly Tab[]> {
+  public values(): IterableIterator<readonly CompatTab[]> {
     return this.tabMap.values();
   }
 
-  public [Symbol.iterator](): IterableIterator<[string, readonly Tab[]]> {
+  public [Symbol.iterator](): IterableIterator<[string, readonly CompatTab[]]> {
     return this.entries();
   }
 }

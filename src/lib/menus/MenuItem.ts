@@ -21,14 +21,14 @@
 
 import browser from 'webextension-polyfill';
 import { EventSink } from "weeg-events";
-import { Tab } from '../../legacy-lib/tabs';
+import { CompatTab } from 'weeg-tabs';
 
 export type OnClickData = browser.Menus.OnClickData & {
-  tab?: Tab;
+  tab?: CompatTab;
 };
 
 export type OnShownData = browser.Menus.OnShownInfoType & {
-  tab?: Tab;
+  tab?: CompatTab;
 };
 
 export class MenuItem {
@@ -45,12 +45,12 @@ export class MenuItem {
     this._menuId = menuId;
     browser.menus.onClicked.addListener((info, browserTab) => {
       if (info.menuItemId !== this._menuId) return;
-      const tab = browserTab ? new Tab(browserTab) : undefined;
+      const tab = browserTab ? new CompatTab(browserTab) : undefined;
       this.onClicked.dispatch({ ...info, tab });
     });
     browser.menus.onShown.addListener((info, browserTab) => {
       if (info.menuIds.indexOf(this._menuId) < 0) return;
-      const tab = browserTab ? new Tab(browserTab) : undefined;
+      const tab = browserTab ? new CompatTab(browserTab) : undefined;
       this.onShown.dispatch({ ...info, tab });
     });
   }

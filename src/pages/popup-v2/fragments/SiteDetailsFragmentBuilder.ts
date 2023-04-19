@@ -29,7 +29,6 @@ import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
 import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../../legacy-lib/tabs/BrowserStateSnapshot";
 import { UserContext } from "../../../legacy-lib/tabGroups";
-import { Tab } from "../../../legacy-lib/tabs";
 
 export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
@@ -136,7 +135,7 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
       fragment.appendChild(userContextElement);
       let tabCount = 0;
       for (const tab of tabs) {
-        const tabElement = this._popupRenderer.renderTab(new Tab(tab), userContext);
+        const tabElement = this._popupRenderer.renderTab(tab, userContext);
         userContextElement.appendChild(tabElement);
         tabCount++;
       }

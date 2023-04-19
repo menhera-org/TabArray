@@ -21,6 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { CookieStore } from 'weeg-containers';
+import { CompatTab } from 'weeg-tabs';
 
 import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOpenerService';
 import { TabQueryService } from '../../../lib/tabs/TabQueryService';
@@ -31,7 +32,6 @@ import { MenulistTabElement } from "../../../components/menulist-tab";
 import { MenulistContainerElement } from "../../../components/menulist-container";
 import { MenulistTagElement } from '../../../components/menulist-tag';
 
-import { Tab } from "../../../legacy-lib/tabs";
 import { UserContext } from "../../../legacy-lib/tabGroups";
 
 import * as containers from '../../../legacy-lib/modules/containers';
@@ -59,7 +59,7 @@ export class PopupRenderer {
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly modalRenderer = new PopupModalRenderer(this);
 
-  public renderTab(tab: Tab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
+  public renderTab(tab: CompatTab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
     const element = new MenulistTabElement(tab, userContext);
     element.onTabClicked.addListener(() => {
       tab.focus();
@@ -141,7 +141,7 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderContainerWithTabs(windowId: number, userContext: UserContext, tabs: Tab[], isPrivate = false, tabAttributeMap?: TabAttributeMap): MenulistContainerElement {
+  public renderContainerWithTabs(windowId: number, userContext: UserContext, tabs: CompatTab[], isPrivate = false, tabAttributeMap?: TabAttributeMap): MenulistContainerElement {
     if (isPrivate) {
       userContext = UserContext.PRIVATE;
     }
