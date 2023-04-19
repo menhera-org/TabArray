@@ -88,6 +88,10 @@ module.exports = {
     ],
   },
 
+  optimization: {
+    moduleIds: 'deterministic',
+  },
+
   plugins: [
     new DeadCodePlugin({
       patterns: [
