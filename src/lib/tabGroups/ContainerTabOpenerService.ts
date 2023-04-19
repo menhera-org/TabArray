@@ -58,6 +58,8 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
   try {
     console.debug('reopen_tab_in_container: tabId=%d, cookieStoreId=%s', tabId, cookieStoreId);
     const browserTab = await browser.tabs.get(tabId);
+    const oldTab = new CompatTab(browserTab);
+    const oldTagId = (await tagService.getTagForTab(oldTab))?.tagId ?? 0;
     if (!browserTab.url || browserTab.url === 'about:blank' || !browserTab.cookieStoreId || !browserTab.windowId) {
       console.debug('reopen_tab_in_container: tabId=%d is incomplete, ignoring', tabId);
       return browser.tabs.TAB_ID_NONE;
@@ -70,6 +72,10 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
       for (const browserWindow of browserWindows) {
         if (browserWindow.id == null) continue;
         const openedTabId = await openTabAndCloseCurrent(browserTab.url, targetCookieStore.id, browserWindow.id, tabId, active);
+        if (oldTagId != 0) {
+          const openedTab = new CompatTab(await browser.tabs.get(openedTabId));
+          await tagService.setTagIdForTab(openedTab, oldTagId);
+        }
         return openedTabId;
       }
       const openedBrowserWindow = await browser.windows.create({
@@ -82,8 +88,17 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
       if (openedBrowserTabs.length === 0) {
         return browser.tabs.TAB_ID_NONE;
       }
-      const openedTabId = openedBrowserTabs[openedBrowserTabs.length - 1]?.id ?? browser.tabs.TAB_ID_NONE;
-      await browser.tabs.remove(tabId);
+      const openedBrowserTab = openedBrowserTabs[openedBrowserTabs.length - 1];
+      if (!openedBrowserTab) {
+        console.warn('reopen_tab_in_container: openedBrowserTab is null');
+      } else if (oldTagId != 0) {
+        const openedTab = new CompatTab(openedBrowserTab);
+        await tagService.setTagIdForTab(openedTab, oldTagId);
+      }
+      const openedTabId = openedBrowserTab?.id ?? browser.tabs.TAB_ID_NONE;
+      if (openedTabId != browser.tabs.TAB_ID_NONE) {
+        await browser.tabs.remove(tabId); // remove old tag
+      }
       return openedTabId;
     } else {
       const openedTabId = await openTabAndCloseCurrent(browserTab.url, targetCookieStore.id, browserTab.windowId, tabId, active);
