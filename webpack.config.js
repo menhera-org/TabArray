@@ -24,6 +24,8 @@
 
 const path = require('path');
 
+const DeadCodePlugin = require('webpack-deadcode-plugin');
+
 module.exports = {
   mode: 'production',
   context: __dirname,
@@ -85,4 +87,12 @@ module.exports = {
       },
     ],
   },
+
+  plugins: [
+    new DeadCodePlugin({
+      patterns: [
+        'src/**/*.(js|ts)',
+      ],
+    }),
+  ],
 };
