@@ -65,11 +65,11 @@ module.exports = {
       import: './src/content/content.ts',
       filename: 'content/content.js',
     },
-    'page-action': {
+    'pageAction': {
       import: './src/pages/page-action/page-action.ts',
       filename: 'pages/page-action/page-action.js',
     },
-    'popup-v2': {
+    'popup': {
       import: './src/pages/popup-v2/popup-v2.ts',
       filename: 'pages/popup-v2/popup-v2.js',
     },
@@ -77,6 +77,9 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
+    library: {
+      name: ['CTG', '[name]'],
+    },
   },
 
   module: {
