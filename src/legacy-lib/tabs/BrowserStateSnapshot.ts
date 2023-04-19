@@ -90,7 +90,6 @@ export class BrowserStateSnapshot {
       registrableDomainMap.set(urls[i] as string, registrableDomains[i] as string);
     }
 
-    console.debug('CompatTabs: ', compatTabMap.size);
     const tabAttributeMap = await TabAttributeMap.create(compatTabMap.values());
     const constructParams = {
       userContexts,

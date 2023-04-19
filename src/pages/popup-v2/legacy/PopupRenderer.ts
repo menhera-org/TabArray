@@ -151,8 +151,6 @@ export class PopupRenderer {
         const bTag = tabAttributeMap.getTagForTab(b.id)?.tagId ?? 0;
         return aTag - bTag;
       });
-    } else {
-      console.debug('No tab attribute map');
     }
 
     const element = this.renderContainer(windowId, userContext, isPrivate);
@@ -173,7 +171,6 @@ export class PopupRenderer {
         const newTag = tabAttributeMap.getTagForTab(tab.id)?.tagId ?? 0;
         if (tagId != newTag) {
           tagId = newTag;
-          console.debug('New tag ID', tagId);
           const tag = tabAttributeMap.getTagForTab(tab.id);
           if (tag) {
             const tagElement = new MenulistTagElement(tag);
