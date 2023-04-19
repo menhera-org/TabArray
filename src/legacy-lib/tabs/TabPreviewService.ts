@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { Tab } from './Tab';
+import { CompatTab } from 'weeg-tabs';
 
 // private
 type TabValue = {
@@ -68,7 +68,7 @@ export class TabPreviewService {
   public async getTabPreview(tabId: number): Promise<string> {
     if (browser.sessions) {
       // Sessions API is available.
-      const tab = await Tab.get(tabId);
+      const tab = new CompatTab(await browser.tabs.get(tabId));
       let tabValue = await this._getTabValue(tabId);
       if (tabValue && tabValue.url === tab.url) {
         // Tab preview is cached.

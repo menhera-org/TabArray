@@ -42,12 +42,7 @@ export class Tab {
   public readonly muted: boolean;
   public readonly cookieStore: CookieStore;
 
-  public static async get(id: number): Promise<Tab> {
-    const tab = await browser.tabs.get(id);
-    return new Tab(tab);
-  }
-
-  public static getDefaultCookieStoreId(isPrivate: boolean): string {
+  private static getDefaultCookieStoreId(isPrivate: boolean): string {
     return isPrivate ? "firefox-private" : "firefox-default";
   }
 
