@@ -21,10 +21,10 @@
 
 import browser from 'webextension-polyfill';
 
-import { CookieStoreService } from '../lib/tabGroups/CookieStoreService';
+import { CookieStoreService } from '../../lib/tabGroups/CookieStoreService';
 
-import { LanguageSettings } from "../lib/overrides/LanguageSettings";
-import { config } from '../config/config';
+import { LanguageSettings } from "../../lib/overrides/LanguageSettings";
+import { config } from '../../config/config';
 
 const languageSettings = LanguageSettings.getInstance();
 let languageSettingsValues = new Map<string, string>();

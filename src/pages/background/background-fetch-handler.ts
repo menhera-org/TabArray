@@ -20,12 +20,12 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { LanguageSettings } from '../lib/overrides/LanguageSettings';
-import { UserAgentSettings } from '../lib/overrides/UserAgentSettings';
-import { config } from '../config/config';
-import { UaDataService } from '../lib/overrides/UaDataService';
-import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
-import { TabGroupService } from '../lib/tabGroups/TabGroupService';
+import { LanguageSettings } from '../../lib/overrides/LanguageSettings';
+import { UserAgentSettings } from '../../lib/overrides/UserAgentSettings';
+import { config } from '../../config/config';
+import { UaDataService } from '../../lib/overrides/UaDataService';
+import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
+import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
 
 const languageSettings = LanguageSettings.getInstance();
 const userAgentSettings = UserAgentSettings.getInstance();

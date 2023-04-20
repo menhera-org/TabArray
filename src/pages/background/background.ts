@@ -46,11 +46,11 @@ import './background-tab-sorter';
 import './background-activated-tabs';
 import './background-content-script-responder';
 import './background-tags';
+import './background-fetch-handler';
+import './background-content-script-registrar';
 import { everyMinuteAlarm } from './background-alarms';
 
 import '../../api/ApiDefinitions';
-import '../../overrides/fetch';
-import '../../overrides/language-content-script';
 
 // external services must be registered here
 ExternalServiceProvider.getInstance();
