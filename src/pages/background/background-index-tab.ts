@@ -22,6 +22,7 @@
 import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
 import { CompatTab } from 'weeg-tabs';
+import { StorageItem } from 'weeg-storage';
 
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { IndexTabService } from '../../lib/tabs/IndexTabService';
@@ -33,15 +34,38 @@ import { WindowUserContextList } from '../../legacy-lib/tabGroups/WindowUserCont
 import { config } from '../../config/config';
 import { InitialWindowsService } from './InitialWindowsService';
 
+type StorageType = {
+  [tabId: number]: Uint32; // userContextId
+};
+
+const indexTabStorage = new StorageItem<StorageType>('indexTabStorage', {}, StorageItem.AREA_LOCAL);
+
 const initialWindowsService = InitialWindowsService.getInstance();
-const indexTabUserContextMap = new Map<number, Uint32.Uint32>();
 const tabQueryService = TabQueryService.getInstance();
 const indexTabService = IndexTabService.getInstance();
 
+const getIndexTabUserContextId = async (tabId: number): Promise<Uint32 | undefined> => {
+  const value = await indexTabStorage.getValue();
+  return value[tabId];
+};
+
+const setIndexTabUserContextId = async (tabId: number, userContextId: Uint32) => {
+  const value = await indexTabStorage.getValue();
+  value[tabId] = userContextId;
+  await indexTabStorage.setValue(value);
+};
+
+const removeIndexTabUserContextId = async (tabId: number) => {
+  const value = await indexTabStorage.getValue();
+  delete value[tabId];
+  await indexTabStorage.setValue(value);
+};
+
+
 const handleClosedIndexTab = async (tabId: number, windowId: number) => {
-  const indexTabUserContextId = indexTabUserContextMap.get(tabId);
+  const indexTabUserContextId = await getIndexTabUserContextId(tabId);
   if (indexTabUserContextId != undefined) {
-    indexTabUserContextMap.delete(tabId);
+    await removeIndexTabUserContextId(tabId);
     // index closed, close all tabs of that group
     console.log('index tab %d closed on window %d, close all tabs of that group %d', tabId, windowId, indexTabUserContextId);
     await containers.closeAllTabsOnWindow(indexTabUserContextId, windowId);
@@ -74,7 +98,7 @@ browser.tabs.query({}).then(async (browserTabs) => {
   const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
   for (const tab of tabs) {
     if (IndexTab.isIndexTabUrl(tab.url)) {
-      indexTabUserContextMap.set(tab.id, tab.cookieStore.userContextId);
+      await setIndexTabUserContextId(tab.id, tab.cookieStore.userContextId);
     }
   }
 });
@@ -133,9 +157,10 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, browserTab) => {
   const cookieStoreId = tab.cookieStore.id;
   const userContextId = tab.cookieStore.userContextId;
   if (!IndexTab.isIndexTabUrl(tab.url)) {
-    indexTabUserContextMap.delete(tab.id);
+    await removeIndexTabUserContextId(tab.id);
   } else {
-    indexTabUserContextMap.set(tab.id, userContextId);
+    await setIndexTabUserContextId(tab.id, userContextId);
+    return;
   }
 
   const indexTabOption = await config['tab.groups.indexOption'].getValue();
