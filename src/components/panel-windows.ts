@@ -391,6 +391,8 @@ export class PanelWindowsElement extends HTMLElement {
     } else {
       displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate != true);
     }
+    const tabAttributeMap = this._browserStateSnapshot.getTabAttributeMap();
+    let tags = tabAttributeMap.getTags();
     const allUserContexts = [... displayedContainers];
     const searchWords = searchString.split(/\s+/u);
     let tabs = [... windowStateSnapshot.tabs];
@@ -398,9 +400,16 @@ export class PanelWindowsElement extends HTMLElement {
       displayedContainers = displayedContainers.filter((userContext) => {
         return userContext.name.toLowerCase().includes(searchWord.toLowerCase());
       });
+      tags = tags.filter((tag) => {
+        return tag.name.toLowerCase().includes(searchWord.toLowerCase());
+      });
+    }
+    const tagIds = tags.map((tag) => tag.tagId);
+    for (const searchWord of searchWords) {
       tabs = tabs.filter((tab) => {
         return tab.title.toLowerCase().includes(searchWord.toLowerCase())
-          || tab.url.toLowerCase().includes(searchWord.toLowerCase());
+          || tab.url.toLowerCase().includes(searchWord.toLowerCase())
+          || tagIds.includes(tabAttributeMap.getTagIdForTab(tab.id) ?? 0);
       });
     }
 

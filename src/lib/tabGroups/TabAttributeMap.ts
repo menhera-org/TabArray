@@ -35,7 +35,7 @@ export class TabAttributeMap {
   private static readonly _tagDirectory = new TagDirectory();
 
   private readonly _attributeSetMap = new Map<number, ExtensibleAttributeSet<CompatTab>>();
-  private readonly _snapshot: TagDirectorySnapshot;
+  private readonly _tagSnapshot: TagDirectorySnapshot;
   private readonly _tabIds: number[] = [];
 
   public static async create(tabs: Iterable<CompatTab>): Promise<TabAttributeMap> {
@@ -47,8 +47,8 @@ export class TabAttributeMap {
     return new TabAttributeMap(attributesSets, snapshot);
   }
 
-  private constructor(attributeSets: ExtensibleAttributeSet<CompatTab>[], snapshot: TagDirectorySnapshot) {
-    this._snapshot = snapshot;
+  private constructor(attributeSets: ExtensibleAttributeSet<CompatTab>[], tagSnapshot: TagDirectorySnapshot) {
+    this._tagSnapshot = tagSnapshot;
     for (const attributeSet of attributeSets) {
       const tabId = attributeSet.target.id;
       this._tabIds.push(tabId);
@@ -72,6 +72,10 @@ export class TabAttributeMap {
     return attributeSet.getAttribute(attribute);
   }
 
+  public getTags(): TagType[] {
+    return this._tagSnapshot.getTags();
+  }
+
   public getTagIdForTab(tabId: number): number | undefined {
     return this.getAttribute(tabId, TabAttributeMap.ATTR_TAG_ID);
   }
@@ -79,10 +83,10 @@ export class TabAttributeMap {
   public getTagForTab(tabId: number): TagType | undefined {
     const tagId = this.getTagIdForTab(tabId);
     if (tagId == null) return undefined;
-    return this._snapshot.getTag(tagId);
+    return this._tagSnapshot.getTag(tagId);
   }
 
   public getTagDirectorySnapshot(): TagDirectorySnapshot {
-    return this._snapshot;
+    return this._tagSnapshot;
   }
 }
