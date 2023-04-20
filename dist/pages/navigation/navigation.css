@@ -47,7 +47,7 @@ body {
   margin-inline: auto;
 }
 
-.userContext-button {
+.container-button {
   display: grid;
   grid-template-columns: 2rem 1fr;
   appearance: none;
@@ -61,14 +61,14 @@ body {
   color: inherit;
 }
 
-.userContext-button:hover {
+.container-button:hover {
   background-color: rgba(0, 0, 0, .125);
 }
 
-.userContext-button-icon {
+.container-button-icon {
   inline-size: 100%;
 }
 
-.userContext-button-label {
+.container-button-label {
   padding: .5em;
 }

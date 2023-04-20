@@ -91,14 +91,14 @@ const reopenInContainer = (cookieStoreId: string) => {
 
 const renderButton = (tooltipText: string, name: string, iconUrl: string, useIconMask: boolean, maskColor = '#000000', aUserContextElement: HTMLButtonElement | null = null) => {
   const userContextElement = aUserContextElement ?? document.createElement('button');
-  userContextElement.classList.add('userContext-button');
+  userContextElement.classList.add('container-button');
   userContextElement.textContent = '';
   userContextElement.title = tooltipText;
 
   const userContextIconElement = document.createElement('span');
-  userContextIconElement.classList.add('userContext-button-icon');
+  userContextIconElement.classList.add('container-button-icon');
   const userContextLabelElement = document.createElement('span');
-  userContextLabelElement.classList.add('userContext-button-label');
+  userContextLabelElement.classList.add('container-button-label');
   userContextElement.append(userContextIconElement, userContextLabelElement);
 
   if (useIconMask) {

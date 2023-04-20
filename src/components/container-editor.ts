@@ -20,22 +20,20 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { MessagingService } from 'weeg-utils';
 import { EventSink } from 'weeg-events';
 import { ContextualIdentity } from 'weeg-containers';
 
 import { SupergroupService } from '../lib/tabGroups/SupergroupService';
 import { ContainerCreatorService } from '../lib/tabGroups/ContainerCreatorService';
 
-import { ColorPickerElement } from './usercontext-colorpicker';
-import { IconPickerElement } from './usercontext-iconpicker';
+import { ColorPickerElement } from './container-color-picker';
+import { IconPickerElement } from './container-icon-picker';
 
 export type EditorMode = 'create' | 'edit';
 
 export class ContainerEditorElement extends HTMLElement {
   private _mode: EditorMode;
   private _contextualIdentity: ContextualIdentity | undefined;
-  private readonly _messagingService = MessagingService.getInstance();
   private readonly _supergroupService = SupergroupService.getInstance();
   private readonly _containerCreatorService = ContainerCreatorService.getInstance<ContainerCreatorService>();
 

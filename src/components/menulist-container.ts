@@ -41,17 +41,17 @@ export class MenulistContainerElement extends HTMLElement {
   public readonly onContainerDelete = new EventSink<void>();
   public readonly onContainerClearCookie = new EventSink<void>();
 
-  public constructor(userContext: DisplayedContainer, isPrivate = false) {
+  public constructor(displayedContainer: DisplayedContainer, isPrivate = false) {
     super();
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
       throw new Error("Shadow root is null");
     }
-    this._isPrivate = isPrivate || userContext.cookieStore.isPrivate;
+    this._isPrivate = isPrivate || displayedContainer.cookieStore.isPrivate;
     this.buildElement();
-    this.setUserContext(userContext);
+    this.setDisplayedContainer(displayedContainer);
     this.containerCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
-    this.containerOptionsButton.title = browser.i18n.getMessage('containerOptions', userContext.name);
+    this.containerOptionsButton.title = browser.i18n.getMessage('containerOptions', displayedContainer.name);
     this.containerVisibilityToggleButton.title = browser.i18n.getMessage('tooltipHideContainerButton');
     this.containerHighlightButton.title = browser.i18n.getMessage('focusToThisContainer');
     this.tabCount = 0;
@@ -131,18 +131,18 @@ export class MenulistContainerElement extends HTMLElement {
     };
   }
 
-  public setUserContext(userContext: DisplayedContainer) {
+  public setDisplayedContainer(displayedContainer: DisplayedContainer) {
     if (this._isPrivate) {
-      console.assert(userContext.cookieStore.userContextId == 0, "Private window should have default container only");
+      console.assert(displayedContainer.cookieStore.userContextId == 0, "Private window should have default container only");
       this.containerNameElement.textContent = browser.i18n.getMessage('privateBrowsing');
       this.containerButton.title = browser.i18n.getMessage('privateBrowsing');
       this.containerIconElement.style.background = 'url(/img/firefox-icons/private-browsing-icon.svg) center center / contain no-repeat';
       this.containerIconElement.style.backgroundColor = 'transparent';
     } else {
-      this.containerNameElement.textContent = userContext.name;
-      this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(userContext.cookieStore.userContextId));
-      this.containerIconElement.style.backgroundColor = userContext.colorCode;
-      const iconUrl = userContext.iconUrl;
+      this.containerNameElement.textContent = displayedContainer.name;
+      this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(displayedContainer.cookieStore.userContextId));
+      this.containerIconElement.style.backgroundColor = displayedContainer.colorCode;
+      const iconUrl = displayedContainer.iconUrl;
       if (!iconUrl.includes(')')) {
         this.containerIconElement.style.mask = `url(${iconUrl}) center center / contain no-repeat`;
       }

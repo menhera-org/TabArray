@@ -19,67 +19,70 @@
   @license
 **/
 
-const COLORS = [
-  "blue",
-  "turquoise",
-  "green",
-  "yellow",
-  "orange",
-  "red",
-  "pink",
-  "purple",
-  "toolbar",
+const ICONS = [
+  "fingerprint",
+  "briefcase",
+  "dollar",
+  "cart",
+  "circle",
+  "gift",
+  "vacation",
+  "food",
+  "fruit",
+  "pet",
+  "tree",
+  "chill",
+  "fence",
 ];
 
-export class ColorPickerElement extends HTMLElement {
+export class IconPickerElement extends HTMLElement {
   private _radios: HTMLFormElement;
 
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
+    if (!this.shadowRoot) {
+      throw new Error('shadowRoot is null');
+    }
     const css = document.createElement('link');
     css.rel = 'stylesheet';
     css.href = '/css/components/usercontext.css';
-    if (null == this.shadowRoot) {
-      throw new Error('shadowRoot is null');
-    }
     this.shadowRoot.append(css);
     const radios = document.createElement('form');
     this._radios = radios;
     this.shadowRoot.append(radios);
     radios.id = 'radios';
     let count = 0;
-    for (const color of COLORS) {
-      const colorName = color == 'toolbar' ? 'grey' : color;
+    for (const icon of ICONS) {
       const radio = document.createElement('input');
       radios.append(radio);
       radio.type = 'radio';
-      radio.name = 'color';
-      radio.id = color;
-      radio.value = color;
+      radio.name = 'icon';
+      radio.id = icon;
+      radio.value = icon;
       if (count < 1) {
         radio.checked = true;
       }
       const label = document.createElement('label');
       radios.append(label);
-      label.htmlFor = color;
+      label.htmlFor = icon;
       label.classList.add('usercontext-icon');
-      label.dataset.identityColor = colorName;
-      label.dataset.identityIcon = 'circle';
+      label.dataset.identityColor = 'grey';
+      label.dataset.identityIcon = icon;
       count++;
     }
   }
 
   get value(): string {
-    return this._radios.color.value;
+    return this._radios.icon.value;
   }
 
   set value(value: string) {
-    if (!COLORS.includes(value)) {
-      throw new Error(`Invalid color: ${value}`);
+    if (!ICONS.includes(value)) {
+      throw new Error(`Invalid icon: ${value}`);
     }
-    this._radios.color.value = value;
+    this._radios.icon.value = value;
   }
 }
 
-customElements.define('usercontext-colorpicker', ColorPickerElement);
+customElements.define('container-icon-picker', IconPickerElement);

@@ -37,7 +37,7 @@ export class MenulistTabElement extends HTMLElement {
   public readonly onUnpin = new EventSink<number>();
   public readonly onClose = new EventSink<number>();
 
-  public constructor(tab: CompatTab, userContext: DisplayedContainer) {
+  public constructor(tab: CompatTab, displayedContainer: DisplayedContainer) {
     super();
     this.attachShadow({ mode: "open" });
     if (!this.shadowRoot) {
@@ -45,7 +45,7 @@ export class MenulistTabElement extends HTMLElement {
     }
     this.buildElement();
     this.setTab(tab);
-    this.setUserContext(userContext);
+    this.setDisplayedContainer(displayedContainer);
     this.closeButton.title = browser.i18n.getMessage('buttonTabClose');
     // this.privateIconElement.title = browser.i18n.getMessage('buttonTabPrivate');
     this.tabButton.onclick = () => {
@@ -153,11 +153,11 @@ export class MenulistTabElement extends HTMLElement {
     }, { capture: true });
   }
 
-  public setUserContext(userContext: DisplayedContainer) {
-    if (0 == userContext.cookieStore.userContextId || !userContext.colorCode) {
+  public setDisplayedContainer(displayedContainer: DisplayedContainer) {
+    if (0 == displayedContainer.cookieStore.userContextId || !displayedContainer.colorCode) {
       return;
     }
-    this.tabMainElement.style.borderColor = userContext.colorCode;
+    this.tabMainElement.style.borderColor = displayedContainer.colorCode;
   }
 
   private getShadowElement(id: string): HTMLElement {
