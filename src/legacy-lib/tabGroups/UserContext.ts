@@ -60,14 +60,6 @@ export class UserContext {
   }
 
   /**
-    * Converts a cookie store ID to a user context ID.
-    */
-  private static fromCookieStoreId(cookieStoreId: string): Uint32.Uint32 {
-    const cookieStore = new CookieStore(cookieStoreId);
-    return cookieStore.userContextId;
-  }
-
-  /**
     * Converts a user context ID to a cookie store ID.
     */
   private static toCookieStoreId(userContextId: Uint32.Uint32): string {
@@ -75,31 +67,6 @@ export class UserContext {
       userContextId,
       privateBrowsingId: 0 as Uint32.Uint32,
     }).id;
-  }
-
-  private static fromBrowserContextualIdentity(identity: browser.ContextualIdentities.ContextualIdentity): UserContext {
-    const userContextId = UserContext.fromCookieStoreId(identity.cookieStoreId);
-    return new UserContext(
-      userContextId,
-      identity.name,
-      identity.color,
-      identity.colorCode,
-      identity.icon,
-      identity.iconUrl,
-    );
-  }
-
-  public static async getAll(isPrivateBrowsing = false): Promise<UserContext[]> {
-    if (isPrivateBrowsing) {
-      return [UserContext.PRIVATE];
-    }
-    const identities = await browser.contextualIdentities.query({});
-    const userContexts = identities.map(identity => {
-      return UserContext.fromBrowserContextualIdentity(identity);
-    });
-    userContexts.push(UserContext.DEFAULT);
-    userContexts.sort((a, b) => a.id - b.id);
-    return userContexts;
   }
 
   // this is a hack. we should move to a better way of doing this.

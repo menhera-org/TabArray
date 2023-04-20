@@ -52,8 +52,7 @@ const registrableDomainService = RegistrableDomainService.getInstance<Registrabl
 
 export class BrowserStateSnapshot {
   public static async create(): Promise<BrowserStateSnapshot> {
-    const [userContexts, browserWindows, currentBrowserWindow, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
-      UserContext.getAll(),
+    const [browserWindows, currentBrowserWindow, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
       browser.windows.getAll({
         populate: true,
         windowTypes: ['normal'],
@@ -82,6 +81,7 @@ export class BrowserStateSnapshot {
         }
       }
     }
+    const userContexts = displayedContainers.map((displayedContainer) => UserContext.fromDisplayedContainer(displayedContainer));
     const registrableDomains = await registrableDomainService.getRegistrableDomains(urls);
     if (registrableDomains.length !== urls.length) {
       throw new Error('registrableDomains.length !== urls.length');
