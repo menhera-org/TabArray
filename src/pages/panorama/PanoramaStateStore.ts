@@ -19,7 +19,7 @@
   @license
 **/
 
-import { TabPreviewService } from "../../legacy-lib/tabs/TabPreviewService";
+import { TabPreviewService } from "../../lib/tabs/TabPreviewService";
 
 const tabPreviewService = TabPreviewService.getInstance();
 

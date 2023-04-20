@@ -22,6 +22,8 @@
 import browser from 'webextension-polyfill';
 import { CompatTab } from 'weeg-tabs';
 
+import { ServiceRegistry } from '../ServiceRegistry';
+
 // private
 type TabValue = {
   url: string;
@@ -85,3 +87,5 @@ export class TabPreviewService {
     return await this._getTabPreview(tabId);
   }
 }
+
+ServiceRegistry.getInstance().registerService('TabPreviewService', TabPreviewService.getInstance());
