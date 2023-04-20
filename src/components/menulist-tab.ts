@@ -47,6 +47,7 @@ export class MenulistTabElement extends HTMLElement {
     this.setTab(tab);
     this.setDisplayedContainer(displayedContainer);
     this.closeButton.title = browser.i18n.getMessage('buttonTabClose');
+    this.setTagButton.title = browser.i18n.getMessage('setTag');
     // this.privateIconElement.title = browser.i18n.getMessage('buttonTabPrivate');
     this.tabButton.onclick = () => {
       this.onTabClicked.dispatch(this.tabId);
