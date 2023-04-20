@@ -84,11 +84,11 @@ button[disabled] {
 }
 
 #tag-edit-button {
-  mask: url(/img/material-icons/edit.svg) center center/50% no-repeat;
+  mask: url(/img/material-icons/edit.svg) center center/75% no-repeat;
 }
 
 #tag-delete-button {
-  mask: url(/img/material-icons/delete_forever.svg) center center / 50% no-repeat;
+  mask: url(/img/material-icons/delete_forever.svg) center center / 75% no-repeat;
 }
 
 #group-button {
