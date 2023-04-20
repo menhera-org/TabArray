@@ -41,13 +41,13 @@ export class MenulistContainerElement extends HTMLElement {
   public readonly onContainerDelete = new EventSink<void>();
   public readonly onContainerClearCookie = new EventSink<void>();
 
-  public constructor(userContext: UserContext = UserContext.DEFAULT, isPrivate = false) {
+  public constructor(userContext: UserContext, isPrivate = false) {
     super();
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
       throw new Error("Shadow root is null");
     }
-    this._isPrivate = isPrivate || userContext.markedAsPrivate;
+    this._isPrivate = isPrivate || userContext.cookieStore.isPrivate;
     this.buildElement();
     this.setUserContext(userContext);
     this.containerCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
@@ -133,14 +133,14 @@ export class MenulistContainerElement extends HTMLElement {
 
   public setUserContext(userContext: UserContext) {
     if (this._isPrivate) {
-      console.assert(userContext.id == 0, "Private window should have default container only");
+      console.assert(userContext.cookieStore.userContextId == 0, "Private window should have default container only");
       this.containerNameElement.textContent = browser.i18n.getMessage('privateBrowsing');
       this.containerButton.title = browser.i18n.getMessage('privateBrowsing');
       this.containerIconElement.style.background = 'url(/img/firefox-icons/private-browsing-icon.svg) center center / contain no-repeat';
       this.containerIconElement.style.backgroundColor = 'transparent';
     } else {
       this.containerNameElement.textContent = userContext.name;
-      this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(userContext.id));
+      this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(userContext.cookieStore.userContextId));
       this.containerIconElement.style.backgroundColor = userContext.colorCode;
       const iconUrl = userContext.iconUrl;
       if (!iconUrl.includes(')')) {

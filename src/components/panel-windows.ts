@@ -306,7 +306,12 @@ export class PanelWindowsElement extends HTMLElement {
     const pinnedTabsElement = this.shadowRoot.querySelector('.pinned-tabs') as HTMLDivElement;
     pinnedTabsElement.textContent = '';
     for (const pinnedTab of pinnedTabs) {
-      const tabElement = this._popupRenderer.renderTab(pinnedTab, userContextMap.get(pinnedTab.cookieStore.userContextId) || UserContext.DEFAULT);
+      const userContext = userContextMap.get(pinnedTab.cookieStore.userContextId);
+      if (!userContext) {
+        console.error('Could not find user context for pinned tab', pinnedTab);
+        continue;
+      }
+      const tabElement = this._popupRenderer.renderTab(pinnedTab, userContext);
       tabElement.draggable = true;
       tabElement.addEventListener('dragstart', (ev) => {
         if (!ev.dataTransfer) return;
@@ -407,7 +412,7 @@ export class PanelWindowsElement extends HTMLElement {
       return a.index - b.index;
     });
     userContexts.sort((a, b) => {
-      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
 
     const userContextMap = new Map<Uint32.Uint32, UserContext>();
@@ -423,7 +428,12 @@ export class PanelWindowsElement extends HTMLElement {
       searchResultsContainersElement.appendChild(containerElement);
     }
     for (const tab of tabs) {
-      const tabElement = this._popupRenderer.renderTab(tab, userContextMap.get(tab.cookieStore.userContextId) || UserContext.DEFAULT);
+      const userContext = userContextMap.get(tab.cookieStore.userContextId);
+      if (!userContext) {
+        console.error('Could not find user context for tab', tab);
+        continue;
+      }
+      const tabElement = this._popupRenderer.renderTab(tab, userContext);
       searchResultsTabsElement.appendChild(tabElement);
     }
   }

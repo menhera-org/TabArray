@@ -24,43 +24,27 @@ import { Uint32 } from "weeg-types";
 import { DisplayedContainer, CookieStore } from 'weeg-containers';
 
 /**
- * Represents a user context (contextual identity or container).
+ * Originally represents a user context (contextual identity or container).
+ * Now this is the same as DisplayedContainer.
  * Does not work with private browsing windows.
  * @deprecated
  */
-export class UserContext {
-  /**
-   * User context ID for "No Container" container (0).
-   */
-  private static readonly ID_DEFAULT = 0 as Uint32;
-
-  /**
-    * "No Container" container.
-    */
-  public static readonly DEFAULT: UserContext = new UserContext(UserContext.ID_DEFAULT, browser.i18n.getMessage('noContainer'), '', '/img/material-icons/category.svg', true, false);
-
+export class UserContext implements DisplayedContainer {
   /**
    * Hack. Same as DEFAULT.
    */
-  public static readonly PRIVATE: UserContext =  new UserContext(UserContext.ID_DEFAULT, browser.i18n.getMessage('privateBrowsing'), '', '/img/firefox-icons/private-browsing-icon.svg', true, true);
-
-  /**
-    * Returns true if the given id is a valid user context id.
-    */
-  private static validateUserContextId(id: Uint32): boolean {
-    return Uint32.isUint32(id);
-  }
+  public static readonly PRIVATE: UserContext =  new UserContext(CookieStore.PRIVATE, browser.i18n.getMessage('privateBrowsing'), '', '/img/firefox-icons/private-browsing-icon.svg');
 
   // this is a hack. we should move to a better way of doing this.
   public static fromDisplayedContainer(displayedContainer: DisplayedContainer): UserContext {
-    if (displayedContainer.cookieStore.isPrivate) {
-      return new UserContext(displayedContainer.cookieStore.userContextId, displayedContainer.name, '', displayedContainer.iconUrl, true, true);
-    }
-    return new UserContext(displayedContainer.cookieStore.userContextId, displayedContainer.name, displayedContainer.colorCode, displayedContainer.iconUrl, true);
+    return new UserContext(displayedContainer.cookieStore, displayedContainer.name, displayedContainer.colorCode, displayedContainer.iconUrl);
   }
+
+  public readonly cookieStore: CookieStore;
 
   /**
    * The user context ID for the identity.
+   * @deprecated
    */
   public readonly id: Uint32;
 
@@ -80,41 +64,13 @@ export class UserContext {
   public readonly iconUrl: string;
 
   /**
-    * Whether this identity is defined and stored in the browser or not.
-    */
-  public readonly defined: boolean;
-
-  /**
-   * Hack to mark this as a private browsing identity.
-   */
-  public readonly markedAsPrivate: boolean;
-
-  /**
    * This is not intended to be called directly.
    */
-  public constructor(id: Uint32, name: string, colorCode: string, iconUrl: string, defined = true, markedAsPrivate = false) {
-    if (!UserContext.validateUserContextId(id)) {
-      throw new TypeError('Invalid user context id');
-    }
-    this.id = id;
+  public constructor(cookieStore: CookieStore, name: string, colorCode: string, iconUrl: string) {
+    this.cookieStore = cookieStore;
+    this.id = cookieStore.userContextId;
     this.name = name;
     this.colorCode = colorCode;
     this.iconUrl = iconUrl;
-    this.defined = defined;
-    this.markedAsPrivate = markedAsPrivate;
-  }
-
-  /**
-   * The cookie store ID for the identity.
-   */
-  public get cookieStoreId(): string {
-    if (this.markedAsPrivate) {
-      return CookieStore.PRIVATE.id;
-    }
-    const cookieStore = CookieStore.fromParams({
-      userContextId: this.id,
-      privateBrowsingId: 0 as Uint32,
-    });
-    return cookieStore.id;
   }
 }

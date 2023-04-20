@@ -134,11 +134,11 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     const normalContainers = containersStateSnapshot.displayedContainers.filter((container) => !container.cookieStore.isPrivate);
     const privateUserContexts = privateContainers.map((container) => UserContext.fromDisplayedContainer(container));
     const normalUserContexts = normalContainers.map((container) => UserContext.fromDisplayedContainer(container)).sort((a, b) => {
-      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
     const userContextMap = new Map<string, UserContext>();
     for (const normalUserContext of normalUserContexts) {
-      userContextMap.set(normalUserContext.cookieStoreId, normalUserContext);
+      userContextMap.set(normalUserContext.cookieStore.id, normalUserContext);
     }
     const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupDirectory.getRootSupergroupId()) as SupergroupType;
     this.renderContainers(containersStateSnapshot, privateUserContexts, activeContainersElement);
@@ -166,7 +166,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
         parentElement.appendChild(containerElement);
 
         containerElement.onContainerClose.addListener(async () => {
-          const cookieStoreId = userContext.cookieStoreId;
+          const cookieStoreId = userContext.cookieStore.id;
           const tabs = await this._tabQueryService.queryTabs({
             tabGroupId: cookieStoreId,
             pinned: false,
@@ -175,7 +175,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
         });
 
         containerElement.onContainerClick.addListener(() => {
-          this.onContainerSelected.dispatch(userContext.cookieStoreId);
+          this.onContainerSelected.dispatch(userContext.cookieStore.id);
         });
       } else {
         const supergroup = tabGroupDirectorySnapshot.getSupergroup(tabGroupId) as SupergroupType;
@@ -205,14 +205,14 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
 
   private renderContainers(containersStateSnapshot: ContainersStateSnapshot, userContexts: UserContext[], parentElement: HTMLElement) {
     for (const userContext of userContexts) {
-      const isPrivate = userContext.markedAsPrivate;
-      const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStoreId);
+      const isPrivate = userContext.cookieStore.isPrivate;
+      const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStore.id);
       const containerElement = this._popupRenderer.renderPartialContainerElement(userContext, isPrivate);
       containerElement.tabCount = tabs.length;
       parentElement.appendChild(containerElement);
 
       containerElement.onContainerClose.addListener(async () => {
-        const cookieStoreId = userContext.cookieStoreId;
+        const cookieStoreId = userContext.cookieStore.id;
         const tabs = await this._tabQueryService.queryTabs({
           tabGroupId: cookieStoreId,
           pinned: false,
@@ -221,7 +221,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
       });
 
       containerElement.onContainerClick.addListener(() => {
-        this.onContainerSelected.dispatch(userContext.cookieStoreId);
+        this.onContainerSelected.dispatch(userContext.cookieStore.id);
       });
     }
   }

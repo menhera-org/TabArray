@@ -201,7 +201,7 @@ export class PopupModalRenderer {
   }
 
   public showContainerClearCookieModal(userContext: UserContext, isPrivate = false): void {
-    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStoreId;
+    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
     const confirmTitle = isPrivate ? browser.i18n.getMessage('confirmPrivateBrowsingClearCookie') : browser.i18n.getMessage('confirmContainerClearCookie', userContext.name);
     this.confirmAsync(confirmTitle).then((result) => {
       if (!result) return;
@@ -214,7 +214,7 @@ export class PopupModalRenderer {
   }
 
   public showDeleteContainerModal(userContext: UserContext): void {
-    const cookieStoreId = userContext.cookieStoreId;
+    const cookieStoreId = userContext.cookieStore.id;
     this.confirmAsync(browser.i18n.getMessage('confirmContainerDelete', userContext.name)).then((result) => {
       if (!result) return;
       this._contextualIdentityFactory.remove(cookieStoreId).catch((e) => {
@@ -225,7 +225,7 @@ export class PopupModalRenderer {
   }
 
   public async showContainerOptionsPanelAsync(userContext: UserContext, isPrivate = false): Promise<void> {
-    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStoreId;
+    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
     let contextualIdentity: ContextualIdentity | DisplayedContainer;
     const message = browser.i18n.getMessage('containerOptions', isPrivate ? browser.i18n.getMessage('privateBrowsing') : userContext.name);
 
@@ -268,7 +268,7 @@ export class PopupModalRenderer {
           }
 
           case 'move': {
-            const modalMoveElement = new ModalMoveGroupElement(userContext.cookieStoreId);
+            const modalMoveElement = new ModalMoveGroupElement(userContext.cookieStore.id);
             document.body.appendChild(modalMoveElement);
             break;
           }

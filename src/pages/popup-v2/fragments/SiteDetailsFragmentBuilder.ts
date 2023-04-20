@@ -96,7 +96,11 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
     this._tabCount = tabs.size;
     this._tabs = [... tabs];
     if (this._isPrivate) {
-      this._definedUserContexts = [UserContext.PRIVATE];
+      this._definedUserContexts = [... this._browserStateSnapshot.getDisplayedContainers()].sort((a, b) => {
+        return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
+      }).filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true).map((displayedContainer) => {
+        return UserContext.fromDisplayedContainer(displayedContainer);
+      });
     } else {
       this._definedUserContexts = [... this._browserStateSnapshot.getDisplayedContainers()].sort((a, b) => {
         return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);

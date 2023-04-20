@@ -63,7 +63,12 @@ export class PopupCurrentWindowRenderer {
     const pinnedTabs = windowStateSnapshot.pinnedTabs;
     let tabCount = 0;
     for (const tab of pinnedTabs) {
-      const tabElement = this.popupRenderer.renderTab(tab, definedUserContexts.get(tab.cookieStore.userContextId));
+      const userContext = definedUserContexts.get(tab.cookieStore.userContextId);
+      if (!userContext) {
+        console.error('Could not find userContext for tab', tab);
+        continue;
+      }
+      const tabElement = this.popupRenderer.renderTab(tab, userContext);
       element.appendChild(tabElement);
       tabCount++;
     }
@@ -228,7 +233,7 @@ export class PopupCurrentWindowRenderer {
       return windowStateSnapshot.activeUserContexts.includes(userContext.id);
     });
     for (const openUserContext of openUserContexts) {
-      const cookieStoreId = openUserContext.cookieStoreId;
+      const cookieStoreId = openUserContext.cookieStore.id;
       let parentTabGroupId: string | undefined = cookieStoreId;
       while (parentTabGroupId != null && !activeTabGroupIds.has(parentTabGroupId)) {
         activeTabGroupIds.add(parentTabGroupId);

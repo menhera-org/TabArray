@@ -57,7 +57,7 @@ export class PopupRenderer {
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly modalRenderer = new PopupModalRenderer(this);
 
-  public renderTab(tab: CompatTab, userContext: UserContext = UserContext.DEFAULT): MenulistTabElement {
+  public renderTab(tab: CompatTab, userContext: UserContext): MenulistTabElement {
     const element = new MenulistTabElement(tab, userContext);
     element.onTabClicked.addListener(() => {
       tab.focus();
@@ -84,7 +84,7 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderPartialContainerElement(userContext: UserContext = UserContext.DEFAULT, isPrivate = false): MenulistContainerElement {
+  public renderPartialContainerElement(userContext: UserContext, isPrivate = false): MenulistContainerElement {
     const element = this.createContainerElement(userContext, isPrivate);
     element.containerVisibilityToggleButton.disabled = true;
     element.partialContainerView = true;
@@ -100,9 +100,9 @@ export class PopupRenderer {
     });
   }
 
-  public renderContainerForFirstPartyDomain(domain: string, userContext: UserContext = UserContext.DEFAULT, isPrivateBrowsing = false): MenulistContainerElement {
+  public renderContainerForFirstPartyDomain(domain: string, userContext: UserContext, isPrivateBrowsing = false): MenulistContainerElement {
     const element = this.renderPartialContainerElement(userContext, isPrivateBrowsing);
-    const cookieStoreId = isPrivateBrowsing ? CookieStore.PRIVATE.id : userContext.cookieStoreId;
+    const cookieStoreId = isPrivateBrowsing ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
     element.onContainerClose.addListener(() => {
       this._tabQueryService.queryTabs({
         tabGroupId: cookieStoreId,
@@ -118,7 +118,7 @@ export class PopupRenderer {
   }
 
   private renderContainer(windowId: number, userContext: UserContext, isPrivate = false): MenulistContainerElement {
-    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStoreId;
+    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
     const element = this.createContainerElement(userContext, isPrivate);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     element.onContainerHide.addListener(() => {
@@ -219,7 +219,7 @@ export class PopupRenderer {
       const json = ev.dataTransfer.getData('application/json');
       const data = JSON.parse(json);
       if ('tab' != data.type || data.pinned) return;
-      if (data.cookieStoreId == userContext.cookieStoreId) return;
+      if (data.cookieStoreId == userContext.cookieStore.id) return;
       ev.preventDefault();
     });
     element.addEventListener('drop', (ev) => {
@@ -227,9 +227,9 @@ export class PopupRenderer {
       const json = ev.dataTransfer.getData('application/json');
       const data = JSON.parse(json);
       if ('tab' != data.type || data.pinned) return;
-      if (data.cookieStoreId == userContext.cookieStoreId) return;
+      if (data.cookieStoreId == userContext.cookieStore.id) return;
       ev.preventDefault();
-      this._containerTabOpenerService.reopenTabInContainer(data.id, userContext.cookieStoreId, false).catch((e) => {
+      this._containerTabOpenerService.reopenTabInContainer(data.id, userContext.cookieStore.id, false).catch((e) => {
         console.error(e);
       });
     });

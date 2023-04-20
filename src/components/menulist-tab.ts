@@ -37,7 +37,7 @@ export class MenulistTabElement extends HTMLElement {
   public readonly onUnpin = new EventSink<number>();
   public readonly onClose = new EventSink<number>();
 
-  public constructor(tab: CompatTab, userContext: UserContext = UserContext.DEFAULT) {
+  public constructor(tab: CompatTab, userContext: UserContext) {
     super();
     this.attachShadow({ mode: "open" });
     if (!this.shadowRoot) {
@@ -154,7 +154,7 @@ export class MenulistTabElement extends HTMLElement {
   }
 
   public setUserContext(userContext: UserContext) {
-    if (0 == userContext.id) {
+    if (0 == userContext.cookieStore.userContextId || !userContext.colorCode) {
       return;
     }
     this.tabMainElement.style.borderColor = userContext.colorCode;
