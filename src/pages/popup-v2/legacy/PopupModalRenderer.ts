@@ -32,18 +32,10 @@ import { UserContext } from "../../../legacy-lib/tabGroups/UserContext";
 import { PopupRenderer } from './PopupRenderer';
 import { PopupUtils } from './PopupUtils';
 
-import { ColorPickerElement } from '../../../components/usercontext-colorpicker';
-import { IconPickerElement } from '../../../components/usercontext-iconpicker';
 import { ModalConfirmElement } from '../../../components/modal-confirm';
 import { ModalMenuElement } from '../../../components/modal-menu';
 import { ContainerEditorElement } from '../../../components/container-editor';
 import { ModalMoveGroupElement } from '../../../components/modal-move-group';
-
-type NewContainerPanelResult = {
-  name: string;
-  icon: string;
-  color: string;
-};
 
 type KeyHandlers = {
   okHandler: (event?: Event) => void;
@@ -168,32 +160,6 @@ export class PopupModalRenderer {
         resolve(true);
       });
     });
-  }
-
-  private async showContainerManipulationPanelAsync(dialogTitle: string, userContext?: UserContext): Promise<NewContainerPanelResult> {
-    const message = dialogTitle;
-    const messageElement = this._utils.queryElementNonNull<HTMLElement>('#new-container .modal-title');
-    const cancelButton = this._utils.queryElementNonNull<HTMLButtonElement>('#new-container-cancel-button');
-    const okButton = this._utils.queryElementNonNull<HTMLButtonElement>('#new-container-ok-button');
-    const nameElement = this._utils.queryElementNonNull<HTMLInputElement>('#new-container-name');
-    const iconElement = this._utils.queryElementNonNull<IconPickerElement>('#new-container-icon');
-    const colorElement = this._utils.queryElementNonNull<ColorPickerElement>('#new-container-color');
-    nameElement.value = '';
-    iconElement.value = 'fingerprint';
-    colorElement.value = 'blue';
-    if (userContext) {
-      nameElement.value = userContext.name;
-      iconElement.value = userContext.icon;
-      colorElement.value = userContext.color;
-    }
-    const result = await this.showModal(message, messageElement, okButton, cancelButton, '#new-container');
-    if (!result) {
-      throw new Error('User cancelled');
-    }
-    const name = nameElement.value;
-    const icon = iconElement.value;
-    const color = colorElement.value;
-    return { name, icon, color };
   }
 
   public async showNewContainerPanelAsync(): Promise<ContextualIdentity | null> {

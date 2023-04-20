@@ -37,7 +37,6 @@ import { UserContext } from "../../../legacy-lib/tabGroups/UserContext";
 import * as containers from '../../../legacy-lib/modules/containers';
 import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
 import { ContainerVisibilityService } from '../../../legacy-lib/userContexts/ContainerVisibilityService';
-import { UserContextService } from '../../../legacy-lib/userContexts/UserContextService';
 
 import { PopupModalRenderer } from './PopupModalRenderer';
 import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";
@@ -51,7 +50,6 @@ enum ContainerTabsState {
 // This needs some refactoring.
 export class PopupRenderer {
   private readonly _userContextVisibilityService = ContainerVisibilityService.getInstance();
-  private readonly _userContextService = UserContextService.getInstance();
   private readonly _containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
   private readonly _tabQueryService = TabQueryService.getInstance();
   private readonly _tabService = TabService.getInstance();
@@ -77,7 +75,6 @@ export class PopupRenderer {
   }
 
   private createContainerElement(userContext: UserContext, isPrivate = false): MenulistContainerElement {
-    userContext = this._userContextService.fillDefaultValues(userContext);
     const element = new MenulistContainerElement(userContext, isPrivate);
 
     element.onContainerOptionsClick.addListener(async () => {
@@ -122,7 +119,6 @@ export class PopupRenderer {
 
   private renderContainer(windowId: number, userContext: UserContext, isPrivate = false): MenulistContainerElement {
     const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStoreId;
-    userContext = this._userContextService.fillDefaultValues(userContext);
     const element = this.createContainerElement(userContext, isPrivate);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     element.onContainerHide.addListener(() => {
