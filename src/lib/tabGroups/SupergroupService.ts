@@ -24,7 +24,7 @@ import { ContextualIdentity, ContextualIdentityParams, CookieStore } from "weeg-
 import { ServiceRegistry } from "../ServiceRegistry";
 import { ContextualIdentityService } from "./ContextualIdentityService";
 import { TabGroupDirectory } from "./TabGroupDirectory";
-import { ContainerVisibilityService } from "../../legacy-lib/userContexts/ContainerVisibilityService";
+import { ContainerVisibilityService } from "./ContainerVisibilityService";
 import { TemporaryContainerService } from "./TemporaryContainerService";
 import { TabService } from "../tabs/TabService";
 import { TabQueryService } from "../tabs/TabQueryService";

@@ -22,13 +22,13 @@
 import browser from 'webextension-polyfill';
 import { CompatTab } from 'weeg-tabs';
 
-import { IndexTabService } from '../../lib/tabs/IndexTabService';
-import { ServiceRegistry } from '../../lib/ServiceRegistry';
+import { IndexTabService } from '../tabs/IndexTabService';
+import { ServiceRegistry } from '../ServiceRegistry';
 
 import { config } from '../../config/config';
 import { WindowContainerHidingHelper } from './WindowContainerHidingHelper';
-import { IndexTab } from '../modules/IndexTab';
-import { WindowService } from '../tabs/WindowService';
+import { IndexTab } from '../../legacy-lib/modules/IndexTab';
+import { WindowService } from '../../legacy-lib/tabs/WindowService';
 
 /**
  * This does not support private windows.

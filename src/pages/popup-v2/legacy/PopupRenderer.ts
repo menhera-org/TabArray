@@ -35,7 +35,7 @@ import { MenulistTagElement } from '../../../components/menulist-tag';
 
 import * as containers from '../../../legacy-lib/modules/containers';
 import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
-import { ContainerVisibilityService } from '../../../legacy-lib/userContexts/ContainerVisibilityService';
+import { ContainerVisibilityService } from '../../../lib/tabGroups/ContainerVisibilityService';
 
 import { PopupModalRenderer } from './PopupModalRenderer';
 import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";

@@ -26,7 +26,7 @@ import { MenuItem } from '../../lib/menus/MenuItem';
 import { PopupTabContextMenuItem } from '../../lib/menus/PopupTabContextMenuItem';
 import { ExtensionPageService } from '../../lib/ExtensionPageService';
 
-import { ContainerVisibilityService } from '../../legacy-lib/userContexts/ContainerVisibilityService';
+import { ContainerVisibilityService } from '../../lib/tabGroups/ContainerVisibilityService';
 
 const MENU_ID_TAB_HIDE_CONTAINER = 'tab-hide-container';
 

@@ -31,7 +31,7 @@ import { TagEditorElement } from './tag-editor';
 
 import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
 import * as containers from '../legacy-lib/modules/containers';
-import { ContainerVisibilityService } from "../legacy-lib/userContexts/ContainerVisibilityService";
+import { ContainerVisibilityService } from "../lib/tabGroups/ContainerVisibilityService";
 
 import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
 

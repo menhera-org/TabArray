@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { CompatTab } from 'weeg-tabs';
 
-import { IndexTab } from '../modules/IndexTab';
+import { IndexTab } from '../../legacy-lib/modules/IndexTab';
 
 export class WindowContainerHidingHelper {
   private _tabsToHide: CompatTab[] = [];

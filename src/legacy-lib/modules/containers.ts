@@ -26,7 +26,7 @@ import { CompatTab } from 'weeg-tabs';
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { TabService } from '../../lib/tabs/TabService';
 
-import { ContainerVisibilityService } from '../userContexts/ContainerVisibilityService';
+import { ContainerVisibilityService } from '../../lib/tabGroups/ContainerVisibilityService';
 import { WindowService } from '../tabs/WindowService';
 
 const tabQueryService = TabQueryService.getInstance();

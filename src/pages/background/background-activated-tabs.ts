@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { CompatTab } from "weeg-tabs";
 
-import { ContainerVisibilityService } from '../../legacy-lib/userContexts/ContainerVisibilityService';
+import { ContainerVisibilityService } from '../../lib/tabGroups/ContainerVisibilityService';
 
 const containerVisibilityService = ContainerVisibilityService.getInstance();
 
