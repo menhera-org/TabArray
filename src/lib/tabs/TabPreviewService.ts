@@ -72,11 +72,14 @@ export class TabPreviewService {
       // Sessions API is available.
       const tab = new CompatTab(await browser.tabs.get(tabId));
       let tabValue = await this._getTabValue(tabId);
-      if (tabValue && tabValue.url === tab.url) {
+      if (tabValue && tabValue.url === tab.url && tabValue.previewUrl) {
         // Tab preview is cached.
         return tabValue.previewUrl;
       }
       const previewUrl = await this._getTabPreview(tabId);
+      if (!previewUrl) {
+        return '';
+      }
       tabValue = {
         url: tab.url,
         previewUrl,
