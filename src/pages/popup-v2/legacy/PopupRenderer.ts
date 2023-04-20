@@ -56,8 +56,8 @@ export class PopupRenderer {
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly modalRenderer = new PopupModalRenderer(this);
 
-  public renderTab(tab: CompatTab, userContext: DisplayedContainer): MenulistTabElement {
-    const element = new MenulistTabElement(tab, userContext);
+  public renderTab(tab: CompatTab, displayedContainer: DisplayedContainer): MenulistTabElement {
+    const element = new MenulistTabElement(tab, displayedContainer);
     element.onTabClicked.addListener(() => {
       tab.focus();
     });
@@ -73,35 +73,35 @@ export class PopupRenderer {
     return element;
   }
 
-  private createContainerElement(userContext: DisplayedContainer, isPrivate = false): MenulistContainerElement {
-    const element = new MenulistContainerElement(userContext, isPrivate);
+  private createContainerElement(displayedContainer: DisplayedContainer, isPrivate = false): MenulistContainerElement {
+    const element = new MenulistContainerElement(displayedContainer, isPrivate);
 
     element.onContainerOptionsClick.addListener(async () => {
-      this.modalRenderer.showContainerOptionsPanelAsync(userContext, isPrivate);
+      this.modalRenderer.showContainerOptionsPanelAsync(displayedContainer, isPrivate);
     });
 
     return element;
   }
 
-  public renderPartialContainerElement(userContext: DisplayedContainer, isPrivate = false): MenulistContainerElement {
-    const element = this.createContainerElement(userContext, isPrivate);
+  public renderPartialContainerElement(displayedContainer: DisplayedContainer, isPrivate = false): MenulistContainerElement {
+    const element = this.createContainerElement(displayedContainer, isPrivate);
     element.containerVisibilityToggleButton.disabled = true;
     element.partialContainerView = true;
     return element;
   }
 
-  private defineContainerCloseListenerForWindow(element: MenulistContainerElement, windowId: number, userContext: DisplayedContainer): void {
+  private defineContainerCloseListenerForWindow(element: MenulistContainerElement, windowId: number, displayedContainer: DisplayedContainer): void {
     element.onContainerClose.addListener(() => {
-      console.log('Closing all unpinned tabs of window %d in cookie store %s', windowId, userContext.cookieStore.id);
-      containers.closeAllTabsOnWindow(userContext.cookieStore.id, windowId).catch((e) => {
+      console.log('Closing all unpinned tabs of window %d in cookie store %s', windowId, displayedContainer.cookieStore.id);
+      containers.closeAllTabsOnWindow(displayedContainer.cookieStore.id, windowId).catch((e) => {
         console.error(e);
       });
     });
   }
 
-  public renderContainerForFirstPartyDomain(domain: string, userContext: DisplayedContainer, isPrivateBrowsing = false): MenulistContainerElement {
-    const element = this.renderPartialContainerElement(userContext, isPrivateBrowsing);
-    const cookieStoreId = isPrivateBrowsing ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
+  public renderContainerForFirstPartyDomain(domain: string, displayedContainer: DisplayedContainer, isPrivateBrowsing = false): MenulistContainerElement {
+    const element = this.renderPartialContainerElement(displayedContainer, isPrivateBrowsing);
+    const cookieStoreId = isPrivateBrowsing ? CookieStore.PRIVATE.id : displayedContainer.cookieStore.id;
     element.onContainerClose.addListener(() => {
       this._tabQueryService.queryTabs({
         tabGroupId: cookieStoreId,
@@ -116,10 +116,10 @@ export class PopupRenderer {
     return element;
   }
 
-  private renderContainer(windowId: number, userContext: DisplayedContainer, isPrivate = false): MenulistContainerElement {
-    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
-    const element = this.createContainerElement(userContext, isPrivate);
-    this.defineContainerCloseListenerForWindow(element, windowId, userContext);
+  private renderContainer(windowId: number, displayedContainer: DisplayedContainer, isPrivate = false): MenulistContainerElement {
+    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : displayedContainer.cookieStore.id;
+    const element = this.createContainerElement(displayedContainer, isPrivate);
+    this.defineContainerCloseListenerForWindow(element, windowId, displayedContainer);
     element.onContainerHide.addListener(() => {
       this._containerVisibilityService.hideContainerOnWindow(windowId, cookieStoreId).catch(() => {
         // ignore. (errors for private windows)

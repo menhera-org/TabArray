@@ -198,9 +198,9 @@ export class PopupModalRenderer {
     }
   }
 
-  public showContainerClearCookieModal(userContext: DisplayedContainer, isPrivate = false): void {
-    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
-    const confirmTitle = isPrivate ? browser.i18n.getMessage('confirmPrivateBrowsingClearCookie') : browser.i18n.getMessage('confirmContainerClearCookie', userContext.name);
+  public showContainerClearCookieModal(displayedContainer: DisplayedContainer, isPrivate = false): void {
+    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : displayedContainer.cookieStore.id;
+    const confirmTitle = isPrivate ? browser.i18n.getMessage('confirmPrivateBrowsingClearCookie') : browser.i18n.getMessage('confirmContainerClearCookie', displayedContainer.name);
     this.confirmAsync(confirmTitle).then((result) => {
       if (!result) return;
       this._tabGroupService.removeBrowsingDataForTabGroupId(cookieStoreId).then(() => {
@@ -211,13 +211,13 @@ export class PopupModalRenderer {
     });
   }
 
-  public showDeleteContainerModal(userContext: DisplayedContainer): void {
-    if (userContext.cookieStore.userContextId == 0) {
+  public showDeleteContainerModal(displayedContainer: DisplayedContainer): void {
+    if (displayedContainer.cookieStore.userContextId == 0) {
       console.warn('Cannot delete default container');
       return;
     }
-    const cookieStoreId = userContext.cookieStore.id;
-    this.confirmAsync(browser.i18n.getMessage('confirmContainerDelete', userContext.name)).then((result) => {
+    const cookieStoreId = displayedContainer.cookieStore.id;
+    this.confirmAsync(browser.i18n.getMessage('confirmContainerDelete', displayedContainer.name)).then((result) => {
       if (!result) return;
       this._contextualIdentityFactory.remove(cookieStoreId).catch((e) => {
         console.error(e);
@@ -226,16 +226,16 @@ export class PopupModalRenderer {
     });
   }
 
-  public async showContainerOptionsPanelAsync(userContext: DisplayedContainer, isPrivate = false): Promise<void> {
-    isPrivate = isPrivate || userContext.cookieStore.isPrivate;
-    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
+  public async showContainerOptionsPanelAsync(displayedContainer: DisplayedContainer, isPrivate = false): Promise<void> {
+    isPrivate = isPrivate || displayedContainer.cookieStore.isPrivate;
+    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : displayedContainer.cookieStore.id;
     let contextualIdentity: ContextualIdentity | DisplayedContainer;
-    const message = browser.i18n.getMessage('containerOptions', isPrivate ? browser.i18n.getMessage('privateBrowsing') : userContext.name);
+    const message = browser.i18n.getMessage('containerOptions', isPrivate ? browser.i18n.getMessage('privateBrowsing') : displayedContainer.name);
 
     const modalMenuElement = new ModalMenuElement(message);
     document.body.appendChild(modalMenuElement);
 
-    if (!isPrivate && userContext.cookieStore.userContextId != 0) {
+    if (!isPrivate && displayedContainer.cookieStore.userContextId != 0) {
       contextualIdentity = await this._contextualIdentityFactory.get(cookieStoreId);
       modalMenuElement.defineAction('edit', browser.i18n.getMessage('buttonEditContainer'), false);
       modalMenuElement.defineAction('delete', browser.i18n.getMessage('buttonDeleteContainer'), false);
@@ -261,17 +261,17 @@ export class PopupModalRenderer {
           }
 
           case 'clearCookie': {
-            this.showContainerClearCookieModal(userContext, isPrivate);
+            this.showContainerClearCookieModal(displayedContainer, isPrivate);
             break;
           }
 
           case 'delete': {
-            this.showDeleteContainerModal(userContext);
+            this.showDeleteContainerModal(displayedContainer);
             break;
           }
 
           case 'move': {
-            const modalMoveElement = new ModalMoveGroupElement(userContext.cookieStore.id);
+            const modalMoveElement = new ModalMoveGroupElement(displayedContainer.cookieStore.id);
             document.body.appendChild(modalMoveElement);
             break;
           }

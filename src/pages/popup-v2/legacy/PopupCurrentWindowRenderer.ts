@@ -100,16 +100,16 @@ export class PopupCurrentWindowRenderer {
     lastAccessedTab.focus();
   }
 
-  private renderInactiveContainer(windowStateSnapshot: WindowStateSnapshot, userContext: DisplayedContainer): MenulistContainerElement {
-    const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, [], windowStateSnapshot.isPrivate);
+  private renderInactiveContainer(windowStateSnapshot: WindowStateSnapshot, displayedContainer: DisplayedContainer): MenulistContainerElement {
+    const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, displayedContainer, [], windowStateSnapshot.isPrivate);
     return containerElement;
   }
 
-  private renderOpenContainer(windowStateSnapshot: WindowStateSnapshot, userContext: DisplayedContainer, tabs: CompatTab[], tabAttributeMap: TabAttributeMap): MenulistContainerElement {
-    const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, tabs, windowStateSnapshot.isPrivate, tabAttributeMap);
+  private renderOpenContainer(windowStateSnapshot: WindowStateSnapshot, displayedContainer: DisplayedContainer, tabs: CompatTab[], tabAttributeMap: TabAttributeMap): MenulistContainerElement {
+    const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, displayedContainer, tabs, windowStateSnapshot.isPrivate, tabAttributeMap);
     containerElement.containerHighlightButtonEnabled = true;
     containerElement.onContainerHighlight.addListener(async () => {
-      await this.focusContainerOnWindow(windowStateSnapshot.id, userContext.cookieStore.userContextId, windowStateSnapshot.isPrivate);
+      await this.focusContainerOnWindow(windowStateSnapshot.id, displayedContainer.cookieStore.userContextId, windowStateSnapshot.isPrivate);
       await containers.hideAll(windowStateSnapshot.id);
     });
     return containerElement;
