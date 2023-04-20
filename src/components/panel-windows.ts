@@ -250,19 +250,19 @@ export class PanelWindowsElement extends HTMLElement {
     const newGroupMenuItem = this.shadowRoot.querySelector('.new-group') as CtgMenuItemElement;
 
     const tabGroupDirectorySnapshot = browserStateSnapshot.getTabGroupDirectorySnapshot();
-    let definedUserContexts = browserStateSnapshot.getDefinedUserContexts();
+    let displayedContainers = browserStateSnapshot.getDisplayedContainers();
     if (currentWindowState.isPrivate) {
-      definedUserContexts = definedUserContexts.filter((userContext) => {
-        return userContext.id == UserContext.ID_DEFAULT;
-      });
-
+      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
       newGroupMenuItem.hidden = true;
     } else {
+      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == false);
       newGroupMenuItem.hidden = false;
     }
-    definedUserContexts = [... definedUserContexts].sort((a, b) => {
-      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+    displayedContainers = [... displayedContainers].sort((a, b) => {
+      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
+
+    const definedUserContexts = displayedContainers.map((displayedContainer) => UserContext.fromDisplayedContainer(displayedContainer));
 
     this.renderPinnedTabs(browserStateSnapshot, definedUserContexts);
 
@@ -383,10 +383,13 @@ export class PanelWindowsElement extends HTMLElement {
     const tabGroupDirectorySnapshot = this._browserStateSnapshot.getTabGroupDirectorySnapshot();
     const windowStateSnapshot = this._browserStateSnapshot.getWindowStateSnapshot(this._selectedWindowId);
     const isPrivate = windowStateSnapshot.isPrivate;
-    let userContexts = [... this._browserStateSnapshot.getDefinedUserContexts()];
+    let displayedContainers = this._browserStateSnapshot.getDisplayedContainers();
     if (isPrivate) {
-      userContexts = userContexts.filter((userContext) => userContext.id == 0);
+      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
+    } else {
+      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate != true);
     }
+    let userContexts = displayedContainers.map((displayedContainer) => UserContext.fromDisplayedContainer(displayedContainer));
     const allUserContexts = [... userContexts];
     const searchWords = searchString.split(/\s+/u);
     let tabs = [... windowStateSnapshot.tabs];

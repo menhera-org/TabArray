@@ -28,14 +28,12 @@ import { RegistrableDomainService } from 'weeg-domains';
 
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
-import { UserContext } from '../tabGroups/UserContext';
 import { WindowStateSnapshot } from './WindowStateSnapshot';
 import { ContainersStateSnapshot } from './ContainersStateSnapshot';
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
 import { TabAttributeMap } from '../../lib/tabGroups/TabAttributeMap';
 
 type ConstructParams = {
-  userContexts: UserContext[];
   browserWindows: browser.Windows.Window[];
   currentWindowId: number;
   displayedContainers: DisplayedContainer[];
@@ -81,7 +79,6 @@ export class BrowserStateSnapshot {
         }
       }
     }
-    const userContexts = displayedContainers.map((displayedContainer) => UserContext.fromDisplayedContainer(displayedContainer));
     const registrableDomains = await registrableDomainService.getRegistrableDomains(urls);
     if (registrableDomains.length !== urls.length) {
       throw new Error('registrableDomains.length !== urls.length');
@@ -92,7 +89,6 @@ export class BrowserStateSnapshot {
 
     const tabAttributeMap = await TabAttributeMap.create(compatTabMap.values());
     const constructParams = {
-      userContexts,
       browserWindows,
       currentWindowId: currentBrowserWindow.id,
       displayedContainers,
@@ -114,14 +110,13 @@ export class BrowserStateSnapshot {
   private readonly _privateWindowIds: Set<number> = new Set();
   private readonly _windowIds = new Set<number>();
   private readonly _windowStateSnapshots: Map<number, WindowStateSnapshot> = new Map();
-  private readonly _definedUserContexts: readonly UserContext[];
   private readonly _containersStateSnapshot: ContainersStateSnapshot;
   private readonly _tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
   private readonly _registrableDomainMap: Map<string, string>;
+  private readonly _displayedContainers: DisplayedContainer[];
 
   public constructor(params: ConstructParams) {
     const {
-      userContexts,
       browserWindows,
       currentWindowId,
       displayedContainers,
@@ -131,9 +126,9 @@ export class BrowserStateSnapshot {
       registrableDomainMap,
     } = params;
 
+    this._displayedContainers = displayedContainers;
     this._registrableDomainMap = registrableDomainMap;
     this.currentWindowId = currentWindowId;
-    this._definedUserContexts = userContexts;
     this.enabledInPrivateBrowsing = enabledInPrivateBrowsing;
     this._tabAttributeMap = tabAttributeMap;
     const tabs: CompatTab[] = [];
@@ -187,8 +182,8 @@ export class BrowserStateSnapshot {
     return map;
   }
 
-  public getDefinedUserContexts(): readonly UserContext[] {
-    return this._definedUserContexts;
+  public getDisplayedContainers(): readonly DisplayedContainer[] {
+    return this._displayedContainers;
   }
 
   public getContainersStateSnapshot(): ContainersStateSnapshot {

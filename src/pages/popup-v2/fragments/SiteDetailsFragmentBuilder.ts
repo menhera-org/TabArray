@@ -98,8 +98,10 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
     if (this._isPrivate) {
       this._definedUserContexts = [UserContext.PRIVATE];
     } else {
-      this._definedUserContexts = [... this._browserStateSnapshot.getDefinedUserContexts()].sort((a, b) => {
-        return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStoreId, b.cookieStoreId);
+      this._definedUserContexts = [... this._browserStateSnapshot.getDisplayedContainers()].sort((a, b) => {
+        return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
+      }).filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == false).map((displayedContainer) => {
+        return UserContext.fromDisplayedContainer(displayedContainer);
       });
     }
   }
