@@ -88,6 +88,10 @@ export class MenulistContainerElement extends HTMLElement {
     containerNameElement.id = 'container-name';
     containerButton.appendChild(containerNameElement);
 
+    const containerNameInnerElement = document.createElement('span');
+    containerNameInnerElement.id = 'container-name-inner';
+    containerNameElement.appendChild(containerNameInnerElement);
+
     const containerHighlightButton = document.createElement('button');
     containerHighlightButton.id = 'container-highlight-button';
     containerHighlightButton.disabled = true;
@@ -134,12 +138,12 @@ export class MenulistContainerElement extends HTMLElement {
   public setDisplayedContainer(displayedContainer: DisplayedContainer) {
     if (this._isPrivate) {
       console.assert(displayedContainer.cookieStore.userContextId == 0, "Private window should have default container only");
-      this.containerNameElement.textContent = browser.i18n.getMessage('privateBrowsing');
+      this.containerNameInnerElement.textContent = browser.i18n.getMessage('privateBrowsing');
       this.containerButton.title = browser.i18n.getMessage('privateBrowsing');
       this.containerIconElement.style.background = 'url(/img/firefox-icons/private-browsing-icon.svg) center center / contain no-repeat';
       this.containerIconElement.style.backgroundColor = 'transparent';
     } else {
-      this.containerNameElement.textContent = displayedContainer.name;
+      this.containerNameInnerElement.textContent = displayedContainer.name;
       this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(displayedContainer.cookieStore.userContextId));
       this.containerIconElement.style.backgroundColor = displayedContainer.colorCode;
       const iconUrl = displayedContainer.iconUrl;
@@ -151,6 +155,10 @@ export class MenulistContainerElement extends HTMLElement {
 
   private get containerNameElement(): HTMLSpanElement {
     return this.shadowRoot?.querySelector('#container-name') as HTMLSpanElement;
+  }
+
+  private get containerNameInnerElement(): HTMLSpanElement {
+    return this.shadowRoot?.querySelector('#container-name-inner') as HTMLSpanElement;
   }
 
   private get containerIconElement(): HTMLSpanElement {
@@ -190,7 +198,7 @@ export class MenulistContainerElement extends HTMLElement {
   }
 
   public get containerName(): string {
-    return this.containerNameElement.textContent || '';
+    return this.containerNameInnerElement.textContent || '';
   }
 
   public get tabCount(): number {

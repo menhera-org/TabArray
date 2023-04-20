@@ -57,7 +57,9 @@ button:focus {
 }
 
 #group-name[data-tab-count]::after {
-  content: ' (' attr(data-tab-count) ')';
+  display: block;
+  margin-inline-start: .5em;
+  content: '(' attr(data-tab-count) ')';
   opacity: var(--opaque-opacity);
 }
 
@@ -117,8 +119,16 @@ button[disabled] {
 }
 
 #group-name {
+  display: block flex;
   padding-inline: .5em;
   padding-block: .5em;
+  flex-direction: row;
+  min-inline-size: 0;
+}
+
+#group-name-inner {
+  min-inline-size: 0;
+  flex-shrink: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

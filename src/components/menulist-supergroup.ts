@@ -70,6 +70,10 @@ export class MenulistSupergroupElement extends HTMLElement {
     groupNameElement.id = 'group-name';
     groupButton.appendChild(groupNameElement);
 
+    const groupNameInnerElement = document.createElement('span');
+    groupNameInnerElement.id = 'group-name-inner';
+    groupNameElement.appendChild(groupNameInnerElement);
+
     const groupHideButton = document.createElement('button');
     groupHideButton.id = 'group-hide-button';
     groupHeaderElement.appendChild(groupHideButton);
@@ -113,6 +117,10 @@ export class MenulistSupergroupElement extends HTMLElement {
     return this.shadowRoot?.querySelector('#group-name') as HTMLSpanElement;
   }
 
+  private get groupNameInnerElement(): HTMLSpanElement {
+    return this.shadowRoot?.querySelector('#group-name-inner') as HTMLSpanElement;
+  }
+
   private get groupCloseButton(): HTMLButtonElement {
     return this.shadowRoot?.querySelector('#group-close-button') as HTMLButtonElement;
   }
@@ -130,11 +138,11 @@ export class MenulistSupergroupElement extends HTMLElement {
   }
 
   public get groupName(): string {
-    return this.groupNameElement.textContent || '';
+    return this.groupNameInnerElement.textContent || '';
   }
 
   public set groupName(groupName: string) {
-    this.groupNameElement.textContent = groupName;
+    this.groupNameInnerElement.textContent = groupName;
     this.groupOptionsButton.title = browser.i18n.getMessage('groupOptions', groupName);
   }
 
