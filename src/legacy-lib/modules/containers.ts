@@ -20,7 +20,6 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { Uint32 } from "weeg-types";
 import { CookieStore } from 'weeg-containers';
 import { CompatTab } from 'weeg-tabs';
 
@@ -38,13 +37,14 @@ const windowService = WindowService.getInstance();
 /**
  * Close all unpinned tabs in a window with a given userContextId.
  */
-export const closeAllTabsOnWindow = async (aUserContextId: Uint32.Uint32, aWindowId: number) => {
-  const cookieStore = CookieStore.fromParams({
-    userContextId: aUserContextId,
-    privateBrowsingId: 0 as Uint32.Uint32,
-  });
+export const closeAllTabsOnWindow = async (aCookieStoreId: string, aWindowId: number) => {
+  const cookieStore = new CookieStore(aCookieStoreId);
   const isPrivate = await windowService.isPrivateWindow(aWindowId);
-  const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : cookieStore.id;
+  if (isPrivate && !cookieStore.isPrivate) {
+    console.warn('closeAllTabsOnWindow: cannot close non-private tabs in private window');
+    return;
+  }
+  const cookieStoreId = cookieStore.id;
   const tabs = await tabQueryService.queryTabs({
     tabGroupId: cookieStoreId,
     windowId: aWindowId,
@@ -55,7 +55,7 @@ export const closeAllTabsOnWindow = async (aUserContextId: Uint32.Uint32, aWindo
   }
 };
 
-export const getInactiveIds = async (aWindowId: number) => {
+const getInactiveIds = async (aWindowId: number) => {
   const browserTabs = await browser.tabs.query({
     windowId: aWindowId,
     pinned: false,

@@ -27,8 +27,6 @@ import { ContextualIdentityService } from '../../../lib/tabGroups/ContextualIden
 import { TabGroupService } from '../../../lib/tabGroups/TabGroupService';
 import { DisplayedContainerService } from '../../../lib/tabGroups/DisplayedContainerService';
 
-import { UserContext } from "../../../legacy-lib/tabGroups/UserContext";
-
 import { PopupRenderer } from './PopupRenderer';
 import { PopupUtils } from './PopupUtils';
 
@@ -200,7 +198,7 @@ export class PopupModalRenderer {
     }
   }
 
-  public showContainerClearCookieModal(userContext: UserContext, isPrivate = false): void {
+  public showContainerClearCookieModal(userContext: DisplayedContainer, isPrivate = false): void {
     const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
     const confirmTitle = isPrivate ? browser.i18n.getMessage('confirmPrivateBrowsingClearCookie') : browser.i18n.getMessage('confirmContainerClearCookie', userContext.name);
     this.confirmAsync(confirmTitle).then((result) => {
@@ -213,7 +211,11 @@ export class PopupModalRenderer {
     });
   }
 
-  public showDeleteContainerModal(userContext: UserContext): void {
+  public showDeleteContainerModal(userContext: DisplayedContainer): void {
+    if (userContext.cookieStore.userContextId == 0) {
+      console.warn('Cannot delete default container');
+      return;
+    }
     const cookieStoreId = userContext.cookieStore.id;
     this.confirmAsync(browser.i18n.getMessage('confirmContainerDelete', userContext.name)).then((result) => {
       if (!result) return;
@@ -224,7 +226,8 @@ export class PopupModalRenderer {
     });
   }
 
-  public async showContainerOptionsPanelAsync(userContext: UserContext, isPrivate = false): Promise<void> {
+  public async showContainerOptionsPanelAsync(userContext: DisplayedContainer, isPrivate = false): Promise<void> {
+    isPrivate = isPrivate || userContext.cookieStore.isPrivate;
     const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
     let contextualIdentity: ContextualIdentity | DisplayedContainer;
     const message = browser.i18n.getMessage('containerOptions', isPrivate ? browser.i18n.getMessage('privateBrowsing') : userContext.name);
@@ -232,7 +235,7 @@ export class PopupModalRenderer {
     const modalMenuElement = new ModalMenuElement(message);
     document.body.appendChild(modalMenuElement);
 
-    if (!isPrivate && userContext.id != 0) {
+    if (!isPrivate && userContext.cookieStore.userContextId != 0) {
       contextualIdentity = await this._contextualIdentityFactory.get(cookieStoreId);
       modalMenuElement.defineAction('edit', browser.i18n.getMessage('buttonEditContainer'), false);
       modalMenuElement.defineAction('delete', browser.i18n.getMessage('buttonDeleteContainer'), false);

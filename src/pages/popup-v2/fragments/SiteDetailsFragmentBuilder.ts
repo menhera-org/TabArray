@@ -20,15 +20,15 @@
 **/
 
 import browser from "webextension-polyfill";
-import { Uint32, SetMap } from "weeg-types";
+import { SetMap } from "weeg-types";
 import { CompatTab } from "weeg-tabs";
+import { DisplayedContainer } from "weeg-containers";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
 import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../../legacy-lib/tabs/BrowserStateSnapshot";
-import { UserContext } from "../../../legacy-lib/tabGroups/UserContext";
 
 export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
@@ -39,7 +39,7 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   private _firstPartyStateSnapshot: ReadonlyMap<string, ReadonlySet<CompatTab>> | null = null;
   private _browserStateSnapshot: BrowserStateSnapshot | null = null;
   private _isPrivate = false;
-  private _definedUserContexts: UserContext[] = [];
+  private _definedDisplayedContainers: DisplayedContainer[] = [];
   private _tabs: CompatTab[] = [];
 
   public getFragmentId(): string {
@@ -96,17 +96,13 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
     this._tabCount = tabs.size;
     this._tabs = [... tabs];
     if (this._isPrivate) {
-      this._definedUserContexts = [... this._browserStateSnapshot.getDisplayedContainers()].sort((a, b) => {
+      this._definedDisplayedContainers = [... this._browserStateSnapshot.getDisplayedContainers()].sort((a, b) => {
         return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-      }).filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true).map((displayedContainer) => {
-        return UserContext.fromDisplayedContainer(displayedContainer);
-      });
+      }).filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
     } else {
-      this._definedUserContexts = [... this._browserStateSnapshot.getDisplayedContainers()].sort((a, b) => {
+      this._definedDisplayedContainers = [... this._browserStateSnapshot.getDisplayedContainers()].sort((a, b) => {
         return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-      }).filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == false).map((displayedContainer) => {
-        return UserContext.fromDisplayedContainer(displayedContainer);
-      });
+      }).filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == false);
     }
   }
 
@@ -114,26 +110,26 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
     if (this._firstPartyStateSnapshot == null) {
       return;
     }
-    const tabsByUserContextId = new SetMap<Uint32.Uint32, CompatTab>();
+    const tabsByUserContextId = new SetMap<string, CompatTab>();
     for (const tab of this._tabs) {
-      const userContextId = tab.cookieStore.userContextId;
-      tabsByUserContextId.addItem(userContextId, tab);
+      const cookieStoreId = tab.cookieStore.id;
+      tabsByUserContextId.addItem(cookieStoreId, tab);
     }
-    const userContextMap = new Map<Uint32.Uint32, UserContext>();
-    for (const userContext of this._definedUserContexts) {
-      userContextMap.set(userContext.id, userContext);
+    const userContextMap = new Map<string, DisplayedContainer>();
+    for (const userContext of this._definedDisplayedContainers) {
+      userContextMap.set(userContext.cookieStore.id, userContext);
     }
     const fragment = this.getFragment();
     fragment.textContent = '';
-    for (const userContextId of tabsByUserContextId.keys()) {
-      const tabs = [... tabsByUserContextId.get(userContextId) ?? []];
+    for (const cookieStoreId of tabsByUserContextId.keys()) {
+      const tabs = [... tabsByUserContextId.get(cookieStoreId) ?? []];
       tabs.sort((a, b) => {
         if (a.windowId == b.windowId) {
           return a.index - b.index;
         }
         return a.windowId - b.windowId;
       });
-      const userContext = userContextMap.get(userContextId);
+      const userContext = userContextMap.get(cookieStoreId);
       if (!userContext) {
         continue;
       }

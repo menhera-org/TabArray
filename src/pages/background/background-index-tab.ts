@@ -23,10 +23,12 @@ import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
 import { CompatTab } from 'weeg-tabs';
 import { StorageItem } from 'weeg-storage';
+import { CookieStore } from 'weeg-containers';
 
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { IndexTabService } from '../../lib/tabs/IndexTabService';
 import { CookieStoreTabMap } from '../../lib/tabs/CookieStoreTabMap';
+import { StartupService } from '../../lib/StartupService';
 
 import * as containers from '../../legacy-lib/modules/containers';
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';
@@ -43,6 +45,7 @@ const indexTabStorage = new StorageItem<StorageType>('indexTabStorage', {}, Stor
 const initialWindowsService = InitialWindowsService.getInstance();
 const tabQueryService = TabQueryService.getInstance();
 const indexTabService = IndexTabService.getInstance();
+const startupService = StartupService.getInstance();
 
 const getIndexTabUserContextId = async (tabId: number): Promise<Uint32 | undefined> => {
   const value = await indexTabStorage.getValue();
@@ -71,8 +74,12 @@ const handleClosedIndexTab = async (tabId: number, windowId: number) => {
   if (indexTabUserContextId != undefined) {
     await removeIndexTabUserContextId(tabId);
     // index closed, close all tabs of that group
-    console.log('index tab %d closed on window %d, close all tabs of that group %d', tabId, windowId, indexTabUserContextId);
-    await containers.closeAllTabsOnWindow(indexTabUserContextId, windowId);
+    const cookieStore = CookieStore.fromParams({
+      userContextId: indexTabUserContextId,
+      privateBrowsingId: 0 as Uint32,
+    });
+    console.log('index tab %d closed on window %d, close all tabs of that container %s', tabId, windowId, cookieStore.id);
+    await containers.closeAllTabsOnWindow(cookieStore.id, windowId);
   }
 };
 
@@ -99,13 +106,16 @@ browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) =>
   }
 });
 
-browser.tabs.query({}).then(async (browserTabs) => {
-  const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
-  for (const tab of tabs) {
-    if (IndexTab.isIndexTabUrl(tab.url)) {
-      await setIndexTabUserContextId(tab.id, tab.cookieStore.userContextId);
+startupService.onStartup.addListener(() => {
+  browser.tabs.query({}).then(async (browserTabs) => {
+    const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
+    for (const tab of tabs) {
+      if (tab.isPrivate) continue;
+      if (IndexTab.isIndexTabUrl(tab.url)) {
+        await setIndexTabUserContextId(tab.id, tab.cookieStore.userContextId);
+      }
     }
-  }
+  });
 });
 
 initialWindowsService.getInitialWindows().then(async (browserWindows) => {
@@ -115,6 +125,7 @@ initialWindowsService.getInitialWindows().then(async (browserWindows) => {
   const existingIndexTabIds = await getIndexTabIds();
   const createIndexTabPromises: Promise<CompatTab>[] = [];
   for (const browserWindow of browserWindows) {
+    if (browserWindow.incognito) continue;
     if (null == browserWindow.id) continue;
     if (!browserWindow.tabs) continue;
     const tabs = browserWindow.tabs.map((browserTab) => new CompatTab(browserTab));
@@ -171,6 +182,7 @@ browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
 });
 
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, browserTab) => {
+  if (browserTab.incognito) return;
   browserTab.id = tabId;
   const tab = new CompatTab(browserTab);
   const cookieStoreId = tab.cookieStore.id;

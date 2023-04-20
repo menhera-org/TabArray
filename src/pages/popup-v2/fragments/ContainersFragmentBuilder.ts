@@ -20,7 +20,7 @@
 **/
 
 import browser from "webextension-polyfill";
-import { CookieStore } from "weeg-containers";
+import { CookieStore, DisplayedContainer } from "weeg-containers";
 import { EventSink } from "weeg-events";
 
 import { TemporaryContainerService } from "../../../lib/tabGroups/TemporaryContainerService";
@@ -39,7 +39,6 @@ import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { PopupRendererService } from "../PopupRendererService";
 
 import { ContainersStateSnapshot } from "../../../legacy-lib/tabs/ContainersStateSnapshot";
-import { UserContext } from "../../../legacy-lib/tabGroups/UserContext";
 
 export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onContainerSelected = new EventSink<string>();
@@ -132,11 +131,11 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     inactiveContainersElement.textContent = '';
     const privateContainers = containersStateSnapshot.displayedContainers.filter((container) => container.cookieStore.isPrivate);
     const normalContainers = containersStateSnapshot.displayedContainers.filter((container) => !container.cookieStore.isPrivate);
-    const privateUserContexts = privateContainers.map((container) => UserContext.fromDisplayedContainer(container));
-    const normalUserContexts = normalContainers.map((container) => UserContext.fromDisplayedContainer(container)).sort((a, b) => {
+    const privateUserContexts = [... privateContainers];
+    const normalUserContexts = [... normalContainers].sort((a, b) => {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
-    const userContextMap = new Map<string, UserContext>();
+    const userContextMap = new Map<string, DisplayedContainer>();
     for (const normalUserContext of normalUserContexts) {
       userContextMap.set(normalUserContext.cookieStore.id, normalUserContext);
     }
@@ -145,7 +144,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     this.renderSupergroup(0, rootSupergroup, containersStateSnapshot, userContextMap, activeContainersElement);
   }
 
-  private renderSupergroup(nestingCount: number, supergroup: SupergroupType, containersStateSnapshot: ContainersStateSnapshot, userContextMap: Map<string, UserContext>, parentElement: HTMLElement) {
+  private renderSupergroup(nestingCount: number, supergroup: SupergroupType, containersStateSnapshot: ContainersStateSnapshot, userContextMap: Map<string, DisplayedContainer>, parentElement: HTMLElement) {
     let tabCount = 0;
     const tabGroupDirectorySnapshot = containersStateSnapshot.tabGroupDirectorySnapshot;
     const tabGroupIds = supergroup.members;
@@ -203,7 +202,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     return tabCount;
   }
 
-  private renderContainers(containersStateSnapshot: ContainersStateSnapshot, userContexts: UserContext[], parentElement: HTMLElement) {
+  private renderContainers(containersStateSnapshot: ContainersStateSnapshot, userContexts: DisplayedContainer[], parentElement: HTMLElement) {
     for (const userContext of userContexts) {
       const isPrivate = userContext.cookieStore.isPrivate;
       const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStore.id);

@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { EventSink } from "weeg-events";
-import { Uint32 } from "weeg-types";
+import { DisplayedContainer } from 'weeg-containers';
 
 import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
 
@@ -30,7 +30,6 @@ import { SupergroupEditorElement } from './supergroup-editor';
 import { TagEditorElement } from './tag-editor';
 
 import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
-import { UserContext } from "../legacy-lib/tabGroups/UserContext";
 import * as containers from '../legacy-lib/modules/containers';
 import { ContainerVisibilityService } from "../legacy-lib/userContexts/ContainerVisibilityService";
 
@@ -262,17 +261,15 @@ export class PanelWindowsElement extends HTMLElement {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
 
-    const definedUserContexts = displayedContainers.map((displayedContainer) => UserContext.fromDisplayedContainer(displayedContainer));
-
-    this.renderPinnedTabs(browserStateSnapshot, definedUserContexts);
+    this.renderPinnedTabs(browserStateSnapshot, displayedContainers);
 
     const activeContainersElement = this.shadowRoot.querySelector('.active-containers') as HTMLDivElement;
     activeContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderOpenContainers(currentWindowState, definedUserContexts, activeContainersElement, tabGroupDirectorySnapshot, browserStateSnapshot.getTabAttributeMap());
+    this._popupRenderer.currentWindowRenderer.renderOpenContainers(currentWindowState, displayedContainers, activeContainersElement, tabGroupDirectorySnapshot, browserStateSnapshot.getTabAttributeMap());
 
     const inactiveContainersElement = this.shadowRoot.querySelector('.inactive-containers') as HTMLDivElement;
     inactiveContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(currentWindowState, definedUserContexts, inactiveContainersElement, tabGroupDirectorySnapshot, browserStateSnapshot.getTabAttributeMap());
+    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(currentWindowState, displayedContainers, inactiveContainersElement, tabGroupDirectorySnapshot, browserStateSnapshot.getTabAttributeMap());
 
     this.renderActions();
   }
@@ -292,13 +289,13 @@ export class PanelWindowsElement extends HTMLElement {
     actionsElement.appendChild(newTemporaryContainerMenuItem);
   }
 
-  private renderPinnedTabs(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly UserContext[]) {
+  private renderPinnedTabs(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly DisplayedContainer[]) {
     const currentWindowState = browserStateSnapshot.getWindowStateSnapshot(this._selectedWindowId);
     const pinnedTabs = [... currentWindowState.pinnedTabs];
     pinnedTabs.sort((a, b) => a.index - b.index);
-    const userContextMap = new Map<Uint32.Uint32, UserContext>();
+    const userContextMap = new Map<string, DisplayedContainer>();
     for (const userContext of definedUserContexts) {
-      userContextMap.set(userContext.id, userContext);
+      userContextMap.set(userContext.cookieStore.id, userContext);
     }
 
     if (!this.shadowRoot) return;
@@ -306,7 +303,7 @@ export class PanelWindowsElement extends HTMLElement {
     const pinnedTabsElement = this.shadowRoot.querySelector('.pinned-tabs') as HTMLDivElement;
     pinnedTabsElement.textContent = '';
     for (const pinnedTab of pinnedTabs) {
-      const userContext = userContextMap.get(pinnedTab.cookieStore.userContextId);
+      const userContext = userContextMap.get(pinnedTab.cookieStore.id);
       if (!userContext) {
         console.error('Could not find user context for pinned tab', pinnedTab);
         continue;
@@ -388,18 +385,17 @@ export class PanelWindowsElement extends HTMLElement {
     const tabGroupDirectorySnapshot = this._browserStateSnapshot.getTabGroupDirectorySnapshot();
     const windowStateSnapshot = this._browserStateSnapshot.getWindowStateSnapshot(this._selectedWindowId);
     const isPrivate = windowStateSnapshot.isPrivate;
-    let displayedContainers = this._browserStateSnapshot.getDisplayedContainers();
+    let displayedContainers = [... this._browserStateSnapshot.getDisplayedContainers()];
     if (isPrivate) {
       displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
     } else {
       displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate != true);
     }
-    let userContexts = displayedContainers.map((displayedContainer) => UserContext.fromDisplayedContainer(displayedContainer));
-    const allUserContexts = [... userContexts];
+    const allUserContexts = [... displayedContainers];
     const searchWords = searchString.split(/\s+/u);
     let tabs = [... windowStateSnapshot.tabs];
     for (const searchWord of searchWords) {
-      userContexts = userContexts.filter((userContext) => {
+      displayedContainers = displayedContainers.filter((userContext) => {
         return userContext.name.toLowerCase().includes(searchWord.toLowerCase());
       });
       tabs = tabs.filter((tab) => {
@@ -411,24 +407,24 @@ export class PanelWindowsElement extends HTMLElement {
     tabs.sort((a, b) => {
       return a.index - b.index;
     });
-    userContexts.sort((a, b) => {
+    displayedContainers.sort((a, b) => {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
 
-    const userContextMap = new Map<Uint32.Uint32, UserContext>();
+    const userContextMap = new Map<string, DisplayedContainer>();
     for (const userContext of allUserContexts) {
-      userContextMap.set(userContext.id, userContext);
+      userContextMap.set(userContext.cookieStore.id, userContext);
     }
 
-    for (const userContext of userContexts) {
-      const tabs = windowStateSnapshot.userContextUnpinnedTabMap.get(userContext.id) || [];
+    for (const userContext of displayedContainers) {
+      const tabs = windowStateSnapshot.userContextUnpinnedTabMap.get(userContext.cookieStore.userContextId) || [];
       const containerElement = this._popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, [], windowStateSnapshot.isPrivate);
       containerElement.tabCount = tabs.length;
       containerElement.containerVisibilityToggleButton.disabled = true;
       searchResultsContainersElement.appendChild(containerElement);
     }
     for (const tab of tabs) {
-      const userContext = userContextMap.get(tab.cookieStore.userContextId);
+      const userContext = userContextMap.get(tab.cookieStore.id);
       if (!userContext) {
         console.error('Could not find user context for tab', tab);
         continue;

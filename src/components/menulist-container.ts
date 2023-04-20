@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { UserContext } from "../legacy-lib/tabGroups/UserContext";
+import { DisplayedContainer } from 'weeg-containers';
 import { EventSink } from "weeg-events";
 
 export class MenulistContainerElement extends HTMLElement {
@@ -41,7 +41,7 @@ export class MenulistContainerElement extends HTMLElement {
   public readonly onContainerDelete = new EventSink<void>();
   public readonly onContainerClearCookie = new EventSink<void>();
 
-  public constructor(userContext: UserContext, isPrivate = false) {
+  public constructor(userContext: DisplayedContainer, isPrivate = false) {
     super();
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
@@ -131,7 +131,7 @@ export class MenulistContainerElement extends HTMLElement {
     };
   }
 
-  public setUserContext(userContext: UserContext) {
+  public setUserContext(userContext: DisplayedContainer) {
     if (this._isPrivate) {
       console.assert(userContext.cookieStore.userContextId == 0, "Private window should have default container only");
       this.containerNameElement.textContent = browser.i18n.getMessage('privateBrowsing');

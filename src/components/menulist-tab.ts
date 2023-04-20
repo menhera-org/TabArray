@@ -22,10 +22,10 @@
 import browser from 'webextension-polyfill';
 import { EventSink } from "weeg-events";
 import { CompatTab } from 'weeg-tabs';
+import { DisplayedContainer } from 'weeg-containers';
 
 import { TabIconService } from '../lib/TabIconService';
 
-import { UserContext } from "../legacy-lib/tabGroups/UserContext";
 import { ModalSetTagElement } from './modal-set-tag';
 
 export class MenulistTabElement extends HTMLElement {
@@ -37,7 +37,7 @@ export class MenulistTabElement extends HTMLElement {
   public readonly onUnpin = new EventSink<number>();
   public readonly onClose = new EventSink<number>();
 
-  public constructor(tab: CompatTab, userContext: UserContext) {
+  public constructor(tab: CompatTab, userContext: DisplayedContainer) {
     super();
     this.attachShadow({ mode: "open" });
     if (!this.shadowRoot) {
@@ -153,7 +153,7 @@ export class MenulistTabElement extends HTMLElement {
     }, { capture: true });
   }
 
-  public setUserContext(userContext: UserContext) {
+  public setUserContext(userContext: DisplayedContainer) {
     if (0 == userContext.cookieStore.userContextId || !userContext.colorCode) {
       return;
     }

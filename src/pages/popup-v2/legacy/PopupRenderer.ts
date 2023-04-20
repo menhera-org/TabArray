@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { CookieStore } from 'weeg-containers';
+import { CookieStore, DisplayedContainer } from 'weeg-containers';
 import { CompatTab } from 'weeg-tabs';
 
 import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOpenerService';
@@ -32,7 +32,6 @@ import { MenulistTabElement } from "../../../components/menulist-tab";
 import { MenulistContainerElement } from "../../../components/menulist-container";
 import { MenulistTagElement } from '../../../components/menulist-tag';
 
-import { UserContext } from "../../../legacy-lib/tabGroups/UserContext";
 
 import * as containers from '../../../legacy-lib/modules/containers';
 import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
@@ -57,7 +56,7 @@ export class PopupRenderer {
   public readonly currentWindowRenderer = new PopupCurrentWindowRenderer(this);
   public readonly modalRenderer = new PopupModalRenderer(this);
 
-  public renderTab(tab: CompatTab, userContext: UserContext): MenulistTabElement {
+  public renderTab(tab: CompatTab, userContext: DisplayedContainer): MenulistTabElement {
     const element = new MenulistTabElement(tab, userContext);
     element.onTabClicked.addListener(() => {
       tab.focus();
@@ -74,7 +73,7 @@ export class PopupRenderer {
     return element;
   }
 
-  private createContainerElement(userContext: UserContext, isPrivate = false): MenulistContainerElement {
+  private createContainerElement(userContext: DisplayedContainer, isPrivate = false): MenulistContainerElement {
     const element = new MenulistContainerElement(userContext, isPrivate);
 
     element.onContainerOptionsClick.addListener(async () => {
@@ -84,23 +83,23 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderPartialContainerElement(userContext: UserContext, isPrivate = false): MenulistContainerElement {
+  public renderPartialContainerElement(userContext: DisplayedContainer, isPrivate = false): MenulistContainerElement {
     const element = this.createContainerElement(userContext, isPrivate);
     element.containerVisibilityToggleButton.disabled = true;
     element.partialContainerView = true;
     return element;
   }
 
-  private defineContainerCloseListenerForWindow(element: MenulistContainerElement, windowId: number, userContext: UserContext): void {
+  private defineContainerCloseListenerForWindow(element: MenulistContainerElement, windowId: number, userContext: DisplayedContainer): void {
     element.onContainerClose.addListener(() => {
-      console.log('Closing all unpinned tabs of window %d in userContext %d', windowId, userContext.id);
-      containers.closeAllTabsOnWindow(userContext.id, windowId).catch((e) => {
+      console.log('Closing all unpinned tabs of window %d in cookie store %s', windowId, userContext.cookieStore.id);
+      containers.closeAllTabsOnWindow(userContext.cookieStore.id, windowId).catch((e) => {
         console.error(e);
       });
     });
   }
 
-  public renderContainerForFirstPartyDomain(domain: string, userContext: UserContext, isPrivateBrowsing = false): MenulistContainerElement {
+  public renderContainerForFirstPartyDomain(domain: string, userContext: DisplayedContainer, isPrivateBrowsing = false): MenulistContainerElement {
     const element = this.renderPartialContainerElement(userContext, isPrivateBrowsing);
     const cookieStoreId = isPrivateBrowsing ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
     element.onContainerClose.addListener(() => {
@@ -117,7 +116,7 @@ export class PopupRenderer {
     return element;
   }
 
-  private renderContainer(windowId: number, userContext: UserContext, isPrivate = false): MenulistContainerElement {
+  private renderContainer(windowId: number, userContext: DisplayedContainer, isPrivate = false): MenulistContainerElement {
     const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : userContext.cookieStore.id;
     const element = this.createContainerElement(userContext, isPrivate);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
@@ -137,9 +136,9 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderContainerWithTabs(windowId: number, userContext: UserContext, tabs: CompatTab[], isPrivate = false, tabAttributeMap?: TabAttributeMap): MenulistContainerElement {
-    if (isPrivate) {
-      userContext = UserContext.PRIVATE;
+  public renderContainerWithTabs(windowId: number, userContext: DisplayedContainer, tabs: CompatTab[], isPrivate = false, tabAttributeMap?: TabAttributeMap): MenulistContainerElement {
+    if (isPrivate && !userContext.cookieStore.isPrivate) {
+      throw new Error('Cannot render container with tabs for private window with non-private container');
     }
     if (tabAttributeMap) {
       tabs.sort((a, b) => {

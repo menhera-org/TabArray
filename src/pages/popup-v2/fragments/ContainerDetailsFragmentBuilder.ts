@@ -28,7 +28,6 @@ import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../../components/ctg/ctg-menu-item";
 import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../../legacy-lib/tabs/BrowserStateSnapshot";
-import { UserContext } from "../../../legacy-lib/tabGroups/UserContext";
 import { MenulistWindowElement } from "../../../components/menulist-window";
 import { ContainerTabOpenerService } from "../../../lib/tabGroups/ContainerTabOpenerService";
 
@@ -125,7 +124,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
     fragment.textContent = '';
     const containersStateSnapshot = this._browserStateSnapshot.getContainersStateSnapshot();
     const tabs = containersStateSnapshot.getTabsByContainer(this._cookieStoreId);
-    const userContext = UserContext.fromDisplayedContainer(this._selectedDisplayedContainer);
+    const displayedContainer = this._selectedDisplayedContainer;
     let windowId: number = browser.windows.WINDOW_ID_NONE;
     for (const tab of tabs) {
       if (windowId != tab.windowId) {
@@ -136,7 +135,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
         fragment.appendChild(windowElement);
       }
       windowId = tab.windowId;
-      const tabElement = this._popupRenderer.renderTab(tab, userContext);
+      const tabElement = this._popupRenderer.renderTab(tab, displayedContainer);
       fragment.appendChild(tabElement);
     }
   }

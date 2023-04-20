@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { Uint32 } from "weeg-types";
-import { CookieStore } from 'weeg-containers';
+import { CookieStore, DisplayedContainer } from 'weeg-containers';
 import { CompatTab } from 'weeg-tabs';
 
 import { TabGroupDirectorySnapshot } from '../../../lib/tabGroups/TabGroupDirectorySnapshot';
@@ -41,7 +41,6 @@ import { ModalMoveGroupElement } from '../../../components/modal-move-group';
 import { ContainerEditorElement } from '../../../components/container-editor';
 
 import * as containers from '../../../legacy-lib/modules/containers';
-import { UserContext } from '../../../legacy-lib/tabGroups/UserContext';
 import { WindowStateSnapshot } from '../../../legacy-lib/tabs/WindowStateSnapshot';
 
 const tabGroupDirectory = new TabGroupDirectory();
@@ -59,7 +58,7 @@ export class PopupCurrentWindowRenderer {
    *
    * @returns the number of pinned tabs.
    */
-  public renderPinnedTabs(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: ReadonlyMap<Uint32.Uint32, UserContext>, element: HTMLElement): number {
+  public renderPinnedTabs(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: ReadonlyMap<Uint32.Uint32, DisplayedContainer>, element: HTMLElement): number {
     const pinnedTabs = windowStateSnapshot.pinnedTabs;
     let tabCount = 0;
     for (const tab of pinnedTabs) {
@@ -101,16 +100,16 @@ export class PopupCurrentWindowRenderer {
     lastAccessedTab.focus();
   }
 
-  private renderInactiveContainer(windowStateSnapshot: WindowStateSnapshot, userContext: UserContext): MenulistContainerElement {
+  private renderInactiveContainer(windowStateSnapshot: WindowStateSnapshot, userContext: DisplayedContainer): MenulistContainerElement {
     const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, [], windowStateSnapshot.isPrivate);
     return containerElement;
   }
 
-  private renderOpenContainer(windowStateSnapshot: WindowStateSnapshot, userContext: UserContext, tabs: CompatTab[], tabAttributeMap: TabAttributeMap): MenulistContainerElement {
+  private renderOpenContainer(windowStateSnapshot: WindowStateSnapshot, userContext: DisplayedContainer, tabs: CompatTab[], tabAttributeMap: TabAttributeMap): MenulistContainerElement {
     const containerElement = this.popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, tabs, windowStateSnapshot.isPrivate, tabAttributeMap);
     containerElement.containerHighlightButtonEnabled = true;
     containerElement.onContainerHighlight.addListener(async () => {
-      await this.focusContainerOnWindow(windowStateSnapshot.id, userContext.id, windowStateSnapshot.isPrivate);
+      await this.focusContainerOnWindow(windowStateSnapshot.id, userContext.cookieStore.userContextId, windowStateSnapshot.isPrivate);
       await containers.hideAll(windowStateSnapshot.id);
     });
     return containerElement;
@@ -176,7 +175,7 @@ export class PopupCurrentWindowRenderer {
     });
   }
 
-  private renderSupergroup(supergroup: SupergroupType, windowStateSnapshot: WindowStateSnapshot, definedUserContexts: UserContext[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, element: HTMLElement, tabAttributeMap: TabAttributeMap): number {
+  private renderSupergroup(supergroup: SupergroupType, windowStateSnapshot: WindowStateSnapshot, definedUserContexts: DisplayedContainer[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, element: HTMLElement, tabAttributeMap: TabAttributeMap): number {
     let tabCount = 0;
     const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
     const supergroupElement = new MenulistSupergroupElement();
@@ -185,12 +184,14 @@ export class PopupCurrentWindowRenderer {
     for (const memberTabGroupId of supergroup.members) {
       const tabGroupAttributes = new TabGroupAttributes(memberTabGroupId);
       if (tabGroupAttributes.tabGroupType == 'cookieStore') {
-        const userContextId = (tabGroupAttributes.cookieStore as CookieStore).userContextId;
+        const cookieStore = tabGroupAttributes.cookieStore as CookieStore;
+        const cookieStoreId = cookieStore.id;
+        const userContextId = cookieStore.userContextId;
         const matchedUserContexts = definedUserContexts.filter((userContext) => {
-          return userContext.id === userContextId;
+          return userContext.cookieStore.id === cookieStoreId;
         });
         if (matchedUserContexts.length === 0) continue;
-        const openUserContext = matchedUserContexts[0] as UserContext;
+        const openUserContext = matchedUserContexts[0] as DisplayedContainer;
         const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(userContextId) ?? []];
         tabCount += tabs.length;
         if (tabs.length == 0) {
@@ -227,10 +228,10 @@ export class PopupCurrentWindowRenderer {
     return tabCount;
   }
 
-  private getActiveTabGroupIds(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly UserContext[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot): Set<string> {
+  private getActiveTabGroupIds(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly DisplayedContainer[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot): Set<string> {
     const activeTabGroupIds = new Set<string>();
     const openUserContexts = definedUserContexts.filter((userContext) => {
-      return windowStateSnapshot.activeUserContexts.includes(userContext.id);
+      return windowStateSnapshot.activeUserContexts.includes(userContext.cookieStore.userContextId);
     });
     for (const openUserContext of openUserContexts) {
       const cookieStoreId = openUserContext.cookieStore.id;
@@ -247,15 +248,15 @@ export class PopupCurrentWindowRenderer {
    *
    * @returns the number of tabs.
    */
-  public renderOpenContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap): number {
+  public renderOpenContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly DisplayedContainer[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap): number {
     const openUserContexts = definedUserContexts.filter((userContext) => {
-      return windowStateSnapshot.activeUserContexts.includes(userContext.id);
+      return windowStateSnapshot.activeUserContexts.includes(userContext.cookieStore.userContextId);
     });
 
     let tabCount = 0;
     if (windowStateSnapshot.isPrivate) {
       for (const openUserContext of openUserContexts) {
-        const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(openUserContext.id) ?? []];
+        const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(openUserContext.cookieStore.userContextId) ?? []];
         tabCount += tabs.length;
         const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs, tabAttributeMap);
         element.appendChild(containerElement);
@@ -267,12 +268,14 @@ export class PopupCurrentWindowRenderer {
         if (!activeTabGroupIds.has(memberTabGroupId)) continue;
         const tabGroupAttributes = new TabGroupAttributes(memberTabGroupId);
         if (tabGroupAttributes.tabGroupType == 'cookieStore') {
-          const userContextId = (tabGroupAttributes.cookieStore as CookieStore).userContextId;
+          const cookieStore = tabGroupAttributes.cookieStore as CookieStore;
+          const cookieStoreId = cookieStore.id;
+          const userContextId = cookieStore.userContextId;
           const matchedUserContexts = definedUserContexts.filter((userContext) => {
-            return userContext.id === userContextId;
+            return userContext.cookieStore.id === cookieStoreId;
           });
           if (matchedUserContexts.length === 0) continue;
-          const openUserContext = matchedUserContexts[0] as UserContext;
+          const openUserContext = matchedUserContexts[0] as DisplayedContainer;
           const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(userContextId) ?? []];
           tabCount += tabs.length;
           if (tabs.length == 0) {
@@ -291,9 +294,9 @@ export class PopupCurrentWindowRenderer {
     return tabCount;
   }
 
-  public renderInactiveContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly UserContext[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap): void {
+  public renderInactiveContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly DisplayedContainer[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap): void {
     const inactiveUserContexts = definedUserContexts.filter((userContext) => {
-      return !windowStateSnapshot.activeUserContexts.includes(userContext.id);
+      return !windowStateSnapshot.activeUserContexts.includes(userContext.cookieStore.userContextId);
     });
 
     if (windowStateSnapshot.isPrivate) {
@@ -308,12 +311,13 @@ export class PopupCurrentWindowRenderer {
         if (activeTabGroupIds.has(memberTabGroupId)) continue;
         const tabGroupAttributes = new TabGroupAttributes(memberTabGroupId);
         if (tabGroupAttributes.tabGroupType == 'cookieStore') {
-          const userContextId = (tabGroupAttributes.cookieStore as CookieStore).userContextId;
+          const cookieStore = tabGroupAttributes.cookieStore as CookieStore;
+          const cookieStoreId = cookieStore.id;
           const matchedUserContexts = definedUserContexts.filter((userContext) => {
-            return userContext.id === userContextId;
+            return userContext.cookieStore.id === cookieStoreId;
           });
           if (matchedUserContexts.length === 0) continue;
-          const openUserContext = matchedUserContexts[0] as UserContext;
+          const openUserContext = matchedUserContexts[0] as DisplayedContainer;
           const containerElement = this.renderInactiveContainer(windowStateSnapshot, openUserContext);
           element.appendChild(containerElement);
         } else {
