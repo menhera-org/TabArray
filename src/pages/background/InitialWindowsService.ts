@@ -21,8 +21,15 @@
 
 import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
+import { ExtensionService } from 'weeg-utils';
 
 import { StartupService } from '../../lib/StartupService';
+
+const extensionService = ExtensionService.getInstance();
+
+if (!extensionService.isBackgroundPage()) {
+  throw new Error('This file should only be loaded by the background script.');
+}
 
 /**
  * This file should only be loaded by the background script.
