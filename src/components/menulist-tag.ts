@@ -20,6 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
+import { EventSink } from 'weeg-events';
 
 import { TagDirectory, TagType } from '../lib/tabGroups/TagDirectory';
 
@@ -28,6 +29,7 @@ import { TagEditorElement } from './tag-editor';
 const tagDirectory = new TagDirectory();
 
 export class MenulistTagElement extends HTMLElement {
+  public readonly onTagButtonClicked = new EventSink<void>();
   private readonly tag: TagType;
 
   public constructor(tag: TagType) {
@@ -95,6 +97,9 @@ export class MenulistTagElement extends HTMLElement {
         console.error(e);
       });
     };
+    this.groupButton.onclick = () => {
+      this.onTagButtonClicked.dispatch();
+    };
   }
 
   private get tagNameElement(): HTMLSpanElement {
@@ -107,6 +112,10 @@ export class MenulistTagElement extends HTMLElement {
 
   private get tagEditButton(): HTMLButtonElement {
     return this.shadowRoot?.querySelector('#tag-edit-button') as HTMLButtonElement;
+  }
+
+  private get groupButton(): HTMLButtonElement {
+    return this.shadowRoot?.querySelector('#group-button') as HTMLButtonElement;
   }
 
   private get groupName(): string {

@@ -136,8 +136,8 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderContainerWithTabs(windowId: number, userContext: DisplayedContainer, tabs: CompatTab[], isPrivate = false, tabAttributeMap?: TabAttributeMap): MenulistContainerElement {
-    if (isPrivate && !userContext.cookieStore.isPrivate) {
+  public renderContainerWithTabs(windowId: number, displayedContainer: DisplayedContainer, tabs: CompatTab[], isPrivate = false, tabAttributeMap?: TabAttributeMap): MenulistContainerElement {
+    if (isPrivate && !displayedContainer.cookieStore.isPrivate) {
       throw new Error('Cannot render container with tabs for private window with non-private container');
     }
     if (tabAttributeMap) {
@@ -148,7 +148,7 @@ export class PopupRenderer {
       });
     }
 
-    const element = this.renderContainer(windowId, userContext, isPrivate);
+    const element = this.renderContainer(windowId, displayedContainer, isPrivate);
     let tabCount = 0;
     let state = ContainerTabsState.NO_TABS;
     let tagId = 0;
@@ -170,11 +170,18 @@ export class PopupRenderer {
           if (tag) {
             const tagElement = new MenulistTagElement(tag);
             element.appendChild(tagElement);
+            tagElement.onTagButtonClicked.addListener(() => {
+              const cookieStoreId = displayedContainer.cookieStore.id;
+              const tagId = tag.tagId;
+              this._containerTabOpenerService.openNewTabInContainer(cookieStoreId, true, windowId, tagId).catch((e) => {
+                console.error(e);
+              });
+            });
           }
         }
       }
 
-      const tabElement = this.renderTab(tab, userContext);
+      const tabElement = this.renderTab(tab, displayedContainer);
       tabElement.draggable = true;
       tabElement.addEventListener('dragstart', (ev) => {
         if (!ev.dataTransfer) return;
@@ -218,7 +225,7 @@ export class PopupRenderer {
       const json = ev.dataTransfer.getData('application/json');
       const data = JSON.parse(json);
       if ('tab' != data.type || data.pinned) return;
-      if (data.cookieStoreId == userContext.cookieStore.id) return;
+      if (data.cookieStoreId == displayedContainer.cookieStore.id) return;
       ev.preventDefault();
     });
     element.addEventListener('drop', (ev) => {
@@ -226,9 +233,9 @@ export class PopupRenderer {
       const json = ev.dataTransfer.getData('application/json');
       const data = JSON.parse(json);
       if ('tab' != data.type || data.pinned) return;
-      if (data.cookieStoreId == userContext.cookieStore.id) return;
+      if (data.cookieStoreId == displayedContainer.cookieStore.id) return;
       ev.preventDefault();
-      this._containerTabOpenerService.reopenTabInContainer(data.id, userContext.cookieStore.id, false).catch((e) => {
+      this._containerTabOpenerService.reopenTabInContainer(data.id, displayedContainer.cookieStore.id, false).catch((e) => {
         console.error(e);
       });
     });
