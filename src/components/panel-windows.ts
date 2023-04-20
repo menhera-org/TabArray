@@ -46,7 +46,7 @@ export class PanelWindowsElement extends HTMLElement {
 
   private _selectedWindowId: number = browser.windows.WINDOW_ID_NONE;
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
-  private readonly _userContextVisibilityService = ContainerVisibilityService.getInstance();
+  private readonly _containerVisibilityService = ContainerVisibilityService.getInstance();
   private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
   private _isSearching = false;
   private _browserStateSnapshot: BrowserStateSnapshot | null = null;
@@ -160,7 +160,7 @@ export class PanelWindowsElement extends HTMLElement {
     });
 
     this.onExpandContainersButtonClicked.addListener(() => {
-      this._userContextVisibilityService.showAllOnWindow(this._selectedWindowId).catch((e) => {
+      this._containerVisibilityService.showAllOnWindow(this._selectedWindowId).catch((e) => {
         console.error(e);
       });
     });

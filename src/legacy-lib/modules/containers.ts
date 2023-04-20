@@ -31,7 +31,7 @@ import { WindowService } from '../tabs/WindowService';
 
 const tabQueryService = TabQueryService.getInstance();
 const tabService = TabService.getInstance();
-const userContextVisibilityService = ContainerVisibilityService.getInstance();
+const containerVisibilityService = ContainerVisibilityService.getInstance();
 const windowService = WindowService.getInstance();
 
 /**
@@ -80,7 +80,7 @@ export const hideAll = async (aWindowId: number) => {
   const cookieStoreIds = await getInactiveIds(aWindowId);
   const promises: Promise<void>[] = [];
   for (const cookieStoreId of cookieStoreIds) {
-    promises.push(userContextVisibilityService.hideContainerOnWindow(aWindowId, cookieStoreId));
+    promises.push(containerVisibilityService.hideContainerOnWindow(aWindowId, cookieStoreId));
   }
   await Promise.all(promises);
 };

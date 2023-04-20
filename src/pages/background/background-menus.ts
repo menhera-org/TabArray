@@ -46,7 +46,7 @@ const MENU_ID_TOOLS_PANORAMA_GRID = 'tools-panorama-grid';
 const MENU_ID_TOOLS_SETTINGS = 'tools-settings';
 
 const extensionPageService = ExtensionPageService.getInstance();
-const userContextVisibilityService = ContainerVisibilityService.getInstance();
+const containerVisibilityService = ContainerVisibilityService.getInstance();
 
 export const menus = {
   [MENU_ID_CONTEXT_TAB_NEW_TAB]: new PopupTabContextMenuItem({
@@ -144,7 +144,7 @@ menus[MENU_ID_TAB_HIDE_CONTAINER].onClicked.addListener((info) => {
     if (tab.windowId == null) {
       return;
     }
-    userContextVisibilityService.hideContainerOnWindow(tab.windowId, cookieStore.id).catch(e => console.error(e));
+    containerVisibilityService.hideContainerOnWindow(tab.windowId, cookieStore.id).catch(e => console.error(e));
   }
 });
 

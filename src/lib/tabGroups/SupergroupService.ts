@@ -33,7 +33,7 @@ import { LanguageSettings } from "../overrides/LanguageSettings";
 import { UserAgentSettings } from "../overrides/UserAgentSettings";
 
 const tabGroupDirectory = new TabGroupDirectory();
-const userContextVisibilityService = ContainerVisibilityService.getInstance();
+const containerVisibilityService = ContainerVisibilityService.getInstance();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 const tabService = TabService.getInstance();
@@ -58,7 +58,7 @@ export class SupergroupService {
     const promises: Promise<void>[] = [];
     for (const childContainer of childContainers) {
       const cookieStore = new CookieStore(childContainer);
-      promises.push(userContextVisibilityService.hideContainerOnWindow(windowId, cookieStore.id).catch(() => {
+      promises.push(containerVisibilityService.hideContainerOnWindow(windowId, cookieStore.id).catch(() => {
         // ignore (errors for private windows)
       }));
     }
@@ -70,7 +70,7 @@ export class SupergroupService {
     const promises: Promise<void>[] = [];
     for (const childContainer of childContainers) {
       const cookieStore = new CookieStore(childContainer);
-      promises.push(userContextVisibilityService.showContainerOnWindow(windowId, cookieStore.id).catch(() => {
+      promises.push(containerVisibilityService.showContainerOnWindow(windowId, cookieStore.id).catch(() => {
         // ignore (errors for private windows)
       }));
     }

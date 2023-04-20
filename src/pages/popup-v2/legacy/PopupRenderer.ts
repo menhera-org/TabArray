@@ -48,7 +48,7 @@ enum ContainerTabsState {
 
 // This needs some refactoring.
 export class PopupRenderer {
-  private readonly _userContextVisibilityService = ContainerVisibilityService.getInstance();
+  private readonly _containerVisibilityService = ContainerVisibilityService.getInstance();
   private readonly _containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
   private readonly _tabQueryService = TabQueryService.getInstance();
   private readonly _tabService = TabService.getInstance();
@@ -121,12 +121,12 @@ export class PopupRenderer {
     const element = this.createContainerElement(userContext, isPrivate);
     this.defineContainerCloseListenerForWindow(element, windowId, userContext);
     element.onContainerHide.addListener(() => {
-      this._userContextVisibilityService.hideContainerOnWindow(windowId, cookieStoreId).catch(() => {
+      this._containerVisibilityService.hideContainerOnWindow(windowId, cookieStoreId).catch(() => {
         // ignore. (errors for private windows)
       });
     });
     element.onContainerUnhide.addListener(() => {
-      this._userContextVisibilityService.showContainerOnWindow(windowId, cookieStoreId).catch(() => {
+      this._containerVisibilityService.showContainerOnWindow(windowId, cookieStoreId).catch(() => {
         // ignore. (errors for private windows)
       });
     });

@@ -89,27 +89,27 @@ const reopenInContainer = (cookieStoreId: string) => {
   });
 };
 
-const renderButton = (tooltipText: string, name: string, iconUrl: string, useIconMask: boolean, maskColor = '#000000', aUserContextElement: HTMLButtonElement | null = null) => {
-  const userContextElement = aUserContextElement ?? document.createElement('button');
-  userContextElement.classList.add('container-button');
-  userContextElement.textContent = '';
-  userContextElement.title = tooltipText;
+const renderButton = (tooltipText: string, name: string, iconUrl: string, useIconMask: boolean, maskColor = '#000000', aContainerElement: HTMLButtonElement | null = null) => {
+  const containerElement = aContainerElement ?? document.createElement('button');
+  containerElement.classList.add('container-button');
+  containerElement.textContent = '';
+  containerElement.title = tooltipText;
 
-  const userContextIconElement = document.createElement('span');
-  userContextIconElement.classList.add('container-button-icon');
-  const userContextLabelElement = document.createElement('span');
-  userContextLabelElement.classList.add('container-button-label');
-  userContextElement.append(userContextIconElement, userContextLabelElement);
+  const containerIconElement = document.createElement('span');
+  containerIconElement.classList.add('container-button-icon');
+  const containerLabelElement = document.createElement('span');
+  containerLabelElement.classList.add('container-button-label');
+  containerElement.append(containerIconElement, containerLabelElement);
 
   if (useIconMask) {
-    userContextIconElement.style.mask = `url(${iconUrl}) center center/75% no-repeat`;
-    userContextIconElement.style.backgroundColor = maskColor;
+    containerIconElement.style.mask = `url(${iconUrl}) center center/75% no-repeat`;
+    containerIconElement.style.backgroundColor = maskColor;
   } else {
-    userContextIconElement.style.background = `no-repeat center/75% url(${iconUrl})`;
+    containerIconElement.style.background = `no-repeat center/75% url(${iconUrl})`;
   }
 
-  userContextLabelElement.textContent = name;
-  return userContextElement;
+  containerLabelElement.textContent = name;
+  return containerElement;
 };
 
 const renderContainer = (displayedContainer: DisplayedContainer, aContainerElement: HTMLButtonElement | null = null) => {

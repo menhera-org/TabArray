@@ -34,7 +34,6 @@ const tabService = TabService.getInstance();
  */
 export class PanoramaContainerElement extends HTMLElement {
   private _cookieStoreId: string;
-  private _userContextId = 0;
   private _containerHeadingElement: HTMLDivElement;
   private _containerIconElement: HTMLDivElement;
   private _containerLabelElement: HTMLAnchorElement;
@@ -44,7 +43,7 @@ export class PanoramaContainerElement extends HTMLElement {
 
   public readonly onContainerEditButtonClick = new EventSink<void>();
   public readonly onContainerDeleteButtonClick = new EventSink<void>();
-  public readonly onNewTabButtonClick = new EventSink<number>();
+  public readonly onNewTabButtonClick = new EventSink<void>();
 
   public constructor(displayedContainer: DisplayedContainer) {
     super();
@@ -104,14 +103,13 @@ export class PanoramaContainerElement extends HTMLElement {
     this._newTabButtonElement.classList.add('container-new-tab');
     this._newTabButtonElement.textContent = browser.i18n.getMessage('buttonOpenTabInContainer');
     this._newTabButtonElement.addEventListener('click', () => {
-      this.onNewTabButtonClick.dispatch(this._userContextId);
+      this.onNewTabButtonClick.dispatch();
     });
 
-    this.setUserContext(displayedContainer);
+    this.setDisplayedContainer(displayedContainer);
   }
 
-  public setUserContext(displayedContainer: DisplayedContainer): void {
-    this._userContextId = displayedContainer.cookieStore.userContextId;
+  public setDisplayedContainer(displayedContainer: DisplayedContainer): void {
     const iconUrl = displayedContainer.iconUrl || '/img/material-icons/category.svg';
     if (iconUrl.includes(')')) {
       throw new Error(`Invalid icon URL: ${iconUrl}`);
