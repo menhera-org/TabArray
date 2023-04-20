@@ -54,6 +54,7 @@ button:focus {
   display: block grid;
   grid-template-columns: 1fr max-content max-content max-content max-content;
   padding-inline-end: 1em;
+  padding-inline-start: .5em;
 }
 
 #group-name[data-tab-count]::after {
