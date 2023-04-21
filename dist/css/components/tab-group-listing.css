@@ -1,0 +1,110 @@
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+
+/*
+  Container Tab Groups
+  Copyright (C) 2023 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+@import '/css/theme.css';
+
+@namespace url(http://www.w3.org/1999/xhtml);
+
+#sorter-wrapper {
+  inline-size: max-content;
+  max-inline-size: 100%;
+  display: block grid;
+  grid-template-columns: 1fr min-content;
+  border-radius: .5em;
+  border: 1px solid var(--border-color);
+  margin-block: .5em;
+  box-sizing: border-box;
+}
+
+#groups {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+#sorter-wrapper > .header {
+  display: block grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: end;
+  background-color: var(--hover-color);
+}
+
+#sorter-wrapper > .header > * {
+  text-align: center;
+  padding: .5em;
+}
+
+#sorter-wrapper > .header > :not(:first-child) {
+  border-inline-start: 1px solid var(--border-color);
+}
+
+.container {
+  display: block grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  border-block-start: 1px solid var(--border-color);
+}
+
+.container-inner {
+  display: block flex;
+  flex-direction: row;
+}
+
+.container .icon {
+  inline-size: 2em;
+}
+
+.container .icon.masked {
+  background-color: var(--text-color);
+}
+
+.container .name {
+  flex: 1;
+  min-inline-size: 0;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: .5em;
+}
+
+.up, .down {
+  background-color: var(--text-color);
+  opacity: var(--opaque-opacity);
+  appearance: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  inline-size: 2em;
+}
+
+.up:hover, .up:focus, .down:hover, .down:focus {
+  opacity: 1;
+}
+
+.up {
+  mask: url(/img/material-icons/arrow_upward.svg) no-repeat center / contain;
+}
+
+.down {
+  mask: url(/img/material-icons/arrow_downward.svg) no-repeat center / contain;
+}

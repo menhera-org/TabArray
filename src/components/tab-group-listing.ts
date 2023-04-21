@@ -43,7 +43,7 @@ export abstract class TabGroupListingElement extends HTMLElement {
   protected readonly contextualIdentityFactory = this._contextualIdentityService.getFactory();
   protected readonly displayedContainerFactory = this._contextualIdentityService.getDisplayedContainerFactory();
 
-  public constructor(enableSorting = false, stylesheet = '/css/components/tab-group-sorter.css', columns: string[] = []) {
+  public constructor(enableSorting = false, stylesheet = '/css/components/tab-group-listing.css', columns: string[] = []) {
     super();
     this._columns = columns;
     this._sortingEnabled = enableSorting;
