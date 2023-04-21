@@ -175,36 +175,42 @@ export class PopupCurrentWindowRenderer {
     });
   }
 
-  private renderSupergroup(supergroup: SupergroupType, windowStateSnapshot: WindowStateSnapshot, definedUserContexts: DisplayedContainer[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, element: HTMLElement, tabAttributeMap: TabAttributeMap): number {
+  private renderSupergroupContainer(element: HTMLElement, tabGroupId: string, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, windowStateSnapshot: WindowStateSnapshot, tabAttributeMap: TabAttributeMap, definedDisplayedContainers: readonly DisplayedContainer[]): number {
+    let tabCount = 0;
+    const tabGroupAttributes = new TabGroupAttributes(tabGroupId);
+    if (tabGroupAttributes.tabGroupType == 'cookieStore') {
+      const cookieStore = tabGroupAttributes.cookieStore as CookieStore;
+      const cookieStoreId = cookieStore.id;
+      const userContextId = cookieStore.userContextId;
+      const matchedDisplayedContainers = definedDisplayedContainers.filter((displayedContainer) => {
+        return displayedContainer.cookieStore.id === cookieStoreId;
+      });
+      if (matchedDisplayedContainers.length === 0) return tabCount;
+      const openDisplayedContainer = matchedDisplayedContainers[0] as DisplayedContainer;
+      const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(userContextId) ?? []];
+      tabCount += tabs.length;
+      if (tabs.length == 0) {
+        const containerElement = this.renderInactiveContainer(windowStateSnapshot, openDisplayedContainer);
+        element.appendChild(containerElement);
+        return tabCount;
+      }
+      const containerElement = this.renderOpenContainer(windowStateSnapshot, openDisplayedContainer, tabs, tabAttributeMap);
+      element.appendChild(containerElement);
+    } else {
+      const supergroup = tabGroupDirectorySnapshot.getSupergroup(tabGroupId) as SupergroupType;
+      tabCount += this.renderSupergroup(supergroup, windowStateSnapshot, [... definedDisplayedContainers], tabGroupDirectorySnapshot, element, tabAttributeMap);
+    }
+    return tabCount;
+  }
+
+  private renderSupergroup(supergroup: SupergroupType, windowStateSnapshot: WindowStateSnapshot, definedDisplayedContainers: readonly DisplayedContainer[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, element: HTMLElement, tabAttributeMap: TabAttributeMap): number {
     let tabCount = 0;
     const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
     const supergroupElement = new MenulistSupergroupElement();
     supergroupElement.groupName = supergroup.name;
     element.appendChild(supergroupElement);
     for (const memberTabGroupId of supergroup.members) {
-      const tabGroupAttributes = new TabGroupAttributes(memberTabGroupId);
-      if (tabGroupAttributes.tabGroupType == 'cookieStore') {
-        const cookieStore = tabGroupAttributes.cookieStore as CookieStore;
-        const cookieStoreId = cookieStore.id;
-        const userContextId = cookieStore.userContextId;
-        const matchedUserContexts = definedUserContexts.filter((userContext) => {
-          return userContext.cookieStore.id === cookieStoreId;
-        });
-        if (matchedUserContexts.length === 0) continue;
-        const openUserContext = matchedUserContexts[0] as DisplayedContainer;
-        const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(userContextId) ?? []];
-        tabCount += tabs.length;
-        if (tabs.length == 0) {
-          const containerElement = this.renderInactiveContainer(windowStateSnapshot, openUserContext);
-          supergroupElement.appendChild(containerElement);
-          continue;
-        }
-        const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs, tabAttributeMap);
-        supergroupElement.appendChild(containerElement);
-      } else {
-        const supergroup = tabGroupDirectorySnapshot.getSupergroup(memberTabGroupId) as SupergroupType;
-        tabCount += this.renderSupergroup(supergroup, windowStateSnapshot, [... definedUserContexts], tabGroupDirectorySnapshot, supergroupElement, tabAttributeMap);
-      }
+      tabCount += this.renderSupergroupContainer(supergroupElement, memberTabGroupId, tabGroupDirectorySnapshot, windowStateSnapshot, tabAttributeMap, definedDisplayedContainers);
     }
     supergroupElement.tabCount = tabCount;
     supergroupElement.onGroupOptionsClick.addListener(() => {
@@ -248,8 +254,8 @@ export class PopupCurrentWindowRenderer {
    *
    * @returns the number of tabs.
    */
-  public renderOpenContainers(windowStateSnapshot: WindowStateSnapshot, definedUserContexts: readonly DisplayedContainer[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap): number {
-    const openUserContexts = definedUserContexts.filter((userContext) => {
+  public renderOpenContainers(windowStateSnapshot: WindowStateSnapshot, definedDisplayedContainers: readonly DisplayedContainer[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, tabAttributeMap: TabAttributeMap): number {
+    const openUserContexts = definedDisplayedContainers.filter((userContext) => {
       return windowStateSnapshot.activeUserContexts.includes(userContext.cookieStore.userContextId);
     });
 
@@ -262,33 +268,11 @@ export class PopupCurrentWindowRenderer {
         element.appendChild(containerElement);
       }
     } else {
-      const activeTabGroupIds = this.getActiveTabGroupIds(windowStateSnapshot, definedUserContexts, tabGroupDirectorySnapshot);
+      const activeTabGroupIds = this.getActiveTabGroupIds(windowStateSnapshot, definedDisplayedContainers, tabGroupDirectorySnapshot);
       const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupDirectory.getRootSupergroupId()) as SupergroupType;
       for (const memberTabGroupId of rootSupergroup.members) {
         if (!activeTabGroupIds.has(memberTabGroupId)) continue;
-        const tabGroupAttributes = new TabGroupAttributes(memberTabGroupId);
-        if (tabGroupAttributes.tabGroupType == 'cookieStore') {
-          const cookieStore = tabGroupAttributes.cookieStore as CookieStore;
-          const cookieStoreId = cookieStore.id;
-          const userContextId = cookieStore.userContextId;
-          const matchedUserContexts = definedUserContexts.filter((userContext) => {
-            return userContext.cookieStore.id === cookieStoreId;
-          });
-          if (matchedUserContexts.length === 0) continue;
-          const openUserContext = matchedUserContexts[0] as DisplayedContainer;
-          const tabs = [... windowStateSnapshot.userContextUnpinnedTabMap.get(userContextId) ?? []];
-          tabCount += tabs.length;
-          if (tabs.length == 0) {
-            const containerElement = this.renderInactiveContainer(windowStateSnapshot, openUserContext);
-            element.appendChild(containerElement);
-            continue;
-          }
-          const containerElement = this.renderOpenContainer(windowStateSnapshot, openUserContext, tabs, tabAttributeMap);
-          element.appendChild(containerElement);
-        } else {
-          const supergroup = tabGroupDirectorySnapshot.getSupergroup(memberTabGroupId) as SupergroupType;
-          tabCount += this.renderSupergroup(supergroup, windowStateSnapshot, [... definedUserContexts], tabGroupDirectorySnapshot, element, tabAttributeMap);
-        }
+        tabCount += this.renderSupergroupContainer(element, memberTabGroupId, tabGroupDirectorySnapshot, windowStateSnapshot, tabAttributeMap, definedDisplayedContainers);
       }
     }
     return tabCount;
