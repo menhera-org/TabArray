@@ -32,6 +32,12 @@ const setTextContent = (query: string, message: string) => {
   element.textContent = browser.i18n.getMessage(message);
 };
 
+// tabs
+setTextContent('.pane-tab[data-pane-name="general"]', 'optionsTabGeneral');
+setTextContent('.pane-tab[data-pane-name="containers"]', 'optionsTabSortContainers');
+setTextContent('.pane-tab[data-pane-name="container-overrides"]', 'optionsTabContainerOverrides');
+setTextContent('.pane-tab[data-pane-name="firefox-settings"]', 'optionsTabFirefoxSettings');
+
 setTextContent('#optionsHeadingGeneral', 'optionsHeadingGeneral');
 
 setTextContent('label[for="select-autoDiscardMinAge"]', 'labelAutoDiscardMinAge');
@@ -44,11 +50,6 @@ setTextContent('#select-autoDiscardMinAge > option[value="21600"]', 'labelAutoDi
 setTextContent('#select-autoDiscardMinAge > option[value="43200"]', 'labelAutoDiscard43200');
 setTextContent('#select-autoDiscardMinAge > option[value="86400"]', 'labelAutoDiscard86400');
 
-setTextContent('#link-containers', 'optionsHeadingContainerSortOrder');
-setTextContent('#link-container-overrides', 'optionsHeadingContainerOverrides');
-
-setTextContent('#optionsHeadingContainerOverrides', 'optionsHeadingContainerOverrides');
-
 setTextContent('#optionalFeaturesDescription', 'optionalFeaturesDescription');
 
 setTextContent('label[for="input-featureLanguageOverrides"]', 'featureLanguageOverrides');
@@ -60,7 +61,6 @@ setTextContent('#optionsHeadingFirefox', 'optionsHeadingFirefox');
 setTextContent('#optionsDescriptionExperimental', 'optionsDescriptionExperimental');
 setTextContent('#optionsDescriptionFirefox', 'optionsDescriptionFirefox');
 setTextContent('#fpiDescription', 'fpiDescription');
-setTextContent('#optionsHeadingContainerSortOrder', 'optionsHeadingContainerSortOrder');
 setTextContent('#optionsDescriptionContainerSortOrder', 'optionsDescriptionContainerSortOrder');
 
 setTextContent('label[for="input-newtabKeepContainer"]', 'labelNewTabKeepContainer');

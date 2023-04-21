@@ -57,6 +57,7 @@ const setInputChecked = (inputElement: HTMLInputElement | null | undefined, valu
 };
 
 const panes = document.querySelectorAll<HTMLElement>('#optionsPanes > div');
+const paneTabs = document.querySelectorAll<HTMLElement>('#pane-tabs > .pane-tab');
 const setActiveContent = (name: string) => {
   name = name || 'general';
   console.log('setActiveContent', name);
@@ -65,6 +66,13 @@ const setActiveContent = (name: string) => {
       pane.classList.add('active');
     } else {
       pane.classList.remove('active');
+    }
+  }
+  for (const paneTab of paneTabs) {
+    if (paneTab.dataset.paneName === name) {
+      paneTab.classList.add('selected');
+    } else {
+      paneTab.classList.remove('selected');
     }
   }
 };

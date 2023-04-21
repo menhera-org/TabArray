@@ -657,5 +657,21 @@
     "buttonDeleteTag": {
         "message": "Delete Tag",
         "description": "Button to delete a tag."
+    },
+    "optionsTabGeneral": {
+        "message": "General",
+        "description": "Label text for general tab."
+    },
+    "optionsTabSortContainers": {
+        "message": "Sort Containers",
+        "description": "Label text for sort containers tab."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "Languages and User Agents",
+        "description": "Label text for language and user agent overrides tab."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Firefox Settings",
+        "description": "Label text for firefox settings tab."
     }
 }

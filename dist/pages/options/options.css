@@ -64,3 +64,30 @@ label {
   text-decoration: none;
   color: var(--in-content-link-color);
 }
+
+#pane-tabs {
+  display: block flex;
+  flex-direction: row;
+  overflow-inline: auto;
+  border-block-end: solid 1px var(--border-color);
+}
+
+#pane-tabs > .pane-tab {
+  padding-block: .5em;
+  padding-inline: 1em;
+  text-decoration: none;
+  font-weight: bold;
+  border-block-start: solid .25rem transparent;
+  display: block;
+  color: inherit;
+}
+
+#pane-tabs > .pane-tab.selected {
+  border-block-start-color: var(--button-text-color);
+  color: var(--button-text-color);
+}
+
+#pane-tabs > .pane-tab:is(:hover, :active) {
+  border-block-start-color: var(--border-color);
+  background-color: var(--hover-color);
+}

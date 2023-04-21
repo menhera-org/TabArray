@@ -27,6 +27,12 @@
   <script defer='' src='./options.js'></script>
 </head>
 <body>
+  <nav id="pane-tabs">
+    <a href="#general" class="pane-tab" data-pane-name="general">optionsTabGeneral</a>
+    <a href="#containers" class="pane-tab" data-pane-name="containers">optionsTabSortContainers</a>
+    <a href="#container-overrides" class="pane-tab" data-pane-name="container-overrides">optionsTabContainerOverrides</a>
+    <a href="#firefox-settings" class="pane-tab" data-pane-name="firefox-settings">optionsTabFirefoxSettings</a>
+  </nav>
   <div id='optionsPanes'>
     <div data-pane-name='general'>
       <h2 id='optionsHeadingGeneral'>optionsHeadingGeneral</h2>
@@ -46,22 +52,6 @@
           <option value='43200'>labelAutoDiscard43200</option>
           <option value='86400'>labelAutoDiscard86400</option>
         </select>
-      </p>
-      <hr/>
-      <p id='optionalFeaturesDescription'>optionalFeaturesDescription</p>
-      <p class='browser-style'>
-        <input type='checkbox' id='input-featureLanguageOverrides'/>
-        <label class='browser-style-label' for='input-featureLanguageOverrides'>featureLanguageOverrides</label>
-      </p>
-      <p class='browser-style'>
-        <input type='checkbox' id='input-featureUaOverrides'/>
-        <label class='browser-style-label' for='input-featureUaOverrides'>featureUaOverrides</label>
-      </p>
-      <p>
-        <a href='#containers' id='link-containers' class='text-link'>optionsHeadingContainerSortOrder</a>
-      </p>
-      <p>
-        <a href='#container-overrides' id='link-container-overrides' class='text-link'>optionsHeadingContainerOverrides</a>
       </p>
       <h2 id='optionsHeadingAppearance'>optionsHeadingAppearance</h2>
       <p>
@@ -93,6 +83,22 @@
           <option value='never'>labelGroupIndexOptionNever</option>
         </select>
       </p>
+    </div>
+    <div data-pane-name='containers'>
+      <p id='optionsDescriptionContainerSortOrder'>optionsDescriptionContainerSortOrder</p>
+    </div>
+    <div data-pane-name='container-overrides'>
+      <p id='optionalFeaturesDescription'>optionalFeaturesDescription</p>
+      <p class='browser-style'>
+        <input type='checkbox' id='input-featureLanguageOverrides'/>
+        <label class='browser-style-label' for='input-featureLanguageOverrides'>featureLanguageOverrides</label>
+      </p>
+      <p class='browser-style'>
+        <input type='checkbox' id='input-featureUaOverrides'/>
+        <label class='browser-style-label' for='input-featureUaOverrides'>featureUaOverrides</label>
+      </p>
+    </div>
+    <div data-pane-name='firefox-settings'>
       <h2 id='optionsHeadingFirefox'>optionsHeadingFirefox</h2>
       <p id='optionsDescriptionFirefox'>optionsDescriptionFirefox</p>
       <p id='fpiDescription'>fpiDescription</p>
@@ -104,19 +110,6 @@
         <input type='checkbox' id='input-resistFingerprinting'/>
         <label class='browser-style-label' for='input-resistFingerprinting'>labelResistFingerprinting</label>
       </p>
-    </div>
-    <div data-pane-name='containers'>
-      <div class='pane-header'>
-        <a class='pane-back' href='#'></a>
-        <h2 id='optionsHeadingContainerSortOrder'>optionsHeadingContainerSortOrder</h2>
-      </div>
-      <p id='optionsDescriptionContainerSortOrder'>optionsDescriptionContainerSortOrder</p>
-    </div>
-    <div data-pane-name='container-overrides'>
-      <div class='pane-header'>
-        <a class='pane-back' href='#'></a>
-        <h2 id='optionsHeadingContainerOverrides'>optionsHeadingContainerOverrides</h2>
-      </div>
     </div>
   </div>
 </body>
