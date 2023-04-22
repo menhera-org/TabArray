@@ -565,5 +565,105 @@
     "optionEnableSorting": {
         "message": "Activar le assortimento de schedas",
         "description": "Label text for enabling sorting of containers/tabs."
+    },
+    "optionsDescriptionFirefox": {
+        "message": "Hic tu pote cambiar alcun Firefox parametros de intimitate.",
+        "description": "Description text for Firefox settings options."
+    },
+    "buttonNewGroup": {
+        "message": "Nove gruppo de contentores",
+        "description": "Button to create a new group of containers."
+    },
+    "newGroupDialogTitle": {
+        "message": "Crear un nove gruppo",
+        "description": "Title of the dialog to create a new group of containers."
+    },
+    "editGroupDialogTitle": {
+        "message": "Modificar un gruppo",
+        "description": "Title of the dialog to edit a group of containers."
+    },
+    "groupOptions": {
+        "message": "Optiones de la gruppo por: $NAME$",
+        "description": "Heading text for group options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "buttonEditGroup": {
+        "message": "Modificar un gruppo",
+        "description": "Button to edit a group of containers."
+    },
+    "buttonDeleteGroup": {
+        "message": "Deler le gruppo",
+        "description": "Button to delete a group of containers."
+    },
+    "confirmGroupDelete": {
+        "message": "Vole tu deler permanentemente iste gruppo de contentores: $NAME$?",
+        "description": "Confirmation message before deleting a group.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "moveContainer": {
+        "message": "Mover a le gruppo",
+        "description": "Move a container to another group."
+    },
+    "buttonMove": {
+        "message": "Mover",
+        "description": "Button to move a container to another group."
+    },
+    "rootGroup": {
+        "message": "(Radical Gruppo)",
+        "description": "Root group name."
+    },
+    "newTagDialogTitle": {
+        "message": "Crear un nove etiquetta",
+        "description": "Title of the dialog to create a new tag."
+    },
+    "editTagDialogTitle": {
+        "message": "Modificar un etiquetta",
+        "description": "Title of the dialog to edit a tag."
+    },
+    "buttonNewTag": {
+        "message": "Nove etiquetta",
+        "description": "Button to create a new tag."
+    },
+    "noTag": {
+        "message": "(nulle etiquetta)",
+        "description": "No tag name."
+    },
+    "setTag": {
+        "message": "Adder un etiquetta",
+        "description": "Set a tag to a tab."
+    },
+    "buttonEditTag": {
+        "message": "Modificar un etiquetta",
+        "description": "Button to edit a tag."
+    },
+    "buttonDeleteTag": {
+        "message": "Deler le etiquetta",
+        "description": "Button to delete a tag."
+    },
+    "optionsTabGeneral": {
+        "message": "General",
+        "description": "Label text for general tab."
+    },
+    "optionsTabSortContainers": {
+        "message": "Assortir le contentores",
+        "description": "Label text for sort containers tab."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "Linguas e User Agent",
+        "description": "Label text for language and user agent overrides tab."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Parametros de Firefox",
+        "description": "Label text for firefox settings tab."
     }
 }
