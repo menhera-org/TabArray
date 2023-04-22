@@ -100,6 +100,7 @@ enough to unnecessitate Simple Tab Groups.
 - Čeština
 - Galego
 - Interlingua
+- 中文 (简体)
 
 This project uses Hosted Weblate for translation. You can contribute translations at Hosted Weblate.
 
