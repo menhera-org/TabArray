@@ -569,5 +569,109 @@
     "headingReopen": {
         "message": "Снова открыть в контейнере",
         "description": "Heading text for reopen in container."
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
+    },
+    "optionEnableSorting": {
+        "message": "Включить автоматическую сортировку вкладок",
+        "description": "Label text for enabling sorting of containers/tabs."
+    },
+    "buttonNewGroup": {
+        "message": "Новая группа контейнеров",
+        "description": "Button to create a new group of containers."
+    },
+    "newGroupDialogTitle": {
+        "message": "Создать новую группу",
+        "description": "Title of the dialog to create a new group of containers."
+    },
+    "editGroupDialogTitle": {
+        "message": "Редактировать группу",
+        "description": "Title of the dialog to edit a group of containers."
+    },
+    "groupOptions": {
+        "message": "Групповые параметры для $NAME$",
+        "description": "Heading text for group options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "buttonEditGroup": {
+        "message": "Редактировать группу",
+        "description": "Button to edit a group of containers."
+    },
+    "buttonDeleteGroup": {
+        "message": "Удалить группу",
+        "description": "Button to delete a group of containers."
+    },
+    "confirmGroupDelete": {
+        "message": "Хотите ли вы навсегда удалить эту группу контейнеров: $NAME$?",
+        "description": "Confirmation message before deleting a group.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "moveContainer": {
+        "message": "Переместить в группу",
+        "description": "Move a container to another group."
+    },
+    "buttonMove": {
+        "message": "Переместить",
+        "description": "Button to move a container to another group."
+    },
+    "rootGroup": {
+        "message": "(Корневая группа)",
+        "description": "Root group name."
+    },
+    "newTagDialogTitle": {
+        "message": "Создать новый тег",
+        "description": "Title of the dialog to create a new tag."
+    },
+    "editTagDialogTitle": {
+        "message": "Редактировать тег",
+        "description": "Title of the dialog to edit a tag."
+    },
+    "buttonNewTag": {
+        "message": "Новый тег",
+        "description": "Button to create a new tag."
+    },
+    "noTag": {
+        "message": "(без тега)",
+        "description": "No tag name."
+    },
+    "setTag": {
+        "message": "Установить тег",
+        "description": "Set a tag to a tab."
+    },
+    "buttonEditTag": {
+        "message": "Редактировать тег",
+        "description": "Button to edit a tag."
+    },
+    "buttonDeleteTag": {
+        "message": "Удалить тег",
+        "description": "Button to delete a tag."
+    },
+    "optionsTabGeneral": {
+        "message": "Общий",
+        "description": "Label text for general tab."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "Языки и пользовательские агенты",
+        "description": "Label text for language and user agent overrides tab."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Настройки Firefox",
+        "description": "Label text for firefox settings tab."
+    },
+    "optionsTabSortContainers": {
+        "message": "Сортировать контейнеры",
+        "description": "Label text for sort containers tab."
     }
 }
