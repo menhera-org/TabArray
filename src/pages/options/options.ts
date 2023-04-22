@@ -22,6 +22,7 @@
 import browser from 'webextension-polyfill';
 
 import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
+import { FpiService } from '../../lib/config/FpiService';
 
 import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../../config/config';
 
@@ -33,6 +34,8 @@ import './options-i18n';
 interface HTMLFormInput extends HTMLElement {
   value: string;
 }
+
+const fpiService = FpiService.getInstance();
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
@@ -176,7 +179,9 @@ privacyConfig.firstPartyIsolate.observe((value) => {
 });
 
 inputFirstPartyIsolate?.addEventListener('change', () => {
-  setConfigValue(privacyConfig.firstPartyIsolate, inputFirstPartyIsolate.checked);
+  fpiService.setFirstPartyIsolate(inputFirstPartyIsolate.checked).catch((e) => {
+    console.error(e);
+  });
 });
 
 privacyConfig.resistFingerprinting.observe((value) => {

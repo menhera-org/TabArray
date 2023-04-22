@@ -28,6 +28,7 @@ import { TabGroupDirectory } from "../../lib/tabGroups/TabGroupDirectory";
 import { ExternalServiceProvider } from "../../lib/ExternalServiceProvider";
 import { TagDirectory } from "../../lib/tabGroups/TagDirectory";
 import { TagService } from "../../lib/tabGroups/TagService";
+import { FpiService } from "../../lib/config/FpiService";
 
 import "../../components/ctg/ctg-vertical-layout";
 import "../../components/ctg/ctg-drawer";
@@ -73,6 +74,7 @@ const tagDirectory = new TagDirectory();
 const popupRenderer = PopupRendererService.getInstance().popupRenderer;
 const messagingService = MessagingService.getInstance();
 const tagService = TagService.getInstance();
+const fpiService = FpiService.getInstance();
 
 const extensionName = browser.runtime.getManifest().name;
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
@@ -201,16 +203,7 @@ const setConfigValue = <T,>(option: ConfigurationOption<T>, value: T) => {
 };
 
 const setFirstPartyIsolate = (value: boolean) => {
-  (async () => {
-    if (value) {
-      const cookieBehavior = await privacyConfig.cookieConfigBehavior.getValue();
-      if (cookieBehavior == 'reject_trackers_and_partition_foreign') {
-        await privacyConfig.cookieConfigBehavior.setValue('reject_trackers');
-      }
-    }
-    console.debug('setting firstPartyIsolate to ' + value);
-    setConfigValue(privacyConfig.firstPartyIsolate, value);
-  })().catch((e) => {
+  fpiService.setFirstPartyIsolate(value).catch((e) => {
     console.error(e);
   });
 };
