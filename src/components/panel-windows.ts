@@ -367,21 +367,21 @@ export class PanelWindowsElement extends HTMLElement {
     const tabAttributeMap = this._browserStateSnapshot.getTabAttributeMap();
     let tags = tabAttributeMap.getTags();
     const allUserContexts = [... displayedContainers];
-    const searchWords = searchString.split(/\s+/u);
+    const searchWords = new Set(searchString.split(/\s+/u).map((searchWord) => searchWord.toLowerCase()));
     let tabs = [... windowStateSnapshot.tabs];
     for (const searchWord of searchWords) {
       displayedContainers = displayedContainers.filter((userContext) => {
-        return userContext.name.toLowerCase().includes(searchWord.toLowerCase());
+        return userContext.name.toLowerCase().includes(searchWord);
       });
       tags = tags.filter((tag) => {
-        return tag.name.toLowerCase().includes(searchWord.toLowerCase());
+        return tag.name.toLowerCase().includes(searchWord);
       });
     }
     const tagIds = tags.map((tag) => tag.tagId);
     for (const searchWord of searchWords) {
       tabs = tabs.filter((tab) => {
-        return tab.title.toLowerCase().includes(searchWord.toLowerCase())
-          || tab.url.toLowerCase().includes(searchWord.toLowerCase())
+        return tab.title.toLowerCase().includes(searchWord)
+          || tab.url.toLowerCase().includes(searchWord)
           || tagIds.includes(tabAttributeMap.getTagIdForTab(tab.id) ?? 0);
       });
     }
@@ -389,9 +389,7 @@ export class PanelWindowsElement extends HTMLElement {
     tabs.sort((a, b) => {
       return a.index - b.index;
     });
-    displayedContainers.sort((a, b) => {
-      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-    });
+    tabGroupDirectorySnapshot.sortDisplayedContainers(displayedContainers);
 
     const userContextMap = new Map<string, DisplayedContainer>();
     for (const userContext of allUserContexts) {

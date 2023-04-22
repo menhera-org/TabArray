@@ -239,9 +239,7 @@ const render = async () => {
   ]);
   const isPrivate = browserWindow.incognito;
   const displayedContainers = await displayedContainerService.getDisplayedContainersByPrivateBrowsing(isPrivate);
-  displayedContainers.sort((a, b) => {
-    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-  });
+  tabGroupDirectorySnapshot.sortDisplayedContainers(displayedContainers);
   if (browserWindow.id == null) {
     throw new Error('browserWindow.id is null');
   }

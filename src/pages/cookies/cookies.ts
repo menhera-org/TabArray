@@ -59,9 +59,7 @@ const getSelectedCookieStore = () => {
 const render = async () => {
   const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
   const displayedContainers = await displayedContainerService.getDisplayedContainers();
-  displayedContainers.sort((a, b) => {
-    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-  });
+  tabGroupDirectorySnapshot.sortDisplayedContainers(displayedContainers);
   const containers: Map<CookieStore, string> = new Map;
   for (const displayedContainer of displayedContainers) {
     containers.set(displayedContainer.cookieStore, displayedContainer.name);

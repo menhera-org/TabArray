@@ -58,9 +58,7 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
   const currentCookieStoreId = currentBrowserTab?.cookieStoreId;
   const contextualIdentities = await contextualIdentityFactory.getAll();
   const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
-  contextualIdentities.sort((a, b) => {
-    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-  });
+  tabGroupDirectorySnapshot.sortDisplayedContainers(contextualIdentities);
   const defaultContainer = CookieStore.DEFAULT;
   const privateBrowsingContainer = CookieStore.PRIVATE;
   const privateBrowsingContainerInfos = await extensionService.isAllowedInPrivateBrowsing() ? [

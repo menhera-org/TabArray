@@ -19,6 +19,8 @@
   @license
 **/
 
+import { DisplayedContainer } from "weeg-containers";
+
 import { TabGroupDirectory, StorageType, SupergroupType } from "./TabGroupDirectory";
 import { TabGroupAttributes } from "./TabGroupAttributes";
 
@@ -115,5 +117,9 @@ export class TabGroupDirectorySnapshot {
       if (bIndex == -1) return -1;
     }
     return aIndex - bIndex;
+  }
+
+  public sortDisplayedContainers(displayedContainers: DisplayedContainer[]): void {
+    displayedContainers.sort((a, b) => this.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id));
   }
 }
