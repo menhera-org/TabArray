@@ -202,7 +202,7 @@
         "description": "Label text for UA overrides feature"
     },
     "optionsLabelUserAgent": {
-        "message": "User Agent",
+        "message": "用户代理",
         "description": "Label text for user agent of a container."
     },
     "userAgentCustom": {
@@ -465,7 +465,7 @@
         }
     },
     "optionsHeadingContainerSortOrder": {
-        "message": "容器列表",
+        "message": "排列容器",
         "description": "Heading text of options page for changing container order."
     },
     "cookiesHeadingDomain": {
@@ -485,7 +485,7 @@
         "description": "Heading text for action buttons in cookies table."
     },
     "enableCookiesAutoclean": {
-        "message": "自动清理 cookie",
+        "message": "自动清理 Cookies",
         "description": "Label text for enabling autoclean of cookies."
     },
     "contextMenuNewTab": {
@@ -527,7 +527,7 @@
         }
     },
     "fpiDescription": {
-        "message": "此扩展默认启用Firefox的第一方隔离（FPI）功能。这意味着不同站点的 cookie，即使在同一个容器中，也会被隔离。你可以在这里关掉它。",
+        "message": "此扩展默认启用Firefox的第一方隔离（FPI）功能。这意味着不同站点的 cookie，即使在同一个容器中，也会被隔离。您可以在这里关掉它。",
         "description": "Description text for FPI"
     },
     "optionalFeaturesDescription": {
@@ -569,5 +569,109 @@
     "labelAutoDiscard43200": {
         "message": "12 小时",
         "description": "Label text for autodiscard in 43200 seconds."
+    },
+    "buttonDeleteGroup": {
+        "message": "删除组",
+        "description": "Button to delete a group of containers."
+    },
+    "buttonEditGroup": {
+        "message": "编辑组",
+        "description": "Button to edit a group of containers."
+    },
+    "groupOptions": {
+        "message": "组选项：$NAME$",
+        "description": "Heading text for group options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "newGroupDialogTitle": {
+        "message": "新建组",
+        "description": "Title of the dialog to create a new group of containers."
+    },
+    "buttonNewGroup": {
+        "message": "新建容器组",
+        "description": "Button to create a new group of containers."
+    },
+    "confirmGroupDelete": {
+        "message": "要永久删除组：$NAME$吗？",
+        "description": "Confirmation message before deleting a group.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "moveContainer": {
+        "message": "移至组",
+        "description": "Move a container to another group."
+    },
+    "buttonMove": {
+        "message": "移动",
+        "description": "Button to move a container to another group."
+    },
+    "rootGroup": {
+        "message": "根组",
+        "description": "Root group name."
+    },
+    "newTagDialogTitle": {
+        "message": "创建新标记",
+        "description": "Title of the dialog to create a new tag."
+    },
+    "editTagDialogTitle": {
+        "message": "标记编辑",
+        "description": "Title of the dialog to edit a tag."
+    },
+    "buttonNewTag": {
+        "message": "新建标记",
+        "description": "Button to create a new tag."
+    },
+    "noTag": {
+        "message": "（无标记）",
+        "description": "No tag name."
+    },
+    "buttonEditTag": {
+        "message": "编辑标记",
+        "description": "Button to edit a tag."
+    },
+    "buttonDeleteTag": {
+        "message": "删除标记",
+        "description": "Button to delete a tag."
+    },
+    "optionsTabGeneral": {
+        "message": "常规",
+        "description": "Label text for general tab."
+    },
+    "optionsTabSortContainers": {
+        "message": "排列容器",
+        "description": "Label text for sort containers tab."
+    },
+    "setTag": {
+        "message": "设置标记",
+        "description": "Set a tag to a tab."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Firefox 设置",
+        "description": "Label text for firefox settings tab."
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
+    },
+    "optionEnableSorting": {
+        "message": "启用标签自动排列",
+        "description": "Label text for enabling sorting of containers/tabs."
+    },
+    "editGroupDialogTitle": {
+        "message": "编辑组",
+        "description": "Title of the dialog to edit a group of containers."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "语言与用户代理",
+        "description": "Label text for language and user agent overrides tab."
     }
 }
