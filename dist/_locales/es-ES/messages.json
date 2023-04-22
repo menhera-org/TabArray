@@ -663,7 +663,7 @@
         "description": "Label text for general tab."
     },
     "optionsTabSortContainers": {
-        "message": "‐Ordenar Contenedores",
+        "message": "Ordenar Contenedores",
         "description": "Label text for sort containers tab."
     },
     "optionsTabContainerOverrides": {
