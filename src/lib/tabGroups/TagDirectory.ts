@@ -19,10 +19,15 @@
   @license
 **/
 
+import browser from "webextension-polyfill";
 import { StorageItem } from "weeg-storage";
 import { EventSink } from "weeg-events";
+import { CompatTab } from "weeg-tabs";
 
 import { TagDirectorySnapshot } from "./TagDirectorySnapshot";
+
+const tabAttributeMapPromise = import("./TabAttributeMap");
+const tagServicePromise = import("./TagService");
 
 export type TagType = {
   tagId: number;
@@ -89,9 +94,22 @@ export class TagDirectory {
   }
 
   public async deleteTag(tagId: number): Promise<void> {
+    const { TabAttributeMap } = await tabAttributeMapPromise;
+    const { TagService } = await tagServicePromise;
+    const tagService = TagService.getInstance();
     const value = await this.getValue();
     delete value[tagId];
     await this.setValue(value);
+    const browserTabs = await browser.tabs.query({});
+    const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
+    const tabAttributeMap = await TabAttributeMap.create(tabs);
+    for (const tabId of tabAttributeMap.getTabIds()) {
+      const foundTagId = tabAttributeMap.getTagIdForTab(tabId);
+      if (foundTagId == tagId) {
+        const tab = tabAttributeMap.getTab(tabId) as CompatTab;
+        await tagService.setTagIdForTab(tab, 0);
+      }
+    }
   }
 
   public async getSnapshot(): Promise<TagDirectorySnapshot> {
