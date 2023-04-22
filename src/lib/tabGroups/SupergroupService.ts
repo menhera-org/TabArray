@@ -53,28 +53,29 @@ export class SupergroupService {
     // nothing.
   }
 
-  public async hideSupergroupOnWindow(tabGroupId: string, windowId: number): Promise<void> {
+  private async setVisibilityForSupergrouponWindow(tabGroupId: string, windowId: number, visible: boolean): Promise<void> {
     const childContainers = await tabGroupDirectory.getChildContainers(tabGroupId);
     const promises: Promise<void>[] = [];
     for (const childContainer of childContainers) {
       const cookieStore = new CookieStore(childContainer);
-      promises.push(containerVisibilityService.hideContainerOnWindow(windowId, cookieStore.id).catch(() => {
+      promises.push(
+        (visible ?
+          containerVisibilityService.showContainerOnWindow(windowId, cookieStore.id)
+          : containerVisibilityService.hideContainerOnWindow(windowId, cookieStore.id)
+        ).catch(() => {
         // ignore (errors for private windows)
-      }));
+        }
+      ));
     }
     await Promise.all(promises);
   }
 
+  public async hideSupergroupOnWindow(tabGroupId: string, windowId: number): Promise<void> {
+    await this.setVisibilityForSupergrouponWindow(tabGroupId, windowId, false);
+  }
+
   public async showSupergroupOnWindow(tabGroupId: string, windowId: number): Promise<void> {
-    const childContainers = await tabGroupDirectory.getChildContainers(tabGroupId);
-    const promises: Promise<void>[] = [];
-    for (const childContainer of childContainers) {
-      const cookieStore = new CookieStore(childContainer);
-      promises.push(containerVisibilityService.showContainerOnWindow(windowId, cookieStore.id).catch(() => {
-        // ignore (errors for private windows)
-      }));
-    }
-    await Promise.all(promises);
+    await this.setVisibilityForSupergrouponWindow(tabGroupId, windowId, true);
   }
 
   public async closeUnpinnedSupergroupTabsOnWindow(tabGroupId: string, windowId: number): Promise<void> {
