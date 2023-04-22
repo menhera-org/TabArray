@@ -1,5 +1,6 @@
-// vim: ts=2 sw=2 et ai
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -15,10 +16,18 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
+/*
+  locations. Always use this value so that changing the location of pages
+  is easier.
+*/
 export const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
 export const PRIVACY_POLICY_PAGE = 'https://menhera-org.github.io/TabArray/PRIVACY_POLICY.html';
-export const PANORAMA_PAGE = '/panorama/panorama.html';
-export const CONFIRM_PAGE = '/navigation/confirm.html';
-export const COOKIES_PAGE = '/cookies/cookies.html';
+export const GITHUB_PAGE = 'https://github.com/menhera-org/TabArray';
+export const PANORAMA_PAGE = '/pages/panorama/panorama.html';
+export const CONFIRM_PAGE = '/pages/navigation/confirm.html';
+export const COOKIES_PAGE = '/pages/cookies/cookies.html';
+export const POPUP_PAGE = '/pages/popup-v2/popup-v2.html';
+export const INDEX_TAB_PAGE = '/pages/index/index-tab.html';

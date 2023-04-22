@@ -1,0 +1,227 @@
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+
+/*
+  Container Tab Groups
+  Copyright (C) 2023 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+@import '/css/theme.css';
+
+@namespace url(http://www.w3.org/1999/xhtml);
+
+a, button {
+  color: inherit;
+  background-color: transparent;
+  border: none;
+  appearance: none;
+}
+
+button {
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  padding: 0;
+  background-color: transparent;
+  display: block;
+}
+
+a:active, button:active {
+  opacity: .75;
+}
+
+input, button, select, textarea {
+  font: inherit;
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+  inline-size: 100%;
+}
+
+button {
+  padding-inline: 1em;
+  padding-block: .5em;
+  text-align: start;
+}
+
+button:focus {
+  box-shadow: 0 0 .25rem .25rem var(--accent-color);
+  outline: none;
+}
+
+.button-text {
+  padding-inline: .5em;
+  padding-block: .5em;
+}
+
+#tab-label, .container-label {
+  padding-inline: .5em;
+  padding-block: .5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab-discarded .tab-label {
+  opacity: .75;
+}
+
+.tab-active .tab-label {
+  font-weight: bold;
+}
+
+.tab > button, .container > button, .window-label > button {
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  opacity: 0;
+  padding: 0;
+  background-color: transparent;
+  display: block;
+}
+
+.tab > .tab-pin-button {
+  mask: url(/img/material-icons/push_pin.svg) center center/75% no-repeat;
+  background-color: var(--text-color);
+}
+
+.tab > .tab-pin-button:hover, .tab > .tab-pin-button:focus {
+  opacity: var(--opaque-opacity) !important;
+}
+
+.tab.tab-pinned > .tab-pin-button {
+  opacity: 1;
+}
+
+.tab > .tab-close-button {
+  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
+  background-color: var(--text-color);
+  opacity: var(--opaque-opacity);
+}
+
+.tab > .tab-close-button:focus, .tab > .tab-close-button:hover {
+  opacity: var(--opaque-opacity);
+}
+
+#tab-menu {
+  display: block grid;
+  grid-template-columns: 2em 1fr;
+  padding-inline-end: 1em;
+}
+
+#tab-main {
+  display: block grid;
+  grid-template-columns: 2em 1fr 2em 2em;
+  border: none;
+  border-inline-start: solid .25rem transparent;
+}
+
+#tab-main:hover, #tab-main:focus-within {
+  background-color: var(--hover-color);
+}
+
+#tab-button {
+  display: block grid;
+  grid-template-columns: 2em 1fr;
+  background-color: transparent !important;
+  padding: 0;
+}
+
+#tab-button.discarded {
+  opacity: .75;
+}
+
+#tab-button.active {
+  font-weight: bold;
+}
+
+#tab-button:hover, #tab-button:focus {
+  background-color: var(--hover-color);
+}
+
+#tab-private-icon {
+  inline-size: 75%;
+  align-self: center;
+  justify-self: center;
+}
+
+#tab-pin-button, #tab-close-button {
+  background-color: var(--text-color);
+  background-size: 1.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  padding: 0;
+  display: block;
+}
+
+#tab-pin-button {
+  opacity: 0;
+  mask: url(/img/material-icons/push_pin.svg) center center/75% no-repeat;
+}
+
+#tab-pin-button.pinned {
+  opacity: 1;
+}
+
+#tab-pin-button:hover, #tab-pin-button:focus {
+  opacity: var(--opaque-opacity) !important;
+}
+
+#tab-close-button {
+  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
+  opacity: var(--opaque-opacity);
+}
+
+#tab-set-tag-button {
+  mask: url(/img/material-icons/label.svg) center center/50% no-repeat;
+  background-color: var(--text-color);
+  opacity: var(--opaque-opacity);
+}
+
+:is(#tab-close-button, #tab-set-tag-button):is(:hover, :focus) {
+  opacity: 1;
+}
+
+#tab-title {
+  padding-inline: .5em;
+  padding-block: .5em;
+  overflow: hidden;
+  /* text-overflow: ellipsis; */
+  white-space: nowrap;
+  position: relative;
+}
+
+#tab-title::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to left, var(--background-color), transparent 2em);
+  pointer-events: none;
+}
+
+#tab-icon {
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center center;
+}
+
+#tab-icon.masked {
+  background-color: var(--text-color);
+}

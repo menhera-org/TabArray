@@ -1,7 +1,6 @@
-// -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=2 sw=2 et ai :
-
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -17,13 +16,17 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
 import browser from 'webextension-polyfill';
-import { UserContext } from "../frameworks/tabGroups";
-import { Tab } from "../frameworks/tabs";
-import { EventSink } from '../frameworks/utils';
-import { TabIconService } from '../modules/TabIconService';
+import { EventSink } from "weeg-events";
+import { CompatTab } from 'weeg-tabs';
+import { DisplayedContainer } from 'weeg-containers';
+
+import { TabIconService } from '../lib/TabIconService';
+
+import { ModalSetTagElement } from './modal-set-tag';
 
 export class MenulistTabElement extends HTMLElement {
   private _tabId = -1;
@@ -34,7 +37,7 @@ export class MenulistTabElement extends HTMLElement {
   public readonly onUnpin = new EventSink<number>();
   public readonly onClose = new EventSink<number>();
 
-  public constructor(tab: Tab, userContext: UserContext = UserContext.DEFAULT) {
+  public constructor(tab: CompatTab, displayedContainer: DisplayedContainer) {
     super();
     this.attachShadow({ mode: "open" });
     if (!this.shadowRoot) {
@@ -42,8 +45,9 @@ export class MenulistTabElement extends HTMLElement {
     }
     this.buildElement();
     this.setTab(tab);
-    this.setUserContext(userContext);
+    this.setDisplayedContainer(displayedContainer);
     this.closeButton.title = browser.i18n.getMessage('buttonTabClose');
+    this.setTagButton.title = browser.i18n.getMessage('setTag');
     // this.privateIconElement.title = browser.i18n.getMessage('buttonTabPrivate');
     this.tabButton.onclick = () => {
       this.onTabClicked.dispatch(this.tabId);
@@ -58,12 +62,20 @@ export class MenulistTabElement extends HTMLElement {
     this.closeButton.onclick = () => {
       this.onClose.dispatch(this.tabId);
     };
+    this.tabButton.onauxclick = (event) => {
+      if (event.button == 1) {
+        this.onClose.dispatch(this.tabId);
+      }
+    };
+    this.setTagButton.onclick = () => {
+      document.body.appendChild(new ModalSetTagElement(this.tabId));
+    };
   }
 
   private buildElement() {
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/menulist-tab.css';
+    styleSheet.href = '/css/components/menulist-tab.css';
     this.shadowRoot?.appendChild(styleSheet);
 
     const tabMenu = document.createElement('div');
@@ -95,12 +107,16 @@ export class MenulistTabElement extends HTMLElement {
     tabTitle.id = 'tab-title';
     tabButton.appendChild(tabTitle);
 
+    const tabSetTagButton = document.createElement('button');
+    tabSetTagButton.id = 'tab-set-tag-button';
+    tabMain.appendChild(tabSetTagButton);
+
     const tabCloseButton = document.createElement('button');
     tabCloseButton.id = 'tab-close-button';
     tabMain.appendChild(tabCloseButton);
   }
 
-  public setTab(tab: Tab) {
+  public setTab(tab: CompatTab) {
     this._tabId = tab.id;
 
     this.titleElement.textContent = tab.title;
@@ -115,7 +131,7 @@ export class MenulistTabElement extends HTMLElement {
       this.pinButton.title = browser.i18n.getMessage('tooltipTabPinButton');
     }
 
-    if (tab.isPrivate()) {
+    if (tab.isPrivate) {
       this.privateIconElement.style.visibility = "visible";
     } else {
       this.privateIconElement.style.visibility = "hidden";
@@ -138,11 +154,11 @@ export class MenulistTabElement extends HTMLElement {
     }, { capture: true });
   }
 
-  public setUserContext(userContext: UserContext) {
-    if (0 == userContext.id) {
+  public setDisplayedContainer(displayedContainer: DisplayedContainer) {
+    if (0 == displayedContainer.cookieStore.userContextId || !displayedContainer.colorCode) {
       return;
     }
-    this.tabMainElement.style.borderColor = userContext.colorCode;
+    this.tabMainElement.style.borderColor = displayedContainer.colorCode;
   }
 
   private getShadowElement(id: string): HTMLElement {
@@ -168,6 +184,10 @@ export class MenulistTabElement extends HTMLElement {
 
   private get closeButton(): HTMLButtonElement {
     return this.getButton("tab-close-button");
+  }
+
+  private get setTagButton(): HTMLButtonElement {
+    return this.getButton("tab-set-tag-button");
   }
 
   private get iconElement(): HTMLSpanElement {

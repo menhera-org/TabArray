@@ -1,7 +1,6 @@
-// -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=2 sw=2 et ai :
-
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -17,9 +16,10 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
-import { EventSink } from "../../frameworks/utils";
+import { EventSink } from "weeg-events";
 import { CtgMenuItemElement } from "./ctg-menu-item";
 
 export class CtgTopBarElement extends HTMLElement {
@@ -39,11 +39,13 @@ export class CtgTopBarElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/ctg/ctg-top-bar.css';
+    styleSheet.href = '/css/components/ctg/ctg-top-bar.css';
     this.shadowRoot.appendChild(styleSheet);
 
-    const drawerButton = document.createElement('button');
+    const drawerButton = new CtgMenuItemElement();
     drawerButton.id = 'drawer-button';
+    drawerButton.iconSrc = '/img/firefox-icons/menu.svg';
+    drawerButton.displayStyle = 'icon';
     this.shadowRoot.appendChild(drawerButton);
     drawerButton.addEventListener('click', () => {
       this.onDrawerButtonClicked.dispatch();
@@ -98,11 +100,13 @@ export class CtgTopBarElement extends HTMLElement {
   }
 
   public set backButtonEnabled(enabled: boolean) {
+    const drawerButton = this.shadowRoot?.getElementById('drawer-button');
     const backButton = this.shadowRoot?.getElementById('back-button');
-    if (!backButton) {
+    if (!drawerButton || !backButton) {
       return;
     }
     backButton.hidden = !enabled;
+    drawerButton.hidden = enabled;
   }
 
   public get drawerButtonEnabled(): boolean {
@@ -115,10 +119,32 @@ export class CtgTopBarElement extends HTMLElement {
 
   public set drawerButtonEnabled(enabled: boolean) {
     const drawerButton = this.shadowRoot?.getElementById('drawer-button');
-    if (!drawerButton) {
+    const backButton = this.shadowRoot?.getElementById('back-button');
+    if (!drawerButton || !backButton) {
       return;
     }
     drawerButton.hidden = !enabled;
+    backButton.hidden = enabled;
+  }
+
+  public get drawerButtonIconSrc(): string {
+    const drawerButton = this.shadowRoot?.getElementById('drawer-button') as CtgMenuItemElement;
+    return drawerButton.iconSrc;
+  }
+
+  public set drawerButtonIconSrc(src: string) {
+    const drawerButton = this.shadowRoot?.getElementById('drawer-button') as CtgMenuItemElement;
+    drawerButton.iconSrc = src;
+  }
+
+  public get drawerButtonText(): string {
+    const drawerButton = this.shadowRoot?.getElementById('drawer-button') as CtgMenuItemElement;
+    return drawerButton.labelText;
+  }
+
+  public set drawerButtonText(text: string) {
+    const drawerButton = this.shadowRoot?.getElementById('drawer-button') as CtgMenuItemElement;
+    drawerButton.labelText = text;
   }
 
   public clearMenuItems() {

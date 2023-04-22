@@ -569,5 +569,13 @@
     "headingReopen": {
         "message": "Remalfermi al ujo",
         "description": "Heading text for reopen in container."
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
+    },
+    "optionEnableSorting": {
+        "message": "Ebligi ordigadon de langetoj",
+        "description": "Label text for enabling sorting of containers/tabs."
     }
 }

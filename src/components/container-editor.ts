@@ -1,7 +1,6 @@
-// -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=2 sw=2 et ai :
-
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -17,29 +16,34 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
 import browser from 'webextension-polyfill';
-import { ContainerAttributes } from '../frameworks/tabAttributes';
-import { ColorPickerElement } from './usercontext-colorpicker';
-import { IconPickerElement } from './usercontext-iconpicker';
-import { EventSink } from '../frameworks/utils';
-import { MessagingService } from '../frameworks/extension/MessagingService';
+import { EventSink } from 'weeg-events';
+import { ContextualIdentity } from 'weeg-containers';
+
+import { SupergroupService } from '../lib/tabGroups/SupergroupService';
+import { ContainerCreatorService } from '../lib/tabGroups/ContainerCreatorService';
+
+import { ColorPickerElement } from './container-color-picker';
+import { IconPickerElement } from './container-icon-picker';
 
 export type EditorMode = 'create' | 'edit';
 
 export class ContainerEditorElement extends HTMLElement {
   private _mode: EditorMode;
-  private _containerAttributes: ContainerAttributes | undefined;
-  private readonly _messagingService = MessagingService.getInstance();
+  private _contextualIdentity: ContextualIdentity | undefined;
+  private readonly _supergroupService = SupergroupService.getInstance();
+  private readonly _containerCreatorService = ContainerCreatorService.getInstance<ContainerCreatorService>();
 
   public readonly onContainerCreated = new EventSink<string>();
   public readonly onContainerUpdated = new EventSink<string>();
   public readonly onCancel = new EventSink<void>();
 
-  public constructor(containerAttributes?: ContainerAttributes) {
+  public constructor(contextualIdentity?: ContextualIdentity, parentTabGroupId?: string) {
     super();
-    this._containerAttributes = containerAttributes;
+    this._contextualIdentity = contextualIdentity;
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
       throw new Error('Shadow root is null');
@@ -47,7 +51,7 @@ export class ContainerEditorElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/container-editor.css';
+    styleSheet.href = '/css/components/container-editor.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const modalContent = document.createElement('div');
@@ -84,12 +88,12 @@ export class ContainerEditorElement extends HTMLElement {
     modalActions.appendChild(okButton);
     modalContent.appendChild(modalActions);
 
-    if (containerAttributes) {
+    if (contextualIdentity) {
       this._mode = 'edit';
       modalTitle.textContent = browser.i18n.getMessage('editContainerDialogTitle');
-      input.value = containerAttributes.name;
-      iconPicker.value = containerAttributes.icon;
-      colorPicker.value = containerAttributes.color;
+      input.value = contextualIdentity.name;
+      iconPicker.value = contextualIdentity.icon;
+      colorPicker.value = contextualIdentity.color;
     } else {
       this._mode = 'create';
       modalTitle.textContent = browser.i18n.getMessage('newContainerDialogTitle');
@@ -103,26 +107,36 @@ export class ContainerEditorElement extends HTMLElement {
     });
 
     okButton.addEventListener('click', async () => {
-      const name = input.value;
+      const name = input.value.trim().replace(/^\s*|\s*$/gu, '');
+      if ('' == name) return;
       const icon = iconPicker.value;
       const color = colorPicker.value;
       if (this._mode === 'create') {
-        const cookieStoreId = await this._messagingService.sendMessage('container_create', {
-          name,
-          icon,
-          color,
-        }) as string;
-        this.onContainerCreated.dispatch(cookieStoreId);
+        if (parentTabGroupId) {
+          const contextualIdentity = await this._supergroupService.createChildContainer(parentTabGroupId, {
+            name,
+            icon,
+            color,
+          });
+          this.onContainerCreated.dispatch(contextualIdentity.cookieStore.id);
+        } else {
+          const cookieStoreId = await this._containerCreatorService.create(
+            name,
+            color,
+            icon,
+          ) as string;
+          this.onContainerCreated.dispatch(cookieStoreId);
+        }
       } else if (this._mode === 'edit') {
-        if (!this._containerAttributes) {
+        if (!this._contextualIdentity) {
           throw new Error('Container attributes is null');
         }
-        const cookieStoreId = await this._messagingService.sendMessage('container_update', {
-          cookieStoreId: this._containerAttributes.id,
+        const cookieStoreId = await this._containerCreatorService.update(
+          this._contextualIdentity.cookieStore.id,
           name,
-          icon,
           color,
-        }) as string;
+          icon,
+        );
         this.onContainerUpdated.dispatch(cookieStoreId);
       }
       this.remove();

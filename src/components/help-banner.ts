@@ -1,7 +1,6 @@
-// -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=2 sw=2 et ai :
-
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -17,13 +16,16 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
-import { PopupUtils } from "../popup/PopupUtils";
 import browser from "webextension-polyfill";
 
+import { ExtensionPageService } from "../lib/ExtensionPageService";
+
+const extensionPageService = ExtensionPageService.getInstance();
+
 export class HelpBannerElement extends HTMLElement {
-  private readonly _popupUtils = new PopupUtils();
 
   public constructor() {
     super();
@@ -34,7 +36,7 @@ export class HelpBannerElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/help-banner.css';
+    styleSheet.href = '/css/components/help-banner.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const manifest = browser.runtime.getManifest();
@@ -82,7 +84,7 @@ export class HelpBannerElement extends HTMLElement {
 
     helpBannerAmoLink.addEventListener('click', (ev) => {
       ev.preventDefault();
-      this._popupUtils.openAddonPage();
+      extensionPageService.openInBackground(ExtensionPageService.AMO);
     });
 
     const helpBannerParagraph2 = document.createElement('p');
@@ -95,7 +97,20 @@ export class HelpBannerElement extends HTMLElement {
 
     helpBannerPrivacyPolicyLink.addEventListener('click', (ev) => {
       ev.preventDefault();
-      this._popupUtils.openPrivacyPolicyPage();
+      extensionPageService.openInBackground(ExtensionPageService.PRIVACY_POLICY);
+    });
+
+    const helpBannerParagraph3 = document.createElement('p');
+    helpBanner.appendChild(helpBannerParagraph3);
+
+    const helpBannerSourceCodeLink = document.createElement('a');
+    helpBannerSourceCodeLink.href = '#';
+    helpBannerSourceCodeLink.textContent = browser.i18n.getMessage('github');
+    helpBannerParagraph3.appendChild(helpBannerSourceCodeLink);
+
+    helpBannerSourceCodeLink.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      extensionPageService.openInBackground(ExtensionPageService.GITHUB);
     });
 
   }

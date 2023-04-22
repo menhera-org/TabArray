@@ -1,7 +1,6 @@
-// -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=2 sw=2 et ai :
-
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -17,10 +16,11 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
-import { EventSink } from '../frameworks/utils';
-import { TabIconService } from '../modules/TabIconService';
+import { EventSink } from "weeg-events";
+import { TabIconService } from '../lib/TabIconService';
 
 export class MenulistSiteElement extends HTMLElement {
   public readonly onSiteClicked = new EventSink<void>();
@@ -41,7 +41,7 @@ export class MenulistSiteElement extends HTMLElement {
     if (!this.shadowRoot) return;
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/menulist-site.css';
+    styleSheet.href = '/css/components/menulist-site.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const siteButton = document.createElement('button');

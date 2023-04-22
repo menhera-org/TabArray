@@ -1,11 +1,11 @@
 {
   "manifest_version": 2,
   "name": "Container Tab Groups",
-  "version": "11.5.0",
+  "version": "11.6.0",
   "browser_specific_settings": {
     "gecko": {
       "id": "tab-array@menhera.org",
-      "strict_min_version": "91.0"
+      "strict_min_version": "102.0"
     }
   },
   "default_locale": "en",
@@ -27,11 +27,13 @@
     "webRequestBlocking",
     "sessions",
     "browsingData",
-    "theme"
+    "theme",
+    "alarms",
+    "scripting"
   ],
   "incognito": "spanning",
   "background": {
-    "page": "background.html"
+    "page": "background/background.html"
   },
   "browser_action": {
     "browser_style": true,
@@ -39,7 +41,7 @@
       "16": "img/toolbar/toolbar-icon-black.svg"
     },
     "default_title": "__MSG_browserActionTitle__",
-    "default_popup": "popup-v2/popup-v2.html?popup=1",
+    "default_popup": "pages/popup-v2/popup-v2.html?popup=1",
     "default_area": "tabstrip",
     "theme_icons": [
       {
@@ -50,7 +52,7 @@
     ]
   },
   "options_ui": {
-    "page": "options/options.html",
+    "page": "pages/options/options.html",
     "browser_style": true,
     "open_in_tab": false
   },
@@ -60,7 +62,7 @@
       "16": "icon.svg",
       "32": "icon.svg"
     },
-    "default_panel": "popup-v2/popup-v2.html"
+    "default_panel": "pages/popup-v2/popup-v2.html"
   },
   "page_action": {
     "browser_style": true,
@@ -69,7 +71,7 @@
       "38": "icon.svg"
     },
     "default_title": "__MSG_headingReopen__",
-    "default_popup": "page-action/page-action.html",
+    "default_popup": "pages/page-action/page-action.html",
     "show_matches": [
       "*://*/*"
     ]
@@ -111,12 +113,6 @@
       },
       "description": "__MSG_menuItemSites__"
     },
-    "open_help_view": {
-      "suggested_key": {
-        "default": "Ctrl+Alt+4"
-      },
-      "description": "__MSG_menuItemHelp__"
-    },
     "open_settings_view": {
       "suggested_key": {
         "default": "Ctrl+Alt+5"
@@ -141,6 +137,6 @@
     "96": "icon.svg"
   },
   "web_accessible_resources": [
-    "navigation/confirm.html"
+    "pages/navigation/confirm.html"
   ]
 }

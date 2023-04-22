@@ -557,5 +557,13 @@
                 "example": "Container 3"
             }
         }
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
+    },
+    "optionEnableSorting": {
+        "message": "Activar le assortimento de schedas",
+        "description": "Label text for enabling sorting of containers/tabs."
     }
 }

@@ -1,7 +1,6 @@
-// -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=2 sw=2 et ai :
-
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -17,7 +16,8 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
 export class CtgVerticalLayoutElement extends HTMLElement {
   public constructor() {
@@ -29,7 +29,7 @@ export class CtgVerticalLayoutElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/ctg/ctg-vertical-layout.css';
+    styleSheet.href = '/css/components/ctg/ctg-vertical-layout.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const slot = document.createElement('slot');

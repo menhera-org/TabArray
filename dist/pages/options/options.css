@@ -1,0 +1,93 @@
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+
+/*
+  Container Tab Groups
+  Copyright (C) 2023 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+@import url(/css/theme.css);
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+label {
+  font: inherit;
+  color: inherit;
+}
+
+#optionsPanes > div:not(.active) {
+  display: none;
+}
+
+.pane-header {
+  display: block grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: .5rem;
+  align-items: center;
+  box-shadow: 0 0 .25rem var(--border-color);
+}
+
+.pane-header > h2 {
+  font: inherit !important;
+  font-weight: bold !important;
+  font-size: 1.08em !important;
+  margin: 0;
+  padding: 0;
+}
+
+.pane-back {
+  padding: 0;
+  display: block;
+  inline-size: 3rem;
+  block-size: 3rem;
+  mask: url(/img/firefox-icons/back.svg) center center/50% no-repeat;
+  background-color: var(--text-color);
+}
+
+.text-link {
+  text-decoration: none;
+  color: var(--in-content-link-color);
+}
+
+#pane-tabs {
+  display: block flex;
+  flex-direction: row;
+  overflow-inline: auto;
+  border-block-end: solid 1px var(--border-color);
+}
+
+#pane-tabs > .pane-tab {
+  padding-block: .5em;
+  padding-inline: 1em;
+  text-decoration: none;
+  font-weight: bold;
+  border-block-start: solid .25rem transparent;
+  display: block;
+  color: inherit;
+}
+
+#pane-tabs > .pane-tab.selected {
+  border-block-start-color: var(--button-text-color);
+  color: var(--button-text-color);
+}
+
+#pane-tabs > .pane-tab:is(:hover, :active) {
+  border-block-start-color: var(--border-color);
+  background-color: var(--hover-color);
+}

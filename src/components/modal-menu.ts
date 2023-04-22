@@ -1,7 +1,6 @@
-// -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=2 sw=2 et ai :
-
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -17,9 +16,10 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
-import { EventSink } from '../frameworks/utils';
+import { EventSink } from "weeg-events";
 
 export class ModalMenuElement extends HTMLElement {
   public readonly onActionClicked = new EventSink<string>();
@@ -33,7 +33,7 @@ export class ModalMenuElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/modal-menu.css';
+    styleSheet.href = '/css/components/modal-menu.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const modalContent = document.createElement('div');

@@ -1,7 +1,6 @@
-// -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=2 sw=2 et ai :
-
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -17,19 +16,24 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
-import { BrowserStateSnapshot } from "../frameworks/tabs/BrowserStateSnapshot";
-import { EventSink } from "../frameworks/utils";
-import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import browser from 'webextension-polyfill';
-import { UserContext } from "../frameworks/tabGroups";
-import { Uint32 } from "../frameworks/types";
-import * as containers from '../modules/containers';
-import { UserContextVisibilityService } from "../userContexts/UserContextVisibilityService";
-import { TemporaryContainerService } from "../containers/TemporaryContainerService";
-import { UserContextSortingOrderStore } from "../userContexts/UserContextSortingOrderStore";
-import { PopupRendererService } from "../popup-v2/PopupRendererService";
+import { EventSink } from "weeg-events";
+import { DisplayedContainer } from 'weeg-containers';
+
+import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
+
+import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
+import { SupergroupEditorElement } from './supergroup-editor';
+import { TagEditorElement } from './tag-editor';
+
+import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
+import * as containers from '../legacy-lib/modules/containers';
+import { ContainerVisibilityService } from "../lib/tabGroups/ContainerVisibilityService";
+
+import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
 
 export class PanelWindowsElement extends HTMLElement {
   public readonly onCollapseContainersButtonClicked = new EventSink<void>();
@@ -37,12 +41,13 @@ export class PanelWindowsElement extends HTMLElement {
   public readonly onWindowCloseButtonClicked = new EventSink<void>();
   public readonly onCreateContainerButtonClicked = new EventSink<void>();
   public readonly onCreateTemporaryContainerButtonClicked = new EventSink<void>();
+  public readonly onCreateGroupButtonClicked = new EventSink<void>();
+  public readonly onCreateTagButtonClicked = new EventSink<void>();
 
   private _selectedWindowId: number = browser.windows.WINDOW_ID_NONE;
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
-  private readonly _userContextVisibilityService = UserContextVisibilityService.getInstance();
+  private readonly _containerVisibilityService = ContainerVisibilityService.getInstance();
   private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
-  private readonly _userContextSortingOrderStore = UserContextSortingOrderStore.getInstance();
   private _isSearching = false;
   private _browserStateSnapshot: BrowserStateSnapshot | null = null;
   private _searchString = '';
@@ -56,7 +61,7 @@ export class PanelWindowsElement extends HTMLElement {
 
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/panel-windows.css';
+    styleSheet.href = '/css/components/panel-windows.css';
     this.shadowRoot.appendChild(styleSheet);
 
     const header = document.createElement('div');
@@ -99,7 +104,13 @@ export class PanelWindowsElement extends HTMLElement {
     search.placeholder = browser.i18n.getMessage('searchPlaceholder');
     searchWrapper.appendChild(search);
 
-    const newContainerMenuItem = this.createMenuItem('new-container', 'buttonNewContainer', '/img/material-icons/create_new_folder.svg', this.onCreateContainerButtonClicked);
+    const newTagMenuItem = this.createMenuItem('new-tag', 'buttonNewTag', '/img/material-icons/new_label.svg', this.onCreateTagButtonClicked);
+    headerContainer.appendChild(newTagMenuItem);
+
+    const newGroupMenuItem = this.createMenuItem('new-group', 'buttonNewGroup', '/img/material-icons/create_new_folder.svg', this.onCreateGroupButtonClicked);
+    headerContainer.appendChild(newGroupMenuItem);
+
+    const newContainerMenuItem = this.createMenuItem('new-container', 'buttonNewContainer', '/img/firefox-icons/add.svg', this.onCreateContainerButtonClicked);
     headerContainer.appendChild(newContainerMenuItem);
 
     const newTemporaryContainerMenuItem = this.createMenuItem('new-temporary-container', 'buttonNewTemporaryContainer', '/img/material-icons/timelapse.svg', this.onCreateTemporaryContainerButtonClicked);
@@ -149,7 +160,7 @@ export class PanelWindowsElement extends HTMLElement {
     });
 
     this.onExpandContainersButtonClicked.addListener(() => {
-      this._userContextVisibilityService.showAllOnWindow(this._selectedWindowId).catch((e) => {
+      this._containerVisibilityService.showAllOnWindow(this._selectedWindowId).catch((e) => {
         console.error(e);
       });
     });
@@ -175,6 +186,14 @@ export class PanelWindowsElement extends HTMLElement {
       }).catch((e) => {
         console.error(e);
       });
+    });
+
+    this.onCreateGroupButtonClicked.addListener(() => {
+      document.body.appendChild(new SupergroupEditorElement());
+    });
+
+    this.onCreateTagButtonClicked.addListener(() => {
+      document.body.appendChild(new TagEditorElement());
     });
 
     if (!this.shadowRoot) return;
@@ -227,23 +246,30 @@ export class PanelWindowsElement extends HTMLElement {
     const tabCount = this.shadowRoot.querySelector('.tab-count') as HTMLSpanElement;
     tabCount.textContent = `(${currentWindowState.tabs.length})`;
 
-    let definedUserContexts = browserStateSnapshot.getDefinedUserContexts();
-    if (currentWindowState.isPrivate) {
-      definedUserContexts = definedUserContexts.filter((userContext) => {
-        return userContext.id == UserContext.ID_DEFAULT;
-      });
-    }
-    definedUserContexts = this._userContextSortingOrderStore.sort([... definedUserContexts]);
+    const newGroupMenuItem = this.shadowRoot.querySelector('.new-group') as CtgMenuItemElement;
 
-    this.renderPinnedTabs(browserStateSnapshot, definedUserContexts);
+    const tabGroupDirectorySnapshot = browserStateSnapshot.getTabGroupDirectorySnapshot();
+    let displayedContainers = browserStateSnapshot.getDisplayedContainers();
+    if (currentWindowState.isPrivate) {
+      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
+      newGroupMenuItem.hidden = true;
+    } else {
+      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == false);
+      newGroupMenuItem.hidden = false;
+    }
+    displayedContainers = [... displayedContainers].sort((a, b) => {
+      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
+    });
+
+    this.renderPinnedTabs(browserStateSnapshot, displayedContainers);
 
     const activeContainersElement = this.shadowRoot.querySelector('.active-containers') as HTMLDivElement;
     activeContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderOpenContainers(currentWindowState, definedUserContexts, activeContainersElement);
+    this._popupRenderer.currentWindowRenderer.renderOpenContainers(currentWindowState, displayedContainers, activeContainersElement, tabGroupDirectorySnapshot, browserStateSnapshot.getTabAttributeMap());
 
     const inactiveContainersElement = this.shadowRoot.querySelector('.inactive-containers') as HTMLDivElement;
     inactiveContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(currentWindowState, definedUserContexts, inactiveContainersElement);
+    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(currentWindowState, displayedContainers, inactiveContainersElement, tabGroupDirectorySnapshot, browserStateSnapshot.getTabAttributeMap());
 
     this.renderActions();
   }
@@ -263,13 +289,13 @@ export class PanelWindowsElement extends HTMLElement {
     actionsElement.appendChild(newTemporaryContainerMenuItem);
   }
 
-  private renderPinnedTabs(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly UserContext[]) {
+  private renderPinnedTabs(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly DisplayedContainer[]) {
     const currentWindowState = browserStateSnapshot.getWindowStateSnapshot(this._selectedWindowId);
     const pinnedTabs = [... currentWindowState.pinnedTabs];
     pinnedTabs.sort((a, b) => a.index - b.index);
-    const userContextMap = new Map<Uint32.Uint32, UserContext>();
+    const userContextMap = new Map<string, DisplayedContainer>();
     for (const userContext of definedUserContexts) {
-      userContextMap.set(userContext.id, userContext);
+      userContextMap.set(userContext.cookieStore.id, userContext);
     }
 
     if (!this.shadowRoot) return;
@@ -277,7 +303,40 @@ export class PanelWindowsElement extends HTMLElement {
     const pinnedTabsElement = this.shadowRoot.querySelector('.pinned-tabs') as HTMLDivElement;
     pinnedTabsElement.textContent = '';
     for (const pinnedTab of pinnedTabs) {
-      const tabElement = this._popupRenderer.renderTab(pinnedTab, userContextMap.get(pinnedTab.userContextId) || UserContext.DEFAULT);
+      const userContext = userContextMap.get(pinnedTab.cookieStore.id);
+      if (!userContext) {
+        console.error('Could not find user context for pinned tab', pinnedTab);
+        continue;
+      }
+      const tabElement = this._popupRenderer.renderTab(pinnedTab, userContext);
+      tabElement.draggable = true;
+      tabElement.addEventListener('dragstart', (ev) => {
+        if (!ev.dataTransfer) return;
+        ev.dataTransfer.setData('application/json', JSON.stringify({
+          type: 'tab',
+          id: pinnedTab.id,
+          index: pinnedTab.index,
+          pinned: true,
+        }));
+        ev.dataTransfer.dropEffect = 'move';
+      });
+      tabElement.addEventListener('dragover', (ev) => {
+        if (!ev.dataTransfer) return;
+        const json = ev.dataTransfer.getData('application/json');
+        const data = JSON.parse(json);
+        if ('tab' != data.type || !data.pinned) return;
+        ev.preventDefault();
+      });
+      tabElement.addEventListener('drop', (ev) => {
+        if (!ev.dataTransfer) return;
+        const json = ev.dataTransfer.getData('application/json');
+        const data = JSON.parse(json);
+        if ('tab' != data.type || !data.pinned) return;
+        ev.preventDefault();
+        browser.tabs.move(data.id, { index: pinnedTab.index }).catch((e) => {
+          console.error(e);
+        });
+      });
       pinnedTabsElement.appendChild(tabElement);
     }
   }
@@ -323,42 +382,63 @@ export class PanelWindowsElement extends HTMLElement {
     searchResultsTabsElement.textContent = '';
 
     if (!this._browserStateSnapshot) return;
+    const tabGroupDirectorySnapshot = this._browserStateSnapshot.getTabGroupDirectorySnapshot();
     const windowStateSnapshot = this._browserStateSnapshot.getWindowStateSnapshot(this._selectedWindowId);
     const isPrivate = windowStateSnapshot.isPrivate;
-    let userContexts = [... this._browserStateSnapshot.getDefinedUserContexts()];
+    let displayedContainers = [... this._browserStateSnapshot.getDisplayedContainers()];
     if (isPrivate) {
-      userContexts = userContexts.filter((userContext) => userContext.id == 0);
+      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
+    } else {
+      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate != true);
     }
+    const tabAttributeMap = this._browserStateSnapshot.getTabAttributeMap();
+    let tags = tabAttributeMap.getTags();
+    const allUserContexts = [... displayedContainers];
     const searchWords = searchString.split(/\s+/u);
     let tabs = [... windowStateSnapshot.tabs];
     for (const searchWord of searchWords) {
-      userContexts = userContexts.filter((userContext) => {
+      displayedContainers = displayedContainers.filter((userContext) => {
         return userContext.name.toLowerCase().includes(searchWord.toLowerCase());
       });
-      tabs = tabs.filter((tab) => {
-        return tab.title.toLowerCase().includes(searchWord.toLowerCase())
-          || tab.url.toLowerCase().includes(searchWord.toLowerCase());
+      tags = tags.filter((tag) => {
+        return tag.name.toLowerCase().includes(searchWord.toLowerCase());
       });
     }
+    const tagIds = tags.map((tag) => tag.tagId);
+    for (const searchWord of searchWords) {
+      tabs = tabs.filter((tab) => {
+        return tab.title.toLowerCase().includes(searchWord.toLowerCase())
+          || tab.url.toLowerCase().includes(searchWord.toLowerCase())
+          || tagIds.includes(tabAttributeMap.getTagIdForTab(tab.id) ?? 0);
+      });
+    }
+
     tabs.sort((a, b) => {
       return a.index - b.index;
     });
-    userContexts = this._userContextSortingOrderStore.sort(userContexts);
+    displayedContainers.sort((a, b) => {
+      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
+    });
 
-    const userContextMap = new Map<Uint32.Uint32, UserContext>();
-    for (const userContext of userContexts) {
-      userContextMap.set(userContext.id, userContext);
+    const userContextMap = new Map<string, DisplayedContainer>();
+    for (const userContext of allUserContexts) {
+      userContextMap.set(userContext.cookieStore.id, userContext);
     }
 
-    for (const userContext of userContexts) {
-      const tabs = windowStateSnapshot.userContextUnpinnedTabMap.get(userContext.id) || [];
+    for (const userContext of displayedContainers) {
+      const tabs = windowStateSnapshot.userContextUnpinnedTabMap.get(userContext.cookieStore.userContextId) || [];
       const containerElement = this._popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, [], windowStateSnapshot.isPrivate);
       containerElement.tabCount = tabs.length;
       containerElement.containerVisibilityToggleButton.disabled = true;
       searchResultsContainersElement.appendChild(containerElement);
     }
     for (const tab of tabs) {
-      const tabElement = this._popupRenderer.renderTab(tab, userContextMap.get(tab.userContextId) || UserContext.DEFAULT);
+      const userContext = userContextMap.get(tab.cookieStore.id);
+      if (!userContext) {
+        console.error('Could not find user context for tab', tab);
+        continue;
+      }
+      const tabElement = this._popupRenderer.renderTab(tab, userContext);
       searchResultsTabsElement.appendChild(tabElement);
     }
   }

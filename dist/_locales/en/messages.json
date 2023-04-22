@@ -569,5 +569,109 @@
     "headingReopen": {
         "message": "Reopen in Container",
         "description": "Heading text for reopen in container."
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
+    },
+    "optionEnableSorting": {
+        "message": "Enable automatic sorting of tabs",
+        "description": "Label text for enabling sorting of containers/tabs."
+    },
+    "buttonNewGroup": {
+        "message": "New Group of Containers",
+        "description": "Button to create a new group of containers."
+    },
+    "newGroupDialogTitle": {
+        "message": "Create a new group",
+        "description": "Title of the dialog to create a new group of containers."
+    },
+    "editGroupDialogTitle": {
+        "message": "Edit a group",
+        "description": "Title of the dialog to edit a group of containers."
+    },
+    "groupOptions": {
+        "message": "Group Options for $NAME$",
+        "description": "Heading text for group options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "buttonEditGroup": {
+        "message": "Edit Group",
+        "description": "Button to edit a group of containers."
+    },
+    "buttonDeleteGroup": {
+        "message": "Delete Group",
+        "description": "Button to delete a group of containers."
+    },
+    "confirmGroupDelete": {
+        "message": "Do you want to permanently delete this group of containers: $NAME$?",
+        "description": "Confirmation message before deleting a group.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "moveContainer": {
+        "message": "Move to Group",
+        "description": "Move a container to another group."
+    },
+    "buttonMove": {
+        "message": "Move",
+        "description": "Button to move a container to another group."
+    },
+    "rootGroup": {
+        "message": "(Root Group)",
+        "description": "Root group name."
+    },
+    "newTagDialogTitle": {
+        "message": "Create a new tag",
+        "description": "Title of the dialog to create a new tag."
+    },
+    "editTagDialogTitle": {
+        "message": "Edit a tag",
+        "description": "Title of the dialog to edit a tag."
+    },
+    "buttonNewTag": {
+        "message": "New Tag",
+        "description": "Button to create a new tag."
+    },
+    "noTag": {
+        "message": "(no Tag)",
+        "description": "No tag name."
+    },
+    "setTag": {
+        "message": "Set Tag",
+        "description": "Set a tag to a tab."
+    },
+    "buttonEditTag": {
+        "message": "Edit Tag",
+        "description": "Button to edit a tag."
+    },
+    "buttonDeleteTag": {
+        "message": "Delete Tag",
+        "description": "Button to delete a tag."
+    },
+    "optionsTabGeneral": {
+        "message": "General",
+        "description": "Label text for general tab."
+    },
+    "optionsTabSortContainers": {
+        "message": "Sort Containers",
+        "description": "Label text for sort containers tab."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "Languages and User Agents",
+        "description": "Label text for language and user agent overrides tab."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Firefox Settings",
+        "description": "Label text for firefox settings tab."
     }
 }

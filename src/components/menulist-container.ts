@@ -1,7 +1,6 @@
-// -*- indent-tabs-mode: nil; tab-width: 2; -*-
-// vim: set ts=2 sw=2 et ai :
-
-/*
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+/**
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -17,11 +16,12 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
 import browser from 'webextension-polyfill';
-import { UserContext } from "../frameworks/tabGroups";
-import { EventSink } from '../frameworks/utils';
+import { DisplayedContainer } from 'weeg-containers';
+import { EventSink } from "weeg-events";
 
 export class MenulistContainerElement extends HTMLElement {
   public partialContainerView = false;
@@ -41,17 +41,17 @@ export class MenulistContainerElement extends HTMLElement {
   public readonly onContainerDelete = new EventSink<void>();
   public readonly onContainerClearCookie = new EventSink<void>();
 
-  public constructor(userContext: UserContext = UserContext.DEFAULT, isPrivate = false) {
+  public constructor(displayedContainer: DisplayedContainer, isPrivate = false) {
     super();
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
       throw new Error("Shadow root is null");
     }
-    this._isPrivate = isPrivate || userContext.markedAsPrivate;
+    this._isPrivate = isPrivate || displayedContainer.cookieStore.isPrivate;
     this.buildElement();
-    this.setUserContext(userContext);
+    this.setDisplayedContainer(displayedContainer);
     this.containerCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
-    this.containerOptionsButton.title = browser.i18n.getMessage('containerOptions', userContext.name);
+    this.containerOptionsButton.title = browser.i18n.getMessage('containerOptions', displayedContainer.name);
     this.containerVisibilityToggleButton.title = browser.i18n.getMessage('tooltipHideContainerButton');
     this.containerHighlightButton.title = browser.i18n.getMessage('focusToThisContainer');
     this.tabCount = 0;
@@ -61,7 +61,7 @@ export class MenulistContainerElement extends HTMLElement {
   private buildElement() {
     const styleSheet = document.createElement('link');
     styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/components/menulist-container.css';
+    styleSheet.href = '/css/components/menulist-container.css';
     this.shadowRoot?.appendChild(styleSheet);
 
     const containerElement = document.createElement('div');
@@ -87,6 +87,10 @@ export class MenulistContainerElement extends HTMLElement {
     const containerNameElement = document.createElement('span');
     containerNameElement.id = 'container-name';
     containerButton.appendChild(containerNameElement);
+
+    const containerNameInnerElement = document.createElement('span');
+    containerNameInnerElement.id = 'container-name-inner';
+    containerNameElement.appendChild(containerNameInnerElement);
 
     const containerHighlightButton = document.createElement('button');
     containerHighlightButton.id = 'container-highlight-button';
@@ -131,18 +135,18 @@ export class MenulistContainerElement extends HTMLElement {
     };
   }
 
-  public setUserContext(userContext: UserContext) {
+  public setDisplayedContainer(displayedContainer: DisplayedContainer) {
     if (this._isPrivate) {
-      console.assert(userContext.id == 0, "Private window should have default container only");
-      this.containerNameElement.textContent = browser.i18n.getMessage('privateBrowsing');
+      console.assert(displayedContainer.cookieStore.userContextId == 0, "Private window should have default container only");
+      this.containerNameInnerElement.textContent = browser.i18n.getMessage('privateBrowsing');
       this.containerButton.title = browser.i18n.getMessage('privateBrowsing');
       this.containerIconElement.style.background = 'url(/img/firefox-icons/private-browsing-icon.svg) center center / contain no-repeat';
       this.containerIconElement.style.backgroundColor = 'transparent';
     } else {
-      this.containerNameElement.textContent = userContext.name;
-      this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(userContext.id));
-      this.containerIconElement.style.backgroundColor = userContext.colorCode;
-      const iconUrl = userContext.iconUrl;
+      this.containerNameInnerElement.textContent = displayedContainer.name;
+      this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(displayedContainer.cookieStore.userContextId));
+      this.containerIconElement.style.backgroundColor = displayedContainer.colorCode;
+      const iconUrl = displayedContainer.iconUrl;
       if (!iconUrl.includes(')')) {
         this.containerIconElement.style.mask = `url(${iconUrl}) center center / contain no-repeat`;
       }
@@ -151,6 +155,10 @@ export class MenulistContainerElement extends HTMLElement {
 
   private get containerNameElement(): HTMLSpanElement {
     return this.shadowRoot?.querySelector('#container-name') as HTMLSpanElement;
+  }
+
+  private get containerNameInnerElement(): HTMLSpanElement {
+    return this.shadowRoot?.querySelector('#container-name-inner') as HTMLSpanElement;
   }
 
   private get containerIconElement(): HTMLSpanElement {
@@ -190,7 +198,7 @@ export class MenulistContainerElement extends HTMLElement {
   }
 
   public get containerName(): string {
-    return this.containerNameElement.textContent || '';
+    return this.containerNameInnerElement.textContent || '';
   }
 
   public get tabCount(): number {

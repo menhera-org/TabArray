@@ -59,7 +59,7 @@ _Perfect replacement for Chrome's tab groups and the discontinued add-on Conex._
 
 This extension is actively developed/maintained as of 2023, so please wait for new features/fixes.
 
-Available languages: English, 日本語, Esperanto, Français, Español, Русский
+Available languages: English, 日本語, Esperanto, Français, Español, Русский, Deutsch, Čeština, Galego, Interlingua
 ([Help us translate!](https://hosted.weblate.org/projects/container-tab-groups/#languages))
 
 Please report any bugs here: https://github.com/menhera-org/TabArray/issues

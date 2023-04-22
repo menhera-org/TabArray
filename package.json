@@ -1,14 +1,12 @@
 {
   "name": "container-tab-groups",
-  "version": "11.5.0",
+  "version": "11.6.0",
   "description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
   "main": "./dist/index.js",
   "scripts": {
     "build": "node script/clean.js ; eslint . ; webpack ; node script/build.js",
-    "dev": "node script/clean.js ; eslint . ; webpack --mode=development ; web-ext build --source-dir ./dist/ --artifacts-dir ./builds/ --overwrite-dest --filename container-tab-groups.dev.xpi",
     "watch": "webpack -w",
     "clean": "node script/clean.js ; node script/clean-builds.js",
-    "typedoc": "typedoc --out ./docs/typedoc-frameworks ./src/frameworks/index.ts",
     "test": "node script/test.js"
   },
   "author": "Menhera.org",
@@ -25,13 +23,19 @@
     "typescript": "<5.1.0",
     "web-ext": "^7.6.0",
     "webpack": "^5.76.3",
-    "webpack-cli": "^5.0.1"
+    "webpack-cli": "^5.0.1",
+    "webpack-deadcode-plugin": "^0.1.17"
   },
   "dependencies": {
     "@types/diff": "^5.0.3",
     "diff": "^5.1.0",
     "webextension-polyfill": "^0.10.0",
-    "xterm": "^5.1.0",
-    "xterm-addon-fit": "^0.7.0"
+    "weeg-containers": "^0.9.0",
+    "weeg-domains": "^0.7.0",
+    "weeg-events": "^0.4.0",
+    "weeg-storage": "^0.5.0",
+    "weeg-tabs": "^0.14.0",
+    "weeg-types": "^0.4.0",
+    "weeg-utils": "^0.9.0"
   }
 }
