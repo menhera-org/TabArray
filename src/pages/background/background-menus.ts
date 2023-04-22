@@ -21,6 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { CookieStore } from 'weeg-containers';
+import { CompatTab } from 'weeg-tabs';
 
 import { MenuItem } from '../../lib/menus/MenuItem';
 import { PopupTabContextMenuItem } from '../../lib/menus/PopupTabContextMenuItem';
@@ -47,6 +48,15 @@ const MENU_ID_TOOLS_SETTINGS = 'tools-settings';
 
 const extensionPageService = ExtensionPageService.getInstance();
 const containerVisibilityService = ContainerVisibilityService.getInstance();
+
+const defineTabMenuHandler = (menuItem: MenuItem, action: 'onClicked' | 'onShown', handler: (tab: CompatTab) => void) => {
+  menuItem[action].addListener((info) => {
+    const { tab } = info;
+
+    if (tab == null) return;
+    handler(tab);
+  });
+};
 
 export const menus = {
   [MENU_ID_CONTEXT_TAB_NEW_TAB]: new PopupTabContextMenuItem({
@@ -128,30 +138,20 @@ menus[MENU_ID_TAB_HIDE_CONTAINER].onShown.addListener((info) => {
   }
 });
 
-menus[MENU_ID_TAB_HIDE_CONTAINER].onClicked.addListener((info) => {
-  const { tab } = info;
-
-  if (tab == null) return;
-  if (tab.cookieStore.id == null) return;
-
+defineTabMenuHandler(menus[MENU_ID_TAB_HIDE_CONTAINER], 'onClicked', (tab) => {
   const cookieStore = new CookieStore(tab.cookieStore.id);
-
-  if (info.menuItemId == MENU_ID_TAB_HIDE_CONTAINER) {
-    if (cookieStore.isPrivate) {
-      return;
-    }
-
-    if (tab.windowId == null) {
-      return;
-    }
-    containerVisibilityService.hideContainerOnWindow(tab.windowId, cookieStore.id).catch(e => console.error(e));
+  if (cookieStore.isPrivate) {
+    return;
   }
+
+  if (tab.windowId == null) {
+    return;
+  }
+
+  containerVisibilityService.hideContainerOnWindow(tab.windowId, cookieStore.id).catch(e => console.error(e));
 });
 
-menus[MENU_ID_CONTEXT_TAB_NEW_TAB].onClicked.addListener((info) => {
-  const { tab } = info;
-  if (null == tab) return;
-
+defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_NEW_TAB], 'onClicked', (tab) => {
   browser.tabs.create({
     windowId: tab.windowId,
   }).catch((e) => {
@@ -159,28 +159,21 @@ menus[MENU_ID_CONTEXT_TAB_NEW_TAB].onClicked.addListener((info) => {
   });
 });
 
-menus[MENU_ID_CONTEXT_TAB_RELOAD_TAB].onClicked.addListener((info) => {
-  const { tab } = info;
-  if (null == tab) return;
-
+defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_RELOAD_TAB], 'onClicked', (tab) => {
   browser.tabs.reload(tab.id).catch((e) => {
     console.error(e);
   });
 });
 
-menus[MENU_ID_CONTEXT_TAB_MUTE_TAB].onShown.addListener((info) => {
-  const { tab } = info;
-  if (!tab || !tab.muted) {
+defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_MUTE_TAB], 'onShown', (tab) => {
+  if (!tab.muted) {
     menus[MENU_ID_CONTEXT_TAB_MUTE_TAB].setTitle(browser.i18n.getMessage('contextMenuMuteTab'));
   } else {
     menus[MENU_ID_CONTEXT_TAB_MUTE_TAB].setTitle(browser.i18n.getMessage('contextMenuUnmuteTab'));
   }
 });
 
-menus[MENU_ID_CONTEXT_TAB_MUTE_TAB].onClicked.addListener((info) => {
-  const { tab } = info;
-  if (null == tab) return;
-
+defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_MUTE_TAB], 'onClicked', (tab) => {
   browser.tabs.update(tab.id, {
     muted: !tab.muted,
   }).catch((e) => {
@@ -188,19 +181,15 @@ menus[MENU_ID_CONTEXT_TAB_MUTE_TAB].onClicked.addListener((info) => {
   });
 });
 
-menus[MENU_ID_CONTEXT_TAB_PIN_TAB].onShown.addListener((info) => {
-  const { tab } = info;
-  if (!tab || !tab.pinned) {
+defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_PIN_TAB], 'onShown', (tab) => {
+  if (!tab.pinned) {
     menus[MENU_ID_CONTEXT_TAB_PIN_TAB].setTitle(browser.i18n.getMessage('contextMenuPinTab'));
   } else {
     menus[MENU_ID_CONTEXT_TAB_PIN_TAB].setTitle(browser.i18n.getMessage('contextMenuUnpinTab'));
   }
 });
 
-menus[MENU_ID_CONTEXT_TAB_PIN_TAB].onClicked.addListener((info) => {
-  const { tab } = info;
-  if (null == tab) return;
-
+defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_PIN_TAB], 'onClicked', (tab) => {
   browser.tabs.update(tab.id, {
     pinned: !tab.pinned,
   }).catch((e) => {
@@ -208,19 +197,13 @@ menus[MENU_ID_CONTEXT_TAB_PIN_TAB].onClicked.addListener((info) => {
   });
 });
 
-menus[MENU_ID_CONTEXT_TAB_DUPLICATE_TAB].onClicked.addListener((info) => {
-  const { tab } = info;
-  if (null == tab) return;
-
+defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_DUPLICATE_TAB], 'onClicked', (tab) => {
   browser.tabs.duplicate(tab.id).catch((e) => {
     console.error(e);
   });
 });
 
-menus[MENU_ID_CONTEXT_TAB_CLOSE_TAB].onClicked.addListener((info) => {
-  const { tab } = info;
-  if (null == tab) return;
-
+defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_CLOSE_TAB], 'onClicked', (tab) => {
   tab.close().catch((e) => {
     console.error(e);
   });
