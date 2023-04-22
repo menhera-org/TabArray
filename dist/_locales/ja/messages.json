@@ -577,5 +577,101 @@
     "optionEnableSorting": {
         "message": "タブの並び替えを有効化する",
         "description": "Label text for enabling sorting of containers/tabs."
+    },
+    "confirmGroupDelete": {
+        "message": "このコンテナーのグループを永久に削除しますか： $NAME$?",
+        "description": "Confirmation message before deleting a group.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "moveContainer": {
+        "message": "グループに移動する",
+        "description": "Move a container to another group."
+    },
+    "buttonMove": {
+        "message": "移動",
+        "description": "Button to move a container to another group."
+    },
+    "rootGroup": {
+        "message": "(ルート・グループ)",
+        "description": "Root group name."
+    },
+    "newTagDialogTitle": {
+        "message": "新しいタグを作成する",
+        "description": "Title of the dialog to create a new tag."
+    },
+    "editTagDialogTitle": {
+        "message": "タグを編集する",
+        "description": "Title of the dialog to edit a tag."
+    },
+    "buttonNewTag": {
+        "message": "新しいタグ",
+        "description": "Button to create a new tag."
+    },
+    "noTag": {
+        "message": "(タグなし)",
+        "description": "No tag name."
+    },
+    "setTag": {
+        "message": "タグをセットする",
+        "description": "Set a tag to a tab."
+    },
+    "buttonEditTag": {
+        "message": "タグを編集する",
+        "description": "Button to edit a tag."
+    },
+    "buttonDeleteTag": {
+        "message": "タグを削除する",
+        "description": "Button to delete a tag."
+    },
+    "optionsTabGeneral": {
+        "message": "一般",
+        "description": "Label text for general tab."
+    },
+    "optionsTabSortContainers": {
+        "message": "コンテナーの順番",
+        "description": "Label text for sort containers tab."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "言語とユーザエージェント",
+        "description": "Label text for language and user agent overrides tab."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Firefox 設定",
+        "description": "Label text for firefox settings tab."
+    },
+    "buttonNewGroup": {
+        "message": "新しいコンテナーのグループ",
+        "description": "Button to create a new group of containers."
+    },
+    "groupOptions": {
+        "message": "$NAME$ のグループオプション",
+        "description": "Heading text for group options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "buttonEditGroup": {
+        "message": "グループを編集する",
+        "description": "Button to edit a group of containers."
+    },
+    "buttonDeleteGroup": {
+        "message": "グループを削除する",
+        "description": "Button to delete a group of containers."
+    },
+    "newGroupDialogTitle": {
+        "message": "新しいグループを作成する",
+        "description": "Title of the dialog to create a new group of containers."
+    },
+    "editGroupDialogTitle": {
+        "message": "グループを編集する",
+        "description": "Title of the dialog to edit a group of containers."
     }
 }
