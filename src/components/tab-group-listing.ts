@@ -27,11 +27,7 @@ import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentitySe
 import { TabGroupAttributes } from '../lib/tabGroups/TabGroupAttributes';
 import { TabGroupDirectorySnapshot } from '../lib/tabGroups/TabGroupDirectorySnapshot';
 import { TabGroupService } from '../lib/tabGroups/TabGroupService';
-
-export type ElementAttributes = {
-  id?: string;
-  classNames?: string[];
-};
+import { DomFactory } from '../lib/DomFactory';
 
 export abstract class TabGroupListingElement extends HTMLElement {
   private readonly _columns: readonly string[];
@@ -58,14 +54,14 @@ export abstract class TabGroupListingElement extends HTMLElement {
     styleSheet.href = stylesheet;
     this.shadowRoot.appendChild(styleSheet);
 
-    const sorterWrapperElement = this.createElement<HTMLDivElement>('div', this.shadowRoot, { id: 'sorter-wrapper' });
-    const headerElement = this.createElement<HTMLDivElement>('div', sorterWrapperElement, { classNames: ['header'] });
+    const sorterWrapperElement = DomFactory.createElement<HTMLDivElement>('div', this.shadowRoot, { id: 'sorter-wrapper' });
+    const headerElement = DomFactory.createElement<HTMLDivElement>('div', sorterWrapperElement, { classNames: ['header'] });
 
-    const headerContainerElement = this.createElement<HTMLDivElement>('div', headerElement, { classNames: ['header-container'] });
+    const headerContainerElement = DomFactory.createElement<HTMLDivElement>('div', headerElement, { classNames: ['header-container'] });
     headerContainerElement.textContent = browser.i18n.getMessage('menuItemMain');
 
     for (const columnName of columns) {
-      const headerColumnElement = this.createElement<HTMLDivElement>('div', headerElement, { classNames: ['header-column'] });
+      const headerColumnElement = DomFactory.createElement<HTMLDivElement>('div', headerElement, { classNames: ['header-column'] });
       headerColumnElement.textContent = columnName;
     }
 
@@ -94,22 +90,6 @@ export abstract class TabGroupListingElement extends HTMLElement {
 
   public get sortingEnabled(): boolean {
     return this._sortingEnabled;
-  }
-
-  protected createElement<T extends HTMLElement>(tagName: string, parentElement: ParentNode, elementAttributes?: ElementAttributes): T {
-    const element = document.createElement(tagName);
-    if (elementAttributes) {
-      if (elementAttributes.id != null) {
-        element.id = elementAttributes.id;
-      }
-      if (elementAttributes.classNames != null) {
-        for (const className of elementAttributes.classNames) {
-          element.classList.add(className);
-        }
-      }
-    }
-    parentElement.appendChild(element);
-    return element as T;
   }
 
   protected abstract createColumnElement(columnId: number, tabGroupId: string): HTMLElement;

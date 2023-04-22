@@ -22,16 +22,19 @@
 import browser from 'webextension-polyfill';
 import { EventSink } from "weeg-events";
 import { DisplayedContainer } from 'weeg-containers';
+import { CompatTab } from 'weeg-tabs';
 
 import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
 
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import { SupergroupEditorElement } from './supergroup-editor';
 import { TagEditorElement } from './tag-editor';
+import { MenulistTabElement } from './menulist-tab';
 
 import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
 import * as containers from '../legacy-lib/modules/containers';
 import { ContainerVisibilityService } from "../lib/tabGroups/ContainerVisibilityService";
+import { DomFactory } from '../lib/DomFactory';
 
 import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
 
@@ -59,97 +62,63 @@ export class PanelWindowsElement extends HTMLElement {
       throw new Error('Shadow root is null');
     }
 
-    const styleSheet = document.createElement('link');
+    const styleSheet = DomFactory.createElement<HTMLLinkElement>('link', this.shadowRoot);
     styleSheet.rel = 'stylesheet';
     styleSheet.href = '/css/components/panel-windows.css';
-    this.shadowRoot.appendChild(styleSheet);
 
-    const header = document.createElement('div');
-    header.classList.add('header');
-    this.shadowRoot.appendChild(header);
+    const header = DomFactory.createElement('div', this.shadowRoot, { classNames: ['header'] });
+    const headerWindow = DomFactory.createElement('div', header, { classNames: ['header-window'] });
+    const headerContainer = DomFactory.createElement('div', header, { classNames: ['header-container'] });
+    DomFactory.createElement('select', headerWindow, { classNames: ['window-select', 'browser-style'] });
+    DomFactory.createElement('span', headerWindow, { classNames: ['tab-count'] });
+    this.defineWindowMenuItems(headerWindow);
 
-    const headerWindow = document.createElement('div');
-    headerWindow.classList.add('header-window');
-    header.appendChild(headerWindow);
+    const searchWrapper = DomFactory.createElement('div', headerContainer, { id: 'search-wrapper' });
 
-    const headerContainer = document.createElement('div');
-    headerContainer.classList.add('header-container');
-    header.appendChild(headerContainer);
-
-    const windowSelect = document.createElement('select');
-    windowSelect.classList.add('window-select');
-    windowSelect.classList.add('browser-style');
-    headerWindow.appendChild(windowSelect);
-
-    const tabCount = document.createElement('span');
-    tabCount.classList.add('tab-count');
-    headerWindow.appendChild(tabCount);
-
-    const collapseContainersMenuItem = this.createMenuItem('collapse-containers', 'tooltipCollapseContainers', '/img/material-icons/unfold_less.svg', this.onCollapseContainersButtonClicked);
-    headerWindow.appendChild(collapseContainersMenuItem);
-
-    const expandContainersMenuItem = this.createMenuItem('expand-containers', 'tooltipExpandContainers', '/img/material-icons/unfold_more.svg', this.onExpandContainersButtonClicked);
-    headerWindow.appendChild(expandContainersMenuItem);
-
-    const windowCloseMenuItem = this.createMenuItem('window-close', 'tooltipCloseWindow', '/img/firefox-icons/close.svg', this.onWindowCloseButtonClicked);
-    headerWindow.appendChild(windowCloseMenuItem);
-
-    const searchWrapper = document.createElement('div');
-    searchWrapper.id = 'search-wrapper';
-    headerContainer.appendChild(searchWrapper);
-
-    const search = document.createElement('input');
-    search.id = 'search';
+    const search = DomFactory.createElement<HTMLInputElement>('input', searchWrapper, { id: 'search' });
     search.type = 'search';
     search.placeholder = browser.i18n.getMessage('searchPlaceholder');
-    searchWrapper.appendChild(search);
 
-    const newTagMenuItem = this.createMenuItem('new-tag', 'buttonNewTag', '/img/material-icons/new_label.svg', this.onCreateTagButtonClicked);
-    headerContainer.appendChild(newTagMenuItem);
+    this.defineContainerMenuItems(headerContainer);
 
-    const newGroupMenuItem = this.createMenuItem('new-group', 'buttonNewGroup', '/img/material-icons/create_new_folder.svg', this.onCreateGroupButtonClicked);
-    headerContainer.appendChild(newGroupMenuItem);
+    const mainElement = DomFactory.createElement('div', this.shadowRoot, { classNames: ['main'] });
+    DomFactory.createElement('div', mainElement, { classNames: ['pinned-tabs'] });
+    DomFactory.createElement('div', mainElement, { classNames: ['active-containers'] });
+    DomFactory.createElement('div', mainElement, { classNames: ['inactive-containers'] });
+    DomFactory.createElement('div', mainElement, { classNames: ['actions'] });
 
-    const newContainerMenuItem = this.createMenuItem('new-container', 'buttonNewContainer', '/img/firefox-icons/add.svg', this.onCreateContainerButtonClicked);
-    headerContainer.appendChild(newContainerMenuItem);
-
-    const newTemporaryContainerMenuItem = this.createMenuItem('new-temporary-container', 'buttonNewTemporaryContainer', '/img/material-icons/timelapse.svg', this.onCreateTemporaryContainerButtonClicked);
-    headerContainer.appendChild(newTemporaryContainerMenuItem);
-
-    const mainElement = document.createElement('div');
-    mainElement.classList.add('main');
-    this.shadowRoot.appendChild(mainElement);
-
-    const pinnedTabsElement = document.createElement('div');
-    pinnedTabsElement.classList.add('pinned-tabs');
-    mainElement.appendChild(pinnedTabsElement);
-
-    const activeContainersElement = document.createElement('div');
-    activeContainersElement.classList.add('active-containers');
-    mainElement.appendChild(activeContainersElement);
-
-    const inactiveContainersElement = document.createElement('div');
-    inactiveContainersElement.classList.add('inactive-containers');
-    mainElement.appendChild(inactiveContainersElement);
-
-    const actionsElement = document.createElement('div');
-    actionsElement.classList.add('actions');
-    mainElement.appendChild(actionsElement);
-
-    const searchResultsElement = document.createElement('div');
-    searchResultsElement.classList.add('search-results');
-    this.shadowRoot.appendChild(searchResultsElement);
+    const searchResultsElement = DomFactory.createElement('div', this.shadowRoot, { classNames: ['search-results'] });
     searchResultsElement.hidden = true;
 
-    const searchResultsContainersElement = document.createElement('div');
-    searchResultsContainersElement.classList.add('search-results-containers');
-    searchResultsElement.appendChild(searchResultsContainersElement);
-
-    const searchResultsTabsElement = document.createElement('div');
-    searchResultsTabsElement.classList.add('search-results-tabs');
-    searchResultsElement.appendChild(searchResultsTabsElement);
+    DomFactory.createElement('div', searchResultsElement, { classNames: ['search-results-containers'] });
+    DomFactory.createElement('div', searchResultsElement, { classNames: ['search-results-tabs'] });
 
     this.defineEventHandlers();
+  }
+
+  private defineWindowMenuItems(element: HTMLElement): void {
+    const collapseContainersMenuItem = this.createMenuItem('collapse-containers', 'tooltipCollapseContainers', '/img/material-icons/unfold_less.svg', this.onCollapseContainersButtonClicked);
+    element.appendChild(collapseContainersMenuItem);
+
+    const expandContainersMenuItem = this.createMenuItem('expand-containers', 'tooltipExpandContainers', '/img/material-icons/unfold_more.svg', this.onExpandContainersButtonClicked);
+    element.appendChild(expandContainersMenuItem);
+
+    const windowCloseMenuItem = this.createMenuItem('window-close', 'tooltipCloseWindow', '/img/firefox-icons/close.svg', this.onWindowCloseButtonClicked);
+    element.appendChild(windowCloseMenuItem);
+  }
+
+  private defineContainerMenuItems(element: HTMLElement): void {
+    const newTagMenuItem = this.createMenuItem('new-tag', 'buttonNewTag', '/img/material-icons/new_label.svg', this.onCreateTagButtonClicked);
+    element.appendChild(newTagMenuItem);
+
+    const newGroupMenuItem = this.createMenuItem('new-group', 'buttonNewGroup', '/img/material-icons/create_new_folder.svg', this.onCreateGroupButtonClicked);
+    element.appendChild(newGroupMenuItem);
+
+    const newContainerMenuItem = this.createMenuItem('new-container', 'buttonNewContainer', '/img/firefox-icons/add.svg', this.onCreateContainerButtonClicked);
+    element.appendChild(newContainerMenuItem);
+
+    const newTemporaryContainerMenuItem = this.createMenuItem('new-temporary-container', 'buttonNewTemporaryContainer', '/img/material-icons/timelapse.svg', this.onCreateTemporaryContainerButtonClicked);
+    element.appendChild(newTemporaryContainerMenuItem);
   }
 
   private defineEventHandlers() {
@@ -289,6 +258,37 @@ export class PanelWindowsElement extends HTMLElement {
     actionsElement.appendChild(newTemporaryContainerMenuItem);
   }
 
+  private defineDragHandlersForPinnedTab(pinnedTab: CompatTab, tabElement: MenulistTabElement) {
+    tabElement.draggable = true;
+    tabElement.addEventListener('dragstart', (ev) => {
+      if (!ev.dataTransfer) return;
+      ev.dataTransfer.setData('application/json', JSON.stringify({
+        type: 'tab',
+        id: pinnedTab.id,
+        index: pinnedTab.index,
+        pinned: true,
+      }));
+      ev.dataTransfer.dropEffect = 'move';
+    });
+    tabElement.addEventListener('dragover', (ev) => {
+      if (!ev.dataTransfer) return;
+      const json = ev.dataTransfer.getData('application/json');
+      const data = JSON.parse(json);
+      if ('tab' != data.type || !data.pinned) return;
+      ev.preventDefault();
+    });
+    tabElement.addEventListener('drop', (ev) => {
+      if (!ev.dataTransfer) return;
+      const json = ev.dataTransfer.getData('application/json');
+      const data = JSON.parse(json);
+      if ('tab' != data.type || !data.pinned) return;
+      ev.preventDefault();
+      browser.tabs.move(data.id, { index: pinnedTab.index }).catch((e) => {
+        console.error(e);
+      });
+    });
+  }
+
   private renderPinnedTabs(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly DisplayedContainer[]) {
     const currentWindowState = browserStateSnapshot.getWindowStateSnapshot(this._selectedWindowId);
     const pinnedTabs = [... currentWindowState.pinnedTabs];
@@ -309,34 +309,7 @@ export class PanelWindowsElement extends HTMLElement {
         continue;
       }
       const tabElement = this._popupRenderer.renderTab(pinnedTab, userContext);
-      tabElement.draggable = true;
-      tabElement.addEventListener('dragstart', (ev) => {
-        if (!ev.dataTransfer) return;
-        ev.dataTransfer.setData('application/json', JSON.stringify({
-          type: 'tab',
-          id: pinnedTab.id,
-          index: pinnedTab.index,
-          pinned: true,
-        }));
-        ev.dataTransfer.dropEffect = 'move';
-      });
-      tabElement.addEventListener('dragover', (ev) => {
-        if (!ev.dataTransfer) return;
-        const json = ev.dataTransfer.getData('application/json');
-        const data = JSON.parse(json);
-        if ('tab' != data.type || !data.pinned) return;
-        ev.preventDefault();
-      });
-      tabElement.addEventListener('drop', (ev) => {
-        if (!ev.dataTransfer) return;
-        const json = ev.dataTransfer.getData('application/json');
-        const data = JSON.parse(json);
-        if ('tab' != data.type || !data.pinned) return;
-        ev.preventDefault();
-        browser.tabs.move(data.id, { index: pinnedTab.index }).catch((e) => {
-          console.error(e);
-        });
-      });
+      this.defineDragHandlersForPinnedTab(pinnedTab, tabElement);
       pinnedTabsElement.appendChild(tabElement);
     }
   }
