@@ -118,13 +118,7 @@ export class CtgTopBarElement extends HTMLElement {
   }
 
   public set drawerButtonEnabled(enabled: boolean) {
-    const drawerButton = this.shadowRoot?.getElementById('drawer-button');
-    const backButton = this.shadowRoot?.getElementById('back-button');
-    if (!drawerButton || !backButton) {
-      return;
-    }
-    drawerButton.hidden = !enabled;
-    backButton.hidden = enabled;
+    this.backButtonEnabled = !enabled;
   }
 
   public get drawerButtonIconSrc(): string {
