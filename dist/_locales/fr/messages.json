@@ -569,5 +569,109 @@
     "labelAutoDiscard86400": {
         "message": "1 jour",
         "description": "Label text for autodiscard in 86400 seconds."
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
+    },
+    "optionEnableSorting": {
+        "message": "Activer le tri automatique des onglets",
+        "description": "Label text for enabling sorting of containers/tabs."
+    },
+    "buttonNewGroup": {
+        "message": "Nouveau groupe de conteneurs",
+        "description": "Button to create a new group of containers."
+    },
+    "newGroupDialogTitle": {
+        "message": "Créer un nouveau groupe",
+        "description": "Title of the dialog to create a new group of containers."
+    },
+    "editGroupDialogTitle": {
+        "message": "Modifier un groupe",
+        "description": "Title of the dialog to edit a group of containers."
+    },
+    "groupOptions": {
+        "message": "Options de groupe pour $NAME$",
+        "description": "Heading text for group options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "buttonEditGroup": {
+        "message": "Modifier le groupe",
+        "description": "Button to edit a group of containers."
+    },
+    "buttonDeleteGroup": {
+        "message": "Supprimer le groupe",
+        "description": "Button to delete a group of containers."
+    },
+    "moveContainer": {
+        "message": "Déplacer vers un autre groupe",
+        "description": "Move a container to another group."
+    },
+    "buttonMove": {
+        "message": "Déplacer",
+        "description": "Button to move a container to another group."
+    },
+    "rootGroup": {
+        "message": "(Groupe Racine)",
+        "description": "Root group name."
+    },
+    "newTagDialogTitle": {
+        "message": "Créer un nouveau tag",
+        "description": "Title of the dialog to create a new tag."
+    },
+    "editTagDialogTitle": {
+        "message": "Modifier un tag",
+        "description": "Title of the dialog to edit a tag."
+    },
+    "optionsTabGeneral": {
+        "message": "Général",
+        "description": "Label text for general tab."
+    },
+    "optionsTabSortContainers": {
+        "message": "Trier les conteneurs",
+        "description": "Label text for sort containers tab."
+    },
+    "buttonNewTag": {
+        "message": "Nouveau tag",
+        "description": "Button to create a new tag."
+    },
+    "noTag": {
+        "message": "(Sans tag)",
+        "description": "No tag name."
+    },
+    "setTag": {
+        "message": "Réglager d'un tag",
+        "description": "Set a tag to a tab."
+    },
+    "buttonEditTag": {
+        "message": "Modifier un tag",
+        "description": "Button to edit a tag."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "Langues et agents utilisateurs",
+        "description": "Label text for language and user agent overrides tab."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Réglages de Firefox",
+        "description": "Label text for firefox settings tab."
+    },
+    "confirmGroupDelete": {
+        "message": "Voulez-vous supprimer définitivement ce groupe de conteneurs : $NAME$ ?",
+        "description": "Confirmation message before deleting a group.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "buttonDeleteTag": {
+        "message": "Supprimer un tag",
+        "description": "Button to delete a tag."
     }
 }
