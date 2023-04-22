@@ -91,6 +91,12 @@ export class ModalSetTagElement extends HTMLElement {
         option.textContent = name;
         select.appendChild(option);
       }
+      browser.tabs.get(tabId).then(async (browserTab) => {
+        const tab = new CompatTab(browserTab);
+        const tag = await tagService.getTagForTab(tab);
+        const tagId = tag?.tagId ?? 0;
+        select.value = tagId.toString();
+      });
     });
 
     cancelButton.addEventListener('click', () => {
