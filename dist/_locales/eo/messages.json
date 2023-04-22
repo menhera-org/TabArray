@@ -577,5 +577,101 @@
     "optionEnableSorting": {
         "message": "Ebligi ordigadon de langetoj",
         "description": "Label text for enabling sorting of containers/tabs."
+    },
+    "newGroupDialogTitle": {
+        "message": "Krei novan grupon",
+        "description": "Title of the dialog to create a new group of containers."
+    },
+    "editGroupDialogTitle": {
+        "message": "Redakti grupon",
+        "description": "Title of the dialog to edit a group of containers."
+    },
+    "groupOptions": {
+        "message": "Grupaj agordoj por: $NAME$",
+        "description": "Heading text for group options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "buttonDeleteGroup": {
+        "message": "Forstreki la grupon",
+        "description": "Button to delete a group of containers."
+    },
+    "confirmGroupDelete": {
+        "message": "Ĉu vi volas konstante forigi ĉi tiun grupon de ujoj: $NAME$?",
+        "description": "Confirmation message before deleting a group.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "moveContainer": {
+        "message": "Movi al grupo",
+        "description": "Move a container to another group."
+    },
+    "rootGroup": {
+        "message": "(Radika Grupo)",
+        "description": "Root group name."
+    },
+    "newTagDialogTitle": {
+        "message": "Krei novan etikedon",
+        "description": "Title of the dialog to create a new tag."
+    },
+    "editTagDialogTitle": {
+        "message": "Redakti etikedon",
+        "description": "Title of the dialog to edit a tag."
+    },
+    "buttonNewTag": {
+        "message": "Nova etikedo",
+        "description": "Button to create a new tag."
+    },
+    "noTag": {
+        "message": "(neniu etikedo)",
+        "description": "No tag name."
+    },
+    "setTag": {
+        "message": "Difini etikedo",
+        "description": "Set a tag to a tab."
+    },
+    "buttonEditTag": {
+        "message": "Redakti etikedon",
+        "description": "Button to edit a tag."
+    },
+    "buttonDeleteTag": {
+        "message": "Forstreki la etikedon",
+        "description": "Button to delete a tag."
+    },
+    "optionsTabSortContainers": {
+        "message": "Ordigi ujojn",
+        "description": "Label text for sort containers tab."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "Lingvoj kaj User-Agent",
+        "description": "Label text for language and user agent overrides tab."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Firefox agordoj",
+        "description": "Label text for firefox settings tab."
+    },
+    "buttonNewGroup": {
+        "message": "Nova grupo de ujoj",
+        "description": "Button to create a new group of containers."
+    },
+    "buttonEditGroup": {
+        "message": "Redakti grupon",
+        "description": "Button to edit a group of containers."
+    },
+    "buttonMove": {
+        "message": "Movi",
+        "description": "Button to move a container to another group."
+    },
+    "optionsTabGeneral": {
+        "message": "Universala",
+        "description": "Label text for general tab."
     }
 }
