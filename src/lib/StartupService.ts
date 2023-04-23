@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { ExtensionService, assertTopLevel } from "weeg-utils";
+import { Asserts } from "weeg-utils";
 import { EventSink } from 'weeg-events';
 
 import { ServiceRegistry } from './ServiceRegistry';
@@ -37,13 +37,9 @@ export class StartupService {
 
   public readonly onStartup = new EventSink<void>();
 
-  private readonly _extensionService = ExtensionService.getInstance();
-
   private constructor() {
-    if (!this._extensionService.isBackgroundPage()) {
-      throw new Error("This class is only for the background page.");
-    }
-    assertTopLevel();
+    Asserts.assertBackgroundScript();
+    Asserts.assertTopLevel();
     browser.runtime.onInstalled.addListener(() => {
       this.onStartup.dispatch();
     });

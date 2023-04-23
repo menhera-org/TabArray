@@ -20,15 +20,13 @@
 **/
 
 import { StorageItem } from "weeg-storage";
-import { ExtensionService } from "weeg-utils";
+import { Asserts } from "weeg-utils";
 
 import { StartupService } from "./StartupService";
 import { ServiceRegistry } from "./ServiceRegistry";
 
-const extensionService = ExtensionService.getInstance();
-if (!extensionService.isBackgroundPage()) {
-  throw new Error("This script should only be run in the background page.");
-}
+// throws an error if not in background script
+Asserts.assertBackgroundScript();
 
 const startupService = StartupService.getInstance();
 

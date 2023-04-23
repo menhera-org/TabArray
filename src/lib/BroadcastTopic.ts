@@ -19,11 +19,10 @@
   @license
 **/
 
-import { MessagingService, assertTopLevel, ExtensionService } from "weeg-utils";
+import { MessagingService, Asserts } from "weeg-utils";
 
 export type BroadcastListener<T> = (message: T) => void;
 
-const extensionService = ExtensionService.getInstance();
 const messagingService = MessagingService.getInstance();
 
 /**
@@ -33,9 +32,7 @@ export class BroadcastTopic<T> {
   public readonly topic: string;
 
   public constructor(topic: string) {
-    if (extensionService.isBackgroundPage()) {
-      assertTopLevel();
-    }
+    Asserts.assertTopLevelInBackgroundScript();
     this.topic = topic;
   }
 

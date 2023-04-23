@@ -20,12 +20,10 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { ExtensionService } from 'weeg-utils';
+import { Asserts } from 'weeg-utils';
 
-const extensionService = ExtensionService.getInstance();
-if (!extensionService.isBackgroundPage()) {
-  throw new Error('This module is only for the background page.');
-}
+// throws an error if not in background script
+Asserts.assertBackgroundScript();
 
 /**
  * A service that modifies the headers of frames to allow them to be
