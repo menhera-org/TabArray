@@ -22,6 +22,8 @@
 import browser from 'webextension-polyfill';
 import { BackgroundService } from 'weeg-utils';
 
+import { ServiceRegistry } from '../ServiceRegistry';
+
 type InputType = {
   tabId: number;
   url: string; // url to load
@@ -45,3 +47,5 @@ export class TabUrlService extends BackgroundService<InputType, void> {
     await this.call({ tabId, url });
   }
 }
+
+ServiceRegistry.getInstance().registerService('TabUrlService', TabUrlService.getInstance<TabUrlService>());

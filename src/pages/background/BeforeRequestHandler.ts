@@ -20,12 +20,17 @@
 **/
 
 import browser from 'webextension-polyfill';
+
+import { UrlRegistrationService } from '../../lib/UrlRegistrationService';
+
 import { CONFIRM_PAGE } from '../../defs';
 
 /**
  * The type of the handler function. Returns whether to redirect the request.
  */
 export type HandlerType = (details: browser.WebRequest.OnBeforeRequestDetailsType) => Promise<boolean>;
+
+const urlRegistrationService = UrlRegistrationService.getInstance();
 
 export class BeforeRequestHandler {
   private readonly _handler: HandlerType;
@@ -37,7 +42,9 @@ export class BeforeRequestHandler {
       const whetherToRedirect = await this._handler(details);
       const result: browser.WebRequest.BlockingResponse = {};
       if (whetherToRedirect) {
-        const confirmUrl = browser.runtime.getURL(CONFIRM_PAGE + '?url=' + encodeURIComponent(details.url));
+        const url = details.url;
+        const urlId = await urlRegistrationService.registerUrl(url);
+        const confirmUrl = browser.runtime.getURL(`${CONFIRM_PAGE}?urlId=${urlId}`);
         result.redirectUrl = confirmUrl;
         console.log('Redirecting %s to %s', details.url, confirmUrl);
       }

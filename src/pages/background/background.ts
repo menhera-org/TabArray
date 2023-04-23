@@ -29,6 +29,8 @@ import { TabSortingService } from '../../lib/tabs/TabSortingService';
 import { SanityCheckService } from '../../lib/SenityCheckService';
 import { TabConverterService } from '../../lib/tabs/TabConverterService';
 import { TabUrlService } from '../../lib/tabs/TabUrlService';
+import { UrlRegistrationService } from '../../lib/UrlRegistrationService';
+import { StartupService } from '../../lib/StartupService';
 
 import './background-install-handler';
 import './background-index-tab';
@@ -69,11 +71,18 @@ TabConverterService.getInstance();
 
 // other services used by this script
 const sanityCheckService = SanityCheckService.getInstance();
+const startupService = StartupService.getInstance();
 
 // auto reload the extension if the sanity check fails
 everyMinuteAlarm.onAlarm.addListener(() => {
   sanityCheckService.checkForFiles().catch((e) => {
     console.error('Sanity check failed, reloading', e);
     browser.runtime.reload();
+  });
+});
+
+startupService.onStartup.addListener(() => {
+  UrlRegistrationService.getInstance().resetStorage().catch((e) => {
+    console.error(e);
   });
 });

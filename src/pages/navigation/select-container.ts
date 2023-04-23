@@ -30,6 +30,7 @@ import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpene
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TabUrlService } from '../../lib/tabs/TabUrlService';
+import { UrlRegistrationService } from '../../lib/UrlRegistrationService';
 
 import * as i18n from '../../legacy-lib/modules/i18n';
 
@@ -43,23 +44,41 @@ const tabGroupDirectory = new TabGroupDirectory();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 const displayedContainerService = DisplayedContainerService.getInstance();
+const urlRegistrationService = UrlRegistrationService.getInstance();
+
+const blackScreenOnError = (e: unknown) => {
+  console.error(e);
+  document.body.style.display = 'none';
+};
+
+document.onerror = (e) => {
+  blackScreenOnError(e);
+};
 
 const params = new URLSearchParams(location.search);
 
-// empty values are turned into null
-const url = params.get('url') || null;
+const urlId = parseInt(params.get('urlId') || '0', 10);
+
+if (isNaN(urlId)) {
+  throw new Error('Invalid URL ID');
+}
+
+const urlPromise = urlRegistrationService.getAndRevokeUrl(urlId).then((url) => {
+  if (!url) {
+    throw new Error('Invalid URL');
+  }
+  return url;
+});
+
+urlPromise.catch((e) => {
+  blackScreenOnError(e);
+});
 
 const containersElement = document.querySelector('#containers');
 const headingElement = document.querySelector('#heading');
 const descriptionElement = document.querySelector('#description');
 const promptElement = document.querySelector('#prompt');
 const settingsButton = document.querySelector('#button-settings');
-
-if (!url) {
-  throw new Error('No URL provided');
-}
-
-new URL(url); // throws for invalid urls
 
 if (!containersElement || !headingElement || !descriptionElement || !promptElement || !settingsButton) {
   throw new Error('Missing elements');
@@ -68,9 +87,12 @@ if (!containersElement || !headingElement || !descriptionElement || !promptEleme
 document.documentElement.lang = i18n.getEffectiveLocale();
 document.title = i18n.getMessage('titleSelectContainer');
 headingElement.textContent = i18n.getMessage('titleSelectContainer');
-descriptionElement.textContent = i18n.getMessage('descriptionSelectContainer', url || 'about:blank');
 promptElement.textContent = i18n.getMessage('promptSelectContainer');
 settingsButton.textContent = i18n.getMessage('buttonSettings');
+
+urlPromise.then((url) => {
+  descriptionElement.textContent = i18n.getMessage('descriptionSelectContainer', url || 'about:blank');
+});
 
 const currentTabPromise = browser.tabs.getCurrent();
 
@@ -83,11 +105,11 @@ settingsButton.addEventListener('click', () => {
 });
 
 const reopenInContainer = (cookieStoreId: string) => {
-  currentTabPromise.then((currentBrowserTab) => {
+  Promise.all([currentTabPromise, urlPromise]).then(([currentBrowserTab, url]) => {
     if (null == currentBrowserTab.id) {
       throw new Error('Current tab has no ID');
     }
-    return containerTabOpenerService.reopenTabInContainer(currentBrowserTab.id, cookieStoreId, true);
+    return containerTabOpenerService.reopenTabInContainer(currentBrowserTab.id, cookieStoreId, true, url);
   }).catch((e) => {
     console.error(e);
   });
@@ -207,7 +229,7 @@ displayedContainerService.getDisplayedContainersByPrivateBrowsing(false).then(as
 
 contextualIdentityFactory.onCreated.addListener(createContainerElement);
 
-currentTabPromise.then((browserTab) => {
+Promise.all([currentTabPromise, urlPromise]).then(([browserTab, url]) => {
   const tab = new CompatTab(browserTab);
   if (tab.isPrivate) {
     // no containers in private mode
@@ -224,4 +246,6 @@ currentTabPromise.then((browserTab) => {
     loadUrl(url);
     return;
   }
+}).catch((e) => {
+  blackScreenOnError(e);
 });
