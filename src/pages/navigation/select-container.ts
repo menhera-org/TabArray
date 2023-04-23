@@ -48,13 +48,17 @@ const displayedContainerService = DisplayedContainerService.getInstance();
 const urlRegistrationService = UrlRegistrationService.getInstance();
 const extensionPageService = ExtensionPageService.getInstance();
 
-const blackScreenOnError = (e: unknown) => {
-  console.error(e);
+const blankScreen = () => {
   document.body.style.display = 'none';
 };
 
+const handleError = (e: unknown) => {
+  console.error(e);
+  blankScreen();
+};
+
 document.onerror = (e) => {
-  blackScreenOnError(e);
+  handleError(e);
 };
 
 const params = new URLSearchParams(location.search);
@@ -69,7 +73,7 @@ const urlPromise = urlRegistrationService.getAndRevokeUrl(urlId).then((url) => {
 });
 
 urlPromise.catch((e) => {
-  blackScreenOnError(e);
+  handleError(e);
 });
 
 const containersElement = document.querySelector('#containers');
@@ -110,7 +114,7 @@ const reopenInContainer = (cookieStoreId: string) => {
 };
 
 const loadUrl = (url: string) => {
-  document.body.style.display = 'none';
+  blankScreen();
   currentTabPromise.then((currentBrowserTab) => {
     if (currentBrowserTab.id == null) throw new Error('Current tab has no ID');
     return tabUrlService.loadUrlInTab(currentBrowserTab.id, url);
@@ -241,5 +245,5 @@ Promise.all([currentTabPromise, urlPromise]).then(([browserTab, url]) => {
     return;
   }
 }).catch((e) => {
-  blackScreenOnError(e);
+  handleError(e);
 });
