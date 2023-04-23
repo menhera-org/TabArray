@@ -141,23 +141,25 @@ globalMenuItems.defineDrawerMenuItems(drawerElement);
 
 const renderer = new ViewRefreshHandler(async () => {
   topBarElement.beginSpinnerTransaction('popup-rendering');
-  const browserSnapshotStart = Date.now();
-  const browserStateSnapshot = await BrowserStateSnapshot.create();
-  const browserSnapshotEnd = Date.now();
-  const browserSnapshotTime = browserSnapshotEnd - browserSnapshotStart;
-  if (browserSnapshotTime > 100) {
-    console.info(`Browser snapshot took ${browserSnapshotTime}ms`);
+  try {
+    const browserSnapshotStart = Date.now();
+    const browserStateSnapshot = await BrowserStateSnapshot.create();
+    const browserSnapshotEnd = Date.now();
+    const browserSnapshotTime = browserSnapshotEnd - browserSnapshotStart;
+    if (browserSnapshotTime > 100) {
+      console.info(`Browser snapshot took ${browserSnapshotTime}ms`);
+    }
+    windowsBuilder.render(browserStateSnapshot);
+    containersBuilder.render(browserStateSnapshot.getContainersStateSnapshot());
+    const currentWindowSnapshot = browserStateSnapshot.getWindowStateSnapshot(browserStateSnapshot.currentWindowId);
+    sitesBuilder.render(browserStateSnapshot.getFirstPartyStateSnapshot(currentWindowSnapshot.isPrivate));
+
+    containerDetailsBuilder.render(browserStateSnapshot);
+    siteDetailsBuilder.render(browserStateSnapshot, currentWindowSnapshot.isPrivate);
+  } finally {
+    topBarElement.endSpinnerTransaction('popup-rendering');
+    console.debug('rendering done');
   }
-  windowsBuilder.render(browserStateSnapshot);
-  containersBuilder.render(browserStateSnapshot.getContainersStateSnapshot());
-  const currentWindowSnapshot = browserStateSnapshot.getWindowStateSnapshot(browserStateSnapshot.currentWindowId);
-  sitesBuilder.render(browserStateSnapshot.getFirstPartyStateSnapshot(currentWindowSnapshot.isPrivate));
-
-  containerDetailsBuilder.render(browserStateSnapshot);
-  siteDetailsBuilder.render(browserStateSnapshot, currentWindowSnapshot.isPrivate);
-
-  topBarElement.endSpinnerTransaction('popup-rendering');
-  console.debug('rendering done');
 });
 
 const renderInBackground = renderer.renderInBackground.bind(renderer);
