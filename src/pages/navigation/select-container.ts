@@ -29,12 +29,14 @@ import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
+import { TabUrlService } from '../../lib/tabs/TabUrlService';
 
 import * as i18n from '../../legacy-lib/modules/i18n';
 
 import { ContainerEditorElement } from '../../components/container-editor';
 
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
+const tabUrlService = TabUrlService.getInstance<TabUrlService>();
 const extensionService = ExtensionService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
@@ -63,12 +65,14 @@ if (!containersElement || !headingElement || !descriptionElement || !promptEleme
   throw new Error('Missing elements');
 }
 
-document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
+document.documentElement.lang = i18n.getEffectiveLocale();
 document.title = i18n.getMessage('titleSelectContainer');
 headingElement.textContent = i18n.getMessage('titleSelectContainer');
 descriptionElement.textContent = i18n.getMessage('descriptionSelectContainer', url || 'about:blank');
 promptElement.textContent = i18n.getMessage('promptSelectContainer');
 settingsButton.textContent = i18n.getMessage('buttonSettings');
+
+const currentTabPromise = browser.tabs.getCurrent();
 
 settingsButton.addEventListener('click', () => {
   browser.runtime.openOptionsPage().then(() => {
@@ -79,11 +83,21 @@ settingsButton.addEventListener('click', () => {
 });
 
 const reopenInContainer = (cookieStoreId: string) => {
-  browser.tabs.getCurrent().then((currentBrowserTab) => {
+  currentTabPromise.then((currentBrowserTab) => {
     if (null == currentBrowserTab.id) {
       throw new Error('Current tab has no ID');
     }
     return containerTabOpenerService.reopenTabInContainer(currentBrowserTab.id, cookieStoreId, true);
+  }).catch((e) => {
+    console.error(e);
+  });
+};
+
+const loadUrl = (url: string) => {
+  document.body.style.display = 'none';
+  currentTabPromise.then((currentBrowserTab) => {
+    if (currentBrowserTab.id == null) throw new Error('Current tab has no ID');
+    return tabUrlService.loadUrlInTab(currentBrowserTab.id, url);
   }).catch((e) => {
     console.error(e);
   });
@@ -193,21 +207,21 @@ displayedContainerService.getDisplayedContainersByPrivateBrowsing(false).then(as
 
 contextualIdentityFactory.onCreated.addListener(createContainerElement);
 
-browser.tabs.getCurrent().then((browserTab) => {
+currentTabPromise.then((browserTab) => {
   const tab = new CompatTab(browserTab);
   if (tab.isPrivate) {
     // no containers in private mode
-    location.href = url;
+    loadUrl(url);
     return;
   }
   if (tab.cookieStore.userContextId != 0) {
     // already in a container
-    location.href = url;
+    loadUrl(url);
     return;
   }
   if (tab.pinned) {
     // pinned tabs are not from outside Firefox
-    location.href = url;
+    loadUrl(url);
     return;
   }
 });
