@@ -129,9 +129,8 @@ export const menus = {
   }),
 };
 
-menus[MENU_ID_TAB_HIDE_CONTAINER].onShown.addListener((info) => {
-  const { tab } = info;
-  if (!tab || tab.isPrivate) {
+defineTabMenuHandler(menus[MENU_ID_TAB_HIDE_CONTAINER], 'onShown', (tab) => {
+  if (tab.isPrivate) {
     menus[MENU_ID_TAB_HIDE_CONTAINER].disable();
   } else {
     menus[MENU_ID_TAB_HIDE_CONTAINER].enable();
