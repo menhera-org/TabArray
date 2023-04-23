@@ -57,11 +57,7 @@ document.onerror = (e) => {
 
 const params = new URLSearchParams(location.search);
 
-const urlId = parseInt(params.get('urlId') || '0', 10);
-
-if (isNaN(urlId)) {
-  throw new Error('Invalid URL ID');
-}
+const urlId = params.get('urlId') || '';
 
 const urlPromise = urlRegistrationService.getAndRevokeUrl(urlId).then((url) => {
   if (!url) {

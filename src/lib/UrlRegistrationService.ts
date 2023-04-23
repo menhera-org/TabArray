@@ -20,13 +20,17 @@
 **/
 
 import { StorageItem } from "weeg-storage";
-import { Uint32 } from "weeg-types";
 
 import { ServiceRegistry } from "./ServiceRegistry";
 
 type StorageType = {
-  currentUrlId: number;
-  [urlId: number]: string; // url
+  [urlId: string]: string; // url
+};
+
+const getRandomId = (): string => {
+  const byteArray = new Uint8Array(16);
+  crypto.getRandomValues(byteArray);
+  return byteArray.reduce((acc, byte) => acc + byte.toString(16).padStart(2, '0'), '');
 };
 
 export class UrlRegistrationService {
@@ -36,40 +40,31 @@ export class UrlRegistrationService {
     return this.INSTANCE;
   }
 
-  private readonly _storage = new StorageItem<StorageType>('registeredUrls', { currentUrlId: 1 }, StorageItem.AREA_LOCAL);
+  private readonly _storage = new StorageItem<StorageType>('registeredUrls', {}, StorageItem.AREA_LOCAL);
 
   private constructor() {
     // nothing
   }
 
-  private validateUrlId(urlId: number): void {
-    if (!Uint32.isUint32(urlId)) {
-      throw new Error('Invalid urlId');
-    }
-  }
-
   public async resetStorage(): Promise<void> {
-    await this._storage.setValue({ currentUrlId: 1 });
+    await this._storage.setValue({});
   }
 
-  public async registerUrl(url: string): Promise<number> {
+  public async registerUrl(url: string): Promise<string> {
     new URL(url); // throws for invalid URLs
     const storage = await this._storage.getValue();
-    const urlId = storage.currentUrlId;
+    const urlId = getRandomId();
     storage[urlId] = url;
-    storage.currentUrlId++;
     await this._storage.setValue(storage);
     return urlId;
   }
 
-  public async getUrl(urlId: number): Promise<string | null> {
-    this.validateUrlId(urlId);
+  public async getUrl(urlId: string): Promise<string | null> {
     const storage = await this._storage.getValue();
     return storage[urlId] ?? null;
   }
 
-  public async getAndRevokeUrl(urlId: number): Promise<string | null> {
-    this.validateUrlId(urlId);
+  public async getAndRevokeUrl(urlId: string): Promise<string | null> {
     const storage = await this._storage.getValue();
     const url = storage[urlId] ?? null;
     delete storage[urlId];
