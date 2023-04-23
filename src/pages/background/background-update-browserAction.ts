@@ -93,6 +93,7 @@ browser.tabs.onCreated.addListener((tab) => {
 });
 
 browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
+  if (removeInfo.isWindowClosing) return;
   const windowId = removeInfo.windowId;
   setBadgeTextForBrowserWindowId(windowId);
 });
