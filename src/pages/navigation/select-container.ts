@@ -31,6 +31,7 @@ import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentit
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TabUrlService } from '../../lib/tabs/TabUrlService';
 import { UrlRegistrationService } from '../../lib/UrlRegistrationService';
+import { ExtensionPageService } from '../../lib/ExtensionPageService';
 
 import * as i18n from '../../legacy-lib/modules/i18n';
 
@@ -45,6 +46,7 @@ const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 const displayedContainerService = DisplayedContainerService.getInstance();
 const urlRegistrationService = UrlRegistrationService.getInstance();
+const extensionPageService = ExtensionPageService.getInstance();
 
 const blackScreenOnError = (e: unknown) => {
   console.error(e);
@@ -93,11 +95,7 @@ urlPromise.then((url) => {
 const currentTabPromise = browser.tabs.getCurrent();
 
 settingsButton.addEventListener('click', () => {
-  browser.runtime.openOptionsPage().then(() => {
-    console.log('Opened options page');
-  }).catch((e) => {
-    console.error(e);
-  });
+  extensionPageService.openInBackground(ExtensionPageService.OPTIONS);
 });
 
 const reopenInContainer = (cookieStoreId: string) => {
