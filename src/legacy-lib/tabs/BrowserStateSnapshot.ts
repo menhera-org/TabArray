@@ -55,7 +55,7 @@ export class BrowserStateSnapshot {
         populate: true,
         windowTypes: ['normal'],
       }),
-      browser.windows.get(browser.windows.WINDOW_ID_CURRENT),
+      browser.windows.get(browser.windows.WINDOW_ID_CURRENT, { populate: false }),
       displayedContainerService.getDisplayedContainers(),
       extensionService.isAllowedInPrivateBrowsing(),
       tabGroupDirectory.getSnapshot(),
