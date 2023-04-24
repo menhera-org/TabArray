@@ -29,7 +29,7 @@
 const fs = require('fs');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { CODES } = require('./language-codes');
+const CODES = require('../dist/language-codes.json');
 
 for (const code in CODES) {
   const script = `gLanguageCodes=gLanguageCodes||[];gLanguageCodes.push(${JSON.stringify(code)})`;

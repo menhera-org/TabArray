@@ -1,7 +1,4 @@
-
-/* eslint-env es2020, node */
-
-exports.CODES = {
+{
   "af": {
     "code": "af",
     "name": "Afrikaans"
@@ -3462,4 +3459,4 @@ exports.CODES = {
     "code": "zu-ZA",
     "name": "Zulu (South Africa)"
   }
-};
+}
