@@ -73,6 +73,10 @@ export class IndexTabService {
     return Object.keys(value).map((key) => parseInt(key, 10));
   }
 
+  public async resetIndexTabStorage() {
+    await indexTabStorage.setValue({});
+  }
+
   /**
    * You should not create index tabs for private windows (useless).
    */

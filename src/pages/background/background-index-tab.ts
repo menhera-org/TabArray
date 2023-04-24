@@ -205,6 +205,7 @@ config['tab.groups.indexOption'].observe(async (value) => {
   try {
     if (value == 'never') {
       const indexTabIds = await indexTabService.getIndexTabIds();
+      await indexTabService.resetIndexTabStorage();
       await Promise.all(indexTabIds.map((indexTabId) => browser.tabs.remove(indexTabId)));
     } else {
       await resetIndexTabs(await browser.windows.getAll({ populate: true }));
