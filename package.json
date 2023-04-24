@@ -20,7 +20,7 @@
     "eslint": "^8.39.0",
     "markdown-it": "^13.0.1",
     "ts-loader": "^9.4.2",
-    "typedoc": "^0.23.28",
+    "typedoc": "^0.24.6",
     "typescript": "<5.1.0",
     "web-ext": "^7.6.1",
     "webpack": "^5.80.0",
