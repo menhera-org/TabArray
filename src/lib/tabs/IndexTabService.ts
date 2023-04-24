@@ -22,12 +22,20 @@
 import browser from 'webextension-polyfill';
 import { CompatTab } from 'weeg-tabs';
 import { CookieStore } from 'weeg-containers';
+import { StorageItem } from 'weeg-storage';
+import { Uint32 } from 'weeg-types';
 
 import { DisplayedContainerService } from "../tabGroups/DisplayedContainerService";
 import { TabQueryService } from "./TabQueryService";
 import { ServiceRegistry } from '../ServiceRegistry';
 
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';
+
+type StorageType = {
+  [tabId: number]: Uint32; // userContextId
+};
+
+const indexTabStorage = new StorageItem<StorageType>('indexTabStorage', {}, StorageItem.AREA_LOCAL);
 
 export class IndexTabService {
   private static readonly INSTANCE = new IndexTabService();
@@ -41,6 +49,28 @@ export class IndexTabService {
 
   private constructor() {
     // nothing.
+  }
+
+  public async getIndexTabUserContextId(tabId: number): Promise<Uint32 | undefined> {
+    const value = await indexTabStorage.getValue();
+    return value[tabId];
+  }
+
+  public async setIndexTabUserContextId(tabId: number, userContextId: Uint32) {
+    const value = await indexTabStorage.getValue();
+    value[tabId] = userContextId;
+    await indexTabStorage.setValue(value);
+  }
+
+  public async removeIndexTabUserContextId (tabId: number) {
+    const value = await indexTabStorage.getValue();
+    delete value[tabId];
+    await indexTabStorage.setValue(value);
+  }
+
+  public async getIndexTabIds(): Promise<number[]> {
+    const value = await indexTabStorage.getValue();
+    return Object.keys(value).map((key) => parseInt(key, 10));
   }
 
   /**
@@ -65,10 +95,12 @@ export class IndexTabService {
     const tab = new CompatTab(browserTab);
     await browser.sessions.setTabValue(tab.id, 'indexTabUrl', url);
     await browser.sessions.setTabValue(tab.id, 'indexTabUserContextId', userContextId);
+    await this.setIndexTabUserContextId(tab.id, userContextId);
     return tab;
   }
 
   public async unregisterIndexTab(tabId: number): Promise<void> {
+    await this.removeIndexTabUserContextId(tabId);
     await browser.sessions.removeTabValue(tabId, 'indexTabUrl');
     await browser.sessions.removeTabValue(tabId, 'indexTabUserContextId');
   }

@@ -80,7 +80,7 @@ export const hideAll = async (aWindowId: number) => {
   const cookieStoreIds = await getInactiveIds(aWindowId);
   const promises: Promise<void>[] = [];
   for (const cookieStoreId of cookieStoreIds) {
-    promises.push(containerVisibilityService.hideContainerOnWindow(aWindowId, cookieStoreId));
+    promises.push(containerVisibilityService.hideContainerOnWindow(aWindowId, cookieStoreId) as Promise<unknown> as Promise<void>);
   }
   await Promise.all(promises);
 };

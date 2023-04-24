@@ -56,15 +56,15 @@ export class ContainerVisibilityService {
     return tabs;
   }
 
-  public async hideContainerOnWindow(windowId: number, cookieStoreId: string): Promise<void> {
+  public async hideContainerOnWindow(windowId: number, cookieStoreId: string): Promise<boolean> {
     const isPrivate = await this._windowService.isPrivateWindow(windowId);
-    if (isPrivate) return;
+    if (isPrivate) return false;
     const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
     console.log('hideContainerOnWindow(): windowId=%d, cookieStoreId=%s', windowId, cookieStoreId);
     const helper = await WindowContainerHidingHelper.create(windowId, cookieStoreId); // throws for private windows.
     if (helper.tabsToHide.length < 1) {
       console.log('No tabs to hide on window %d for cookie store %s', windowId, cookieStoreId);
-      return;
+      return false;
     }
     if ('collapsed' == configGroupIndexOption && !helper.hasIndexTab) {
       await this._indexTabService.createIndexTab(windowId, cookieStoreId);
@@ -74,11 +74,12 @@ export class ContainerVisibilityService {
       if (!tabToActivate) {
         // TODO: create a new tab if there is no one to activate.
         console.log('No tab to activate on window %d for cookie store %s', windowId, cookieStoreId);
-        return;
+        return false;
       }
       await tabToActivate.focus();
     }
     await browser.tabs.hide(helper.tabsToHide.map((tab) => tab.id));
+    return true;
   }
 
   public async showContainerOnWindow(windowId: number, cookieStoreId: string): Promise<void> {

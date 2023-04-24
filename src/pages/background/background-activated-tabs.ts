@@ -23,8 +23,25 @@ import browser from 'webextension-polyfill';
 import { CompatTab } from "weeg-tabs";
 
 import { ContainerVisibilityService } from '../../lib/tabGroups/ContainerVisibilityService';
+import { TabQueryService } from '../../lib/tabs/TabQueryService';
+
+import { config } from '../../config/config';
 
 const containerVisibilityService = ContainerVisibilityService.getInstance();
+const tabQueryService = TabQueryService.getInstance();
+
+const activateTab = async (windowId: number, index: number) => {
+  const nextTabs = await browser.tabs.query({
+    windowId,
+    index,
+  });
+  for (const nextTab of nextTabs) {
+    await browser.tabs.update(nextTab.id, {
+      active: true,
+    });
+    break;
+  }
+};
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   try {
@@ -40,15 +57,27 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
       if (!indexTabUrl) {
         throw void 0;
       }
-      const nextTabs = await browser.tabs.query({
-        windowId: browserTab.windowId,
-        index: browserTab.index + 1,
-      });
-      for (const nextTab of nextTabs) {
-        await browser.tabs.update(nextTab.id, {
-          active: true,
-        });
-        break;
+
+      const indexTabOption = await config['tab.groups.indexOption'].getValue();
+      if (indexTabOption == 'always') {
+        const cookieStoreTabs = await tabQueryService.queryTabs({ tabGroupId: cookieStore.id });
+        let hidden = false;
+        for (const cookieStoreTab of cookieStoreTabs) {
+          if (cookieStoreTab.hidden) {
+            hidden = true;
+          }
+        }
+        if (hidden) {
+          await activateTab(windowId, browserTab.index + 1);
+        } else {
+          const containerIsHidden = await containerVisibilityService.hideContainerOnWindow(windowId, cookieStore.id);
+          if (containerIsHidden) {
+            return;
+          }
+          await activateTab(windowId, browserTab.index + 1);
+        }
+      } else if (indexTabOption == 'collapsed') {
+        await activateTab(windowId, browserTab.index + 1);
       }
     } catch (e) {
       // nothing.

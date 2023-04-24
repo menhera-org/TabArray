@@ -64,8 +64,8 @@ export class SupergroupService {
           : containerVisibilityService.hideContainerOnWindow(windowId, cookieStore.id)
         ).catch(() => {
         // ignore (errors for private windows)
-        }
-      ));
+        }) as Promise<unknown> as Promise<void>
+      );
     }
     await Promise.all(promises);
   }
