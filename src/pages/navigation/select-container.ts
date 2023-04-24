@@ -32,10 +32,21 @@ import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContaine
 import { TabUrlService } from '../../lib/tabs/TabUrlService';
 import { UrlRegistrationService } from '../../lib/UrlRegistrationService';
 import { ExtensionPageService } from '../../lib/ExtensionPageService';
-
-import * as i18n from '../../legacy-lib/modules/i18n';
+import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
 
 import { ContainerEditorElement } from '../../components/container-editor';
+
+import { settingsButton, containersElement } from './navigation-elements';
+import { setUrl } from './navigation-i18n';
+import { createCreateContainerButton, createTemporaryContainerButton, createPrivateBrowsingButton, renderContainer } from './navigation-renderer';
+
+type EnvType = {
+  url: string;
+  tab: CompatTab;
+  displayedContainers: DisplayedContainer[];
+  tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
+  privateBrowsingSupported: boolean;
+};
 
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const tabUrlService = TabUrlService.getInstance<TabUrlService>();
@@ -52,7 +63,15 @@ const blankScreen = () => {
   document.body.style.display = 'none';
 };
 
+const restoreScreen = () => {
+  document.body.style.display = '';
+};
+
+blankScreen();
+
+let errored = false;
 const handleError = (e: unknown) => {
+  errored = true;
   console.error(e);
   blankScreen();
 };
@@ -64,120 +83,42 @@ document.onerror = (e) => {
 const params = new URLSearchParams(location.search);
 
 const urlId = params.get('urlId') || '';
+const urlPromise = urlRegistrationService.getAndRevokeUrl(urlId);
+const currentTabPromise = browser.tabs.getCurrent();
 
-const urlPromise = urlRegistrationService.getAndRevokeUrl(urlId).then((url) => {
-  if (!url) {
+const envPromise: Promise<EnvType> = Promise.all([
+  urlPromise,
+  currentTabPromise,
+  displayedContainerService.getDisplayedContainersByPrivateBrowsing(false),
+  tabGroupDirectory.getSnapshot(),
+  extensionService.isAllowedInPrivateBrowsing(),
+]).then(([url, browserTab, displayedContainers, tabGroupDirectorySnapshot, privateBrowsingSupported]) => {
+  if (null == url) {
     throw new Error('Invalid URL');
   }
-  return url;
+  new URL(url); // throws if invalid
+  if (!browserTab.id) {
+    throw new Error('Current tab has no ID');
+  }
+  const tab = new CompatTab(browserTab);
+  return { url, tab, displayedContainers, tabGroupDirectorySnapshot, privateBrowsingSupported };
 });
-
-urlPromise.catch((e) => {
-  handleError(e);
-});
-
-const containersElement = document.querySelector('#containers');
-const headingElement = document.querySelector('#heading');
-const descriptionElement = document.querySelector('#description');
-const promptElement = document.querySelector('#prompt');
-const settingsButton = document.querySelector('#button-settings');
-
-if (!containersElement || !headingElement || !descriptionElement || !promptElement || !settingsButton) {
-  throw new Error('Missing elements');
-}
-
-document.documentElement.lang = i18n.getEffectiveLocale();
-document.title = i18n.getMessage('titleSelectContainer');
-headingElement.textContent = i18n.getMessage('titleSelectContainer');
-promptElement.textContent = i18n.getMessage('promptSelectContainer');
-settingsButton.textContent = i18n.getMessage('buttonSettings');
-
-urlPromise.then((url) => {
-  descriptionElement.textContent = i18n.getMessage('descriptionSelectContainer', url || 'about:blank');
-});
-
-const currentTabPromise = browser.tabs.getCurrent();
 
 settingsButton.addEventListener('click', () => {
   extensionPageService.openInBackground(ExtensionPageService.OPTIONS);
 });
 
-const reopenInContainer = (cookieStoreId: string) => {
-  Promise.all([currentTabPromise, urlPromise]).then(([currentBrowserTab, url]) => {
-    if (null == currentBrowserTab.id) {
-      throw new Error('Current tab has no ID');
-    }
-    return containerTabOpenerService.reopenTabInContainer(currentBrowserTab.id, cookieStoreId, true, url);
-  }).catch((e) => {
-    console.error(e);
-  });
+const _reopenInContainer = (env: EnvType, cookieStoreId: string) => {
+  return containerTabOpenerService.reopenTabInContainer(env.tab.id, cookieStoreId, true, env.url);
 };
 
-const loadUrl = (url: string) => {
+const _loadUrl = (env: EnvType) => {
   blankScreen();
-  currentTabPromise.then((currentBrowserTab) => {
-    if (currentBrowserTab.id == null) throw new Error('Current tab has no ID');
-    return tabUrlService.loadUrlInTab(currentBrowserTab.id, url);
-  }).catch((e) => {
-    console.error(e);
-  });
+  return tabUrlService.loadUrlInTab(env.tab.id, env.url);
 };
 
-const renderButton = (tooltipText: string, name: string, iconUrl: string, useIconMask: boolean, maskColor = '#000000', aContainerElement: HTMLButtonElement | null = null) => {
-  const containerElement = aContainerElement ?? document.createElement('button');
-  containerElement.classList.add('container-button');
-  containerElement.textContent = '';
-  containerElement.title = tooltipText;
-
-  const containerIconElement = document.createElement('span');
-  containerIconElement.classList.add('container-button-icon');
-  const containerLabelElement = document.createElement('span');
-  containerLabelElement.classList.add('container-button-label');
-  containerElement.append(containerIconElement, containerLabelElement);
-
-  if (useIconMask) {
-    containerIconElement.style.mask = `url(${iconUrl}) center center/75% no-repeat`;
-    containerIconElement.style.backgroundColor = maskColor;
-  } else {
-    containerIconElement.style.background = `no-repeat center/75% url(${iconUrl})`;
-  }
-
-  containerLabelElement.textContent = name;
-  return containerElement;
-};
-
-const renderContainer = (displayedContainer: DisplayedContainer, aContainerElement: HTMLButtonElement | null = null) => {
-  const tooltipText = i18n.getMessage('defaultContainerName', String(displayedContainer.cookieStore.userContextId));
-  const iconUrl = displayedContainer.iconUrl || '/img/material-icons/category.svg';
-  const containerElement = renderButton(tooltipText, displayedContainer.name, iconUrl, true, displayedContainer.colorCode || '#000', aContainerElement);
-  return containerElement;
-};
-
-const createPrivateBrowsingButton = () => {
-  const tooltipText = i18n.getMessage('privateBrowsing');
-  const name = tooltipText;
-  const iconUrl = '/img/firefox-icons/private-browsing-icon.svg';
-  const button = renderButton(tooltipText, name, iconUrl, false);
-  return button;
-};
-
-const createCreateContainerButton = () => {
-  const tooltipText = i18n.getMessage('buttonNewContainer');
-  const name = tooltipText;
-  const iconUrl = '/img/firefox-icons/add.svg';
-  const button = renderButton(tooltipText, name, iconUrl, false);
-  return button;
-};
-
-const createTemporaryContainerButton = () => {
-  const tooltipText = i18n.getMessage('buttonNewTemporaryContainer');
-  const name = tooltipText;
-  const iconUrl = '/img/material-icons/timelapse.svg';
-  const button = renderButton(tooltipText, name, iconUrl, false);
-  return button;
-};
-
-const createContainerElement = (displayedContainer: DisplayedContainer) => {
+const _createContainerElement = (env: EnvType, displayedContainer: DisplayedContainer) => {
+  const reopenInContainer = _reopenInContainer.bind(null, env);
   const containerElement = renderContainer(displayedContainer);
   const cookieStoreId = displayedContainer.cookieStore.id;
   containersElement.append(containerElement);
@@ -196,9 +137,9 @@ const createContainerElement = (displayedContainer: DisplayedContainer) => {
   });
 };
 
-displayedContainerService.getDisplayedContainersByPrivateBrowsing(false).then(async (displayedContainers) => {
-  const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
-  const privateBrowsingSupported = await extensionService.isAllowedInPrivateBrowsing();
+const createSpecialButtons = (env: EnvType, privateBrowsingSupported: boolean) => {
+  const reopenInContainer = _reopenInContainer.bind(null, env);
+
   if (privateBrowsingSupported) {
     const privateBrowsingButton = createPrivateBrowsingButton();
     containersElement.append(privateBrowsingButton);
@@ -220,29 +161,39 @@ displayedContainerService.getDisplayedContainersByPrivateBrowsing(false).then(as
     const identity = await temporaryContainerService.createTemporaryContainer();
     reopenInContainer(identity.cookieStore.id);
   });
+};
+
+const handleRedirect = (env: EnvType) => {
+  const { tab } = env;
+  const loadUrl = _loadUrl.bind(null, env);
+  if (tab.isPrivate) {
+    // no containers in private mode
+    loadUrl();
+  } else if (tab.cookieStore.userContextId != 0) {
+    // already in a container
+    loadUrl();
+  } else if (tab.pinned) {
+    // pinned tabs are not from outside Firefox
+    loadUrl();
+  }
+};
+
+envPromise.then(async (env) => {
+  const createContainerElement = _createContainerElement.bind(null, env);
+
+  const { url, displayedContainers, tabGroupDirectorySnapshot, privateBrowsingSupported } = env;
+  setUrl(url);
+  handleRedirect(env);
+  createSpecialButtons(env, privateBrowsingSupported);
+
   [... displayedContainers].sort((a, b) => {
     return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
   }).forEach(createContainerElement);
-});
 
-contextualIdentityFactory.onCreated.addListener(createContainerElement);
+  contextualIdentityFactory.onCreated.addListener(createContainerElement);
 
-Promise.all([currentTabPromise, urlPromise]).then(([browserTab, url]) => {
-  const tab = new CompatTab(browserTab);
-  if (tab.isPrivate) {
-    // no containers in private mode
-    loadUrl(url);
-    return;
-  }
-  if (tab.cookieStore.userContextId != 0) {
-    // already in a container
-    loadUrl(url);
-    return;
-  }
-  if (tab.pinned) {
-    // pinned tabs are not from outside Firefox
-    loadUrl(url);
-    return;
+  if (!errored) {
+    restoreScreen();
   }
 }).catch((e) => {
   handleError(e);
