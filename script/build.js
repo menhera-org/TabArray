@@ -61,15 +61,17 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
     untracked = true;
   }
   let date = new Date();
-  try {
-    const timeString = await runCommand('git', ['show', '-s', '--format=%ct', 'HEAD']);
-    const time = parseInt(timeString.trim(), 10);
-    if (isNaN(time)) {
-      throw new Error('Invalid time');
+  if (!untracked) {
+    try {
+      const timeString = await runCommand('git', ['show', '-s', '--format=%ct', 'HEAD']);
+      const time = parseInt(timeString.trim(), 10);
+      if (isNaN(time)) {
+        throw new Error('Invalid time');
+      }
+      date = new Date(time * 1000);
+    } catch (e) {
+      console.warn(e);
     }
-    date = new Date(time * 1000);
-  } catch (e) {
-    console.warn(e);
   }
   const filename = untracked ? `container-tab-groups-${hash}.untracked.xpi` : `container-tab-groups-${hash}.prod.xpi`;
   return { filename, commit: hash, untracked, buildDate: date.toISOString() };
