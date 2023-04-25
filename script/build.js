@@ -60,17 +60,28 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   } catch (e) {
     untracked = true;
   }
+  let date = new Date();
+  try {
+    const timeString = await runCommand('git', ['show', '-s', '--format=%ct', 'HEAD']);
+    const time = parseInt(timeString.trim(), 10);
+    if (isNaN(time)) {
+      throw new Error('Invalid time');
+    }
+    date = new Date(time * 1000);
+  } catch (e) {
+    console.warn(e);
+  }
   const filename = untracked ? `container-tab-groups-${hash}.untracked.xpi` : `container-tab-groups-${hash}.prod.xpi`;
-  return { filename, commit: hash, untracked };
+  return { filename, commit: hash, untracked, buildDate: date.toISOString() };
 }).catch((error) => {
   console.error(error);
-  return { filename: 'container-tab-groups.prod.xpi', commit: '', untracked: true };
-}).then(({filename, commit, untracked}) => {
+  return { filename: 'container-tab-groups.prod.xpi', commit: '', untracked: true, buildDate: new Date().toISOString() };
+}).then(({filename, commit, untracked, buildDate}) => {
   console.log(`Building ${filename}`);
   const info = {
     commit,
     untracked,
-    buildDate: new Date().toISOString(),
+    buildDate,
   };
   const infoPath = __dirname + '/../dist/build.json';
   fs.writeFileSync(infoPath, JSON.stringify(info, null, 2));
