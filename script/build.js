@@ -31,6 +31,27 @@ const fs = require('fs');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const child_process = require('child_process');
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const zip = require('deterministic-zip');
+
+/**
+ *
+ * @param {string} directory
+ * @param {string} outputPath
+ * @returns {Promise<void>}
+ */
+const zipDirectoryContents = async (directory, outputPath) => {
+  return new Promise((resolve, reject) => {
+    zip(directory, outputPath, {includes: ['./**'], cwd: directory}, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+
 /**
  * Runs command asynchronously
  * @param {string} command
@@ -52,6 +73,7 @@ const runCommand = async (command, args) => {
   });
 };
 
+const startTime = Date.now();
 runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const hash = stdout.trim();
   let untracked = false;
@@ -73,23 +95,35 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
       console.warn(e);
     }
   }
-  const filename = untracked ? `container-tab-groups-${hash}.untracked.xpi` : `container-tab-groups-${hash}.prod.xpi`;
-  return { filename, commit: hash, untracked, buildDate: date.toISOString() };
+  const shortHash = hash.slice(0, 7);
+  const time = Math.trunc(date.getTime() / 1000);
+  const filename = untracked ? `ctg-${time}-${shortHash}_untracked.xpi` : `ctg-${time}-${shortHash}.xpi`;
+  return { filename, commit: hash, untracked, buildDate: date.getTime() };
 }).catch((error) => {
   console.error(error);
-  return { filename: 'container-tab-groups.prod.xpi', commit: '', untracked: true, buildDate: new Date().toISOString() };
-}).then(({filename, commit, untracked, buildDate}) => {
+  const date = new Date();
+  const time = Math.trunc(date.getTime() / 1000);
+  return { filename: `ctg-${time}-unknown.xpi`, commit: '', untracked: true, buildDate: date.getTime() };
+}).then(async ({filename, commit, untracked, buildDate}) => {
   console.log(`Building ${filename}`);
   const info = {
     commit,
     untracked,
-    buildDate,
+    buildDate: new Date(buildDate).toISOString(),
   };
   const infoPath = __dirname + '/../dist/build.json';
   fs.writeFileSync(infoPath, JSON.stringify(info, null, 2));
-  return runCommand('npx', ['web-ext', 'build', '--source-dir', './dist/', '--artifacts-dir', './builds/', '--overwrite-dest', '--filename', filename]);
-}).then((stdout) => {
-  console.log(stdout);
+  const lintResult = await runCommand('npx', ['web-ext', 'lint', '--source-dir', './dist/', '--warnings-as-errors']);
+  console.log(lintResult);
+
+  const destinationFilename = __dirname + '/../builds/' + filename;
+  await zipDirectoryContents(__dirname + '/../dist', destinationFilename);
+
+  const realpath = await fs.promises.realpath(destinationFilename);
+  return realpath;
+}).then((filename) => {
+  const duration = Date.now() - startTime;
+  console.log(`Built ${filename} in ${duration}ms`);
 }).catch((error) => {
   console.error(error);
   process.exit(1);
