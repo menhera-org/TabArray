@@ -32,7 +32,7 @@ const fs = require('fs');
 const child_process = require('child_process');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const zip = require('deterministic-zip');
+const zip = require('deterministic-zip-ng');
 
 /**
  *

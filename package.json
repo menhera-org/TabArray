@@ -17,7 +17,7 @@
     "@types/webextension-polyfill": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
     "@typescript-eslint/parser": "^5.59.1",
-    "deterministic-zip": "^1.1.0",
+    "deterministic-zip-ng": "^2.0.0",
     "eslint": "^8.39.0",
     "markdown-it": "^13.0.1",
     "ts-loader": "^9.4.2",
