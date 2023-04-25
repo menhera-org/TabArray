@@ -60,7 +60,8 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   } catch (e) {
     untracked = true;
   }
-  return { filename: `container-tab-groups-${hash}.prod.xpi`, commit: hash, untracked };
+  const filename = untracked ? `container-tab-groups-${hash}.untracked.xpi` : `container-tab-groups-${hash}.prod.xpi`;
+  return { filename, commit: hash, untracked };
 }).catch((error) => {
   console.error(error);
   return { filename: 'container-tab-groups.prod.xpi', commit: '', untracked: true };
