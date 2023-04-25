@@ -673,5 +673,15 @@
                 "example": "Group 3"
             }
         }
+    },
+    "newVersionAvailable": {
+        "message": "Neue Version verfügbar: $VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
     }
 }
