@@ -22,8 +22,14 @@
 import browser from "webextension-polyfill";
 
 import { ExtensionPageService } from "../lib/ExtensionPageService";
+import { DateFormatService } from "../lib/DateFormatService";
+
+import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
+
+import { GITHUB_TREE_LINK_BASE } from "../defs";
 
 const extensionPageService = ExtensionPageService.getInstance();
+const dateFormatService = DateFormatService.getInstance();
 
 export class HelpBannerElement extends HTMLElement {
 
@@ -59,6 +65,9 @@ export class HelpBannerElement extends HTMLElement {
     helpBannerVersion.textContent = manifest.version;
     helpBanner.appendChild(helpBannerVersion);
 
+    const helpBannerBuild = document.createElement('p');
+    helpBanner.appendChild(helpBannerBuild);
+
     const helpBannerPlatformVersion = document.createElement('p');
     helpBannerPlatformVersion.textContent = 'Firefox';
     helpBanner.appendChild(helpBannerPlatformVersion);
@@ -68,6 +77,37 @@ export class HelpBannerElement extends HTMLElement {
       browser.runtime.getPlatformInfo(),
     ]).then(([browserInfo, platformInfo]) => {
       helpBannerPlatformVersion.textContent = `${browserInfo.name} ${browserInfo.version} (${platformInfo.os})`;
+    }).catch((e) => {
+      console.error(e);
+    });
+
+    fetch('/build.json').then(async (response) => {
+      helpBannerBuild.textContent = 'Build '; // untranslated
+      const text = await response.text();
+      const info = JSON.parse(text);
+      if (info.commit) {
+        const commit = String(info.commit);
+        const link = GITHUB_TREE_LINK_BASE + commit;
+        const shortCommit = commit.slice(0, 7);
+        const commitLink = document.createElement('a');
+        commitLink.href = link;
+        commitLink.textContent = shortCommit;
+        commitLink.target = '_blank';
+        helpBannerBuild.appendChild(commitLink);
+      } else {
+        helpBannerBuild.append('unknown'); // untranslated
+      }
+      if (info.untracked) {
+        helpBannerBuild.append(' (untracked)'); // untranslated
+      }
+      helpBannerBuild.appendChild(document.createElement('br'));
+      const date = new Date(info.buildDate);
+      const dateString = dateFormatService.localeFormat(date);
+      helpBannerBuild.append(`(${dateString})`);
+    }).catch((e) => {
+      console.error(e);
+      const message = String(e.message ?? e);
+      helpBannerBuild.textContent = message;
     });
 
     const helpBannerDescription = document.createElement('p');
@@ -113,6 +153,20 @@ export class HelpBannerElement extends HTMLElement {
       extensionPageService.openInBackground(ExtensionPageService.GITHUB);
     });
 
+    const helpBannerParagraph4 = document.createElement('p');
+    helpBannerParagraph4.classList.add('help-banner-actions');
+    helpBanner.appendChild(helpBannerParagraph4);
+
+    const reloadButton = new CtgMenuItemElement();
+    reloadButton.displayStyle = 'icon';
+    reloadButton.iconSrc = '/img/firefox-icons/reload.svg';
+    reloadButton.iconMode = 'masked';
+
+    reloadButton.addEventListener('click', () => {
+      browser.runtime.reload();
+    });
+
+    helpBannerParagraph4.appendChild(reloadButton);
   }
 }
 

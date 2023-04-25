@@ -37,6 +37,7 @@ setTextContent('.pane-tab[data-pane-name="general"]', 'optionsTabGeneral');
 setTextContent('.pane-tab[data-pane-name="containers"]', 'optionsTabSortContainers');
 setTextContent('.pane-tab[data-pane-name="container-overrides"]', 'optionsTabContainerOverrides');
 setTextContent('.pane-tab[data-pane-name="firefox-settings"]', 'optionsTabFirefoxSettings');
+setTextContent('.pane-tab[data-pane-name="help"]', 'menuItemHelp');
 
 setTextContent('#optionsHeadingGeneral', 'optionsHeadingGeneral');
 

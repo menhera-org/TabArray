@@ -4,9 +4,9 @@
   "description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "node script/clean.js ; eslint . ; webpack ; node script/build.js",
+    "build": "node script/clean.js && eslint . && webpack && node script/build.js",
     "watch": "webpack -w",
-    "clean": "node script/clean.js ; node script/clean-builds.js",
+    "clean": "node script/clean.js && node script/clean-builds.js",
     "test": "node script/test.js"
   },
   "author": "Menhera.org",

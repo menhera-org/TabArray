@@ -28,6 +28,7 @@ import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyCo
 
 import { TabGroupSorterElement } from '../../components/tab-group-sorter';
 import { TabGroupOverridesElement } from '../../components/tab-group-overrides';
+import { HelpBannerElement } from '../../components/help-banner';
 
 import './options-i18n';
 
@@ -105,11 +106,16 @@ const selectPopupSize = document.querySelector<HTMLSelectElement>('#select-popup
 
 const selectAutoDiscardMinAge = document.querySelector<HTMLSelectElement>('#select-autoDiscardMinAge');
 
+const paneHelp = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="help"]');
+
 const tabGroupSorter = new TabGroupSorterElement();
 paneContainers?.appendChild(tabGroupSorter);
 
 const tabGroupOverrides = new TabGroupOverridesElement();
 paneContainerOverrides?.appendChild(tabGroupOverrides);
+
+const helpBanner = new HelpBannerElement();
+paneHelp?.appendChild(helpBanner);
 
 // tab.sorting.enabled setting
 config['tab.sorting.enabled'].observe((value) => {

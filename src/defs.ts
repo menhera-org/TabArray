@@ -31,3 +31,4 @@ export const CONFIRM_PAGE = '/pages/navigation/confirm.html';
 export const COOKIES_PAGE = '/pages/cookies/cookies.html';
 export const POPUP_PAGE = '/pages/popup-v2/popup-v2.html';
 export const INDEX_TAB_PAGE = '/pages/index/index-tab.html';
+export const GITHUB_TREE_LINK_BASE = 'https://github.com/menhera-org/TabArray/tree/';

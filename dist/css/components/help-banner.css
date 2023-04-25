@@ -39,3 +39,9 @@ a {
   max-inline-size: 10em;
   margin-block: 1rem;
 }
+
+.help-banner-actions {
+  display: block flex;
+  flex-direction: row;
+  justify-content: center;
+}

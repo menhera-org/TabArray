@@ -26,6 +26,9 @@
 */
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const fs = require('fs');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const child_process = require('child_process');
 
 /**
@@ -49,17 +52,31 @@ const runCommand = async (command, args) => {
   });
 };
 
-runCommand('git', ['rev-parse', 'HEAD']).then((stdout) => {
+runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const hash = stdout.trim();
-  return `container-tab-groups-${hash}.prod.xpi`;
+  let untracked = false;
+  try {
+    await runCommand('git', ['diff-index', '--quiet', 'HEAD', '--']);
+  } catch (e) {
+    untracked = true;
+  }
+  return { filename: `container-tab-groups-${hash}.prod.xpi`, commit: hash, untracked };
 }).catch((error) => {
   console.error(error);
-  return 'container-tab-groups.prod.xpi';
-}).then((filename) => {
+  return { filename: 'container-tab-groups.prod.xpi', commit: '', untracked: true };
+}).then(({filename, commit, untracked}) => {
   console.log(`Building ${filename}`);
+  const info = {
+    commit,
+    untracked,
+    buildDate: new Date().toISOString(),
+  };
+  const infoPath = __dirname + '/../dist/build.json';
+  fs.writeFileSync(infoPath, JSON.stringify(info, null, 2));
   return runCommand('npx', ['web-ext', 'build', '--source-dir', './dist/', '--artifacts-dir', './builds/', '--overwrite-dest', '--filename', filename]);
 }).then((stdout) => {
   console.log(stdout);
 }).catch((error) => {
   console.error(error);
+  process.exit(1);
 });

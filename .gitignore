@@ -97,6 +97,7 @@ ts-dist
 dist/**/*.js
 dist/**/*.js.map
 dist/**/*.LICENSE.txt
+dist/build.json
 
 # web-ext output
 *.xpi
