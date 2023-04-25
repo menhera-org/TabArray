@@ -118,9 +118,9 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
 
   const buildDir = __dirname + '/../builds';
   const destinationFilename = __dirname + '/../builds/' + filename;
-  await zipDirectoryContents(__dirname + '/../dist', destinationFilename);
 
   await fs.promises.mkdir(buildDir, { recursive: true });
+  await zipDirectoryContents(__dirname + '/../dist', destinationFilename);
 
   const realpath = await fs.promises.realpath(destinationFilename);
   return realpath;
