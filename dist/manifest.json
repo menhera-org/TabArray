@@ -29,8 +29,7 @@
     "browsingData",
     "theme",
     "alarms",
-    "scripting",
-    "notifications"
+    "scripting"
   ],
   "incognito": "spanning",
   "background": {

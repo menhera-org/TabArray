@@ -51,7 +51,7 @@ import './background-content-script-responder';
 import './background-tags';
 import './background-fetch-handler';
 import './background-content-script-registrar';
-import './background-update-checker';
+// import './background-update-checker';
 import { every15secondsAlarm } from './background-alarms';
 
 import '../../api/ApiDefinitions';
