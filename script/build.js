@@ -116,8 +116,11 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const lintResult = await runCommand('npx', ['web-ext', 'lint', '--source-dir', './dist/', '--warnings-as-errors']);
   console.log(lintResult);
 
+  const buildDir = __dirname + '/../builds';
   const destinationFilename = __dirname + '/../builds/' + filename;
   await zipDirectoryContents(__dirname + '/../dist', destinationFilename);
+
+  await fs.promises.mkdir(buildDir, { recursive: true });
 
   const realpath = await fs.promises.realpath(destinationFilename);
   return realpath;
