@@ -51,7 +51,8 @@ import './background-content-script-responder';
 import './background-tags';
 import './background-fetch-handler';
 import './background-content-script-registrar';
-import { everyMinuteAlarm } from './background-alarms';
+import './background-update-checker';
+import { every15secondsAlarm } from './background-alarms';
 
 import '../../api/ApiDefinitions';
 
@@ -74,7 +75,7 @@ const sanityCheckService = SanityCheckService.getInstance();
 const startupService = StartupService.getInstance();
 
 // auto reload the extension if the sanity check fails
-everyMinuteAlarm.onAlarm.addListener(() => {
+every15secondsAlarm.onAlarm.addListener(() => {
   sanityCheckService.checkForFiles().catch((e) => {
     console.error('Sanity check failed, reloading', e);
     browser.runtime.reload();

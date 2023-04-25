@@ -673,5 +673,15 @@
     "optionsTabFirefoxSettings": {
         "message": "Firefox Settings",
         "description": "Label text for firefox settings tab."
+    },
+    "newVersionAvailable": {
+        "message": "New Version Available: $VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
     }
 }
