@@ -30,6 +30,7 @@ import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../../legacy-lib/tabs/BrowserStateSnapshot";
 import { MenulistWindowElement } from "../../../components/menulist-window";
 import { ContainerTabOpenerService } from "../../../lib/tabGroups/ContainerTabOpenerService";
+import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
 
 
 export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
@@ -127,6 +128,9 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
     const displayedContainer = this._selectedDisplayedContainer;
     let windowId: number = browser.windows.WINDOW_ID_NONE;
     for (const tab of tabs) {
+      if (IndexTab.isIndexTabUrl(tab.url)) {
+        continue;
+      }
       if (windowId != tab.windowId) {
         const windowElement = new MenulistWindowElement();
         windowElement.windowName = this._browserStateSnapshot.currentWindowId == tab.windowId

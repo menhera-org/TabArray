@@ -108,13 +108,18 @@ settingsButton.addEventListener('click', () => {
   extensionPageService.openInBackground(ExtensionPageService.OPTIONS);
 });
 
-const _reopenInContainer = (env: EnvType, cookieStoreId: string) => {
-  return containerTabOpenerService.reopenTabInContainer(env.tab.id, cookieStoreId, true, env.url);
-};
-
 const _loadUrl = (env: EnvType) => {
   blankScreen();
   return tabUrlService.loadUrlInTab(env.tab.id, env.url);
+};
+
+const _reopenInContainer = (env: EnvType, cookieStoreId: string) => {
+  if (env.tab.cookieStore.id == cookieStoreId) {
+    _loadUrl(env);
+    return;
+  }
+  blankScreen();
+  containerTabOpenerService.reopenTabInContainer(env.tab.id, cookieStoreId, true, env.url);
 };
 
 const _createContainerElement = (env: EnvType, displayedContainer: DisplayedContainer) => {

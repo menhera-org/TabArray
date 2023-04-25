@@ -25,6 +25,7 @@ import { HostnameService } from "weeg-domains";
 import { CompatTab } from "weeg-tabs";
 
 import { TabQueryService } from "../../../lib/tabs/TabQueryService";
+import { IndexTabService } from "../../../lib/tabs/IndexTabService";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
@@ -37,6 +38,7 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
   private _siteCount = 0;
   private readonly _hostnameService = HostnameService.getInstance();
   private readonly _tabQueryService = TabQueryService.getInstance();
+  private readonly _indexTabService = IndexTabService.getInstance();
 
   public getFragmentId(): string {
     return 'fragment-sites';
@@ -73,7 +75,7 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
     const hostnames = this._hostnameService.sortDomains([... firstPartyStateSnapshot.keys()]);
     for (const domain of hostnames) {
       const tabSet = firstPartyStateSnapshot.get(domain) ?? new Set();
-      const tabs = [... tabSet];
+      const tabs = this._indexTabService.filterOutIndexTabs([... tabSet]);
       const lastAccessedTab = tabs.reduce((a, b) => a.lastAccessed > b.lastAccessed ? a : b);
       const siteElement = new MenulistSiteElement();
       siteElement.domain = domain || '(null)';

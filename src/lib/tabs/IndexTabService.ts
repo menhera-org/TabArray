@@ -108,6 +108,10 @@ export class IndexTabService {
     await browser.sessions.removeTabValue(tabId, 'indexTabUrl');
     await browser.sessions.removeTabValue(tabId, 'indexTabUserContextId');
   }
+
+  public filterOutIndexTabs(tabs: CompatTab[]): CompatTab[] {
+    return tabs.filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
+  }
 }
 
 ServiceRegistry.getInstance().registerService('IndexTabService', IndexTabService.getInstance());

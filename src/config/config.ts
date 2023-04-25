@@ -20,6 +20,8 @@
 **/
 
 import browser from 'webextension-polyfill';
+import { EventSink } from 'weeg-events';
+
 import { ConfigurationOption } from '../lib/config/ConfigurationOption';
 import { StorageConfigurationOption } from '../lib/config/StorageConfigurationOption';
 
@@ -43,8 +45,13 @@ export const config = {
 export class BrowserBooleanSetting implements ConfigurationOption<boolean> {
   private readonly setting: browser.Types.Setting;
 
+  public readonly onChanged = new EventSink<boolean>();
+
   public constructor(setting: browser.Types.Setting) {
     this.setting = setting;
+    this.setting.onChange.addListener((details) => {
+      this.onChanged.dispatch(details.value);
+    });
   }
 
   public async getValue(): Promise<boolean> {
@@ -66,6 +73,14 @@ export class BrowserBooleanSetting implements ConfigurationOption<boolean> {
 
 export class CookieBahavorSetting implements ConfigurationOption<string> {
   private readonly setting = browser.privacy.websites.cookieConfig;
+
+  public readonly onChanged = new EventSink<string>();
+
+  public constructor() {
+    this.setting.onChange.addListener((details) => {
+      this.onChanged.dispatch(details.value.behavior);
+    });
+  }
 
   public async getValue(): Promise<string> {
     const details = await this.setting.get({});

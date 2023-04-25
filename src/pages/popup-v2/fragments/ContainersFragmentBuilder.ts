@@ -29,6 +29,7 @@ import { TabGroupAttributes } from "../../../lib/tabGroups/TabGroupAttributes";
 import { SupergroupService } from "../../../lib/tabGroups/SupergroupService";
 import { TabQueryService } from "../../../lib/tabs/TabQueryService";
 import { TabService } from "../../../lib/tabs/TabService";
+import { IndexTabService } from "../../../lib/tabs/IndexTabService";
 
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
@@ -49,6 +50,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   private readonly _supergroupService = SupergroupService.getInstance();
   private readonly _tabQueryService = TabQueryService.getInstance();
   private readonly _tabService = TabService.getInstance();
+  private readonly _indexTabService = IndexTabService.getInstance();
 
   public getFragmentId(): string {
     return 'fragment-containers';
@@ -140,7 +142,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
       userContextMap.set(normalUserContext.cookieStore.id, normalUserContext);
     }
     const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupDirectory.getRootSupergroupId()) as SupergroupType;
-    this.renderContainers(containersStateSnapshot, privateUserContexts, activeContainersElement);
+    this.renderPrivateContainers(containersStateSnapshot, privateUserContexts, activeContainersElement);
     this.renderSupergroup(0, rootSupergroup, containersStateSnapshot, userContextMap, activeContainersElement);
   }
 
@@ -155,7 +157,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
         const userContext = userContextMap.get(tabGroupId);
         if (!userContext) continue;
         const isPrivate = cookieStore.isPrivate;
-        const tabs = containersStateSnapshot.getTabsByContainer(cookieStore.id);
+        const tabs = this._indexTabService.filterOutIndexTabs([... containersStateSnapshot.getTabsByContainer(cookieStore.id)]);
         const containerElement = this._popupRenderer.renderPartialContainerElement(userContext, isPrivate);
         containerElement.tabCount = tabs.length;
         tabCount += tabs.length;
@@ -202,7 +204,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     return tabCount;
   }
 
-  private renderContainers(containersStateSnapshot: ContainersStateSnapshot, userContexts: DisplayedContainer[], parentElement: HTMLElement) {
+  private renderPrivateContainers(containersStateSnapshot: ContainersStateSnapshot, userContexts: DisplayedContainer[], parentElement: HTMLElement) {
     for (const userContext of userContexts) {
       const isPrivate = userContext.cookieStore.isPrivate;
       const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStore.id);

@@ -19,7 +19,10 @@
   @license
 **/
 
+import { EventSink } from "weeg-events";
+
 export interface ConfigurationOption<T> {
+  readonly onChanged: EventSink<T>;
   getValue(): Promise<T>;
   setValue(value: T): Promise<void>;
   observe(callback: (newValue: T) => void): void;

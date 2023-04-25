@@ -20,6 +20,8 @@
 **/
 
 import { StorageItem } from 'weeg-storage';
+import { EventSink } from 'weeg-events';
+
 import { ConfigurationOption } from './ConfigurationOption';
 
 type StorageArea = 'local' | 'sync' | 'managed';
@@ -31,10 +33,16 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
   private readonly local: StorageItem<T>;
   private readonly sync: StorageItem<T>;
 
+  public readonly onChanged = new EventSink<T>();
+
   public constructor(key: string, defaultValue: T) {
     this.managed = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageItem.AREA_MANAGED);
     this.local = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageItem.AREA_LOCAL);
     this.sync = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageItem.AREA_SYNC);
+
+    this.observe((value) => {
+      this.onChanged.dispatch(value);
+    }, false);
   }
 
   public async getValue(): Promise<T> {
@@ -115,11 +123,13 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
     }, false);
   }
 
-  public observe(observer: (value: T) => void) {
-    (async () => {
-      const currentValue = await this.getValue();
-      observer(currentValue);
-    })();
+  public observe(observer: (value: T) => void, reportInitialValue = true) {
+    if (reportInitialValue) {
+      (async () => {
+        const currentValue = await this.getValue();
+        observer(currentValue);
+      })();
+    }
 
     this.observeManaged(observer);
     this.observeLocal(observer);

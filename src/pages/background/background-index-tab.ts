@@ -66,7 +66,10 @@ const removeIndexTabForCookieStore = async (cookieStoreId: string) => {
 };
 
 browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) => {
-  if (isWindowClosing) return;
+  if (isWindowClosing) {
+    await indexTabService.removeIndexTabUserContextId(tabId);
+    return;
+  }
   handleClosedIndexTab(tabId, windowId).catch((e) => {
     console.error(e);
   });
@@ -139,6 +142,25 @@ initialWindowsService.getInitialWindows().then(resetIndexTabs).catch((e) => {
   console.error(e);
 });
 
+browser.tabs.onCreated.addListener(async (browserTab) => {
+  const indexTabOption = await config['tab.groups.indexOption'].getValue();
+  if (indexTabOption != 'always') return;
+  if (browserTab.cookieStoreId == null || browserTab.windowId == null) {
+    console.warn('Incomplete browser tab', browserTab);
+    return;
+  }
+  const windowId = browserTab.windowId;
+  const cookieStoreId = browserTab.cookieStoreId;
+  tabQueryService.queryTabs({ tabGroupId: cookieStoreId }).then(async (tabs) => {
+    for (const tab of tabs) {
+      if ((await indexTabService.getIndexTabUserContextId(tab.id)) != undefined) {
+        return;
+      }
+    }
+    await indexTabService.createIndexTab(windowId, cookieStoreId);
+  });
+});
+
 // prevent index tabs from being pinned
 browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
   if (browserTab.incognito) return;
@@ -167,7 +189,11 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, browserTab) => {
   const cookieStoreId = tab.cookieStore.id;
   const userContextId = tab.cookieStore.userContextId;
   if (!IndexTab.isIndexTabUrl(tab.url)) {
-    await indexTabService.removeIndexTabUserContextId(tab.id);
+    if ((await indexTabService.getIndexTabUserContextId(tab.id)) == userContextId) {
+      await indexTabService.removeIndexTabUserContextId(tab.id);
+    } else {
+      return;
+    }
   } else {
     await indexTabService.setIndexTabUserContextId(tab.id, userContextId);
     return;
@@ -178,10 +204,10 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, browserTab) => {
   tabQueryService.queryTabs({
     tabGroupId: tab.cookieStore.id,
     windowId: tab.windowId,
-  }).then((tabs) => {
+  }).then(async (tabs) => {
     let hasIndexTab = false;
     for (const tab of tabs) {
-      if (IndexTab.isIndexTabUrl(tab.url)) {
+      if ((await indexTabService.getIndexTabUserContextId(tab.id)) == userContextId) {
         hasIndexTab = true;
         break;
       }
@@ -201,7 +227,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, browserTab) => {
   ],
 });
 
-config['tab.groups.indexOption'].observe(async (value) => {
+config['tab.groups.indexOption'].onChanged.addListener(async (value) => {
   try {
     if (value == 'never') {
       const indexTabIds = await indexTabService.getIndexTabIds();

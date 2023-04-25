@@ -29,6 +29,7 @@ import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
 import { PopupRendererService } from "../PopupRendererService";
 import { BrowserStateSnapshot } from "../../../legacy-lib/tabs/BrowserStateSnapshot";
+import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
 
 export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
@@ -137,6 +138,10 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
       fragment.appendChild(userContextElement);
       let tabCount = 0;
       for (const tab of tabs) {
+        if (IndexTab.isIndexTabUrl(tab.url)) {
+          continue;
+        }
+
         const tabElement = this._popupRenderer.renderTab(tab, userContext);
         userContextElement.appendChild(tabElement);
         tabCount++;
