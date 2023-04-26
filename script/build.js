@@ -34,6 +34,9 @@ const child_process = require('child_process');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const zip = require('deterministic-zip-ng');
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const manifest = require('../dist/manifest.json');
+
 /**
  *
  * @param {string} directory
@@ -97,13 +100,16 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   }
   const shortHash = hash.slice(0, 7);
   const time = Math.trunc(date.getTime() / 1000);
-  const filename = untracked ? `ctg-${time}-${shortHash}_untracked.xpi` : `ctg-${time}-${shortHash}.xpi`;
+  const buildId = untracked ? `${shortHash}_untracked` : shortHash;
+  const version = manifest.version;
+  const filename = `ctg-${version}-${time}-${buildId}.xpi`;
   return { filename, commit: hash, untracked, buildDate: date.getTime() };
 }).catch((error) => {
   console.error(error);
   const date = new Date();
   const time = Math.trunc(date.getTime() / 1000);
-  return { filename: `ctg-${time}-unknown.xpi`, commit: '', untracked: true, buildDate: date.getTime() };
+  const version = manifest.version;
+  return { filename: `ctg-${version}-${time}-unknown.xpi`, commit: '', untracked: true, buildDate: date.getTime() };
 }).then(async ({filename, commit, untracked, buildDate}) => {
   console.log(`Building ${filename}`);
   const info = {
