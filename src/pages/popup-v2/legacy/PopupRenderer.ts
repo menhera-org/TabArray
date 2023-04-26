@@ -27,6 +27,7 @@ import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOp
 import { TabQueryService } from '../../../lib/tabs/TabQueryService';
 import { TabService } from '../../../lib/tabs/TabService';
 import { TabAttributeMap } from '../../../lib/tabGroups/TabAttributeMap';
+import { CompatConsole } from '../../../lib/console/CompatConsole';
 
 import { MenulistTabElement } from "../../../components/menulist-tab";
 import { MenulistContainerElement } from "../../../components/menulist-container";
@@ -45,6 +46,8 @@ enum ContainerTabsState {
   HIDDEN_TABS,
   VISIBLE_TABS,
 }
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 // This needs some refactoring.
 export class PopupRenderer {

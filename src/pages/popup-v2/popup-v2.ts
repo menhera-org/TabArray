@@ -29,6 +29,7 @@ import { ExternalServiceProvider } from "../../lib/ExternalServiceProvider";
 import { TagDirectory } from "../../lib/tabGroups/TagDirectory";
 import { TagService } from "../../lib/tabGroups/TagService";
 import { FpiService } from "../../lib/config/FpiService";
+import { CompatConsole } from "../../lib/console/CompatConsole";
 
 import "../../components/ctg/ctg-vertical-layout";
 import "../../components/ctg/ctg-drawer";
@@ -59,6 +60,8 @@ import { config, privacyConfig } from '../../config/config';
 import { PopupRendererService } from "./PopupRendererService";
 import { PopupFocusHandlers } from "./PopupFocusHandlers";
 import { PopupCommandHandler } from "./PopupCommandHandler";
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 const searchParams = new URLSearchParams(window.location.search);
 if (searchParams.get('popup') == '1') {
@@ -158,7 +161,7 @@ const renderer = new ViewRefreshHandler(async () => {
     siteDetailsBuilder.render(browserStateSnapshot, currentWindowSnapshot.isPrivate);
   } finally {
     topBarElement.endSpinnerTransaction('popup-rendering');
-    console.debug('rendering done');
+    // console.debug('rendering done');
   }
 });
 

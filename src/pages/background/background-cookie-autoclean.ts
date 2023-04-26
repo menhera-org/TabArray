@@ -22,7 +22,9 @@
 import browser from 'webextension-polyfill';
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 const tabGroupService = TabGroupService.getInstance();

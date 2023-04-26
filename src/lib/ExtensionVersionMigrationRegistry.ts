@@ -20,8 +20,11 @@
 **/
 
 import { ExtensionVersion } from "./ExtensionVersion";
+import { CompatConsole } from "./console/CompatConsole";
 
 export type MigrationOperation = (version: ExtensionVersion) => Promise<void> | void;
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class ExtensionVersionMigrationRegistry {
   private readonly _migrations: Map<string, MigrationOperation> = new Map();

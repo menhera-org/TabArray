@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 
 import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
 import { FpiService } from '../../lib/config/FpiService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyConfig } from '../../config/config';
 
@@ -36,6 +37,7 @@ interface HTMLFormInput extends HTMLElement {
   value: string;
 }
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const fpiService = FpiService.getInstance();
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');

@@ -26,9 +26,11 @@ import { ViewRefreshHandler } from 'weeg-utils';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorageStatistics';
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const contentStorageStatistics = new ContentStorageStatistics();
 const cookieProvider = contentStorageStatistics.cookieProvider;
 const tabGroupDirectory = new TabGroupDirectory();

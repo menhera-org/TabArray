@@ -23,6 +23,7 @@ import browser from 'webextension-polyfill';
 
 import { InitialWindowsService } from './InitialWindowsService';
 import { DarkThemeMonitor } from '../../legacy-lib/themes/DarkThemeMonitor';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import { config } from '../../config/config';
 import { POPUP_PAGE } from '../../defs';
@@ -30,6 +31,7 @@ import { POPUP_PAGE } from '../../defs';
 const DARK_THEME_BACKGROUND_COLOR = '#cccccc';
 const LIGHT_THEME_BACKGROUND_COLOR = '#333333';
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const initialWindowsService = InitialWindowsService.getInstance();
 
 const setBadgeTextForBrowserWindow = (browserWindow: browser.Windows.Window) => {

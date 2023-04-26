@@ -22,8 +22,12 @@
 import browser from 'webextension-polyfill';
 import { Asserts } from 'weeg-utils';
 
+import { CompatConsole } from '../../lib/console/CompatConsole';
+
 // throws an error if not in background script
 Asserts.assertBackgroundScript();
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 /**
  * A service that modifies the headers of frames to allow them to be

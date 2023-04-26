@@ -20,8 +20,11 @@
 **/
 
 import { ServiceRegistry } from "../ServiceRegistry";
+import { CompatConsole } from "../console/CompatConsole";
 
 import { privacyConfig } from "../../config/config";
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class FpiService {
   private static readonly INSTANCE = new FpiService();

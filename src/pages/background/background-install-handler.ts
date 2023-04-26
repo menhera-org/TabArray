@@ -22,18 +22,22 @@
 import browser from 'webextension-polyfill';
 
 import { ExtensionVersionMigrationRegistry } from '../../lib/ExtensionVersionMigrationRegistry';
+import { StartupService } from '../../lib/StartupService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import { ADDON_PAGE } from '../../defs';
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
+const startupService = StartupService.getInstance();
 
 /**
  * Codes to run on first installation.
  */
-
 const migrations = new ExtensionVersionMigrationRegistry();
 
 // define migrations here
 
-browser.runtime.onInstalled.addListener((details) => {
+startupService.onStartup.addListener((details) => {
   const previousVersion = details.previousVersion ?? '0';
   const newVersion = browser.runtime.getManifest().version;
   console.info('onInstalled: %s -> %s', previousVersion, newVersion);

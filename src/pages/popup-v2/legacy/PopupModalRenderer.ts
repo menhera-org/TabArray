@@ -26,6 +26,7 @@ import { CookieStore, DisplayedContainer, ContextualIdentity } from 'weeg-contai
 import { ContextualIdentityService } from '../../../lib/tabGroups/ContextualIdentityService';
 import { TabGroupService } from '../../../lib/tabGroups/TabGroupService';
 import { DisplayedContainerService } from '../../../lib/tabGroups/DisplayedContainerService';
+import { CompatConsole } from '../../../lib/console/CompatConsole';
 
 import { PopupRenderer } from './PopupRenderer';
 import { PopupUtils } from './PopupUtils';
@@ -40,6 +41,8 @@ type KeyHandlers = {
   cancelHandler: (event?: Event) => void;
   keyHandler?: (event: KeyboardEvent) => boolean;
 };
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class PopupModalRenderer {
   private readonly _popupRenderer: PopupRenderer;

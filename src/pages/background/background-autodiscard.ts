@@ -22,9 +22,13 @@
 import browser from 'webextension-polyfill';
 import { Alarm } from 'weeg-utils';
 
+import { CompatConsole } from '../../lib/console/CompatConsole';
+
 import { config } from '../../config/config';
 
 const AUTODISCARD_INTERVAL_IN_MINUTES = 5; // 5 minutes
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 const alarm = new Alarm('tab.autoDiscard', {
   periodInMinutes: AUTODISCARD_INTERVAL_IN_MINUTES,

@@ -30,6 +30,7 @@ import { SupergroupService } from "../../../lib/tabGroups/SupergroupService";
 import { TabQueryService } from "../../../lib/tabs/TabQueryService";
 import { TabService } from "../../../lib/tabs/TabService";
 import { IndexTabService } from "../../../lib/tabs/IndexTabService";
+import { CompatConsole } from "../../../lib/console/CompatConsole";
 
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
@@ -40,6 +41,8 @@ import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { PopupRendererService } from "../PopupRendererService";
 
 import { ContainersStateSnapshot } from "../../../legacy-lib/tabs/ContainersStateSnapshot";
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onContainerSelected = new EventSink<string>();

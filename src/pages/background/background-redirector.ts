@@ -26,11 +26,13 @@ import { CompatTab } from 'weeg-tabs';
 import { OpenTabsService } from '../../lib/states/OpenTabsService';
 import { ActiveContainerService } from '../../lib/states/ActiveContainerService';
 import { ElapsedTimeService } from '../../lib/ElapsedTimeService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import { config } from '../../config/config';
 
 import { BeforeRequestHandler } from './BeforeRequestHandler';
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const openTabsService = OpenTabsService.getInstance();
 const activeContainerService = ActiveContainerService.getInstance();
 const elapsedTimeService = ElapsedTimeService.getInstance();

@@ -26,6 +26,9 @@ import { ContextualIdentity } from 'weeg-containers';
 import { ServiceRegistry } from '../ServiceRegistry';
 import { ContextualIdentityService } from './ContextualIdentityService';
 import { TabGroupService } from './TabGroupService';
+import { CompatConsole } from '../console/CompatConsole';
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class TemporaryContainerService {
   private static readonly _INSTANCE = new TemporaryContainerService();
@@ -90,6 +93,7 @@ export class TemporaryContainerService {
     temporaryContainers.push(identity.cookieStore.id);
     await this._temporaryContainerStorage.setValue(temporaryContainers);
 
+    console.info('Created temporary container:', identity.cookieStore.id, identity.name);
     return identity;
   }
 }

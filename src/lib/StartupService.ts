@@ -38,13 +38,22 @@ export class StartupService {
     return this.INSTANCE;
   }
 
-  public readonly onStartup = new EventSink<void>();
+  /**
+   * For important initializations.
+   */
+  public readonly onBeforeStartup = new EventSink<void>();
+
+  /**
+   * Fired once on startup.
+   */
+  public readonly onStartup = new EventSink<browser.Runtime.OnInstalledDetailsType>();
 
   private constructor() {
     if (extensionService.isBackgroundPage()) {
       Asserts.assertTopLevel();
-      browser.runtime.onInstalled.addListener(() => {
-        this.onStartup.dispatch();
+      browser.runtime.onInstalled.addListener((details) => {
+        this.onBeforeStartup.dispatch();
+        this.onStartup.dispatch(details);
       });
     }
   }

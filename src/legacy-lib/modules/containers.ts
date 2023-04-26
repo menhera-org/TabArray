@@ -25,10 +25,12 @@ import { CompatTab } from 'weeg-tabs';
 
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { TabService } from '../../lib/tabs/TabService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import { ContainerVisibilityService } from '../../lib/tabGroups/ContainerVisibilityService';
 import { WindowService } from '../tabs/WindowService';
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tabQueryService = TabQueryService.getInstance();
 const tabService = TabService.getInstance();
 const containerVisibilityService = ContainerVisibilityService.getInstance();

@@ -26,6 +26,7 @@ import { CookieStore } from 'weeg-containers';
 import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpenerService';
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 type ContainerInfo = {
   cookieStoreId: string;
@@ -33,6 +34,7 @@ type ContainerInfo = {
   iconUrl: string;
 };
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const extensionService = ExtensionService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
 const contextualIdentityService = ContextualIdentityService.getInstance();

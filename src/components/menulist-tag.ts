@@ -23,9 +23,11 @@ import browser from 'webextension-polyfill';
 import { EventSink } from 'weeg-events';
 
 import { TagDirectory, TagType } from '../lib/tabGroups/TagDirectory';
+import { CompatConsole } from '../lib/console/CompatConsole';
 
 import { TagEditorElement } from './tag-editor';
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tagDirectory = new TagDirectory();
 
 export class MenulistTagElement extends HTMLElement {

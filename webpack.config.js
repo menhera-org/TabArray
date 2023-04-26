@@ -36,6 +36,11 @@ module.exports = {
     extensions: ['.ts', '.js'],
   },
 
+  node: {
+    __filename: true,
+    __dirname: true,
+  },
+
   entry: {
     'background': {
       import: './src/pages/background/background.ts',

@@ -23,6 +23,10 @@ import browser from 'webextension-polyfill';
 import { DisplayedContainer } from 'weeg-containers';
 import { EventSink } from "weeg-events";
 
+import { CompatConsole } from '../lib/console/CompatConsole';
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
+
 export class MenulistContainerElement extends HTMLElement {
   public partialContainerView = false;
   private _tabCount = 0;

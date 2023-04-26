@@ -30,6 +30,7 @@ import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
 import { TabGroupAttributes } from '../../../lib/tabGroups/TabGroupAttributes';
 import { TabQueryService } from '../../../lib/tabs/TabQueryService';
 import { TabAttributeMap } from '../../../lib/tabGroups/TabAttributeMap';
+import { CompatConsole } from '../../../lib/console/CompatConsole';
 
 import { PopupRenderer } from './PopupRenderer';
 
@@ -44,6 +45,8 @@ import * as containers from '../../../legacy-lib/modules/containers';
 import { WindowStateSnapshot } from '../../../legacy-lib/tabs/WindowStateSnapshot';
 
 const tabGroupDirectory = new TabGroupDirectory();
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class PopupCurrentWindowRenderer {
   private readonly popupRenderer: PopupRenderer;

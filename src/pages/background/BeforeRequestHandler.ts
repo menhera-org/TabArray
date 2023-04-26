@@ -22,8 +22,11 @@
 import browser from 'webextension-polyfill';
 
 import { UrlRegistrationService } from '../../lib/UrlRegistrationService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import { CONFIRM_PAGE } from '../../defs';
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 /**
  * The type of the handler function. Returns whether to redirect the request.

@@ -24,9 +24,11 @@ import { ContextualIdentity } from 'weeg-containers';
 
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { TabService } from '../../lib/tabs/TabService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 const tabQueryService = TabQueryService.getInstance();
 const tabService = TabService.getInstance();
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 browser.contextualIdentities.onRemoved.addListener(async ({contextualIdentity: browserContextualIdentity}) => {
   try {

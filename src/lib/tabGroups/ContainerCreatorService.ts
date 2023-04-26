@@ -23,6 +23,7 @@ import { BackgroundService } from 'weeg-utils';
 
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { ServiceRegistry } from '../ServiceRegistry';
+import { CompatConsole } from '../console/CompatConsole';
 
 type MessageType = {
   cookieStoreId?: string;
@@ -31,6 +32,7 @@ type MessageType = {
   icon: string;
 };
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 

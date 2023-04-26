@@ -27,6 +27,7 @@ import { CookieStore } from 'weeg-containers';
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { IndexTabService } from '../../lib/tabs/IndexTabService';
 import { CookieStoreTabMap } from '../../lib/tabs/CookieStoreTabMap';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import * as containers from '../../legacy-lib/modules/containers';
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';
@@ -34,6 +35,7 @@ import { IndexTab } from '../../legacy-lib/modules/IndexTab';
 import { config } from '../../config/config';
 import { InitialWindowsService } from './InitialWindowsService';
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const initialWindowsService = InitialWindowsService.getInstance();
 const tabQueryService = TabQueryService.getInstance();
 const indexTabService = IndexTabService.getInstance();

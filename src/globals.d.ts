@@ -19,20 +19,7 @@
   @license
 **/
 
-import browser from 'webextension-polyfill';
+/* eslint-disable no-var */
 
-import { CompatConsole } from '../lib/console/CompatConsole';
-
-const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
-
-browser.runtime.onMessageExternal.addListener(async (message, sender) => {
-  console.log('message:', message, 'sender:', sender);
-  if (!message) {
-    throw new Error('message is null');
-  }
-  switch (message.type) {
-    default: {
-      throw new Error('unknown message type');
-    }
-  }
-});
+declare var __dirname: string;
+declare var __filename: string;

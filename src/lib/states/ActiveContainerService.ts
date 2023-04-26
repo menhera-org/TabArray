@@ -23,10 +23,13 @@ import { StorageItem } from "weeg-storage";
 
 import { ServiceRegistry } from "../ServiceRegistry";
 import { ActiveContainerBatchOperation } from "./ActiveContainerBatchOperation";
+import { CompatConsole } from "../console/CompatConsole";
 
 export type ActiveContainerStorageType = {
   [windowId: number]: string; // cookieStoreId
 };
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class ActiveContainerService {
   private static readonly STORAGE_KEY = "activeContainerByWindow";

@@ -26,11 +26,14 @@ import { CompatTab } from "weeg-tabs";
 
 import { TabQueryService } from "../../../lib/tabs/TabQueryService";
 import { IndexTabService } from "../../../lib/tabs/IndexTabService";
+import { CompatConsole } from "../../../lib/console/CompatConsole";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
 import { MenulistSiteElement } from "../../../components/menulist-site";
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class SitesFragmentBuilder extends AbstractFragmentBuilder {
   public readonly onSiteClicked = new EventSink<string>();

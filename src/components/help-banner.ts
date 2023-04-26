@@ -23,11 +23,13 @@ import browser from "webextension-polyfill";
 
 import { ExtensionPageService } from "../lib/ExtensionPageService";
 import { DateFormatService } from "../lib/DateFormatService";
+import { CompatConsole } from "../lib/console/CompatConsole";
 
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 
 import { GITHUB_TREE_LINK_BASE } from "../defs";
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const extensionPageService = ExtensionPageService.getInstance();
 const dateFormatService = DateFormatService.getInstance();
 

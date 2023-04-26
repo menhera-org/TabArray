@@ -24,11 +24,14 @@ import { CompatTab } from 'weeg-tabs';
 
 import { IndexTabService } from '../tabs/IndexTabService';
 import { ServiceRegistry } from '../ServiceRegistry';
+import { CompatConsole } from '../console/CompatConsole';
 
 import { config } from '../../config/config';
 import { WindowContainerHidingHelper } from './WindowContainerHidingHelper';
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';
 import { WindowService } from '../../legacy-lib/tabs/WindowService';
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 /**
  * This does not support private windows.

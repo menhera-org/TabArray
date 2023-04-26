@@ -25,6 +25,7 @@ import { DisplayedContainer } from 'weeg-containers';
 import { CompatTab } from 'weeg-tabs';
 
 import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
+import { CompatConsole } from '../lib/console/CompatConsole';
 
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import { SupergroupEditorElement } from './supergroup-editor';
@@ -37,6 +38,8 @@ import { ContainerVisibilityService } from "../lib/tabGroups/ContainerVisibility
 import { DomFactory } from '../lib/DomFactory';
 
 import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class PanelWindowsElement extends HTMLElement {
   public readonly onCollapseContainersButtonClicked = new EventSink<void>();
@@ -150,9 +153,7 @@ export class PanelWindowsElement extends HTMLElement {
     });
 
     this.onCreateTemporaryContainerButtonClicked.addListener(() => {
-      this._temporaryContainerService.createTemporaryContainer().then((identity) => {
-        console.debug('Created temporary container', identity);
-      }).catch((e) => {
+      this._temporaryContainerService.createTemporaryContainer().catch((e) => {
         console.error(e);
       });
     });

@@ -28,9 +28,11 @@ import { StartupService } from "../../lib/StartupService";
 import { NewTabPageService } from "../../lib/tabs/NewTabPageService";
 import { ContainerTabOpenerService } from "../../lib/tabGroups/ContainerTabOpenerService";
 import { ExtensionPageService } from "../../lib/ExtensionPageService";
+import { CompatConsole } from "../../lib/console/CompatConsole";
 
 import { config } from "../../config/config";
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const activeContainerService = ActiveContainerService.getInstance();
 const startupService = StartupService.getInstance();
 const openTabsService = OpenTabsService.getInstance();
@@ -111,7 +113,7 @@ browser.tabs.onUpdated.addListener(async (_tabId, _changeInfo, browserTab) => {
     const promises: Promise<void>[] = [];
     promises.push(openTabsService.addTab(browserTab.id));
     if (browserTab.url != null && !extensionPageService.isConfirmPage(browserTab.url) && browserTab.active) {
-      console.debug('Setting active tab to:', browserTab);
+      // console.debug('Setting active tab to:', browserTab);
       promises.push(activeContainerService.setActiveContainer(windowId, cookieStoreId));
     }
     await Promise.all(promises);

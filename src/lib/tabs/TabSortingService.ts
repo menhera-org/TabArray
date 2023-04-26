@@ -27,9 +27,11 @@ import { CompatTab } from 'weeg-tabs';
 import { ServiceRegistry } from '../ServiceRegistry';
 import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
 import { TagService } from '../tabGroups/TagService';
+import { CompatConsole } from '../console/CompatConsole';
 
 import { config } from '../../config/config';
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tabSortingProvider = new TabSortingProvider();
 const messagingService = MessagingService.getInstance();
 const tagService = TagService.getInstance();

@@ -31,6 +31,7 @@ import { ContainerTabOpenerService } from '../../lib/tabGroups/ContainerTabOpene
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import { PanoramaStateStore } from "./PanoramaStateStore";
 
@@ -44,6 +45,7 @@ import { ModalConfirmElement } from '../../components/modal-confirm';
 import { ModalFrameElement } from '../../components/modal-frame';
 import { HelpBannerElement } from '../../components/help-banner';
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const panoramaStateStore = new PanoramaStateStore();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();

@@ -27,6 +27,7 @@ import { CompatTab } from 'weeg-tabs';
 import { TagService } from './TagService';
 import { ActiveContainerService } from '../states/ActiveContainerService';
 import { ServiceRegistry } from '../ServiceRegistry';
+import { CompatConsole } from '../console/CompatConsole';
 
 type TabOpenActionType = {
   tabId?: number;
@@ -37,6 +38,7 @@ type TabOpenActionType = {
   url?: string;
 };
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tagService = TagService.getInstance();
 const activeContainerService = ActiveContainerService.getInstance();
 
