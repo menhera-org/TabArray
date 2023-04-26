@@ -44,7 +44,10 @@ export class SupergroupTabGroupFilter implements TabGroupFilter {
 
   public async getTabs(): Promise<CompatTab[]> {
     const cookieStoreIds = await this.getChildCookieStoreIds();
-    const tabs = (await browser.tabs.query({ cookieStoreId: cookieStoreIds })).map((tab) => new CompatTab(tab));
+    const tabs = (cookieStoreIds.length > 0
+      ? await browser.tabs.query({ cookieStoreId: cookieStoreIds })
+      : []
+    ).map((tab) => new CompatTab(tab));
     return tabs;
   }
 
