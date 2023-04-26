@@ -20,6 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
+import { StorageItem } from 'weeg-storage';
 
 import { ServiceRegistry } from '../ServiceRegistry';
 import { TabGroupDirectory } from "./TabGroupDirectory";
@@ -27,8 +28,10 @@ import { TabGroupOptionDirectory } from './TabGroupOptionDirectory';
 import { TabGroupAttributes } from './TabGroupAttributes';
 import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorageStatistics';
 import { CookieStoreService } from './CookieStoreService';
+import { StartupService } from '../StartupService';
 
 const cookieStoreService = CookieStoreService.getInstance();
+const startupService = StartupService.getInstance();
 
 /**
  * Doing operations on tab groups.
@@ -44,8 +47,14 @@ export class TabGroupService {
   public readonly optionDirectory = new TabGroupOptionDirectory();
   public readonly contentStorageStatistics = new ContentStorageStatistics();
 
+  private readonly _removingBrowsingDataCookieStoreIds = new StorageItem<string[]>('TabGroupService.removingBrowsingDataCookieStoreIds', [], StorageItem.AREA_LOCAL);
+
+  private _removingBrowsingDataCookieStoreIdsCache: string[] | undefined;
+
   private constructor() {
-    // nothing.
+    startupService.onStartup.addListener(() => {
+      this.resetState();
+    });
   }
 
   public async getTabGroupIds(): Promise<string[]> {
@@ -86,19 +95,54 @@ export class TabGroupService {
     return [... tabGroupIds];
   }
 
+  /**
+   * Should be called only on startup.
+   */
+  private async resetState(): Promise<void> {
+    await this._removingBrowsingDataCookieStoreIds.setValue([]);
+  }
+
+  private async removeBrowsingDataForCookieStoreIdInternal(cookieStoreId: string): Promise<void> {
+    await browser.browsingData.remove({
+      cookieStoreId,
+    }, {
+      cookies: true,
+      localStorage: true, // not supported on old Firefox
+      indexedDB: true,
+    });
+    await this.contentStorageStatistics.removeCookieStore(cookieStoreId);
+  }
+
+  private async removeBrowsingDataForCookieStoreId(cookieStoreId: string): Promise<void> {
+    if (null != this._removingBrowsingDataCookieStoreIdsCache && this._removingBrowsingDataCookieStoreIdsCache.includes(cookieStoreId)) {
+      return;
+    }
+    const removingCookieStoreIds = await this._removingBrowsingDataCookieStoreIds.getValue();
+    if (removingCookieStoreIds.includes(cookieStoreId)) {
+      return;
+    }
+    removingCookieStoreIds.push(cookieStoreId);
+    this._removingBrowsingDataCookieStoreIdsCache = removingCookieStoreIds;
+    await this._removingBrowsingDataCookieStoreIds.setValue(removingCookieStoreIds);
+
+    try {
+      await this.removeBrowsingDataForCookieStoreIdInternal(cookieStoreId);
+    } finally {
+      const removingCookieStoreIds = await this._removingBrowsingDataCookieStoreIds.getValue();
+      const index = removingCookieStoreIds.indexOf(cookieStoreId);
+      if (index >= 0) {
+        removingCookieStoreIds.splice(index, 1);
+      }
+      this._removingBrowsingDataCookieStoreIdsCache = removingCookieStoreIds;
+      await this._removingBrowsingDataCookieStoreIds.setValue(removingCookieStoreIds);
+    }
+  }
+
   public async removeBrowsingDataForTabGroupId(tabGroupId: string): Promise<void> {
     const attributes = new TabGroupAttributes(tabGroupId);
     if (attributes.tabGroupType == 'cookieStore') {
       const cookieStoreId = tabGroupId;
-
-      await browser.browsingData.remove({
-        cookieStoreId,
-      }, {
-        cookies: true,
-        localStorage: true, // not supported on old Firefox
-        indexedDB: true,
-      });
-      await this.contentStorageStatistics.removeCookieStore(cookieStoreId);
+      await this.removeBrowsingDataForCookieStoreId(cookieStoreId);
     } else {
       const cookieStoreIds = await this.directory.getChildContainers(tabGroupId);
       await Promise.all(cookieStoreIds.map((cookieStoreId) => this.removeBrowsingDataForTabGroupId(cookieStoreId)));

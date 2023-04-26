@@ -22,10 +22,13 @@
 import { StorageItem } from "weeg-storage";
 
 import { ServiceRegistry } from "./ServiceRegistry";
+import { StartupService } from "./StartupService";
 
 type StorageType = {
   [urlId: string]: string; // url
 };
+
+const startupService = StartupService.getInstance();
 
 const getRandomId = (): string => {
   const byteArray = new Uint8Array(16);
@@ -74,3 +77,9 @@ export class UrlRegistrationService {
 }
 
 ServiceRegistry.getInstance().registerService('UrlRegistrationService', UrlRegistrationService.getInstance());
+
+startupService.onStartup.addListener(() => {
+  UrlRegistrationService.getInstance().resetStorage().catch((e) => {
+    console.error(e);
+  });
+});
