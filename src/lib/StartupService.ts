@@ -20,13 +20,16 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { Asserts } from "weeg-utils";
+import { Asserts, ExtensionService } from "weeg-utils";
 import { EventSink } from 'weeg-events';
 
 import { ServiceRegistry } from './ServiceRegistry';
 
+const extensionService = ExtensionService.getInstance();
+
 /**
  * You need to use this for something to be executed once for the lifetime of the extension.
+ * This does nothing in non-background scripts.
  */
 export class StartupService {
   private static readonly INSTANCE = new StartupService();
@@ -38,11 +41,12 @@ export class StartupService {
   public readonly onStartup = new EventSink<void>();
 
   private constructor() {
-    Asserts.assertBackgroundScript();
-    Asserts.assertTopLevel();
-    browser.runtime.onInstalled.addListener(() => {
-      this.onStartup.dispatch();
-    });
+    if (extensionService.isBackgroundPage()) {
+      Asserts.assertTopLevel();
+      browser.runtime.onInstalled.addListener(() => {
+        this.onStartup.dispatch();
+      });
+    }
   }
 }
 
