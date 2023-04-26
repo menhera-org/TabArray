@@ -49,6 +49,7 @@ import './background-content-script-responder';
 import './background-tags';
 import './background-fetch-handler';
 import './background-content-script-registrar';
+import './background-tab-preview';
 // import './background-update-checker';
 import { every15secondsAlarm } from './background-alarms';
 
