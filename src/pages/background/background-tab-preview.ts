@@ -32,5 +32,5 @@ browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
     });
   }
 }, {
-  properties: ['status'],
+  properties: ['status', 'url'],
 });
