@@ -26,7 +26,7 @@ import { TabPreviewService } from '../../lib/tabs/TabPreviewService';
 const tabPreviewService = TabPreviewService.getInstance();
 
 browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
-  if (browserTab.status == 'complete') {
+  if (browserTab.status == 'complete' && browserTab.url && browserTab.url != 'about:blank') {
     tabPreviewService.updateTabPreview(tabId).catch((e) => {
       console.warn(e);
     });
