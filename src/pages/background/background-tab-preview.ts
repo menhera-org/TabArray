@@ -27,7 +27,7 @@ const tabPreviewService = TabPreviewService.getInstance();
 
 browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
   if (browserTab.status == 'complete') {
-    tabPreviewService.getTabPreview(tabId).catch((e) => {
+    tabPreviewService.updateTabPreview(tabId).catch((e) => {
       console.warn(e);
     });
   }

@@ -89,6 +89,19 @@ export class TabPreviewService {
     }
     return await this._getTabPreview(tabId);
   }
+
+  public async updateTabPreview(tabId: number): Promise<void> {
+    const tab = new CompatTab(await browser.tabs.get(tabId));
+    const previewUrl = await this._getTabPreview(tabId);
+    if (!previewUrl) {
+      return;
+    }
+    const tabValue = {
+      url: tab.url,
+      previewUrl,
+    };
+    await this._setTabValue(tabId, tabValue);
+  }
 }
 
 ServiceRegistry.getInstance().registerService('TabPreviewService', TabPreviewService.getInstance());
