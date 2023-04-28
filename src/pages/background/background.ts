@@ -50,6 +50,7 @@ import './background-tags';
 import './background-set-header';
 import './background-content-script-registrar';
 import './background-tab-preview';
+import './background-proxy';
 // import './background-update-checker';
 import { every15secondsAlarm } from './background-alarms';
 
