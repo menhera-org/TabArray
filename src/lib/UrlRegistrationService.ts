@@ -23,18 +23,14 @@ import { StorageItem } from "weeg-storage";
 
 import { ServiceRegistry } from "./ServiceRegistry";
 import { StartupService } from "./StartupService";
+import { RandomIdService } from "./RandomIdService";
 
 type StorageType = {
   [urlId: string]: string; // url
 };
 
 const startupService = StartupService.getInstance();
-
-const getRandomId = (): string => {
-  const byteArray = new Uint8Array(16);
-  crypto.getRandomValues(byteArray);
-  return byteArray.reduce((acc, byte) => acc + byte.toString(16).padStart(2, '0'), '');
-};
+const randomIdService = RandomIdService.getInstance();
 
 export class UrlRegistrationService {
   private static readonly INSTANCE = new UrlRegistrationService();
@@ -56,7 +52,7 @@ export class UrlRegistrationService {
   public async registerUrl(url: string): Promise<string> {
     new URL(url); // throws for invalid URLs
     const storage = await this._storage.getValue();
-    const urlId = getRandomId();
+    const urlId = randomIdService.getRandomId();
     storage[urlId] = url;
     await this._storage.setValue(storage);
     return urlId;
