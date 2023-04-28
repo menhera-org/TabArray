@@ -97,6 +97,7 @@ const inputTabSortingEnabled = document.querySelector<HTMLInputElement>('#input-
 
 const inputFeatureLanguageOverrides = document.querySelector<HTMLInputElement>('#input-featureLanguageOverrides');
 const inputFeatureUaOverrides = document.querySelector<HTMLInputElement>('#input-featureUaOverrides');
+const inputFeaturePerContainerProxy = document.querySelector<HTMLInputElement>('#input-featurePerContainerProxy');
 
 const inputNewTabKeepContainer = document.querySelector<HTMLInputElement>('#input-newtabKeepContainer');
 const inputFirstPartyIsolate = document.querySelector<HTMLInputElement>('#input-firstPartyIsolate');
@@ -207,4 +208,12 @@ config['tab.autoDiscard.minAge'].observe((value) => {
 
 selectAutoDiscardMinAge?.addEventListener('change', () => {
   setConfigValue(config['tab.autoDiscard.minAge'], parseInt(selectAutoDiscardMinAge.value, 10));
+});
+
+config['feature.containerProxy'].observe((value) => {
+  setInputChecked(inputFeaturePerContainerProxy, value);
+});
+
+inputFeaturePerContainerProxy?.addEventListener('change', () => {
+  setConfigValue(config['feature.containerProxy'], inputFeaturePerContainerProxy.checked);
 });

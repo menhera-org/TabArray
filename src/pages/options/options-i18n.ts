@@ -36,6 +36,7 @@ const setTextContent = (query: string, message: string) => {
 setTextContent('.pane-tab[data-pane-name="general"]', 'optionsTabGeneral');
 setTextContent('.pane-tab[data-pane-name="containers"]', 'optionsTabSortContainers');
 setTextContent('.pane-tab[data-pane-name="container-overrides"]', 'optionsTabContainerOverrides');
+setTextContent('.pane-tab[data-pane-name="proxies"]', 'optionsTabProxies');
 setTextContent('.pane-tab[data-pane-name="firefox-settings"]', 'optionsTabFirefoxSettings');
 setTextContent('.pane-tab[data-pane-name="help"]', 'menuItemHelp');
 
@@ -52,10 +53,11 @@ setTextContent('#select-autoDiscardMinAge > option[value="43200"]', 'labelAutoDi
 setTextContent('#select-autoDiscardMinAge > option[value="86400"]', 'labelAutoDiscard86400');
 
 setTextContent('#optionalFeaturesDescription', 'optionalFeaturesDescription');
+setTextContent('#optionalFeaturesDescription_proxies', 'optionalFeaturesDescription');
 
 setTextContent('label[for="input-featureLanguageOverrides"]', 'featureLanguageOverrides');
-
 setTextContent('label[for="input-featureUaOverrides"]', 'featureUaOverrides');
+setTextContent('label[for="input-featurePerContainerProxy"]', 'featurePerContainerProxy');
 
 setTextContent('#optionsHeadingExperimental', 'optionsHeadingExperimental');
 setTextContent('#optionsHeadingFirefox', 'optionsHeadingFirefox');

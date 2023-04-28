@@ -687,5 +687,13 @@
     "debuggingInformation": {
         "message": "Debugging Information",
         "description": "Debugging information page."
+    },
+    "featurePerContainerProxy": {
+        "message": "Per Container Proxy",
+        "description": "Per container proxy feature."
+    },
+    "optionsTabProxies": {
+        "message": "Proxies",
+        "description": "Label text for proxies tab."
     }
 }
