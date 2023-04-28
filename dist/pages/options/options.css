@@ -68,7 +68,8 @@ label {
 #pane-tabs {
   display: block flex;
   flex-direction: row;
-  overflow-inline: auto;
+  /* overflow-inline: auto; */
+  flex-wrap: wrap;
   border-block-end: solid 1px var(--border-color);
 }
 
@@ -80,6 +81,7 @@ label {
   border-block-start: solid .25rem transparent;
   display: block;
   color: inherit;
+  flex-shrink: 0;
 }
 
 #pane-tabs > .pane-tab.selected {
