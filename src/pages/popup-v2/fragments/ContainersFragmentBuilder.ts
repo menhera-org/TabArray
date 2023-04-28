@@ -24,7 +24,7 @@ import { CookieStore, DisplayedContainer } from "weeg-containers";
 import { EventSink } from "weeg-events";
 
 import { TemporaryContainerService } from "../../../lib/tabGroups/TemporaryContainerService";
-import { SupergroupType, TabGroupDirectory } from "../../../lib/tabGroups/TabGroupDirectory";
+import { SupergroupType } from "../../../lib/tabGroups/TabGroupDirectory";
 import { TabGroupAttributes } from "../../../lib/tabGroups/TabGroupAttributes";
 import { SupergroupService } from "../../../lib/tabGroups/SupergroupService";
 import { TabQueryService } from "../../../lib/tabs/TabQueryService";
@@ -144,7 +144,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     for (const normalUserContext of normalUserContexts) {
       userContextMap.set(normalUserContext.cookieStore.id, normalUserContext);
     }
-    const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupDirectory.getRootSupergroupId()) as SupergroupType;
+    const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupAttributes.getRootSupergroupTabGroupId()) as SupergroupType;
     this.renderPrivateContainers(containersStateSnapshot, privateUserContexts, activeContainersElement);
     this.renderSupergroup(0, rootSupergroup, containersStateSnapshot, userContextMap, activeContainersElement);
   }

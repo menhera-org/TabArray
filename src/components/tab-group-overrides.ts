@@ -42,16 +42,16 @@ export class TabGroupOverridesElement extends TabGroupListingElement {
     const input = document.createElement('input');
     input.classList.add('languages');
     input.type = 'text';
-    this._languageSettings.getLanguages(tabGroupId).then((languages) => {
-      input.value = languages;
+    this._languageSettings.getValueForTabGroup(tabGroupId).then((languages) => {
+      input.value = languages ?? '';
     });
     input.placeholder = navigator.languages.join(',');
     input.addEventListener('change', () => {
-      this._languageSettings.setLanguages(tabGroupId, input.value);
+      this._languageSettings.setValueForTabGroup(tabGroupId, input.value);
     });
     this._languageSettings.onChanged.addListener(() => {
-      this._languageSettings.getLanguages(tabGroupId).then((languages) => {
-        input.value = languages;
+      this._languageSettings.getValueForTabGroup(tabGroupId).then((languages) => {
+        input.value = languages ?? '';
       });
     });
     config['feature.languageOverrides'].observe((enabled) => {

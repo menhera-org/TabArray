@@ -21,8 +21,8 @@
 
 import { DisplayedContainer } from "weeg-containers";
 
-import { TabGroupDirectory, StorageType, SupergroupType } from "./TabGroupDirectory";
-import { TabGroupAttributes } from "./TabGroupAttributes";
+import { StorageType, SupergroupType } from "./TabGroupDirectory";
+import { TabGroupAttributes, TabGroupFilter } from "./TabGroupAttributes";
 
 export class TabGroupDirectorySnapshot {
   private readonly _value: StorageType;
@@ -35,7 +35,7 @@ export class TabGroupDirectorySnapshot {
     return structuredClone(this._value);
   }
 
-  public getTabGroupIds(): string[] {
+  public getSupergroupTabGroupIds(): string[] {
     const value = this.value;
     const tabGroupIds: string[] = [];
     for (const tabGroupId in value) {
@@ -73,39 +73,86 @@ export class TabGroupDirectorySnapshot {
     return false;
   }
 
-  /**
-   * Returns child cookie store IDs for given tab group ID.
-   */
-  public getChildContainers(tabGroupId: string): string[] {
+  private forEachInternal(callback: (tabGroupId: string) => unknown | Promise<unknown>, thisArg: object | null | undefined, tabGroupFilter: TabGroupFilter, rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId(), aCache?: Set<string>): void {
+    const cache = aCache ?? new Set();
+    if (cache.has(rootTabGroupId)) return;
+    cache.add(rootTabGroupId);
+
     const value = this.value;
-    const supergroup = value[tabGroupId] as SupergroupType;
-    if (!supergroup) return [];
-    const tabGroupIds: string[] = [];
+    const supergroup = value[rootTabGroupId] as SupergroupType;
+    if (!supergroup) return;
+
+    const boundCallback = thisArg != null ? callback.bind(thisArg) : callback;
+
     for (const memberTabGroupId of supergroup.members) {
       const attributes = new TabGroupAttributes(memberTabGroupId);
       if (attributes.tabGroupType == 'cookieStore') {
-        tabGroupIds.push(memberTabGroupId);
+        if (tabGroupFilter.cookieStore) {
+          Promise.resolve(boundCallback(memberTabGroupId)).catch((e) => {
+            console.error(e);
+          })
+        }
       } else {
-        tabGroupIds.push(... this.getChildContainers(memberTabGroupId));
+        if (tabGroupFilter.supergroup) {
+          Promise.resolve(boundCallback(memberTabGroupId)).catch((e) => {
+            console.error(e);
+          })
+        }
+        this.forEachInternal(callback, thisArg, tabGroupFilter, memberTabGroupId, cache);
       }
     }
+  }
+
+  public forEachTabGroup(callback: (tabGroupId: string) => unknown | Promise<unknown>, thisArg: object | null | undefined, rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): void {
+    this.forEachInternal(callback, thisArg, {
+      cookieStore: true,
+      supergroup: true,
+    }, rootTabGroupId);
+  }
+
+  public forEachCookieStore(callback: (tabGroupId: string) => unknown | Promise<unknown>, thisArg: object | null | undefined, rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): void {
+    this.forEachInternal(callback, thisArg, {
+      cookieStore: true,
+      supergroup: false,
+    }, rootTabGroupId);
+  }
+
+  public forEachSupergroup(callback: (tabGroupId: string) => unknown | Promise<unknown>, thisArg: object | null | undefined, rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): void {
+    this.forEachInternal(callback, thisArg, {
+      cookieStore: false,
+      supergroup: true,
+    }, rootTabGroupId);
+  }
+
+  private getTabGroupIdsInternal(tabGroupFilter: TabGroupFilter, rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): string[] {
+    const tabGroupIds: string[] = [];
+    this.forEachInternal((tabGroupId) => {
+      tabGroupIds.push(tabGroupId);
+    }, null, tabGroupFilter, rootTabGroupId);
     return tabGroupIds;
   }
 
-  public getContainerOrder(tabGroupId = TabGroupDirectory.getRootSupergroupId()): string[] {
-    const value = this.value;
-    const supergroup = value[tabGroupId] as SupergroupType;
-    if (!supergroup) return [];
-    const tabGroupIds: string[] = [];
-    for (const memberTabGroupId of supergroup.members) {
-      const attributes = new TabGroupAttributes(memberTabGroupId);
-      if (attributes.tabGroupType == 'cookieStore') {
-        tabGroupIds.push(memberTabGroupId);
-      } else {
-        tabGroupIds.push(... this.getContainerOrder(memberTabGroupId));
-      }
-    }
-    return tabGroupIds;
+  /**
+   * Returns an ordered list of cookie store IDs. Private cookie store is not returned.
+   */
+  public getContainerOrder(tabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): string[] {
+    return this.getTabGroupIdsInternal({ cookieStore: true, supergroup: false }, tabGroupId);
+  }
+
+  /**
+   * Returns an ordered list of tab group IDs for supergroups.
+   * Root supergroup is not returned.
+   */
+  public getSupergroupOrder(tabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): string[] {
+    return this.getTabGroupIdsInternal({ cookieStore: false, supergroup: true }, tabGroupId);
+  }
+
+  /**
+   * Returns an ordered list of tab group IDs for supergroups and cookie stores. Private cookie store is not returned.
+   * Root supergroup is not returned.
+   */
+  public getTabGroupOrder(tabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): string[] {
+    return this.getTabGroupIdsInternal({ cookieStore: true, supergroup: true }, tabGroupId);
   }
 
   public cookieStoreIdSortingCallback(a: string, b: string): number {

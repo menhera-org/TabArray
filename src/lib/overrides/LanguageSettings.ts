@@ -19,14 +19,12 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-import { EventSink } from "weeg-events";
+import { AbstractPerContainerSettings } from "./AbstractPerContainerSettings";
 
-type StorageType = {
-  [cookieStoreId: string]: string;
-};
-
-export class LanguageSettings {
+/**
+ * Per-container languages.
+ */
+export class LanguageSettings extends AbstractPerContainerSettings<string> {
   private static readonly STORAGE_KEY = 'languagesByContainer';
   private static readonly INSTANCE = new LanguageSettings();
 
@@ -34,28 +32,15 @@ export class LanguageSettings {
     return LanguageSettings.INSTANCE;
   }
 
-  private readonly _storage = new StorageItem<StorageType>(LanguageSettings.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
-
-  public readonly onChanged = new EventSink<void>();
-
   private constructor() {
-    // nothing
+    super();
   }
 
-  private async getValue(): Promise<StorageType> {
-    return this._storage.getValue();
+  protected override getStorageKey(): string {
+    return LanguageSettings.STORAGE_KEY;
   }
 
-  private async setValue(value: StorageType) {
-    return this._storage.setValue(value);
-  }
-
-  public async getTabGroupIds(): Promise<string[]> {
-    const value = await this.getValue();
-    return Object.keys(value);
-  }
-
-  public async setLanguages(cookieStoreId: string, languages: string) {
+  public async setValueForTabGroup(cookieStoreId: string, languages: string) {
     languages = languages.trim();
     const value = await this.getValue();
 
@@ -69,10 +54,8 @@ export class LanguageSettings {
     }
   }
 
-  public async getLanguages(cookieStoreId: string): Promise<string> {
-    const key = cookieStoreId;
-    const value = await this.getValue();
-    const languages = value[key] ?? '';
+  public override async getValueForTabGroup(cookieStoreId: string): Promise<string> {
+    const languages = await super.getValueForTabGroup(cookieStoreId) ?? '';
     if ('' === languages) return '';
     const parts = languages.split(',')
       .map((language) => language.trim())
@@ -85,7 +68,7 @@ export class LanguageSettings {
   }
 
   public async getAcceptLanguages(cookieStoreId: string): Promise<string> {
-    const languages = await this.getLanguages(cookieStoreId);
+    const languages = await this.getValueForTabGroup(cookieStoreId);
     if ('' === languages) return '';
     const inputParts = languages.split(',');
     const outputParts = [];
@@ -101,14 +84,5 @@ export class LanguageSettings {
       index++;
     }
     return outputParts.join(',');
-  }
-
-  public async removeTabGroup(cookieStoreId: string) {
-    const value = await this.getValue();
-    const key = cookieStoreId;
-    if (key in value) {
-      delete value[key];
-      this.setValue(value);
-    }
   }
 }

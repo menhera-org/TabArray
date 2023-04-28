@@ -19,9 +19,8 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-import { EventSink } from "weeg-events";
 import { ChromiumReleaseService } from "./ChromiumReleaseService";
+import { AbstractPerContainerSettings } from "./AbstractPerContainerSettings";
 
 export type UserAgentPreset = 'default' | 'chrome' | 'googlebot' | 'custom';
 
@@ -36,7 +35,7 @@ export type UserAgentStorageType = {
   [cookieStoreId: string]: UserAgentParams;
 };
 
-export class UserAgentSettings {
+export class UserAgentSettings extends AbstractPerContainerSettings<UserAgentParams> {
   private static readonly STORAGE_KEY = 'feature.uaOverrides.userAgentByContainer';
   private static readonly INSTANCE = new UserAgentSettings();
 
@@ -44,71 +43,62 @@ export class UserAgentSettings {
     return UserAgentSettings.INSTANCE;
   }
 
-  private readonly _storage = new StorageItem<UserAgentStorageType>(UserAgentSettings.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
   private readonly _chromeReleaseService = ChromiumReleaseService.getInstance();
 
-  public readonly onChanged = new EventSink<void>();
-
   private constructor() {
-    this._storage.onChanged.addListener(() => {
-      this.onChanged.dispatch();
-    });
+    super();
   }
 
-  private async saveValue(value: UserAgentStorageType) {
-    await this._storage.setValue(value);
+  protected override getStorageKey(): string {
+    return UserAgentSettings.STORAGE_KEY;
   }
 
-  private async getValue(): Promise<UserAgentStorageType> {
-    return this._storage.getValue();
-  }
-
-  public async getTabGroupIds(): Promise<string[]> {
-    const value = await this.getValue();
-    return Object.keys(value);
-  }
-
-  public async setUserAgent(cookieStoreId: string, preset: UserAgentPreset, userAgent?: string) {
-    const value = await this.getValue();
+  public async setValueForTabGroup(tabGroupId: string, params: UserAgentParams) {
+    const { preset, userAgent } = params;
     switch (preset) {
       case 'default': {
-        delete value[cookieStoreId];
-        break;
+        await this.removeTabGroup(tabGroupId);
+        return;
       }
 
       case 'chrome': {
-        value[cookieStoreId] = {
+        await this.rawSetValueForTabGroup(tabGroupId, {
           preset: 'chrome',
-        };
-        break;
+        });
+        return;
       }
 
       case 'googlebot': {
-        value[cookieStoreId] = {
+        await this.rawSetValueForTabGroup(tabGroupId, {
           preset: 'googlebot',
-        };
-        break;
+        });
+        return;
       }
 
       default: {
-        value[cookieStoreId] = {
+        await this.rawSetValueForTabGroup(tabGroupId, {
           preset: 'custom',
           userAgent,
-        };
+        });
+        return;
       }
     }
+  }
 
-    await this.saveValue(value);
+  public async setUserAgent(tabGroupId: string, preset: UserAgentPreset, userAgent?: string) {
+    await this.setValueForTabGroup(tabGroupId, {
+      preset,
+      userAgent,
+    });
   }
 
   /**
    * Returns the user agent string set for the given cookie store id.
-   * @param cookieStoreId
+   * @param tabGroupId
    * @returns Promise of the user agent string, or empty string if not set
    */
-  public async getUserAgent(cookieStoreId: string): Promise<string> {
-    const value = await this.getValue();
-    const params = value[cookieStoreId];
+  public async getUserAgent(tabGroupId: string): Promise<string> {
+    const params = await this.getValueForTabGroup(tabGroupId);
     if (!params) {
       return '';
     }
@@ -126,9 +116,8 @@ export class UserAgentSettings {
     return params.userAgent || '';
   }
 
-  public async getUserAgentParams(cookieStoreId: string): Promise<UserAgentParams> {
-    const value = await this.getValue();
-    const params = value[cookieStoreId];
+  public async getUserAgentParams(tabGroupId: string): Promise<UserAgentParams> {
+    const params = await this.getValueForTabGroup(tabGroupId);
     if (!params) {
       return {
         preset: 'default',
@@ -136,21 +125,5 @@ export class UserAgentSettings {
     }
 
     return params;
-  }
-
-  public async getEmulationMode(cookieStoreId: string): Promise<UserAgentEmulationMode> {
-    const ua = await this.getUserAgent(cookieStoreId);
-    if (!ua) {
-      return 'none';
-    }
-    return ua.match(/Chrome\/\d/) ? 'chrome' : 'none';
-  }
-
-  public async removeTabGroup(cookieStoreId: string): Promise<void> {
-    const value = await this.getValue();
-    if (cookieStoreId in value) {
-      delete value[cookieStoreId];
-      await this.saveValue(value);
-    }
   }
 }

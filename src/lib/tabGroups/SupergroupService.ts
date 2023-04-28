@@ -98,14 +98,14 @@ export class SupergroupService {
   private async copySettingsToChildTabGroup(parentTabGroupId: string, childTabGroupId: string): Promise<void> {
     const [autoCleanEnabled, languages, uaParams] = await Promise.all([
       tabGroupService.optionDirectory.getAutocleanForTabGroupId(parentTabGroupId),
-      languageSettings.getLanguages(parentTabGroupId),
+      languageSettings.getValueForTabGroup(parentTabGroupId),
       userAgentSettings.getUserAgentParams(parentTabGroupId),
     ]);
     if (autoCleanEnabled) {
       await tabGroupService.optionDirectory.setAutocleanForTabGroupId(childTabGroupId, true);
     }
     if ('' != languages) {
-      await languageSettings.setLanguages(childTabGroupId, languages);
+      await languageSettings.setValueForTabGroup(childTabGroupId, languages);
     }
     if (uaParams.preset != 'default') {
       await userAgentSettings.setUserAgent(childTabGroupId, uaParams.preset, uaParams.userAgent);

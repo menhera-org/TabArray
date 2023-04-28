@@ -64,7 +64,7 @@ export class TabGroupService {
     ]);
     return [
       ... cookieStores.map((cookieStore) => cookieStore.id),
-      ... tabGroupDirectorySnapshot.getTabGroupIds(),
+      ... tabGroupDirectorySnapshot.getSupergroupTabGroupIds(),
     ];
   }
 

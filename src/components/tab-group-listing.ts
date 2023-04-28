@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { CookieStore, DisplayedContainer } from 'weeg-containers';
 
-import { SupergroupType, TabGroupDirectory } from '../lib/tabGroups/TabGroupDirectory';
+import { SupergroupType } from '../lib/tabGroups/TabGroupDirectory';
 import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
 import { TabGroupAttributes } from '../lib/tabGroups/TabGroupAttributes';
 import { TabGroupDirectorySnapshot } from '../lib/tabGroups/TabGroupDirectorySnapshot';
@@ -197,7 +197,7 @@ export abstract class TabGroupListingElement extends HTMLElement {
         displayedContainerMap.set(cookieStoreId, contextualIdentity);
       }
     }
-    const rootSupergroupTabGroupId = TabGroupDirectory.getRootSupergroupId();
+    const rootSupergroupTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId();
     const rootSupergroup = snapshot.getSupergroup(rootSupergroupTabGroupId) as SupergroupType;
     groupsElement.textContent = '';
     this.renderSupergroup(0, rootSupergroup, displayedContainerMap, snapshot, groupsElement);

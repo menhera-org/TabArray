@@ -26,9 +26,11 @@ import { config } from '../../config/config';
 import { UaDataService } from '../../lib/overrides/UaDataService';
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
+import { ProxySettings } from '../../lib/proxies/ProxySettings';
 
 const languageSettings = LanguageSettings.getInstance();
 const userAgentSettings = UserAgentSettings.getInstance();
+const proxySettings = ProxySettings.getInstance();
 const uaDataService = UaDataService.getInstance();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
@@ -112,22 +114,26 @@ contextualIdentityFactory.onRemoved.addListener((contextualIdentity) => {
   languageSettings.removeTabGroup(cookieStoreId).catch((e) => {
     console.error(e);
   });
+  proxySettings.removeTabGroup(cookieStoreId).catch((e) => {
+    console.error(e);
+  });
 });
 
 tabGroupService.directory.onChanged.addListener(async () => {
   const availableTabGroupIds = await tabGroupService.getTabGroupIds();
-  userAgentSettings.getTabGroupIds().then(async (tabGroupIds) => {
-    for (const tabGroupId of tabGroupIds) {
-      if (!availableTabGroupIds.includes(tabGroupId)) {
-        await userAgentSettings.removeTabGroup(tabGroupId);
-      }
-    }
+  userAgentSettings.removeUnknownTabGroupIds(availableTabGroupIds).catch((e) => {
+    console.error(e);
   });
-  languageSettings.getTabGroupIds().then(async (tabGroupIds) => {
-    for (const tabGroupId of tabGroupIds) {
-      if (!availableTabGroupIds.includes(tabGroupId)) {
-        await languageSettings.removeTabGroup(tabGroupId);
-      }
-    }
+  languageSettings.removeUnknownTabGroupIds(availableTabGroupIds).catch((e) => {
+    console.error(e);
+  });
+  proxySettings.removeUnknownTabGroupIds(availableTabGroupIds).catch((e) => {
+    console.error(e);
+  });
+});
+
+proxySettings.presetStore.onChanged.addListener(() => {
+  proxySettings.removeUnknownPresetIds().catch((e) => {
+    console.error(e);
   });
 });
