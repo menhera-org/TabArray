@@ -43,3 +43,13 @@ export interface ProxyPresetParams {
   proxyDns?: unknown; // boolean
   doNotProxyLocal?: unknown; // boolean
 }
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ProxyPreset {
+  /**
+   * Used when displaying unnamed proxy presets.
+   */
+  export const toUrlString = (preset: ProxyPreset): string => {
+    return `${preset.type}://${preset.host}:${preset.port}`;
+  };
+}
