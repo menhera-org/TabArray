@@ -31,6 +31,7 @@ import { TabQueryService } from "../tabs/TabQueryService";
 import { TabGroupService } from "./TabGroupService";
 import { LanguageSettings } from "../overrides/LanguageSettings";
 import { UserAgentSettings } from "../overrides/UserAgentSettings";
+import { ProxySettings } from "../proxies/ProxySettings";
 
 const tabGroupDirectory = new TabGroupDirectory();
 const containerVisibilityService = ContainerVisibilityService.getInstance();
@@ -41,6 +42,7 @@ const tabQueryService = TabQueryService.getInstance();
 const tabGroupService = TabGroupService.getInstance();
 const languageSettings = LanguageSettings.getInstance();
 const userAgentSettings = UserAgentSettings.getInstance();
+const proxySettings = ProxySettings.getInstance();
 
 export class SupergroupService {
   private static readonly INSTANCE = new SupergroupService();
@@ -96,10 +98,11 @@ export class SupergroupService {
   }
 
   private async copySettingsToChildTabGroup(parentTabGroupId: string, childTabGroupId: string): Promise<void> {
-    const [autoCleanEnabled, languages, uaParams] = await Promise.all([
+    const [autoCleanEnabled, languages, uaParams, proxyPresetId] = await Promise.all([
       tabGroupService.optionDirectory.getAutocleanForTabGroupId(parentTabGroupId),
       languageSettings.getValueForTabGroup(parentTabGroupId),
       userAgentSettings.getUserAgentParams(parentTabGroupId),
+      proxySettings.getValueForTabGroup(parentTabGroupId),
     ]);
     if (autoCleanEnabled) {
       await tabGroupService.optionDirectory.setAutocleanForTabGroupId(childTabGroupId, true);
@@ -109,6 +112,9 @@ export class SupergroupService {
     }
     if (uaParams.preset != 'default') {
       await userAgentSettings.setUserAgent(childTabGroupId, uaParams.preset, uaParams.userAgent);
+    }
+    if (proxyPresetId) {
+      await proxySettings.setValueForTabGroup(childTabGroupId, proxyPresetId);
     }
   }
 
