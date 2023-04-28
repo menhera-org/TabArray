@@ -26,11 +26,9 @@ import { config } from '../../config/config';
 import { UaDataService } from '../../lib/overrides/UaDataService';
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
-import { ProxySettings } from '../../lib/proxies/ProxySettings';
 
 const languageSettings = LanguageSettings.getInstance();
 const userAgentSettings = UserAgentSettings.getInstance();
-const proxySettings = ProxySettings.getInstance();
 const uaDataService = UaDataService.getInstance();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
@@ -56,6 +54,7 @@ const getSecChUa = (userAgent: string) => {
 };
 
 const setHeader = (details: browser.WebRequest.OnBeforeSendHeadersDetailsType, headerName: string, headerValue: string) => {
+  headerName = headerName.toLowerCase();
   let found = false;
   details.requestHeaders?.forEach((header) => {
     if (headerName === header.name.toLowerCase()) {
@@ -114,9 +113,6 @@ contextualIdentityFactory.onRemoved.addListener((contextualIdentity) => {
   languageSettings.removeTabGroup(cookieStoreId).catch((e) => {
     console.error(e);
   });
-  proxySettings.removeTabGroup(cookieStoreId).catch((e) => {
-    console.error(e);
-  });
 });
 
 tabGroupService.directory.onChanged.addListener(async () => {
@@ -125,15 +121,6 @@ tabGroupService.directory.onChanged.addListener(async () => {
     console.error(e);
   });
   languageSettings.removeUnknownTabGroupIds(availableTabGroupIds).catch((e) => {
-    console.error(e);
-  });
-  proxySettings.removeUnknownTabGroupIds(availableTabGroupIds).catch((e) => {
-    console.error(e);
-  });
-});
-
-proxySettings.presetStore.onChanged.addListener(() => {
-  proxySettings.removeUnknownPresetIds().catch((e) => {
     console.error(e);
   });
 });

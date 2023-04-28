@@ -20,6 +20,7 @@
 **/
 
 import { AbstractPerContainerSettings } from "../overrides/AbstractPerContainerSettings";
+import { ProxyPreset } from "./ProxyPreset";
 import { ProxyPresetStore } from "./ProxyPresetStore";
 
 /**
@@ -68,5 +69,12 @@ export class ProxySettings extends AbstractPerContainerSettings<string> {
       throw new Error('Invalid proxy preset ID');
     }
     await this.rawSetValueForTabGroup(tabGroupId, proxyPresetId);
+  }
+
+  public async getProxyForTabGroup(tabGroupId: string): Promise<ProxyPreset | undefined> {
+    const presetId = await this.getValueForTabGroup(tabGroupId);
+    if (!presetId) return undefined;
+    const preset = await this.presetStore.getProxyPreset(presetId);
+    return preset;
   }
 }

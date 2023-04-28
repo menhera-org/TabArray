@@ -47,7 +47,7 @@ import './background-tab-sorter';
 import './background-activated-tabs';
 import './background-content-script-responder';
 import './background-tags';
-import './background-fetch-handler';
+import './background-set-header';
 import './background-content-script-registrar';
 import './background-tab-preview';
 // import './background-update-checker';

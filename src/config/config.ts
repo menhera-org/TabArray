@@ -33,6 +33,7 @@ export const config = {
   'help.shownOnce': new StorageConfigurationOption<boolean>('help.shownOnce', false),
   'feature.languageOverrides': new StorageConfigurationOption<boolean>('feature.languageOverrides', true),
   'feature.uaOverrides': new StorageConfigurationOption<boolean>('feature.uaOverrides', false),
+  'feature.containerProxy': new StorageConfigurationOption<boolean>('feature.containerProxy', false),
   'newtab.keepContainer': new StorageConfigurationOption<boolean>('newtab.keepContainer', true),
   'tab.external.containerOption': new StorageConfigurationOption<ExternalContainerOption>('tab.external.containerOption', 'choose'),
   'appearance.popupSize': new StorageConfigurationOption<PopupSize>('appearance.popupSize', 'standard'),
