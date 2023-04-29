@@ -673,5 +673,75 @@
     "editGroupDialogTitle": {
         "message": "グループを編集する",
         "description": "Title of the dialog to edit a group of containers."
+    },
+    "proxyName": {
+        "message": "名前",
+        "description": "Proxy name option."
+    },
+    "proxyProtocol": {
+        "message": "プロトコル",
+        "description": "Proxy protocol option."
+    },
+    "proxyUsername": {
+        "message": "ユーザ名",
+        "description": "Proxy username option."
+    },
+    "proxyPassword": {
+        "message": "パスワード",
+        "description": "Proxy password option."
+    },
+    "proxyExemptLocalAddresses": {
+        "message": "ローカルアドレスをプロキシしない",
+        "description": "Proxy exempt local addresses option."
+    },
+    "proxyDnsRequests": {
+        "message": "DNS リクエストをプロキシする",
+        "description": "Proxy DNS requests option."
+    },
+    "buttonAddNewProxy": {
+        "message": "新しいプロキシを追加する",
+        "description": "Add new proxy button."
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "利用可能なプロキシ",
+        "description": "Available proxies heading."
+    },
+    "buttonDeleteProxy": {
+        "message": "プロキシを削除する",
+        "description": "Delete proxy button."
+    },
+    "debuggingInformation": {
+        "message": "デバッグ情報",
+        "description": "Debugging information page."
+    },
+    "featurePerContainerProxy": {
+        "message": "コンテナーごとのプロキシ",
+        "description": "Per container proxy feature."
+    },
+    "noProxy": {
+        "message": "プロキシなし",
+        "description": "No proxy option."
+    },
+    "proxyHostname": {
+        "message": "ホスト名",
+        "description": "Proxy hostname option."
+    },
+    "proxyPort": {
+        "message": "ポート",
+        "description": "Proxy port option."
+    },
+    "optionsTabProxies": {
+        "message": "プロキシ",
+        "description": "Label text for proxies tab."
+    },
+    "newVersionAvailable": {
+        "message": "新しいバージョンが利用可能です： $VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
     }
 }
