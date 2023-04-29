@@ -58,7 +58,7 @@ export class ProxyEditorElement extends HTMLElement {
     for (const protocol of protocols) {
       const option = DomFactory.createElement<HTMLOptionElement>('option', this.selectProxyProtocol);
       option.value = protocol;
-      option.text = protocol;
+      option.text = protocol.toUpperCase();
     }
 
     const hostnamePortParagraph = DomFactory.createElement<HTMLParagraphElement>('p', this.shadowRoot);
