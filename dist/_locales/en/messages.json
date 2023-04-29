@@ -739,5 +739,9 @@
     "optionsHeadingAvailableProxies": {
         "message": "Available Proxies",
         "description": "Available proxies heading."
+    },
+    "buttonDeleteProxy": {
+        "message": "Delete Proxy",
+        "description": "Delete proxy button."
     }
 }

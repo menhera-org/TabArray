@@ -97,7 +97,8 @@ export class ProxyEditorElement extends HTMLElement {
     proxyDnsLabel.htmlFor = 'proxy-dns';
 
     const actionsParagraph = DomFactory.createElement<HTMLParagraphElement>('p', this.shadowRoot, { id: 'modal-actions' });
-    DomFactory.createElement<HTMLButtonElement>('button', actionsParagraph, { classNames: ['button-default'] });
+    DomFactory.createElement<HTMLButtonElement>('button', actionsParagraph, { id: 'button-delete' });
+    DomFactory.createElement<HTMLButtonElement>('button', actionsParagraph, { classNames: ['button-default'], id: 'button-ok' });
 
     this.setLocalizationMessages();
     this.defineEventListeners();
@@ -112,12 +113,21 @@ export class ProxyEditorElement extends HTMLElement {
     this.shadowRoot?.querySelector('label[for="proxy-password"]')?.append(browser.i18n.getMessage('proxyPassword'));
     this.shadowRoot?.querySelector('label[for="proxy-do-not-proxy-local"]')?.append(browser.i18n.getMessage('proxyExemptLocalAddresses'));
     this.shadowRoot?.querySelector('label[for="proxy-dns"]')?.append(browser.i18n.getMessage('proxyDnsRequests'));
-    this.shadowRoot?.querySelector('#modal-actions > button')?.append(browser.i18n.getMessage('buttonOk'));
+    this.buttonDelete.append(browser.i18n.getMessage('buttonDeleteProxy'));
+    this.buttonOk.append(browser.i18n.getMessage('buttonOk'));
   }
 
   private defineEventListeners(): void {
     this.selectProxyProtocol.addEventListener('change', () => this.updateInputVisibility());
     this.buttonOk.addEventListener('click', () => this.commitForm());
+    this.buttonDelete.addEventListener('click', () => {
+      if (this._proxyPresetId) {
+        proxySettings.presetStore.deleteProxyPreset(this._proxyPresetId).catch((e) => {
+          console.error(e);
+        });
+      }
+      this.resetForm();
+    });
   }
 
   private updateInputVisibility(): void {
@@ -216,7 +226,11 @@ export class ProxyEditorElement extends HTMLElement {
   }
 
   private get buttonOk(): HTMLButtonElement {
-    return this.shadowRoot?.querySelector<HTMLButtonElement>('#modal-actions > button.button-default') as HTMLButtonElement;
+    return this.shadowRoot?.querySelector<HTMLButtonElement>('#button-ok') as HTMLButtonElement;
+  }
+
+  private get buttonDelete(): HTMLButtonElement {
+    return this.shadowRoot?.querySelector<HTMLButtonElement>('#button-delete') as HTMLButtonElement;
   }
 
   private get proxyDnsParagraph(): HTMLParagraphElement {
