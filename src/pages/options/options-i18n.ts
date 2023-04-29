@@ -65,6 +65,7 @@ setTextContent('#optionsDescriptionExperimental', 'optionsDescriptionExperimenta
 setTextContent('#optionsDescriptionFirefox', 'optionsDescriptionFirefox');
 setTextContent('#fpiDescription', 'fpiDescription');
 setTextContent('#optionsDescriptionContainerSortOrder', 'optionsDescriptionContainerSortOrder');
+setTextContent('#optionsHeadingAvailableProxies', 'optionsHeadingAvailableProxies');
 
 setTextContent('label[for="input-newtabKeepContainer"]', 'labelNewTabKeepContainer');
 

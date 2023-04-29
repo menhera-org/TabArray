@@ -58,8 +58,8 @@ export class ProxyPresetStore {
     if (isNaN(port)) {
       throw new Error('Invalid port');
     }
-    const username = params.username?.trim() || undefined;
-    const password = params.password?.trim() || undefined;
+    const username = params.username || undefined;
+    const password = params.password || undefined;
     const proxyDns = params.proxyDns != null ? !!params.proxyDns : undefined;
     const doNotProxyLocal = params.doNotProxyLocal != null ? !!params.doNotProxyLocal : false;
     const builtPreset: ProxyPreset = {
@@ -108,6 +108,11 @@ export class ProxyPresetStore {
   public async getProxyPresetIds(): Promise<string[]> {
     const storageValue = await this.getValue();
     return Object.keys(storageValue);
+  }
+
+  public async getProxyPresets(): Promise<ProxyPreset[]> {
+    const storageValue = await this.getValue();
+    return Object.values(storageValue);
   }
 
   public async deleteProxyPreset(id: string): Promise<void> {

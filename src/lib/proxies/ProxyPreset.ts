@@ -52,4 +52,8 @@ export namespace ProxyPreset {
   export const toUrlString = (preset: ProxyPreset): string => {
     return `${preset.type}://${preset.host}:${preset.port}`;
   };
+
+  export const getName = (preset: ProxyPreset): string => {
+    return preset.title || toUrlString(preset);
+  };
 }

@@ -30,6 +30,7 @@ import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyCo
 import { TabGroupSorterElement } from '../../components/tab-group-sorter';
 import { TabGroupOverridesElement } from '../../components/tab-group-overrides';
 import { HelpBannerElement } from '../../components/help-banner';
+import { ProxyManagerElement } from '../../components/proxy-manager';
 
 import './options-i18n';
 
@@ -111,11 +112,16 @@ const selectAutoDiscardMinAge = document.querySelector<HTMLSelectElement>('#sele
 
 const paneHelp = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="help"]');
 
+const paneProxies = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="proxies"]');
+
 const tabGroupSorter = new TabGroupSorterElement();
 paneContainers?.appendChild(tabGroupSorter);
 
 const tabGroupOverrides = new TabGroupOverridesElement();
 paneContainerOverrides?.appendChild(tabGroupOverrides);
+
+const proxyManager = new ProxyManagerElement();
+paneProxies?.appendChild(proxyManager);
 
 const helpBanner = new HelpBannerElement();
 paneHelp?.appendChild(helpBanner);

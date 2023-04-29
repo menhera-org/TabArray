@@ -700,6 +700,10 @@
         "message": "No Proxy",
         "description": "No proxy option."
     },
+    "proxyName": {
+        "message": "Name",
+        "description": "Proxy name option."
+    },
     "proxyProtocol": {
         "message": "Protocol",
         "description": "Proxy protocol option."
@@ -727,5 +731,13 @@
     "proxyDnsRequests": {
         "message": "Proxy DNS Requests",
         "description": "Proxy DNS requests option."
+    },
+    "buttonAddNewProxy": {
+        "message": "Add New Proxy",
+        "description": "Add new proxy button."
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "Available Proxies",
+        "description": "Available proxies heading."
     }
 }
