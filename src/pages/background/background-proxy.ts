@@ -24,7 +24,8 @@ import { HostnameService } from 'weeg-domains';
 
 import { ProxySettings } from '../../lib/proxies/ProxySettings';
 import { ProxyType } from '../../lib/proxies/ProxyType';
-import { ProxyInfo } from '../../lib/proxies/ProxyInfo';
+import { ProxyInfo, HttpProxyInfo } from '../../lib/proxies/ProxyInfo';
+import { ProxyPreset } from '../../lib/proxies/ProxyPreset';
 import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
 import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
 
@@ -61,6 +62,19 @@ const isUrlLocalhost = (url: string): boolean => {
     console.warn('Failed to parse URL', url, e);
     return false;
   }
+};
+
+const compareProxies = (proxyInfo: HttpProxyInfo, proxy: ProxyPreset): boolean => {
+  if (proxyInfo.host != proxy.host || proxyInfo.port != proxy.port) {
+    return false;
+  }
+  if (proxyInfo.type == 'http' && proxy.type != ProxyType.HTTP) {
+    return false;
+  }
+  if (proxyInfo.type == 'https' && proxy.type != ProxyType.HTTPS) {
+    return false;
+  }
+  return true;
 };
 
 contextualIdentityFactory.onRemoved.addListener((contextualIdentity) => {
@@ -104,10 +118,7 @@ browser.proxy && browser.webRequest.onAuthRequired.addListener(async (details) =
       return {};
     }
     const {proxy, proxyEnabled} = await getProxyStatus(details.cookieStoreId);
-    if (!proxyEnabled || !proxy || !ProxyType.isHttpType(proxy.type)) {
-      return {};
-    }
-    if (proxyInfo.host != proxy.host || proxyInfo.port != proxy.port || proxyInfo.type == 'http' && proxy.type != 'http' || proxyInfo.type == 'https' && proxy.type != 'https') {
+    if (!proxyEnabled || !proxy || !ProxyType.isHttpType(proxy.type) || !compareProxies(proxyInfo, proxy)) {
       return {};
     }
     const username = proxy.username ?? '';
