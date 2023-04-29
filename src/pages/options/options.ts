@@ -30,6 +30,8 @@ import { config, ExternalContainerOption, GroupIndexOption, PopupSize, privacyCo
 import { TabGroupSorterElement } from '../../components/tab-group-sorter';
 import { TabGroupOverridesElement } from '../../components/tab-group-overrides';
 import { HelpBannerElement } from '../../components/help-banner';
+import { ProxyManagerElement } from '../../components/proxy-manager';
+import { TabGroupProxyElement } from '../../components/tab-group-proxy';
 
 import './options-i18n';
 
@@ -66,7 +68,7 @@ const panes = document.querySelectorAll<HTMLElement>('#optionsPanes > div');
 const paneTabs = document.querySelectorAll<HTMLElement>('#pane-tabs > .pane-tab');
 const setActiveContent = (name: string) => {
   name = name || 'general';
-  console.log('setActiveContent', name);
+  // console.log('setActiveContent', name);
   for (const pane of panes) {
     if (pane.dataset.paneName === name) {
       pane.classList.add('active');
@@ -97,6 +99,7 @@ const inputTabSortingEnabled = document.querySelector<HTMLInputElement>('#input-
 
 const inputFeatureLanguageOverrides = document.querySelector<HTMLInputElement>('#input-featureLanguageOverrides');
 const inputFeatureUaOverrides = document.querySelector<HTMLInputElement>('#input-featureUaOverrides');
+const inputFeaturePerContainerProxy = document.querySelector<HTMLInputElement>('#input-featurePerContainerProxy');
 
 const inputNewTabKeepContainer = document.querySelector<HTMLInputElement>('#input-newtabKeepContainer');
 const inputFirstPartyIsolate = document.querySelector<HTMLInputElement>('#input-firstPartyIsolate');
@@ -110,11 +113,19 @@ const selectAutoDiscardMinAge = document.querySelector<HTMLSelectElement>('#sele
 
 const paneHelp = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="help"]');
 
+const paneProxies = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="proxies"]');
+
 const tabGroupSorter = new TabGroupSorterElement();
 paneContainers?.appendChild(tabGroupSorter);
 
 const tabGroupOverrides = new TabGroupOverridesElement();
 paneContainerOverrides?.appendChild(tabGroupOverrides);
+
+const tabGroupProxy = new TabGroupProxyElement();
+paneProxies?.querySelector('#proxy-settings')?.appendChild(tabGroupProxy);
+
+const proxyManager = new ProxyManagerElement();
+paneProxies?.appendChild(proxyManager);
 
 const helpBanner = new HelpBannerElement();
 paneHelp?.appendChild(helpBanner);
@@ -207,4 +218,12 @@ config['tab.autoDiscard.minAge'].observe((value) => {
 
 selectAutoDiscardMinAge?.addEventListener('change', () => {
   setConfigValue(config['tab.autoDiscard.minAge'], parseInt(selectAutoDiscardMinAge.value, 10));
+});
+
+config['feature.containerProxy'].observe((value) => {
+  setInputChecked(inputFeaturePerContainerProxy, value);
+});
+
+inputFeaturePerContainerProxy?.addEventListener('change', () => {
+  setConfigValue(config['feature.containerProxy'], inputFeaturePerContainerProxy.checked);
 });

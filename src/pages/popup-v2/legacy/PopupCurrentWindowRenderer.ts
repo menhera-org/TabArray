@@ -272,7 +272,7 @@ export class PopupCurrentWindowRenderer {
       }
     } else {
       const activeTabGroupIds = this.getActiveTabGroupIds(windowStateSnapshot, definedDisplayedContainers, tabGroupDirectorySnapshot);
-      const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupDirectory.getRootSupergroupId()) as SupergroupType;
+      const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupAttributes.getRootSupergroupTabGroupId()) as SupergroupType;
       for (const memberTabGroupId of rootSupergroup.members) {
         if (!activeTabGroupIds.has(memberTabGroupId)) continue;
         tabCount += this.renderSupergroupContainer(element, memberTabGroupId, tabGroupDirectorySnapshot, windowStateSnapshot, tabAttributeMap, definedDisplayedContainers);
@@ -293,7 +293,7 @@ export class PopupCurrentWindowRenderer {
       }
     } else {
       const activeTabGroupIds = this.getActiveTabGroupIds(windowStateSnapshot, definedUserContexts, tabGroupDirectorySnapshot);
-      const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupDirectory.getRootSupergroupId()) as SupergroupType;
+      const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupAttributes.getRootSupergroupTabGroupId()) as SupergroupType;
       for (const memberTabGroupId of rootSupergroup.members) {
         if (activeTabGroupIds.has(memberTabGroupId)) continue;
         const tabGroupAttributes = new TabGroupAttributes(memberTabGroupId);

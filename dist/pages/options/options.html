@@ -31,6 +31,7 @@
     <a href="#general" class="pane-tab" data-pane-name="general">optionsTabGeneral</a>
     <a href="#containers" class="pane-tab" data-pane-name="containers">optionsTabSortContainers</a>
     <a href="#container-overrides" class="pane-tab" data-pane-name="container-overrides">optionsTabContainerOverrides</a>
+    <a href="#proxies" class="pane-tab" data-pane-name="proxies">optionsTabProxies</a>
     <a href="#firefox-settings" class="pane-tab" data-pane-name="firefox-settings">optionsTabFirefoxSettings</a>
     <a href="#help" class="pane-tab" data-pane-name="help">menuItemHelp</a>
   </nav>
@@ -98,6 +99,15 @@
         <input type='checkbox' id='input-featureUaOverrides'/>
         <label class='browser-style-label' for='input-featureUaOverrides'>featureUaOverrides</label>
       </p>
+    </div>
+    <div data-pane-name='proxies'>
+      <p id='optionalFeaturesDescription_proxies'>optionalFeaturesDescription</p>
+      <p class='browser-style'>
+        <input type='checkbox' id='input-featurePerContainerProxy'/>
+        <label class='browser-style-label' for='input-featurePerContainerProxy'>featurePerContainerProxy</label>
+      </p>
+      <div id='proxy-settings'></div>
+      <h2 id='optionsHeadingAvailableProxies'>optionsHeadingAvailableProxies</h2>
     </div>
     <div data-pane-name='firefox-settings'>
       <h2 id='optionsHeadingFirefox'>optionsHeadingFirefox</h2>

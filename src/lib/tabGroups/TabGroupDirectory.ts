@@ -24,7 +24,7 @@ import { CookieStore } from "weeg-containers";
 import { EventSink } from "weeg-events";
 import { Uint32 } from "weeg-types";
 
-import { TabGroupAttributes } from "./TabGroupAttributes";
+import { TabGroupAttributes, TabGroupType } from "./TabGroupAttributes";
 import { TabGroupDirectorySnapshot } from "./TabGroupDirectorySnapshot";
 import { ContextualIdentityService } from "./ContextualIdentityService";
 
@@ -52,14 +52,11 @@ export class TabGroupDirectory {
   private readonly storage = new StorageItem<StorageType>(TabGroupDirectory.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
   private readonly legacyStorage = new StorageItem<Uint32.Uint32[]>(TabGroupDirectory.LEGACY_STORAGE_KEY, [], StorageItem.AREA_LOCAL);
   private readonly contextualIdentityService = ContextualIdentityService.getInstance();
+  private readonly contextualIdentityFactory = this.contextualIdentityService.getFactory();
 
   public constructor() {
     this.storage.onChanged.addListener(() => this.onChanged.dispatch());
     this.legacyStorage.onChanged.addListener(() => this.onChanged.dispatch());
-  }
-
-  public static getRootSupergroupId(): string {
-    return TabGroupAttributes.getTabGroupIdFromSupergroupId(0);
   }
 
   private async getLegacyUserContextOrder(): Promise<Uint32.Uint32[]> {
@@ -71,8 +68,7 @@ export class TabGroupDirectory {
    * Returns non-private cookie stores by userContextId.
    */
   private async getDefinedUserContextIds(): Promise<Uint32.Uint32[]> {
-    const contextualIdentityFactory = this.contextualIdentityService.getFactory();
-    const contextualIdentities = await contextualIdentityFactory.getAll();
+    const contextualIdentities = await this.contextualIdentityFactory.getAll();
     const userContextIds = contextualIdentities.map((contextualIdentity) => contextualIdentity.cookieStore.userContextId);
     return [
       0 as Uint32.Uint32,
@@ -104,7 +100,7 @@ export class TabGroupDirectory {
     const value = await this.storage.getValue();
     const userContextIds = await this.getLegacyUserContextOrderSorted();
     const cookieStoreIds = userContextIds.map((userContextId) => CookieStore.fromParams({ userContextId, privateBrowsingId: 0 as Uint32.Uint32 }).id);
-    const rootSupergroupId = TabGroupDirectory.getRootSupergroupId();
+    const rootSupergroupId = TabGroupAttributes.getRootSupergroupTabGroupId();
     if (!(rootSupergroupId in value)) {
       value[rootSupergroupId] = {
         supergroupId: 0,
@@ -168,7 +164,7 @@ export class TabGroupDirectory {
    * Returns child cookie store IDs for given tab group ID.
    */
   public async getChildContainers(tabGroupId: string): Promise<string[]> {
-    return (await this.getSnapshot()).getChildContainers(tabGroupId);
+    return (await this.getSnapshot()).getContainerOrder(tabGroupId);
   }
 
   public async getParentTabGroupId(tabGroupId: string): Promise<string | undefined> {
@@ -182,10 +178,29 @@ export class TabGroupDirectory {
     return undefined;
   }
 
+  /**
+   * Root supergroup is not returned.
+   */
+  public async getAllTabGroupIds(includePrivateCookieStore = false): Promise<string[]> {
+    const snapshot = await this.getSnapshot();
+    const tabGroupIds: string[] = [];
+    if (includePrivateCookieStore) {
+      tabGroupIds.push(CookieStore.PRIVATE.id);
+    }
+    tabGroupIds.push(... snapshot.getTabGroupOrder());
+    return tabGroupIds;
+  }
+
   public async createSupergroup(name: string): Promise<string> {
     const value = await this.getValue();
     const tabGroupIds = Object.keys(value);
-    const supergroupIds = tabGroupIds.map((tabGroupId) => new TabGroupAttributes(tabGroupId).supergroupId as number);
+    const supergroupIds = tabGroupIds.map((tabGroupId) => {
+      const attributes = new TabGroupAttributes(tabGroupId);
+      if (attributes.tabGroupType != TabGroupType.SUPERGROUP) {
+        throw new Error('Tab group is not a supergroup');
+      }
+      return attributes.supergroupId;
+    });
     const maxSupergroupId = Math.max(...supergroupIds);
     const supergroupId = maxSupergroupId + 1;
     const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroupId);
@@ -194,7 +209,7 @@ export class TabGroupDirectory {
       name,
       members: [],
     };
-    const rootSupergroupId = TabGroupDirectory.getRootSupergroupId();
+    const rootSupergroupId = TabGroupAttributes.getRootSupergroupTabGroupId();
     const rootSupergroup = value[rootSupergroupId] as SupergroupType;
     rootSupergroup.members.push(tabGroupId);
     await this.setValue(value);
@@ -210,12 +225,12 @@ export class TabGroupDirectory {
   }
 
   public async removeSupergroup(tabGroupId: string): Promise<void> {
-    if (tabGroupId == TabGroupDirectory.getRootSupergroupId()) return;
+    if (tabGroupId == TabGroupAttributes.getRootSupergroupTabGroupId()) return;
     const value = await this.getValue();
     const supergroup = value[tabGroupId] as SupergroupType;
     if (!supergroup) return;
     if (supergroup.supergroupId == 0) return;
-    const parentTabGroupId = await this.getParentTabGroupId(tabGroupId) ?? TabGroupDirectory.getRootSupergroupId();
+    const parentTabGroupId = await this.getParentTabGroupId(tabGroupId) ?? TabGroupAttributes.getRootSupergroupTabGroupId();
     const parentSupergroup = value[parentTabGroupId] as SupergroupType;
     for (const memberTabGroupId of supergroup.members) {
       parentSupergroup.members.push(memberTabGroupId);
@@ -234,7 +249,7 @@ export class TabGroupDirectory {
     if (snapshot.hasChildTabGroupId(tabGroupId, parentTabGroupId)) return;
     const parentSupergroup = value[parentTabGroupId] as SupergroupType;
     if (!parentSupergroup) return;
-    const currentParentTabGroupId = snapshot.getParentTabGroupId(tabGroupId) ?? TabGroupDirectory.getRootSupergroupId();
+    const currentParentTabGroupId = snapshot.getParentTabGroupId(tabGroupId) ?? TabGroupAttributes.getRootSupergroupTabGroupId();
     if (currentParentTabGroupId == parentTabGroupId) return;
     const currentParentSupergroup = value[currentParentTabGroupId] as SupergroupType;
     currentParentSupergroup.members = currentParentSupergroup.members.filter((memberTabGroupId) => memberTabGroupId !== tabGroupId);

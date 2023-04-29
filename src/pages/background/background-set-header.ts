@@ -54,6 +54,7 @@ const getSecChUa = (userAgent: string) => {
 };
 
 const setHeader = (details: browser.WebRequest.OnBeforeSendHeadersDetailsType, headerName: string, headerValue: string) => {
+  headerName = headerName.toLowerCase();
   let found = false;
   details.requestHeaders?.forEach((header) => {
     if (headerName === header.name.toLowerCase()) {
@@ -116,18 +117,10 @@ contextualIdentityFactory.onRemoved.addListener((contextualIdentity) => {
 
 tabGroupService.directory.onChanged.addListener(async () => {
   const availableTabGroupIds = await tabGroupService.getTabGroupIds();
-  userAgentSettings.getTabGroupIds().then(async (tabGroupIds) => {
-    for (const tabGroupId of tabGroupIds) {
-      if (!availableTabGroupIds.includes(tabGroupId)) {
-        await userAgentSettings.removeTabGroup(tabGroupId);
-      }
-    }
+  userAgentSettings.removeUnknownTabGroupIds(availableTabGroupIds).catch((e) => {
+    console.error(e);
   });
-  languageSettings.getTabGroupIds().then(async (tabGroupIds) => {
-    for (const tabGroupId of tabGroupIds) {
-      if (!availableTabGroupIds.includes(tabGroupId)) {
-        await languageSettings.removeTabGroup(tabGroupId);
-      }
-    }
+  languageSettings.removeUnknownTabGroupIds(availableTabGroupIds).catch((e) => {
+    console.error(e);
   });
 });

@@ -687,5 +687,61 @@
     "debuggingInformation": {
         "message": "Debugging Information",
         "description": "Debugging information page."
+    },
+    "featurePerContainerProxy": {
+        "message": "Per Container Proxy",
+        "description": "Per container proxy feature."
+    },
+    "optionsTabProxies": {
+        "message": "Proxies",
+        "description": "Label text for proxies tab."
+    },
+    "noProxy": {
+        "message": "No Proxy",
+        "description": "No proxy option."
+    },
+    "proxyName": {
+        "message": "Name",
+        "description": "Proxy name option."
+    },
+    "proxyProtocol": {
+        "message": "Protocol",
+        "description": "Proxy protocol option."
+    },
+    "proxyHostname": {
+        "message": "Hostname",
+        "description": "Proxy hostname option."
+    },
+    "proxyPort": {
+        "message": "Port",
+        "description": "Proxy port option."
+    },
+    "proxyUsername": {
+        "message": "Username",
+        "description": "Proxy username option."
+    },
+    "proxyPassword": {
+        "message": "Password",
+        "description": "Proxy password option."
+    },
+    "proxyExemptLocalAddresses": {
+        "message": "Do Not Proxy Local Addresses",
+        "description": "Proxy exempt local addresses option."
+    },
+    "proxyDnsRequests": {
+        "message": "Proxy DNS Requests",
+        "description": "Proxy DNS requests option."
+    },
+    "buttonAddNewProxy": {
+        "message": "Add New Proxy",
+        "description": "Add new proxy button."
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "Available Proxies",
+        "description": "Available proxies heading."
+    },
+    "buttonDeleteProxy": {
+        "message": "Delete Proxy",
+        "description": "Delete proxy button."
     }
 }

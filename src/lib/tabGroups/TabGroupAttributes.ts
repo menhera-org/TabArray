@@ -21,32 +21,91 @@
 
 import { CookieStore } from "weeg-containers";
 
-export type TabGroupType = 'supergroup' | 'cookieStore';
+/* eslint-disable @typescript-eslint/no-namespace */
 
-export class TabGroupAttributes {
-  private static readonly SUPERGROUP_PREFIX = 'tabarray-supergroup-';
-
-  public static getTabGroupIdFromSupergroupId(supergroupId: number): string {
-    return TabGroupAttributes.SUPERGROUP_PREFIX + supergroupId;
-  }
-
-  public readonly tabGroupType: TabGroupType;
-  public readonly supergroupId: number | null;
-  public readonly cookieStore: CookieStore | null;
-
-  public constructor(tabGroupId: string) {
-    if (tabGroupId.startsWith(TabGroupAttributes.SUPERGROUP_PREFIX)) {
-      this.tabGroupType = 'supergroup';
-      const supergroupId = parseInt(tabGroupId.slice(TabGroupAttributes.SUPERGROUP_PREFIX.length), 10);
-      if (isNaN(supergroupId)) {
-        throw new TypeError('Invalid supergroup ID: ' + tabGroupId);
-      }
-      this.supergroupId = supergroupId;
-      this.cookieStore = null;
-    } else {
-      this.tabGroupType = 'cookieStore';
-      this.supergroupId = null;
-      this.cookieStore = new CookieStore(tabGroupId);
-    }
-  }
+export enum TabGroupType {
+  SUPERGROUP = 'supergroup',
+  COOKIE_STORE = 'cookieStore',
 }
+
+export interface TabGroupFilter {
+  supergroup: boolean;
+  cookieStore: boolean;
+}
+
+const SUPERGROUP_PREFIX = 'tabarray-supergroup-';
+
+export interface CommonTabGroupAttributes {
+  tabGroupType: TabGroupType;
+  tabGroupId: string;
+}
+
+export interface SupergroupTabGroupAttributes extends CommonTabGroupAttributes {
+  tabGroupType: TabGroupType.SUPERGROUP;
+  supergroupId: number;
+}
+
+export interface CookieStoreTabGroupAttributes extends CommonTabGroupAttributes {
+  tabGroupType: TabGroupType.COOKIE_STORE;
+  cookieStore: CookieStore;
+}
+
+/**
+ * Attributes based on a tab group ID.
+ */
+export type TabGroupAttributes = SupergroupTabGroupAttributes | CookieStoreTabGroupAttributes;
+
+export interface TabGroupAttributesConstructor {
+  new(tabGroupId: string): TabGroupAttributes;
+
+  /**
+   * Numeric supergroupId of the root supergroup.
+   */
+  readonly ROOT_SUPERGROUP_ID: 0;
+
+  /**
+   * Calculates a string tabGroupId from numeric supergroupId.
+   * @param supergroupId numeric supergroup ID
+   */
+  getTabGroupIdFromSupergroupId(supergroupId: number): string;
+
+  /**
+   * Returns the tabGroupId of the root supergroup.
+   */
+  getRootSupergroupTabGroupId(): string;
+}
+
+export const TabGroupAttributes: TabGroupAttributesConstructor = function (tabGroupId: string) {
+  if (new.target == null) {
+    throw new TypeError('Constructor called without new keyword');
+  }
+  if (tabGroupId.startsWith(SUPERGROUP_PREFIX)) {
+    const supergroupId = parseInt(tabGroupId.slice(SUPERGROUP_PREFIX.length), 10);
+    if (isNaN(supergroupId)) {
+      throw new TypeError('Invalid supergroup ID: ' + tabGroupId);
+    }
+    return {
+      tabGroupType: TabGroupType.SUPERGROUP,
+      tabGroupId,
+      supergroupId: supergroupId,
+    } as SupergroupTabGroupAttributes;
+  }
+  const cookieStore = new CookieStore(tabGroupId);
+  return {
+    tabGroupType: TabGroupType.COOKIE_STORE,
+    tabGroupId,
+    cookieStore,
+  } as CookieStoreTabGroupAttributes;
+} as unknown as TabGroupAttributesConstructor;
+
+Object.defineProperty(TabGroupAttributes, 'ROOT_SUPERGROUP_ID', {
+  value: 0,
+});
+
+TabGroupAttributes.getTabGroupIdFromSupergroupId = (supergroupId: number): string => {
+  return SUPERGROUP_PREFIX + supergroupId;
+};
+
+TabGroupAttributes.getRootSupergroupTabGroupId = (): string => {
+  return TabGroupAttributes.getTabGroupIdFromSupergroupId(TabGroupAttributes.ROOT_SUPERGROUP_ID);
+};

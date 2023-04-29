@@ -58,7 +58,7 @@ const update = async () => {
     const cookieStores = await cookieStoreService.getCookieStores();
     const newValues = new Map<string, string>();
     for (const cookieStore of cookieStores) {
-      const languages = await languageSettings.getLanguages(cookieStore.id);
+      const languages = await languageSettings.getValueForTabGroup(cookieStore.id);
       const cookieStoreId = cookieStore.id;
       if ('' === languages) continue;
       newValues.set(cookieStoreId, languages);
