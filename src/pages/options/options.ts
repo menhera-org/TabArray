@@ -68,7 +68,7 @@ const panes = document.querySelectorAll<HTMLElement>('#optionsPanes > div');
 const paneTabs = document.querySelectorAll<HTMLElement>('#pane-tabs > .pane-tab');
 const setActiveContent = (name: string) => {
   name = name || 'general';
-  console.log('setActiveContent', name);
+  // console.log('setActiveContent', name);
   for (const pane of panes) {
     if (pane.dataset.paneName === name) {
       pane.classList.add('active');
