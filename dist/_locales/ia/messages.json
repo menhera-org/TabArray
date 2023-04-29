@@ -122,7 +122,7 @@
         "description": "Custom user agent"
     },
     "labelAutoDiscardMinAge": {
-        "message": "Liberar le memoria de le schedas post inactivessa por:",
+        "message": "Liberar le memoria del schedas post inactivessa por:",
         "description": "Label text for autodiscard min age."
     },
     "labelAutoDiscard900": {
@@ -583,7 +583,7 @@
         "description": "Title of the dialog to edit a group of containers."
     },
     "groupOptions": {
-        "message": "Optiones de la gruppo por: $NAME$",
+        "message": "Optiones del gruppo por: $NAME$",
         "description": "Heading text for group options.",
         "placeholders": {
             "name": {
@@ -665,5 +665,75 @@
     "optionsTabFirefoxSettings": {
         "message": "Parametros de Firefox",
         "description": "Label text for firefox settings tab."
+    },
+    "debuggingInformation": {
+        "message": "Information del recerca de errores",
+        "description": "Debugging information page."
+    },
+    "featurePerContainerProxy": {
+        "message": "Per-contentor proxy",
+        "description": "Per container proxy feature."
+    },
+    "optionsTabProxies": {
+        "message": "Proxyes",
+        "description": "Label text for proxies tab."
+    },
+    "noProxy": {
+        "message": "Nulle proxy",
+        "description": "No proxy option."
+    },
+    "proxyProtocol": {
+        "message": "Protocollo",
+        "description": "Proxy protocol option."
+    },
+    "proxyHostname": {
+        "message": "Nomine de hoste",
+        "description": "Proxy hostname option."
+    },
+    "proxyPort": {
+        "message": "Porta",
+        "description": "Proxy port option."
+    },
+    "proxyUsername": {
+        "message": "Nomine de usator",
+        "description": "Proxy username option."
+    },
+    "proxyPassword": {
+        "message": "Contrasigno",
+        "description": "Proxy password option."
+    },
+    "proxyExemptLocalAddresses": {
+        "message": "Nulle proxy pro adresses local",
+        "description": "Proxy exempt local addresses option."
+    },
+    "proxyDnsRequests": {
+        "message": "Proxy requestas de DNS",
+        "description": "Proxy DNS requests option."
+    },
+    "buttonAddNewProxy": {
+        "message": "Adder un nove proxy",
+        "description": "Add new proxy button."
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "Proxyes disponibile",
+        "description": "Available proxies heading."
+    },
+    "buttonDeleteProxy": {
+        "message": "Deler le proxy",
+        "description": "Delete proxy button."
+    },
+    "proxyName": {
+        "message": "Nomine",
+        "description": "Proxy name option."
+    },
+    "newVersionAvailable": {
+        "message": "Nove version disponibile: $VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
     }
 }
