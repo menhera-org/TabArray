@@ -31,6 +31,7 @@ import { TabGroupSorterElement } from '../../components/tab-group-sorter';
 import { TabGroupOverridesElement } from '../../components/tab-group-overrides';
 import { HelpBannerElement } from '../../components/help-banner';
 import { ProxyManagerElement } from '../../components/proxy-manager';
+import { TabGroupProxyElement } from '../../components/tab-group-proxy';
 
 import './options-i18n';
 
@@ -119,6 +120,9 @@ paneContainers?.appendChild(tabGroupSorter);
 
 const tabGroupOverrides = new TabGroupOverridesElement();
 paneContainerOverrides?.appendChild(tabGroupOverrides);
+
+const tabGroupProxy = new TabGroupProxyElement();
+paneProxies?.appendChild(tabGroupProxy);
 
 const proxyManager = new ProxyManagerElement();
 paneProxies?.appendChild(proxyManager);
