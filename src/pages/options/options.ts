@@ -122,7 +122,7 @@ const tabGroupOverrides = new TabGroupOverridesElement();
 paneContainerOverrides?.appendChild(tabGroupOverrides);
 
 const tabGroupProxy = new TabGroupProxyElement();
-paneProxies?.appendChild(tabGroupProxy);
+paneProxies?.querySelector('#proxy-settings')?.appendChild(tabGroupProxy);
 
 const proxyManager = new ProxyManagerElement();
 paneProxies?.appendChild(proxyManager);
