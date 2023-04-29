@@ -673,5 +673,75 @@
     "optionsTabGeneral": {
         "message": "Universala",
         "description": "Label text for general tab."
+    },
+    "optionsTabProxies": {
+        "message": "Prokuroj",
+        "description": "Label text for proxies tab."
+    },
+    "proxyPort": {
+        "message": "Pordnumeron",
+        "description": "Proxy port option."
+    },
+    "proxyUsername": {
+        "message": "Uzantnomo",
+        "description": "Proxy username option."
+    },
+    "proxyDnsRequests": {
+        "message": "Prokuri DNS peton",
+        "description": "Proxy DNS requests option."
+    },
+    "buttonDeleteProxy": {
+        "message": "Forgi la prokuron",
+        "description": "Delete proxy button."
+    },
+    "debuggingInformation": {
+        "message": "Sencimiga informo",
+        "description": "Debugging information page."
+    },
+    "featurePerContainerProxy": {
+        "message": "Po-ujo prokuro",
+        "description": "Per container proxy feature."
+    },
+    "noProxy": {
+        "message": "Neniu prokuro",
+        "description": "No proxy option."
+    },
+    "proxyName": {
+        "message": "Nomo",
+        "description": "Proxy name option."
+    },
+    "proxyProtocol": {
+        "message": "Protokolo",
+        "description": "Proxy protocol option."
+    },
+    "proxyHostname": {
+        "message": "Gastnomo",
+        "description": "Proxy hostname option."
+    },
+    "proxyPassword": {
+        "message": "Pasvorto",
+        "description": "Proxy password option."
+    },
+    "proxyExemptLocalAddresses": {
+        "message": "Ne prokuri lokajn adresojn",
+        "description": "Proxy exempt local addresses option."
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "Haveblaj prokuroj",
+        "description": "Available proxies heading."
+    },
+    "buttonAddNewProxy": {
+        "message": "Aldoni novan prokuron",
+        "description": "Add new proxy button."
+    },
+    "newVersionAvailable": {
+        "message": "Nova versio havebla: $VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
     }
 }
