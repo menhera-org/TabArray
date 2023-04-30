@@ -36,4 +36,8 @@ const notifyStorageData = () => {
 
 window.addEventListener('storage', notifyStorageData);
 
-notifyStorageData();
+try {
+  notifyStorageData();
+} catch (e) {
+  // ignore
+}
