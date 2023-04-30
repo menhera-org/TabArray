@@ -129,10 +129,13 @@ const setupUaOverrides = () => {
 
     if (isChromium) {
       Reflect.defineProperty(windowWrapped, 'chrome', {
-        configurable: true,
+        configurable: false,
+        writable: true,
         enumerable: true,
         value: cloneInto({
-          webstore: {},
+          app: {},
+          csi: {},
+          loadTimes: () => { /* nothing */ },
         }, window, { cloneFunctions: true }),
       });
     }
