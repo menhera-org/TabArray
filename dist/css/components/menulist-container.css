@@ -90,7 +90,7 @@ button[disabled] {
 }
 
 #container-highlight-button {
-  mask: url(/img/material-icons/star_border.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/highlights.svg) center center/75% no-repeat;
 }
 
 :is(#container-highlight-button, #container-close-button):disabled {
