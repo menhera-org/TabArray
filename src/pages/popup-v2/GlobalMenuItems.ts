@@ -33,7 +33,7 @@ export class GlobalMenuItems {
   public defineTopBarMenuItems(topBarElement: CtgTopBarElement) {
     const panoramaGridMenuItem = new CtgMenuItemElement();
     panoramaGridMenuItem.labelText = browser.i18n.getMessage('panoramaGrid');
-    panoramaGridMenuItem.iconSrc = '/img/material-icons/grid_view.svg';
+    panoramaGridMenuItem.iconSrc = '/img/firefox-icons/top-sites.svg';
     topBarElement.addMenuItem('panorama-grid', panoramaGridMenuItem);
 
     if (document.body.classList.contains('popup')) {
