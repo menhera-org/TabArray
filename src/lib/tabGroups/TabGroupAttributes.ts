@@ -21,8 +21,6 @@
 
 import { CookieStore } from "weeg-containers";
 
-/* eslint-disable @typescript-eslint/no-namespace */
-
 export enum TabGroupType {
   SUPERGROUP = 'supergroup',
   COOKIE_STORE = 'cookieStore',

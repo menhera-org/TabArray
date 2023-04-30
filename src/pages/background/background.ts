@@ -29,6 +29,8 @@ import { TabSortingService } from '../../lib/tabs/TabSortingService';
 import { SanityCheckService } from '../../lib/SenityCheckService';
 import { TabConverterService } from '../../lib/tabs/TabConverterService';
 import { TabUrlService } from '../../lib/tabs/TabUrlService';
+import { ConsoleHistoryService } from '../../lib/console/ConsoleHistoryService';
+import { PerformanceHistoryService } from '../../lib/PerformanceHistoryService';
 
 import './background-install-handler';
 import './background-index-tab';
@@ -66,6 +68,8 @@ PageLoaderService.getInstance<PageLoaderService>();
 ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 TabSortingService.getInstance<TabSortingService>();
 TabUrlService.getInstance<TabUrlService>();
+ConsoleHistoryService.getInstance<ConsoleHistoryService>();
+PerformanceHistoryService.getInstance<PerformanceHistoryService>();
 
 // register the tab converter service
 TabConverterService.getInstance();

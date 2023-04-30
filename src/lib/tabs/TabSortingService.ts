@@ -28,6 +28,7 @@ import { ServiceRegistry } from '../ServiceRegistry';
 import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
 import { TagService } from '../tabGroups/TagService';
 import { CompatConsole } from '../console/CompatConsole';
+import { PerformanceHistoryService } from '../PerformanceHistoryService';
 
 import { config } from '../../config/config';
 
@@ -35,6 +36,7 @@ const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tabSortingProvider = new TabSortingProvider();
 const messagingService = MessagingService.getInstance();
 const tagService = TagService.getInstance();
+const performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
 
 // the fact that this value is not preserved long-term in nonpersistent background page is not a problem.
 let tabSorting = false;
@@ -126,6 +128,7 @@ export class TabSortingService extends BackgroundService<void, void> {
     } finally {
       const endTime = Date.now();
       const sortingDuration = endTime - startTime;
+      performanceHistoryService.addEntry('TabSortingService.execute', startTime, sortingDuration);
       if (success) {
         if (sortingDuration > 500) {
           console.info('Tab sorting took %d ms', sortingDuration);

@@ -32,6 +32,7 @@ import { WindowStateSnapshot } from './WindowStateSnapshot';
 import { ContainersStateSnapshot } from './ContainersStateSnapshot';
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
 import { TabAttributeMap } from '../../lib/tabGroups/TabAttributeMap';
+import { PerformanceHistoryService } from '../../lib/PerformanceHistoryService';
 
 type ConstructParams = {
   browserWindows: browser.Windows.Window[];
@@ -47,9 +48,11 @@ const tabGroupDirectory = new TabGroupDirectory();
 const extensionService = ExtensionService.getInstance();
 const displayedContainerService = DisplayedContainerService.getInstance();
 const registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
+const performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
 
 export class BrowserStateSnapshot {
   public static async create(): Promise<BrowserStateSnapshot> {
+    const startTime = Date.now();
     const [browserWindows, currentBrowserWindow, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
       browser.windows.getAll({
         populate: true,
@@ -88,6 +91,9 @@ export class BrowserStateSnapshot {
     }
 
     const tabAttributeMap = await TabAttributeMap.create(compatTabMap.values());
+    const duration = Date.now() - startTime;
+    performanceHistoryService.addEntry('BrowserStateSnapshot.create', startTime, duration);
+
     const constructParams = {
       browserWindows,
       currentWindowId: currentBrowserWindow.id,
