@@ -84,7 +84,7 @@ button[disabled] {
 }
 
 #tag-edit-button {
-  mask: url(/img/material-icons/edit.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/edit.svg) center center/75% no-repeat;
 }
 
 #tag-delete-button {

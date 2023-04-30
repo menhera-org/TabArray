@@ -56,7 +56,7 @@ button {
   border: none;
   padding: 0 !important;
   color: inherit;
-  mask: url(/img/material-icons/edit.svg) center center / 67% no-repeat;
+  mask: url(/img/firefox-icons/edit.svg) center center / 67% no-repeat;
   background-color: var(--text-color);
   opacity: var(--opaque-opacity);
 }
