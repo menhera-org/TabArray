@@ -114,7 +114,7 @@ export class PanelWindowsElement extends HTMLElement {
     const newTagMenuItem = this.createMenuItem('new-tag', 'buttonNewTag', '/img/material-icons/new_label.svg', this.onCreateTagButtonClicked);
     element.appendChild(newTagMenuItem);
 
-    const newGroupMenuItem = this.createMenuItem('new-group', 'buttonNewGroup', '/img/material-icons/create_new_folder.svg', this.onCreateGroupButtonClicked);
+    const newGroupMenuItem = this.createMenuItem('new-group', 'buttonNewGroup', '/img/firefox-icons/folder_add.svg', this.onCreateGroupButtonClicked);
     element.appendChild(newGroupMenuItem);
 
     const newContainerMenuItem = this.createMenuItem('new-container', 'buttonNewContainer', '/img/firefox-icons/add.svg', this.onCreateContainerButtonClicked);
@@ -250,7 +250,7 @@ export class PanelWindowsElement extends HTMLElement {
     const actionsElement = this.shadowRoot.querySelector('.actions') as HTMLDivElement;
     actionsElement.textContent = '';
 
-    const newContainerMenuItem = this.createMenuItem('action-new-container', 'buttonNewContainer', '/img/material-icons/create_new_folder.svg', this.onCreateContainerButtonClicked);
+    const newContainerMenuItem = this.createMenuItem('action-new-container', 'buttonNewContainer', '/img/firefox-icons/folder_add.svg', this.onCreateContainerButtonClicked);
     newContainerMenuItem.displayStyle = 'normal';
     actionsElement.appendChild(newContainerMenuItem);
 
