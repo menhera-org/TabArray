@@ -24,9 +24,9 @@ import browser from "webextension-polyfill";
 import { ServiceRegistry } from "./ServiceRegistry";
 import { PageLoaderService } from "./PageLoaderService";
 
-import { PANORAMA_PAGE, ADDON_PAGE, PRIVACY_POLICY_PAGE, GITHUB_PAGE, COOKIES_PAGE, CONFIRM_PAGE } from '../defs';
+import { PANORAMA_PAGE, ADDON_PAGE, PRIVACY_POLICY_PAGE, GITHUB_PAGE, COOKIES_PAGE, CONFIRM_PAGE, DEBUGGING_PAGE } from '../defs';
 
-export type ExtensionPage = 'sidebar' | 'browserAction' | 'pageAction' | 'options' | 'panorama' | 'cookies' | 'amo' | 'privacyPolicy' | 'github';
+export type ExtensionPage = 'sidebar' | 'browserAction' | 'pageAction' | 'options' | 'panorama' | 'cookies' | 'debugging' | 'amo' | 'privacyPolicy' | 'github';
 
 export class ExtensionPageService {
   public static readonly SIDEBAR: ExtensionPage = 'sidebar';
@@ -35,6 +35,7 @@ export class ExtensionPageService {
   public static readonly OPTIONS: ExtensionPage = 'options';
   public static readonly PANORAMA: ExtensionPage = 'panorama';
   public static readonly COOKIES: ExtensionPage = 'cookies';
+  public static readonly DEBUGGING: ExtensionPage = 'debugging';
   public static readonly AMO: ExtensionPage = 'amo';
   public static readonly PRIVACY_POLICY: ExtensionPage = 'privacyPolicy';
   public static readonly GITHUB: ExtensionPage = 'github';
@@ -84,6 +85,11 @@ export class ExtensionPageService {
 
       case 'cookies': {
         await this._pageLoaderService.loadPage(COOKIES_PAGE);
+        break;
+      }
+
+      case 'debugging': {
+        await this._pageLoaderService.loadPage(DEBUGGING_PAGE);
         break;
       }
 

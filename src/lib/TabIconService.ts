@@ -27,6 +27,7 @@ export class TabIconService {
     ['chrome://global/skin/icons/developer.svg', '/img/firefox-icons/developer.svg'],
     ['chrome://browser/skin/window.svg', '/img/firefox-icons/window.svg'],
     ['chrome://mozapps/skin/extensions/extension.svg', '/img/firefox-icons/extension.svg'],
+    ['chrome://global/skin/icons/performance.svg', '/img/firefox-icons/performance.svg'],
     ['', '/img/firefox-icons/defaultFavicon.svg'],
   ]);
 

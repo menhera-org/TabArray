@@ -55,6 +55,11 @@ export class GlobalMenuItems {
     viewCookiesMenuItem.iconSrc = '/img/material-icons/cookie.svg';
     topBarElement.addOverflowMenuItem('view-cookies', viewCookiesMenuItem);
 
+    const debuggingMenuItem = new CtgMenuItemElement();
+    debuggingMenuItem.labelText = browser.i18n.getMessage('debuggingInformation');
+    debuggingMenuItem.iconSrc = '/img/firefox-icons/developer.svg';
+    topBarElement.addOverflowMenuItem('debugging', debuggingMenuItem);
+
     const addonPageMenuItem = new CtgMenuItemElement();
     addonPageMenuItem.labelText = browser.i18n.getMessage('buttonAboutAddon');
     addonPageMenuItem.iconSrc = '/icon.svg';
@@ -99,6 +104,11 @@ export class GlobalMenuItems {
     const viewCookiesMenuItem = topbarElement.getOverflowMenuItem('view-cookies') as CtgMenuItemElement;
     viewCookiesMenuItem.addEventListener('click', () => {
       extensionPageService.openInBackground(ExtensionPageService.COOKIES);
+    });
+
+    const debuggingMenuItem = topbarElement.getOverflowMenuItem('debugging') as CtgMenuItemElement;
+    debuggingMenuItem.addEventListener('click', () => {
+      extensionPageService.openInBackground(ExtensionPageService.DEBUGGING);
     });
 
     const addonPageMenuItem = topbarElement.getOverflowMenuItem('addon-page') as CtgMenuItemElement;

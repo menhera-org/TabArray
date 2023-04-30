@@ -78,6 +78,10 @@ module.exports = {
       import: './src/pages/popup-v2/popup-v2.ts',
       filename: 'pages/popup-v2/popup-v2.js',
     },
+    'debugging': {
+      import: './src/pages/debugging/debugging.ts',
+      filename: 'pages/debugging/debugging.js',
+    },
   },
 
   output: {
