@@ -53,8 +53,11 @@ export class UaDataService {
     if (chromeMatch) {
       brands.push({ brand: 'Chromium', version: chromeMatch[1] as string });
       const edgeMatch = userAgent.match(/Edg\/([\d.]+)/);
+      const operaMatch = userAgent.match(/OPR\/([\d.]+)/);
       if (edgeMatch) {
         brands.push({ brand: 'Microsoft Edge', version: edgeMatch[1] as string });
+      } else if (operaMatch) {
+        brands.push({ brand: 'Opera', version: operaMatch[1] as string });
       } else {
         brands.push({ brand: 'Google Chrome', version: chromeMatch[1] as string });
       }

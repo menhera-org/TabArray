@@ -111,11 +111,31 @@ const getUaDataPlatform = () => {
   return 'Linux';
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const windowWrapped = window.wrappedJSObject as any;
+
 const setupUaOverrides = () => {
   try {
     const brands = uaDataService.getBrands(window.navigator.userAgent);
     const highEntropyBrands = uaDataService.getHighEntropyBrands(window.navigator.userAgent);
+    const isMozilla = window.navigator.userAgent.includes('Gecko/');
     const uaDataEnabled = brands.length > 0;
+    const isChromium = brands.map((brand) => brand.brand).includes('Chromium');
+
+    // defeat InstallTrigger detection (https://stackoverflow.com/a/9851769)
+    if (!isMozilla) {
+      delete windowWrapped.InstallTrigger;
+    }
+
+    if (isChromium) {
+      Reflect.defineProperty(windowWrapped, 'chrome', {
+        configurable: true,
+        enumerable: true,
+        value: cloneInto({
+          webstore: {},
+        }, window, { cloneFunctions: true }),
+      });
+    }
 
     // this is configurable, so deletable
     delete navigatorPrototypeWrapped.userAgentData;
