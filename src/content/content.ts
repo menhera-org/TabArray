@@ -206,7 +206,7 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
 
     if (!isMozilla) {
       const blockPattern = /^(?:resource|chrome):\/\//;
-      const mutationObserver = new MutationObserver((mutations) => {
+      const mutationObserver = new window.MutationObserver((mutations) => {
         for (const mutation of mutations) {
           if (mutation.addedNodes.length < 1) {
             continue;
@@ -223,7 +223,7 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
               const blockEvent = () => {
                 ev.stopImmediatePropagation();
                 ev.preventDefault();
-                addedNode.dispatchEvent(new Event('error'));
+                addedNode.dispatchEvent(new window.Event('error'));
               };
               const tagName = addedNode.tagName.toLowerCase();
               if (tagName == 'link') {
@@ -241,7 +241,7 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
           }
         }
       });
-      mutationObserver.observe(document, {attributes: false, childList: true, characterData: false, subtree:true});
+      mutationObserver.observe(window.document, {attributes: false, childList: true, characterData: false, subtree:true});
     }
   } catch (e) {
     console.error(String(e));
