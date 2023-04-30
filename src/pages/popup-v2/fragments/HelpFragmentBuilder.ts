@@ -29,6 +29,7 @@ export class HelpFragmentBuilder extends SimpleFragmentBuilder {
   public readonly onFpiCheckedChanged = new EventSink<boolean>();
   public readonly onLanguageOverridesCheckedChanged = new EventSink<boolean>();
   public readonly onUaOverridesCheckedChanged = new EventSink<boolean>();
+  public readonly onPerContainerProxyCheckedChanged = new EventSink<boolean>();
   public readonly onGetStartedClicked = new EventSink<void>();
 
   public getFragmentId(): string {
@@ -121,6 +122,25 @@ export class HelpFragmentBuilder extends SimpleFragmentBuilder {
     labelFeatureUaOverrides.classList.add('browser-style-label');
     uaOverridesParagraph.appendChild(labelFeatureUaOverrides);
 
+    const perContainerProxyParagraph = document.createElement('p');
+    perContainerProxyParagraph.classList.add('browser-style');
+    helpSettings.appendChild(perContainerProxyParagraph);
+
+    const inputFeaturePerContainerProxy = document.createElement('input');
+    inputFeaturePerContainerProxy.type = 'checkbox';
+    inputFeaturePerContainerProxy.id = 'input-featurePerContainerProxy';
+    perContainerProxyParagraph.appendChild(inputFeaturePerContainerProxy);
+
+    inputFeaturePerContainerProxy.addEventListener('change', () => {
+      this.onPerContainerProxyCheckedChanged.dispatch(inputFeaturePerContainerProxy.checked);
+    });
+
+    const labelFeaturePerContainerProxy = document.createElement('label');
+    labelFeaturePerContainerProxy.htmlFor = 'input-featurePerContainerProxy';
+    labelFeaturePerContainerProxy.textContent = browser.i18n.getMessage('featurePerContainerProxy');
+    labelFeaturePerContainerProxy.classList.add('browser-style-label');
+    perContainerProxyParagraph.appendChild(labelFeaturePerContainerProxy);
+
     const modalActions = document.createElement('div');
     modalActions.classList.add('modal-actions');
     fragment.appendChild(modalActions);
@@ -171,5 +191,17 @@ export class HelpFragmentBuilder extends SimpleFragmentBuilder {
     const fragment = this.getFragment();
     const inputFeatureUaOverrides = fragment.querySelector('#input-featureUaOverrides') as HTMLInputElement;
     inputFeatureUaOverrides.checked = value;
+  }
+
+  public get perContainerProxyChecked(): boolean {
+    const fragment = this.getFragment();
+    const inputFeaturePerContainerProxy = fragment.querySelector('#input-featurePerContainerProxy') as HTMLInputElement;
+    return inputFeaturePerContainerProxy.checked;
+  }
+
+  public set perContainerProxyChecked(value: boolean) {
+    const fragment = this.getFragment();
+    const inputFeaturePerContainerProxy = fragment.querySelector('#input-featurePerContainerProxy') as HTMLInputElement;
+    inputFeaturePerContainerProxy.checked = value;
   }
 }

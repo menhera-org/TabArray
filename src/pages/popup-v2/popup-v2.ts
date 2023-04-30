@@ -264,6 +264,15 @@ helpBuilder.onUaOverridesCheckedChanged.addListener((checked) => {
   setConfigValue(config['feature.uaOverrides'], checked);
 });
 
+// feature.containerProxy setting
+config['feature.containerProxy'].observe((value) => {
+  helpBuilder.perContainerProxyChecked = value;
+});
+
+helpBuilder.onPerContainerProxyCheckedChanged.addListener((checked) => {
+  setConfigValue(config['feature.containerProxy'], checked);
+});
+
 helpFragment.onDeactivated.addListener(() => {
   setFirstPartyIsolate(helpBuilder.fpiChecked);
   setHelpShownOnce();
