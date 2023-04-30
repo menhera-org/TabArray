@@ -673,5 +673,75 @@
     "buttonDeleteTag": {
         "message": "Supprimer un tag",
         "description": "Button to delete a tag."
+    },
+    "debuggingInformation": {
+        "message": "Informations de débogage",
+        "description": "Debugging information page."
+    },
+    "featurePerContainerProxy": {
+        "message": "Proxy par conteneur",
+        "description": "Per container proxy feature."
+    },
+    "optionsTabProxies": {
+        "message": "Proxies",
+        "description": "Label text for proxies tab."
+    },
+    "noProxy": {
+        "message": "Sans proxy",
+        "description": "No proxy option."
+    },
+    "proxyName": {
+        "message": "Nom",
+        "description": "Proxy name option."
+    },
+    "proxyProtocol": {
+        "message": "Protocole",
+        "description": "Proxy protocol option."
+    },
+    "proxyHostname": {
+        "message": "Nom d'hôte",
+        "description": "Proxy hostname option."
+    },
+    "proxyPort": {
+        "message": "Port",
+        "description": "Proxy port option."
+    },
+    "proxyUsername": {
+        "message": "Nom de l'utilisateur",
+        "description": "Proxy username option."
+    },
+    "proxyPassword": {
+        "message": "Mot de passe",
+        "description": "Proxy password option."
+    },
+    "proxyExemptLocalAddresses": {
+        "message": "Ne pas utiliser de proxy pour les adresses locales",
+        "description": "Proxy exempt local addresses option."
+    },
+    "proxyDnsRequests": {
+        "message": "Requêtes DNS par proxy",
+        "description": "Proxy DNS requests option."
+    },
+    "buttonAddNewProxy": {
+        "message": "Ajouter un nouveau proxy",
+        "description": "Add new proxy button."
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "Proxies disponibles",
+        "description": "Available proxies heading."
+    },
+    "buttonDeleteProxy": {
+        "message": "Supprimer le proxy",
+        "description": "Delete proxy button."
+    },
+    "newVersionAvailable": {
+        "message": "Nouvelle version disponible : $VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
     }
 }
