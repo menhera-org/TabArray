@@ -114,7 +114,7 @@ export class PanelWindowsElement extends HTMLElement {
     const newTagMenuItem = this.createMenuItem('new-tag', 'buttonNewTag', '/img/material-icons/new_label.svg', this.onCreateTagButtonClicked);
     element.appendChild(newTagMenuItem);
 
-    const newGroupMenuItem = this.createMenuItem('new-group', 'buttonNewGroup', '/img/firefox-icons/folder-plus.svg', this.onCreateGroupButtonClicked);
+    const newGroupMenuItem = this.createMenuItem('new-group', 'buttonNewGroup', '/img/firefox-icons/folder-add.svg', this.onCreateGroupButtonClicked);
     element.appendChild(newGroupMenuItem);
 
     const newContainerMenuItem = this.createMenuItem('new-container', 'buttonNewContainer', '/img/firefox-icons/plus.svg', this.onCreateContainerButtonClicked);
