@@ -94,7 +94,7 @@ button:focus {
 }
 
 .tab > .tab-pin-button {
-  mask: url(/img/firefox-icons/pin-fill.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/pin-fill.svg) center center / 50% no-repeat;
   background-color: var(--text-color);
 }
 
@@ -169,7 +169,7 @@ button:focus {
 
 #tab-pin-button {
   opacity: 0;
-  mask: url(/img/firefox-icons/pin-fill.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/pin-fill.svg) center center / 50% no-repeat;
 }
 
 #tab-pin-button.pinned {
