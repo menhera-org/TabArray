@@ -116,9 +116,17 @@ const windowWrapped = window.wrappedJSObject as any;
 
 const setupUaOverrides = () => {
   try {
-    const brands = uaDataService.getBrands(window.navigator.userAgent);
-    const highEntropyBrands = uaDataService.getHighEntropyBrands(window.navigator.userAgent);
-    const isMozilla = window.navigator.userAgent.includes('Gecko/');
+    const seenUserAgent = window.navigator.userAgent;
+    let userAgent = seenUserAgent;
+    try {
+      userAgent = window.parent?.navigator.userAgent ?? userAgent;
+      userAgent = window.top?.navigator.userAgent ?? userAgent;
+    } catch (e) {
+      // ignore.
+    }
+    const brands = uaDataService.getBrands(userAgent);
+    const highEntropyBrands = uaDataService.getHighEntropyBrands(userAgent);
+    const isMozilla = userAgent.includes('Gecko/');
     const uaDataEnabled = brands.length > 0;
     const isChromium = brands.map((brand) => brand.brand).includes('Chromium');
 
@@ -127,6 +135,15 @@ const setupUaOverrides = () => {
       delete windowWrapped.InstallTrigger;
       delete windowWrapped.netscape;
       delete windowWrapped.InternalError;
+    }
+
+    if (seenUserAgent != userAgent) {
+      delete navigatorPrototypeWrapped.userAgent;
+      Reflect.defineProperty(navigatorPrototypeWrapped, 'userAgent', {
+        configurable: true,
+        enumerable: true,
+        get: exportFunction(() => userAgent, window),
+      });
     }
 
     if (isChromium) {
