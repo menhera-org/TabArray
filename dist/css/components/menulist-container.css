@@ -102,7 +102,7 @@ button[disabled] {
 }
 
 #container-options-button {
-  mask: url(/img/material-icons/more_horiz.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/more.svg) center center/75% no-repeat;
 }
 
 #container-button {
