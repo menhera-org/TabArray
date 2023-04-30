@@ -45,7 +45,7 @@ export class GlobalMenuItems {
     } else {
       const openPopupMenuItem = new CtgMenuItemElement();
       openPopupMenuItem.labelText = browser.i18n.getMessage('commandOpenPopup');
-      openPopupMenuItem.iconSrc = '/img/material-icons/launch.svg';
+      openPopupMenuItem.iconSrc = '/img/firefox-icons/open-in-new.svg';
       topBarElement.addOverflowMenuItem('open-popup', openPopupMenuItem);
       topBarElement.removeOverflowMenuItem('open-sidebar');
     }
