@@ -52,7 +52,7 @@ export class GlobalMenuItems {
 
     const viewCookiesMenuItem = new CtgMenuItemElement();
     viewCookiesMenuItem.labelText = browser.i18n.getMessage('tooltipCookies');
-    viewCookiesMenuItem.iconSrc = '/img/material-icons/cookie.svg';
+    viewCookiesMenuItem.iconSrc = '/img/firefox-icons/cookies.svg';
     topBarElement.addOverflowMenuItem('view-cookies', viewCookiesMenuItem);
 
     const debuggingMenuItem = new CtgMenuItemElement();
