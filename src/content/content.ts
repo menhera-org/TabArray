@@ -206,42 +206,35 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
 
     if (!isMozilla) {
       const blockPattern = /^(?:resource|chrome):\/\//;
-      const mutationObserver = new window.MutationObserver((mutations) => {
-        for (const mutation of mutations) {
-          if (mutation.addedNodes.length < 1) {
-            continue;
+
+      window.document.addEventListener('load', (ev) => {
+        const target = ev.target;
+        if (!(target instanceof window.Element)) return;
+        const addedNode = target as Element;
+        const blockEvent = () => {
+          console.debug('Blocked load event for %s', addedNode);
+          ev.stopImmediatePropagation();
+          ev.preventDefault();
+          addedNode.dispatchEvent(new window.Event('error'));
+        };
+        const tagName = addedNode.tagName.toLowerCase();
+        if (tagName == 'link') {
+          const link = addedNode as HTMLLinkElement;
+          if (link.href.match(blockPattern)) {
+            blockEvent();
           }
-          for (const addedNode of mutation.addedNodes) {
-            const targetTagNames = ['link', 'img'];
-            if (!(addedNode instanceof window.Element)) {
-              continue;
-            }
-            if (!targetTagNames.includes(addedNode.tagName.toLowerCase())) {
-              continue;
-            }
-            addedNode.addEventListener('load', (ev) => {
-              const blockEvent = () => {
-                ev.stopImmediatePropagation();
-                ev.preventDefault();
-                addedNode.dispatchEvent(new window.Event('error'));
-              };
-              const tagName = addedNode.tagName.toLowerCase();
-              if (tagName == 'link') {
-                const link = addedNode as HTMLLinkElement;
-                if (link.href.match(blockPattern)) {
-                  blockEvent();
-                }
-              } else if (tagName == 'img') {
-                const img = addedNode as HTMLImageElement;
-                if (img.src.match(blockPattern)) {
-                  blockEvent();
-                }
-              }
-            });
+        } else if (tagName == 'img') {
+          const img = addedNode as HTMLImageElement;
+          if (img.src.match(blockPattern)) {
+            blockEvent();
+          }
+        } else if (tagName == 'script') {
+          const script = addedNode as HTMLScriptElement;
+          if (script.src.match(blockPattern)) {
+            blockEvent();
           }
         }
-      });
-      mutationObserver.observe(window.document, {attributes: false, childList: true, characterData: false, subtree:true});
+      }, { capture: true, passive: false });
     }
   } catch (e) {
     console.error(String(e));
