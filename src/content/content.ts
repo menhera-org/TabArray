@@ -125,6 +125,8 @@ const setupUaOverrides = () => {
     // defeat InstallTrigger detection (https://stackoverflow.com/a/9851769)
     if (!isMozilla) {
       delete windowWrapped.InstallTrigger;
+      delete windowWrapped.netscape;
+      delete windowWrapped.InternalError;
     }
 
     if (isChromium) {
