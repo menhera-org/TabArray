@@ -90,6 +90,7 @@ ctg-frame-layout {
 
 #logs-tbody, #performance-tbody {
   font-family: monospace;
+  user-select: text;
 }
 
 #logs-tbody > tr > td:nth-child(1) {
