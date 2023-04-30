@@ -53,6 +53,10 @@ ctg-vertical-layout, ctg-frame-layout {
   min-block-size: 0;
 }
 
+ctg-frame-layout {
+  overflow: auto;
+}
+
 #logs-table, #performance-table {
   margin: 0;
   border-collapse: collapse;
