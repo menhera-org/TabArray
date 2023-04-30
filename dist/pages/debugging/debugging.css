@@ -47,6 +47,10 @@ body {
   flex: 1;
 }
 
+ctg-top-bar {
+  z-index: 50;
+}
+
 ctg-vertical-layout, ctg-frame-layout {
   flex: 1;
   min-inline-size: 0;
@@ -59,7 +63,7 @@ ctg-frame-layout {
 
 #logs-table, #performance-table {
   margin: 0;
-  border-collapse: collapse;
+  border-collapse: none;
   border-spacing: 0;
   padding: 0;
   inline-size: 100%;
@@ -68,12 +72,13 @@ ctg-frame-layout {
 :is(#logs-table, #performance-table) > thead {
   position: sticky;
   inset-block-start: 0;
-  background-color: var(--background-color);
 }
 
 :is(#logs-table, #performance-table) > thead > tr > th {
   text-align: start;
   font-weight: bold;
+  background-color: var(--overlay-color);
+  backdrop-filter: blur(1rem);
   border-block-end: 1px solid var(--border-color);
 }
 
