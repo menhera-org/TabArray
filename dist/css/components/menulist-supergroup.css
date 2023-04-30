@@ -91,7 +91,7 @@ button[disabled] {
 }
 
 #group-highlight-button {
-  mask: url(/img/material-icons/star_border.svg) center center/75% no-repeat;
+  mask: url(/img/firefox-icons/highlights.svg) center center/75% no-repeat;
 }
 
 :is(#group-highlight-button, #group-close-button):disabled {
