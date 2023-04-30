@@ -203,6 +203,46 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
         });
       }, window),
     });
+
+    if (!isMozilla) {
+      const blockPattern = /^(?:resource|chrome):\/\//;
+      const mutationObserver = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          if (mutation.addedNodes.length < 1) {
+            continue;
+          }
+          for (const addedNode of mutation.addedNodes) {
+            const targetTagNames = ['link', 'img'];
+            if (!(addedNode instanceof window.Element)) {
+              continue;
+            }
+            if (!targetTagNames.includes(addedNode.tagName.toLowerCase())) {
+              continue;
+            }
+            addedNode.addEventListener('load', (ev) => {
+              const blockEvent = () => {
+                ev.stopImmediatePropagation();
+                ev.preventDefault();
+                addedNode.dispatchEvent(new Event('error'));
+              };
+              const tagName = addedNode.tagName.toLowerCase();
+              if (tagName == 'link') {
+                const link = addedNode as HTMLLinkElement;
+                if (link.href.match(blockPattern)) {
+                  blockEvent();
+                }
+              } else if (tagName == 'img') {
+                const img = addedNode as HTMLImageElement;
+                if (img.src.match(blockPattern)) {
+                  blockEvent();
+                }
+              }
+            });
+          }
+        }
+      });
+      mutationObserver.observe(document, {attributes: false, childList: true, characterData: false, subtree:true});
+    }
   } catch (e) {
     console.error(String(e));
   }
@@ -215,7 +255,7 @@ if (gLanguageStore.language !== '') {
 setupUaOverrides(window, navigatorPrototypeWrapped);
 
 const visitedIframes = new WeakSet<HTMLIFrameElement>();
-const mutationObserver = new MutationObserver(() => {
+const iframeMutationObserver = new MutationObserver(() => {
   const iframes = document.querySelectorAll('iframe');
   for (const iframe of iframes) {
     if (visitedIframes.has(iframe)) {
@@ -232,4 +272,4 @@ const mutationObserver = new MutationObserver(() => {
   }
 });
 
-mutationObserver.observe(document, {attributes: false, childList: true, characterData: false, subtree:true});
+iframeMutationObserver.observe(document, {attributes: false, childList: true, characterData: false, subtree:true});
