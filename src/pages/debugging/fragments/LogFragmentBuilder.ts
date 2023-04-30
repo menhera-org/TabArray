@@ -118,6 +118,7 @@ export class LogFragmentBuilder extends AbstractFragmentBuilder {
         const td5 = document.createElement('td');
         td5.textContent = entry.message;
         tr.appendChild(td5);
+        tr.dataset.logLevel = entry.outputType;
       }
       if (isAtBottom) {
         this.scrollToBottom();
