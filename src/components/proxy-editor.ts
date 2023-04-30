@@ -163,6 +163,7 @@ export class ProxyEditorElement extends HTMLElement {
     this.inputProxyPassword.value = proxyPreset.password ?? '';
     this.inputProxyDoNotProxyLocal.checked = proxyPreset.doNotProxyLocal;
     this.inputProxyDns.checked = proxyPreset.proxyDns ?? true;
+    this.updateInputVisibility();
     this.onProxyPresetIdUpdated.dispatch(proxyPreset.id);
   }
 
