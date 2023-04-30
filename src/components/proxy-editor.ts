@@ -150,6 +150,7 @@ export class ProxyEditorElement extends HTMLElement {
     this.inputProxyDoNotProxyLocal.checked = false;
     this.inputProxyDns.checked = true;
     this.onProxyPresetIdUpdated.dispatch(null);
+    this.updateInputVisibility();
   }
 
   public setProxyPreset(proxyPreset: ProxyPreset): void {

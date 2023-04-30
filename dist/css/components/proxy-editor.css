@@ -49,8 +49,12 @@ button {
 }
 
 p {
-  display: flex;
+  display: block flex;
   flex-direction: row;
+}
+
+p[hidden] {
+  display: none;
 }
 
 p > label {
