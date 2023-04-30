@@ -88,12 +88,12 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
 
     const newContainerMenuItem = new CtgMenuItemElement();
     newContainerMenuItem.labelText = browser.i18n.getMessage('buttonNewContainer');
-    newContainerMenuItem.iconSrc = '/img/firefox-icons/add.svg';
+    newContainerMenuItem.iconSrc = '/img/firefox-icons/plus.svg';
     topBarElement.addMenuItem('new-container', newContainerMenuItem);
 
     const newNormalContainerMenuItem = new CtgMenuItemElement();
     newNormalContainerMenuItem.labelText = browser.i18n.getMessage('buttonNewContainer');
-    newNormalContainerMenuItem.iconSrc = '/img/firefox-icons/add.svg';
+    newNormalContainerMenuItem.iconSrc = '/img/firefox-icons/plus.svg';
     newContainerMenuItem.appendChild(newNormalContainerMenuItem);
 
     const newTemporaryContainerMenuItem = new CtgMenuItemElement();

@@ -74,7 +74,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
 
     const newTabMenuItem = new CtgMenuItemElement();
     newTabMenuItem.labelText = browser.i18n.getMessage('buttonOpenTabInContainer');
-    newTabMenuItem.iconSrc = '/img/firefox-icons/add.svg';
+    newTabMenuItem.iconSrc = '/img/firefox-icons/plus.svg';
     topBarElement.addMenuItem('new-tab', newTabMenuItem);
 
     newTabMenuItem.addEventListener('click', () => {

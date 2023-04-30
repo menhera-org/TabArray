@@ -66,7 +66,7 @@
 #button-new-proxy {
   block-size: 2em;
   background-color: var(--text-color);
-  mask: url(/img/firefox-icons/add.svg) center / 1em no-repeat;
+  mask: url(/img/firefox-icons/plus.svg) center / 1em no-repeat;
   opacity: var(--opaque-opacity);
 }
 

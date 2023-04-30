@@ -135,7 +135,7 @@ button {
 .container-new-tab::before {
   display: block;
   content: '';
-	mask: url(/img/firefox-icons/add.svg) center center/40% no-repeat;
+	mask: url(/img/firefox-icons/plus.svg) center center/40% no-repeat;
 	background-color: var(--text-color);
   inline-size: 8rem;
   min-block-size: 4.5rem;
@@ -170,7 +170,7 @@ button {
   block-size: 2em;
   inline-size: 2em;
   color: inherit;
-  mask: url(/img/firefox-icons/add.svg) center center / 67% no-repeat;
+  mask: url(/img/firefox-icons/plus.svg) center center / 67% no-repeat;
   background-color: var(--text-color);
   opacity: var(--opaque-opacity);
 }

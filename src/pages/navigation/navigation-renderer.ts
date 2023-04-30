@@ -64,7 +64,7 @@ export const createPrivateBrowsingButton = () => {
 export const createCreateContainerButton = () => {
   const tooltipText = i18n.getMessage('buttonNewContainer');
   const name = tooltipText;
-  const iconUrl = '/img/firefox-icons/add.svg';
+  const iconUrl = '/img/firefox-icons/plus.svg';
   const button = renderButton(tooltipText, name, iconUrl, false);
   return button;
 };

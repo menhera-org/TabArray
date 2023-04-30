@@ -66,12 +66,12 @@ export class WindowsFragmentBuilder extends AbstractFragmentBuilder {
 
     const newWindowMenuItem = new CtgMenuItemElement();
     newWindowMenuItem.labelText = browser.i18n.getMessage('buttonNewWindow');
-    newWindowMenuItem.iconSrc = '/img/firefox-icons/add.svg';
+    newWindowMenuItem.iconSrc = '/img/firefox-icons/plus.svg';
     topBarElement.addMenuItem('new-window', newWindowMenuItem);
 
     const newNormalWindowMenuItem = new CtgMenuItemElement();
     newNormalWindowMenuItem.labelText = browser.i18n.getMessage('buttonNewWindow');
-    newNormalWindowMenuItem.iconSrc = '/img/firefox-icons/add.svg';
+    newNormalWindowMenuItem.iconSrc = '/img/firefox-icons/plus.svg';
     newWindowMenuItem.appendChild(newNormalWindowMenuItem);
 
     newNormalWindowMenuItem.addEventListener('click', () => {
