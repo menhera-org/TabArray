@@ -111,11 +111,13 @@ const getUaDataPlatform = () => {
   return 'Linux';
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const windowWrapped = window.wrappedJSObject as any;
 
-const setupUaOverrides = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototypeWrapped: any) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const windowWrapped = window.wrappedJSObject as any;
+
     const seenUserAgent = window.navigator.userAgent;
     let userAgent = seenUserAgent;
     try {
@@ -210,4 +212,24 @@ if (gLanguageStore.language !== '') {
   setUpLanguageOverrides();
 }
 
-setupUaOverrides();
+setupUaOverrides(window, navigatorPrototypeWrapped);
+
+const visitedIframes = new WeakSet<HTMLIFrameElement>();
+const mutationObserver = new MutationObserver(() => {
+  const iframes = document.querySelectorAll('iframe');
+  for (const iframe of iframes) {
+    if (visitedIframes.has(iframe)) {
+      continue;
+    }
+    if (iframe.contentWindow == null) {
+      continue;
+    }
+    const origin = iframe.contentWindow.origin;
+    if (origin == window.origin) {
+      visitedIframes.add(iframe);
+      setupUaOverrides(iframe.contentWindow as Window & typeof globalThis, Object.getPrototypeOf(iframe.contentWindow.navigator).wrappedJSObject);
+    }
+  }
+});
+
+mutationObserver.observe(document, {attributes: false, childList: true, characterData: false, subtree:true});

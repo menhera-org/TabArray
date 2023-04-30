@@ -88,6 +88,7 @@ const update = async () => {
         }],
         matches: ['<all_urls>'],
         allFrames: true,
+        matchAboutBlank: true,
         runAt: 'document_start',
         cookieStoreId,
       });
