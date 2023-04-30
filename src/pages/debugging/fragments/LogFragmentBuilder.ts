@@ -44,6 +44,11 @@ export class LogFragmentBuilder extends AbstractFragmentBuilder {
     return '/img/firefox-icons/developer.svg';
   }
 
+  public scrollToBottom(): void {
+    if (this.frameLayoutElement.getActiveFragment() != this.getFragment()) return;
+    this.frameLayoutElement.scroll(0, this.frameLayoutElement.scrollHeight - this.frameLayoutElement.clientHeight);
+  }
+
   public build(): CtgFragmentElement {
     const fragment = document.createElement('ctg-fragment') as CtgFragmentElement;
     fragment.id = this.getFragmentId();
@@ -76,17 +81,24 @@ export class LogFragmentBuilder extends AbstractFragmentBuilder {
 
     Promise.resolve().then(() => {
       this.render();
+      const fragment = this.getFragment();
+      fragment.onActivated.addListener(() => {
+        this.scrollToBottom();
+      });
     });
 
     consoleHistoryService.onChanged.addListener(() => {
       this.render();
     });
+
     return fragment;
   }
 
   public render(): void {
     const tbody = this.getFragment().querySelector('#logs-tbody') as HTMLTableSectionElement;
     consoleHistoryService.getEntries().then((entries) => {
+      const scrollBottom = this.frameLayoutElement.scrollHeight - this.frameLayoutElement.scrollTop - this.frameLayoutElement.clientHeight;
+      const isAtBottom = scrollBottom < 1;
       tbody.textContent = '';
       for (const entry of entries) {
         const tr = document.createElement('tr');
@@ -106,6 +118,9 @@ export class LogFragmentBuilder extends AbstractFragmentBuilder {
         const td5 = document.createElement('td');
         td5.textContent = entry.message;
         tr.appendChild(td5);
+      }
+      if (isAtBottom) {
+        this.scrollToBottom();
       }
     });
   }

@@ -65,6 +65,12 @@ ctg-frame-layout {
   inline-size: 100%;
 }
 
+:is(#logs-table, #performance-table) > thead {
+  position: sticky;
+  inset-block-start: 0;
+  background-color: var(--background-color);
+}
+
 :is(#logs-table, #performance-table) > thead > tr > th {
   text-align: start;
   font-weight: bold;
