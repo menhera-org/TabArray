@@ -141,7 +141,7 @@ button[disabled] {
   align-self: center;
   justify-self: center;
   background-color: var(--text-color);
-  mask: url(/img/material-icons/folder.svg) center/contain no-repeat;
+  mask: url(/img/firefox-icons/folder.svg) center/contain no-repeat;
 }
 
 #group-visibility-toggle {

@@ -52,7 +52,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   }
 
   public getIconUrl(): string {
-    return '/img/material-icons/folder.svg';
+    return '/img/firefox-icons/folder.svg';
   }
 
   public build(): CtgFragmentElement {

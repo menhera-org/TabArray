@@ -129,7 +129,7 @@ export abstract class TabGroupListingElement extends HTMLElement {
       tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(tabGroup.supergroup.supergroupId);
       const supergroup = tabGroup.supergroup;
 
-      iconElement.style.mask = `url(/img/material-icons/folder.svg) center center / 75% no-repeat`;
+      iconElement.style.mask = `url(/img/firefox-icons/folder.svg) center center / 75% no-repeat`;
       iconElement.classList.add('masked');
 
       nameElement.textContent = supergroup.name;
