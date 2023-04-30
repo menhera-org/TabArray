@@ -250,7 +250,7 @@ export class PanelWindowsElement extends HTMLElement {
     const actionsElement = this.shadowRoot.querySelector('.actions') as HTMLDivElement;
     actionsElement.textContent = '';
 
-    const newContainerMenuItem = this.createMenuItem('action-new-container', 'buttonNewContainer', '/img/firefox-icons/folder_add.svg', this.onCreateContainerButtonClicked);
+    const newContainerMenuItem = this.createMenuItem('action-new-container', 'buttonNewContainer', '/img/firefox-icons/add.svg', this.onCreateContainerButtonClicked);
     newContainerMenuItem.displayStyle = 'normal';
     actionsElement.appendChild(newContainerMenuItem);
 
