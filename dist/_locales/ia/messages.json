@@ -675,7 +675,7 @@
         "description": "Per container proxy feature."
     },
     "optionsTabProxies": {
-        "message": "Proxyes",
+        "message": "Proxies",
         "description": "Label text for proxies tab."
     },
     "noProxy": {
@@ -715,7 +715,7 @@
         "description": "Add new proxy button."
     },
     "optionsHeadingAvailableProxies": {
-        "message": "Proxyes disponibile",
+        "message": "Proxies disponibile",
         "description": "Available proxies heading."
     },
     "buttonDeleteProxy": {
