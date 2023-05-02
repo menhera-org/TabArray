@@ -39,7 +39,8 @@ export class PackageIntegrityService {
   }
 
   public async calculateFileHash(path: string): Promise<string> {
-    const response = await fetch(path);
+    const encodedPath = directoryListingService.encodePath(path);
+    const response = await fetch(encodedPath);
     const byteArray = new Uint8Array(await response.arrayBuffer());
     return this.sha256(byteArray);
   }

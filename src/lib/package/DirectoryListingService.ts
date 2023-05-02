@@ -115,9 +115,9 @@ export class DirectoryListingService {
     const dir = await this.getDirectory(pathUrl);
     for (const entry of dir.entries) {
       if (entry.type == 'file') {
-        paths.push(entry.fullPath);
+        paths.push(this.decodePath(entry.fullPath));
       } else if (entry.type == 'directory') {
-        paths.push(... await this.getFilePathsInternal(entry.fullPath));
+        paths.push(... await this.getFilePathsInternal(this.decodePath(entry.fullPath)));
       }
     }
     return paths;
@@ -151,6 +151,14 @@ export class DirectoryListingService {
       }
       return aParts.length - bParts.length;
     });
+  }
+
+  public encodePath(path: string): string {
+    return path.split('/').map(part => encodeURIComponent(part)).join('/');
+  }
+
+  public decodePath(path: string): string {
+    return path.split('/').map(part => decodeURIComponent(part)).join('/');
   }
 }
 
