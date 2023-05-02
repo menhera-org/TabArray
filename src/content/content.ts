@@ -246,8 +246,26 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
 };
 
 if (gLanguageStore.language !== '') {
-  setUpLanguageOverrides();
+  try {
+    setUpLanguageOverrides();
+  } catch (e) {
+    console.error(e);
+  }
 }
+
+gLanguageStore.onLanguagesChanged.addListener(() => {
+  try {
+    if (!languageSetupDone && gLanguageStore.language !== '') {
+      setUpLanguageOverrides();
+    }
+    window.dispatchEvent(new Event('languagechange', {
+      bubbles: false,
+      cancelable: false,
+    }));
+  } catch (e) {
+    console.error(e);
+  }
+});
 
 setupUaOverrides(window, navigatorPrototypeWrapped);
 
