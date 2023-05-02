@@ -673,5 +673,75 @@
     "optionsTabContainerOverrides": {
         "message": "语言与用户代理",
         "description": "Label text for language and user agent overrides tab."
+    },
+    "debuggingInformation": {
+        "message": "调试信息",
+        "description": "Debugging information page."
+    },
+    "featurePerContainerProxy": {
+        "message": "每个容器代理",
+        "description": "Per container proxy feature."
+    },
+    "optionsTabProxies": {
+        "message": "代理",
+        "description": "Label text for proxies tab."
+    },
+    "noProxy": {
+        "message": "无代理",
+        "description": "No proxy option."
+    },
+    "proxyName": {
+        "message": "名称",
+        "description": "Proxy name option."
+    },
+    "proxyProtocol": {
+        "message": "协议",
+        "description": "Proxy protocol option."
+    },
+    "proxyHostname": {
+        "message": "主机名",
+        "description": "Proxy hostname option."
+    },
+    "proxyPort": {
+        "message": "端口",
+        "description": "Proxy port option."
+    },
+    "proxyUsername": {
+        "message": "用户名",
+        "description": "Proxy username option."
+    },
+    "proxyPassword": {
+        "message": "密码",
+        "description": "Proxy password option."
+    },
+    "proxyExemptLocalAddresses": {
+        "message": "不代理本地地址",
+        "description": "Proxy exempt local addresses option."
+    },
+    "proxyDnsRequests": {
+        "message": "代理DNS请求",
+        "description": "Proxy DNS requests option."
+    },
+    "buttonAddNewProxy": {
+        "message": "添加新的代理",
+        "description": "Add new proxy button."
+    },
+    "newVersionAvailable": {
+        "message": "可用的新版本：$VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "可用的代理",
+        "description": "Available proxies heading."
+    },
+    "buttonDeleteProxy": {
+        "message": "删除代理",
+        "description": "Delete proxy button."
     }
 }
