@@ -47,6 +47,8 @@
   flex-direction: column;
   overflow-inline: hidden;
   flex: 1;
+  border-block-start: solid 1px var(--border-color);
+  min-inline-size: 0;
 }
 
 #deck-proxies-inner > button, #button-new-proxy {
