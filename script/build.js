@@ -26,6 +26,9 @@
 */
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const crypto = require('crypto');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -33,6 +36,9 @@ const child_process = require('child_process');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const zip = require('deterministic-zip-ng');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { glob } = require("glob");
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const manifest = require('../dist/manifest.json');
@@ -45,7 +51,7 @@ const manifest = require('../dist/manifest.json');
  */
 const zipDirectoryContents = async (directory, outputPath) => {
   return new Promise((resolve, reject) => {
-    zip(directory, outputPath, {includes: ['./**'], cwd: directory}, (err) => {
+    zip(directory, outputPath, {includes: ['./**/{*,.??*}'], excludes: [], cwd: directory}, (err) => {
       if (err) {
         reject(err);
       } else {
@@ -74,6 +80,70 @@ const runCommand = async (command, args) => {
       resolve(stdout);
     });
   });
+};
+
+/**
+ * Sort paths.
+ * @param {string[]} paths
+ * @returns {string[]}
+ */
+const sortPaths = (paths) => {
+  paths.forEach((path) => {
+    if (!path.startsWith('/')) {
+      throw new Error(`Invalid path: ${path}`);
+    }
+  });
+  return [... paths].sort((a, b) => {
+    const aParts = a.split('/').slice(1).filter(part => part != '');
+    const bParts = b.split('/').slice(1).filter(part => part != '');
+    const minLength = Math.min(aParts.length, bParts.length);
+    for (let i = 0; i < minLength; i++) {
+      const aPart = aParts[i];
+      const bPart = bParts[i];
+      if (aPart < bPart) {
+        return -1;
+      } else if (aPart > bPart) {
+        return 1;
+      }
+    }
+    return aParts.length - bParts.length;
+  });
+};
+
+const DIST_DIR = __dirname + '/../dist';
+const getDistFilePaths = async () => {
+  let paths = await glob('**/*', { cwd: DIST_DIR, nodir: true, dot: true, realpath: false });
+  paths = paths.map((path) => `/${path}`);
+  paths = paths.filter((path) => path != '/.integrity.json');
+  return paths;
+};
+
+/**
+ *
+ * @returns {Promise<Record<string, string>>}
+ */
+const getIntegrityListing = async () => {
+  const files = sortPaths(await getDistFilePaths());
+  const listing = {};
+  for (const path of files) {
+    const fullPath = DIST_DIR + path;
+    const buff = fs.readFileSync(fullPath);
+    const hash = crypto.createHash("sha256").update(buff).digest("hex");
+    listing[path] = hash;
+  }
+  return listing;
+};
+
+const getIntegrityHash = async () => {
+  const listing = await getIntegrityListing();
+  const json = JSON.stringify(listing);
+  const buffer = Buffer.from(json, 'utf8');
+  const hash = crypto.createHash("sha256").update(buffer).digest("hex");
+  return {
+    version: 1,
+    hash,
+    files: listing,
+  };
 };
 
 const startTime = Date.now();
@@ -119,6 +189,11 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   };
   const infoPath = __dirname + '/../dist/build.json';
   fs.writeFileSync(infoPath, JSON.stringify(info, null, 2));
+
+  const integrity = await getIntegrityHash();
+  const integrityPath = __dirname + '/../dist/.integrity.json';
+  fs.writeFileSync(integrityPath, JSON.stringify(integrity, null, 2));
+
   const lintResult = await runCommand('npx', ['web-ext', 'lint', '--source-dir', './dist/', '--warnings-as-errors']);
   console.log(lintResult);
 

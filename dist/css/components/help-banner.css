@@ -45,3 +45,25 @@ a {
   flex-direction: row;
   justify-content: center;
 }
+
+#help-banner-integrity {
+  inline-size: calc(100% - 2em);
+  margin-inline: auto;
+  display: block flex;
+  flex-direction: row;
+  column-gap: .5em;
+  align-items: center;
+}
+
+#help-banner-integrity-hash {
+  display: block;
+  min-inline-size: 0;
+  flex: 1;
+  margin: 0;
+  appearance: none;
+  border: none;
+  padding: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font: inherit;
+}

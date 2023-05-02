@@ -49,10 +49,31 @@ const findAndClear = function find(startPath, filter) {
   }
 };
 
+const findStartingAndClear = function find(startPath, filter) {
+  if (!fs.existsSync(startPath)) {
+    return;
+  }
+
+  var files = fs.readdirSync(startPath);
+  for (let i = 0; i < files.length; i++) {
+    const filename = path.join(startPath, files[i]);
+    const stat = fs.lstatSync(filename);
+    if (stat.isDirectory()) {
+      // recursive search
+      find(filename, filter);
+    } else if (files[i].startsWith(filter)) {
+      console.log('removing:', filename);
+      fs.unlinkSync(filename);
+    }
+  }
+};
+
 const distDir = path.join(__dirname, '../dist');
 findAndClear(distDir, '.js');
 findAndClear(distDir, '.js.map');
 findAndClear(distDir, '.js.LICENSE.txt');
+findStartingAndClear(distDir, '.DS_Store');
+findStartingAndClear(distDir, '._');
 
 // const buildsDir = path.join(__dirname, '../builds');
 // fs.rmSync(buildsDir, { recursive: true, force: true });

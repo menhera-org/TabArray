@@ -24,6 +24,7 @@ import browser from "webextension-polyfill";
 import { ExtensionPageService } from "../lib/ExtensionPageService";
 import { DateFormatService } from "../lib/DateFormatService";
 import { CompatConsole } from "../lib/console/CompatConsole";
+import { PackageIntegrityService } from "../lib/package/PackageIntegrityService";
 
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 
@@ -32,6 +33,7 @@ import { GITHUB_TREE_LINK_BASE } from "../defs";
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const extensionPageService = ExtensionPageService.getInstance();
 const dateFormatService = DateFormatService.getInstance();
+const packageIntegrityService = PackageIntegrityService.getInstance();
 
 export class HelpBannerElement extends HTMLElement {
 
@@ -74,11 +76,39 @@ export class HelpBannerElement extends HTMLElement {
     helpBannerPlatformVersion.textContent = 'Firefox';
     helpBanner.appendChild(helpBannerPlatformVersion);
 
+    const helpBannerIntegrity = document.createElement('div');
+    helpBannerIntegrity.id = 'help-banner-integrity';
+    helpBanner.appendChild(helpBannerIntegrity);
+
+    const helpBannerIntegrityStatus = document.createElement('div');
+    helpBannerIntegrityStatus.id = 'help-banner-integrity-status';
+    helpBannerIntegrityStatus.textContent = 'Integrity'; // untranslated
+    helpBannerIntegrity.appendChild(helpBannerIntegrityStatus);
+
+    const helpBannerIntegrityHash = document.createElement('input');
+    helpBannerIntegrityHash.id = 'help-banner-integrity-hash';
+    helpBannerIntegrityHash.type = 'text';
+    helpBannerIntegrityHash.readOnly = true;
+    helpBannerIntegrityHash.value = '(unknown hash)';
+    helpBannerIntegrity.appendChild(helpBannerIntegrityHash);
+
     Promise.all([
       browser.runtime.getBrowserInfo(),
       browser.runtime.getPlatformInfo(),
     ]).then(([browserInfo, platformInfo]) => {
       helpBannerPlatformVersion.textContent = `${browserInfo.name} ${browserInfo.version} (${platformInfo.os})`;
+    }).catch((e) => {
+      console.error(e);
+    });
+
+    Promise.all([
+      packageIntegrityService.getRecordedIntegrityHash(),
+      packageIntegrityService.getIntegrityHash(),
+    ]).then(([recordedHash, hash]) => {
+      if (recordedHash != hash) {
+        helpBannerIntegrityStatus.textContent = 'Integrity mismatch'; // untranslated
+      }
+      helpBannerIntegrityHash.value = hash;
     }).catch((e) => {
       console.error(e);
     });
