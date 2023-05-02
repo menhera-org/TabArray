@@ -87,6 +87,17 @@ export class HelpBannerElement extends HTMLElement {
       helpBannerBuild.textContent = 'Build '; // untranslated
       const text = await response.text();
       const info = JSON.parse(text);
+      let signed = false;
+      try {
+        const signatureResponse = await fetch('/META-INF/manifest.mf');
+        if (signatureResponse.status != 200) {
+          throw new Error(`Unexpected status code ${signatureResponse.status}`);
+        }
+        await signatureResponse.text();
+        signed = true;
+      } catch (e) {
+        // ignore
+      }
       if (info.commit) {
         const commit = String(info.commit);
         const link = GITHUB_TREE_LINK_BASE + commit;
@@ -101,6 +112,11 @@ export class HelpBannerElement extends HTMLElement {
       }
       if (info.untracked) {
         helpBannerBuild.append(' (untracked)'); // untranslated
+      }
+      if (signed) {
+        helpBannerBuild.append(' (signed)'); // untranslated
+      } else {
+        helpBannerBuild.append(' (unsigned)'); // untranslated
       }
       helpBannerBuild.appendChild(document.createElement('br'));
       const date = new Date(info.buildDate);
