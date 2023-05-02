@@ -11,6 +11,7 @@ _Tab group = Container_
 
 - Preferred languages
 - User agent strings (Chrome UAData/Sec-CH-UA emulation included)
+- Per-container proxy settings
 
 **Uses:**
 
@@ -36,12 +37,19 @@ The button to show controls for containers is by default on the corner of the ta
 - Button to clear cookies for a container.
 - List and delete cookies by sites in a container.
 - Option to remove cookies automatically for a container when closing it.
-- Option to change preferred languages for a container.
+- Option to save memory for inactive tabs withoug closing them.
+- Reopen any tab in any container, from the button in the address bar.
+- Group containers.
+- Use tags to organize tabs inside a container.
 
 **Keyboard shorcuts (can be changed or disabled in Add-ons Manager):**
 
 - Ctrl+Alt+G: Open the containers popup.
 - Ctrl+Alt+S: Open the containers sidebar.
+- Ctrl+Alt+1: Windows view on the popup.
+- Ctrl+Alt+2: Containers view on the popup.
+- Ctrl+Alt+3: Sites view on the popup.
+- Ctrl+Alt+5: Open settings.
 
 **Compatibility and other extensions**
 

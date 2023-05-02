@@ -11,6 +11,7 @@ _タブ グループ = コンテナー_
 
 - 好ましい言語
 - ユーザーエージェント文字列 (Chrome UAData/Sec-CH-UA エミュレーションを含む)
+- コンテナーごとのプロキシ設定
 
 **利用：**
 
@@ -33,15 +34,22 @@ _タブ グループ = コンテナー_
 - パノラマグリッド - すべてのタブをコンテナーでソートした美しいグリッドで表示します。
 - 外部アプリケーションによって開かれた新しいタブごとにコンテナーを選択します。
 - ウィンドウ内のウェブサイトごとにタブをリストアップ。
-- Button to clear cookies for a container.
-- List and delete cookies by sites in a container.
-- Option to remove cookies automatically for a container when closing it.
-- Option to change preferred languages for a container.
+- コンテナーの Cookie をクリアするボタン。
+- コンテナー内の Cookie をサイト別に表示し，削除もできます。
+- コンテナーを閉じるときに Cookie を自動削除するオプション。
+- インアクティブなタブを閉じることなくメモリーを節約するオプション。
+- アドレスバーのボタンでどのタブも好きなコンテナーで開き直せます。
+- コンテナーのグループ化。
+- タグを使ってコンテナー内のタブを整理できます。
 
 **キーボードショートカット（アドオンマネージャで変更または無効化可能）**
 
 - Ctrl+Alt+G: コンテナー・ポップアップを開きます。
 - Ctrl+Alt+S: コンテナー・サイドバーを開く。
+- Ctrl+Alt+1: ポップアップでウィンドウ表示にする。
+- Ctrl+Alt+2: ポップアップでコンテナー表示にする。
+- Ctrl+Alt+3: ポップアップでサイト別表示にする。
+- Ctrl+Alt+5: 設定を開く。
 
 **互換性と他の拡張機能**
 
