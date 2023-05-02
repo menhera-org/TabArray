@@ -673,5 +673,75 @@
     "optionsTabSortContainers": {
         "message": "Сортировать контейнеры",
         "description": "Label text for sort containers tab."
+    },
+    "debuggingInformation": {
+        "message": "Информация об отладке",
+        "description": "Debugging information page."
+    },
+    "featurePerContainerProxy": {
+        "message": "Прокси для каждого контейнера",
+        "description": "Per container proxy feature."
+    },
+    "noProxy": {
+        "message": "Без прокси",
+        "description": "No proxy option."
+    },
+    "proxyName": {
+        "message": "Имя",
+        "description": "Proxy name option."
+    },
+    "proxyProtocol": {
+        "message": "Протокол",
+        "description": "Proxy protocol option."
+    },
+    "optionsTabProxies": {
+        "message": "Прокси",
+        "description": "Label text for proxies tab."
+    },
+    "proxyHostname": {
+        "message": "Имя хоста",
+        "description": "Proxy hostname option."
+    },
+    "proxyPort": {
+        "message": "Порт",
+        "description": "Proxy port option."
+    },
+    "proxyUsername": {
+        "message": "Имя пользователя",
+        "description": "Proxy username option."
+    },
+    "proxyPassword": {
+        "message": "Пароль",
+        "description": "Proxy password option."
+    },
+    "proxyExemptLocalAddresses": {
+        "message": "Не проксировать локальные адреса",
+        "description": "Proxy exempt local addresses option."
+    },
+    "proxyDnsRequests": {
+        "message": "Проксирование DNS-запросов",
+        "description": "Proxy DNS requests option."
+    },
+    "buttonAddNewProxy": {
+        "message": "Добавить новый прокси",
+        "description": "Add new proxy button."
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "Доступные прокси",
+        "description": "Available proxies heading."
+    },
+    "buttonDeleteProxy": {
+        "message": "Удалить прокси",
+        "description": "Delete proxy button."
+    },
+    "newVersionAvailable": {
+        "message": "Доступна новая версия: $VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
     }
 }
