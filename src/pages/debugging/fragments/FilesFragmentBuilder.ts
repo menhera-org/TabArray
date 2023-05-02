@@ -90,6 +90,7 @@ export class FilesFragmentBuilder extends AbstractFragmentBuilder {
       for (const path of filePaths) {
         const recordedIntegrity = recordedIntegrityListing[path] ?? '';
         const currentIntegrity = integrityListing[path] ?? '';
+        const encodedPath = directoryListingService.encodePath(path);
 
         const fileElement = document.createElement('div');
         fileElement.classList.add('file');
@@ -102,7 +103,7 @@ export class FilesFragmentBuilder extends AbstractFragmentBuilder {
         const filePathLink = document.createElement('a');
         filePathLink.classList.add('file-path-link');
         filePathLink.textContent = path;
-        filePathLink.href = new URL(path, location.href).href;
+        filePathLink.href = new URL(encodedPath, location.href).href;
         filePathLink.target = '_blank';
         filePathElement.appendChild(filePathLink);
 
