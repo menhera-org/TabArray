@@ -149,16 +149,20 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
     }
 
     if (isChromium) {
-      Reflect.defineProperty(windowWrapped, 'chrome', {
-        configurable: false,
-        writable: true,
-        enumerable: true,
-        value: cloneInto({
-          app: {},
-          csi: {},
-          loadTimes: () => { /* nothing */ },
-        }, window, { cloneFunctions: true }),
-      });
+      try {
+        Reflect.defineProperty(windowWrapped, 'chrome', {
+          configurable: false,
+          writable: true,
+          enumerable: true,
+          value: cloneInto({
+            app: {},
+            csi: {},
+            loadTimes: () => { /* nothing */ },
+          }, window, { cloneFunctions: true }),
+        });
+      } catch (e) {
+        // ignore
+      }
     }
 
     // this is configurable, so deletable
