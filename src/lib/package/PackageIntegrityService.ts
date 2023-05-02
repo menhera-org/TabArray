@@ -62,13 +62,24 @@ export class PackageIntegrityService {
     return this.sha256(byteArray);
   }
 
-  public async getRecordedIntegrityHash(): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private async getIntegrityRecord(): Promise<any> {
     const response = await fetch('/.integrity.json');
     const data = await response.json();
     if (data.version != 1) {
       throw new Error('Unsupported integrity version');
     }
+    return data;
+  }
+
+  public async getRecordedIntegrityHash(): Promise<string> {
+    const data = await this.getIntegrityRecord();
     return data.hash;
+  }
+
+  public async getRecordedIntegrityListing(): Promise<Record<string, string>> {
+    const data = await this.getIntegrityRecord();
+    return data.files;
   }
 }
 

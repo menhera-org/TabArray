@@ -41,6 +41,7 @@ import { GlobalMenuItems } from "../popup-v2/GlobalMenuItems";
 
 import { LogFragmentBuilder } from "./fragments/LogFragmentBuilder";
 import { PerformanceFragmentBuilder } from "./fragments/PerforamanceFragmentBuilder";
+import { FilesFragmentBuilder } from "./fragments/FilesFragmentBuilder";
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -65,9 +66,11 @@ const bottomNavigationElement = document.querySelector('#bottom-navigation') as 
 const fragments: CtgFragmentElement[] = [];
 const logBuilder = new LogFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 const performanceBuilder = new PerformanceFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
+const filesBuilder = new FilesFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 
 fragments.push(logBuilder.getFragment());
 fragments.push(performanceBuilder.getFragment());
+fragments.push(filesBuilder.getFragment());
 
 const defaultFragment = fragments[0] as CtgFragmentElement;
 frameLayout.activateFragment(defaultFragment.id);
