@@ -215,8 +215,8 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
         const target = ev.target;
         if (!(target instanceof window.Element)) return;
         const addedNode = target as Element;
-        const blockEvent = () => {
-          console.debug('Blocked load event for %s', addedNode);
+        const blockEvent = (resourceUrl: string) => {
+          console.debug('Blocked load event for %s', resourceUrl);
           ev.stopImmediatePropagation();
           ev.preventDefault();
           addedNode.dispatchEvent(new window.Event('error'));
@@ -225,17 +225,17 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
         if (tagName == 'link') {
           const link = addedNode as HTMLLinkElement;
           if (link.href.match(blockPattern)) {
-            blockEvent();
+            blockEvent(link.href);
           }
         } else if (tagName == 'img') {
           const img = addedNode as HTMLImageElement;
           if (img.src.match(blockPattern)) {
-            blockEvent();
+            blockEvent(img.src);
           }
         } else if (tagName == 'script') {
           const script = addedNode as HTMLScriptElement;
           if (script.src.match(blockPattern)) {
-            blockEvent();
+            blockEvent(script.src);
           }
         }
       }, { capture: true, passive: false });
