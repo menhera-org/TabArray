@@ -63,6 +63,7 @@
   min-inline-size: 0;
   background-color: unset;
   color: inherit;
+  text-align: start;
 }
 
 #button-new-proxy {
