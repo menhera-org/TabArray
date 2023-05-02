@@ -123,6 +123,8 @@ ctg-frame-layout {
   border-block-end: solid 1px var(--border-color);
   position: sticky;
   inset-block-start: 0;
+  background-color: var(--overlay-color);
+  backdrop-filter: blur(1rem);
 }
 
 .file-recorded-integrity, .file-current-integrity {
