@@ -200,6 +200,7 @@ export class PopupRenderer {
       tabElement.addEventListener('dragover', (ev) => {
         if (!ev.dataTransfer) return;
         const json = ev.dataTransfer.getData('application/json');
+        if (!json) return;
         const data = JSON.parse(json);
         if ('tab' != data.type || data.pinned) return;
         if (data.cookieStoreId != tab.cookieStore.id) return;
@@ -208,6 +209,7 @@ export class PopupRenderer {
       tabElement.addEventListener('drop', (ev) => {
         if (!ev.dataTransfer) return;
         const json = ev.dataTransfer.getData('application/json');
+        if (!json) return;
         const data = JSON.parse(json);
         if ('tab' != data.type || data.pinned) return;
         if (data.cookieStoreId != tab.cookieStore.id) return;
@@ -226,6 +228,7 @@ export class PopupRenderer {
     element.addEventListener('dragover', (ev) => {
       if (!ev.dataTransfer) return;
       const json = ev.dataTransfer.getData('application/json');
+      if (!json) return;
       const data = JSON.parse(json);
       if ('tab' != data.type || data.pinned) return;
       if (data.cookieStoreId == displayedContainer.cookieStore.id) return;
@@ -234,6 +237,7 @@ export class PopupRenderer {
     element.addEventListener('drop', (ev) => {
       if (!ev.dataTransfer) return;
       const json = ev.dataTransfer.getData('application/json');
+      if (!json) return;
       const data = JSON.parse(json);
       if ('tab' != data.type || data.pinned) return;
       if (data.cookieStoreId == displayedContainer.cookieStore.id) return;
