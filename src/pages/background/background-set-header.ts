@@ -34,17 +34,6 @@ const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 const tabGroupService = TabGroupService.getInstance();
 
-let featureLanguageOverridesEnabled = false;
-let featureUserAgentOverridesEnabled = false;
-
-config['feature.languageOverrides'].observe((newValue) => {
-  featureLanguageOverridesEnabled = newValue;
-});
-
-config['feature.uaOverrides'].observe((newValue) => {
-  featureUserAgentOverridesEnabled = newValue;
-});
-
 const getSecChUa = (userAgent: string) => {
   const brands = uaDataService.getBrands(userAgent);
   const brandStrings = brands.map((brandInfo) => {
@@ -77,9 +66,11 @@ browser.webRequest.onBeforeSendHeaders.addListener(async (details) => {
 
   const cookieStoreId = details.cookieStoreId;
 
-  const [userAgent, acceptLanguages] = await Promise.all([
+  const [userAgent, acceptLanguages, featureLanguageOverridesEnabled, featureUserAgentOverridesEnabled] = await Promise.all([
     userAgentSettings.getUserAgent(cookieStoreId),
     languageSettings.getAcceptLanguages(cookieStoreId),
+    config['feature.languageOverrides'].getValue(),
+    config['feature.uaOverrides'].getValue(),
   ]);
 
   if ('' !== userAgent && featureUserAgentOverridesEnabled) {
@@ -91,7 +82,7 @@ browser.webRequest.onBeforeSendHeaders.addListener(async (details) => {
   }
 
   // this feature is only available in secure contexts.
-  if (featureUserAgentOverridesEnabled && details.url?.startsWith('https://')) {
+  if ('' !== userAgent && featureUserAgentOverridesEnabled && details.url?.startsWith('https://')) {
     const secChUa = getSecChUa(userAgent);
     if ('' !== secChUa) {
       setHeader(details, 'sec-ch-ua', secChUa);
