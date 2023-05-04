@@ -40,16 +40,17 @@ const elapsedTimeService = ElapsedTimeService.getInstance();
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   // This is never called for private tabs.
   try {
-    // do not redirect if the tab is loaded when the browser is started
-    const elapsedTime = await elapsedTimeService.getElapsedTime();
-    if (elapsedTime < 2000) return false;
     if (details.cookieStoreId == null || details.cookieStoreId != CookieStore.DEFAULT.id || details.tabId == -1 || details.frameId != 0 || details.originUrl || details.incognito) return false;
     const cookieStoreId = details.cookieStoreId;
 
-    const [externalTabContainerOption, tabIsPreviouslyOpen] = await Promise.all([
+    const [elapsedTime, externalTabContainerOption, tabIsPreviouslyOpen] = await Promise.all([
+      elapsedTimeService.getElapsedTime(),
       config['tab.external.containerOption'].getValue(),
       openTabsService.hasTab(details.tabId),
     ]);
+
+    // do not redirect if the tab is loaded when the browser is started
+    if (elapsedTime < 2000) return false;
 
     if (externalTabContainerOption == 'disabled') {
       return false;
