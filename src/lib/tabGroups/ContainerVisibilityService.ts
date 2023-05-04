@@ -25,6 +25,7 @@ import { CompatTab } from 'weeg-tabs';
 import { IndexTabService } from '../tabs/IndexTabService';
 import { ServiceRegistry } from '../ServiceRegistry';
 import { CompatConsole } from '../console/CompatConsole';
+import { PerformanceHistoryService } from '../PerformanceHistoryService';
 
 import { config } from '../../config/config';
 import { WindowContainerHidingHelper } from './WindowContainerHidingHelper';
@@ -45,6 +46,7 @@ export class ContainerVisibilityService {
 
   private readonly _windowService = WindowService.getInstance();
   private readonly _indexTabService = IndexTabService.getInstance();
+  private readonly _performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
 
   private constructor() {
     // nothing.
@@ -60,6 +62,7 @@ export class ContainerVisibilityService {
   }
 
   public async hideContainerOnWindow(windowId: number, cookieStoreId: string): Promise<boolean> {
+    const startTime = Date.now();
     const isPrivate = await this._windowService.isPrivateWindow(windowId);
     if (isPrivate) return false;
     const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
@@ -82,10 +85,13 @@ export class ContainerVisibilityService {
       await tabToActivate.focus();
     }
     await browser.tabs.hide(helper.tabsToHide.map((tab) => tab.id));
+    const duration = Date.now() - startTime;
+    this._performanceHistoryService.addEntry('ContainerVisibilityService.hideContainerOnWindow', startTime, duration);
     return true;
   }
 
   public async showContainerOnWindow(windowId: number, cookieStoreId: string): Promise<void> {
+    const startTime = Date.now();
     const isPrivate = await this._windowService.isPrivateWindow(windowId);
     if (isPrivate) return;
     const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
@@ -113,9 +119,12 @@ export class ContainerVisibilityService {
     }
     console.log('showContainerOnWindow(): windowId=%d, cookieStoreId=%s', windowId, cookieStoreId);
     await browser.tabs.show(tabIdsToShow);
+    const duration = Date.now() - startTime;
+    this._performanceHistoryService.addEntry('ContainerVisibilityService.showContainerOnWindow', startTime, duration);
   }
 
   public async showAllOnWindow(windowId: number): Promise<void> {
+    const startTime = Date.now();
     console.log('showAllOnWindow(): windowId=%d', windowId);
     const browserTabs = await browser.tabs.query({ windowId, hidden: true });
     const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
@@ -123,6 +132,8 @@ export class ContainerVisibilityService {
       return;
     }
     await browser.tabs.show(tabs.map((tab) => tab.id));
+    const duration = Date.now() - startTime;
+    this._performanceHistoryService.addEntry('ContainerVisibilityService.showAllOnWindow', startTime, duration);
   }
 }
 
