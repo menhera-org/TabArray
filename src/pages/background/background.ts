@@ -32,6 +32,7 @@ import { TabUrlService } from '../../lib/tabs/TabUrlService';
 import { ConsoleHistoryService } from '../../lib/console/ConsoleHistoryService';
 import { PerformanceHistoryService } from '../../lib/PerformanceHistoryService';
 import { PackageIntegrityService } from '../../lib/package/PackageIntegrityService';
+import { InstallationHistoryService } from '../../lib/InstallationHistoryService';
 
 import './background-install-handler';
 import './background-index-tab';
@@ -77,6 +78,9 @@ TabConverterService.getInstance();
 
 // register the package integrity service
 PackageIntegrityService.getInstance();
+
+// register the installation history service
+InstallationHistoryService.getInstance();
 
 // other services used by this script
 const sanityCheckService = SanityCheckService.getInstance();
