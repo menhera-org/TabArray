@@ -1,6 +1,6 @@
 {
   "name": "container-tab-groups",
-  "version": "11.7.0",
+  "version": "11.8.0",
   "description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
   "main": "./dist/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "devDependencies": {
     "@types/diff": "^5.0.3",
     "@types/glob": "^8.1.0",
-    "@types/node": "^18.16.3",
+    "@types/node": "^18.16.4",
     "@types/react": "^18.2.5",
     "@types/react-dom": "^18.2.3",
     "@types/webextension-polyfill": "^0.10.0",
@@ -29,7 +29,7 @@
     "typedoc": "^0.24.6",
     "typescript": "<5.1.0",
     "web-ext": "^7.6.2",
-    "webpack": "^5.81.0",
+    "webpack": "^5.82.0",
     "webpack-cli": "^5.0.2",
     "webpack-deadcode-plugin": "^0.1.17"
   },
