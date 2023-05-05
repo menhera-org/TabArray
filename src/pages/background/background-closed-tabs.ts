@@ -45,7 +45,7 @@ contextualIdentityFactory.onRemoved.addListener(async (identity) => {
 
 browser.tabs.onCreated.addListener((browserTab) => {
   if (browserTab.cookieStoreId == null || browserTab.id == null) return;
-  console.debug('Tab created', browserTab.cookieStoreId, browserTab.id);
+  // console.debug('Tab created', browserTab.cookieStoreId, browserTab.id);
   openTabs.addTabId(browserTab.cookieStoreId, browserTab.id);
 });
 
