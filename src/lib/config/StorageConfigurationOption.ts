@@ -34,11 +34,13 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
   private readonly sync: StorageItem<T>;
 
   public readonly onChanged = new EventSink<T>();
+  public readonly defaultArea: StorageArea;
 
-  public constructor(key: string, defaultValue: T) {
+  public constructor(key: string, defaultValue: T, defaultArea: StorageArea = 'sync') {
     this.managed = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageItem.AREA_MANAGED);
     this.local = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageItem.AREA_LOCAL);
     this.sync = new StorageItem<T>(StorageConfigurationOption.PREFIX + key, defaultValue, StorageItem.AREA_SYNC);
+    this.defaultArea = defaultArea;
 
     this.observe((value) => {
       this.onChanged.dispatch(value);
@@ -55,7 +57,7 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
     return await this.sync.getValue();
   }
 
-  public async setValue(value: T, storageArea: StorageArea = 'sync'): Promise<void> {
+  public async setValue(value: T, storageArea = this.defaultArea): Promise<void> {
     switch (storageArea) {
       case 'local': {
         await this.local.setValue(value);

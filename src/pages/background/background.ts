@@ -53,6 +53,7 @@ import './background-content-script-registrar';
 import './background-tab-preview';
 import './background-proxy';
 import './background-closed-tabs';
+import './background-sync';
 // import './background-update-checker';
 import { every15secondsAlarm } from './background-alarms';
 

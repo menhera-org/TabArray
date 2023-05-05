@@ -73,6 +73,8 @@ setTextContent('label[for="input-firstPartyIsolate"]', 'labelFirstPartyIsolate')
 
 setTextContent('label[for="input-resistFingerprinting"]', 'labelResistFingerprinting');
 
+setTextContent('label[for="input-syncContainers"]', 'optionSyncContainers');
+
 setTextContent('label[for="select-externalTabContainerOption"]', 'labelExternalTabSelectContainerOption');
 
 setTextContent('#select-externalTabContainerOption > option[value="choose"]', 'labelExternalTabOptionChooseContainer');

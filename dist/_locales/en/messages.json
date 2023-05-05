@@ -743,5 +743,9 @@
     "buttonDeleteProxy": {
         "message": "Delete Proxy",
         "description": "Delete proxy button."
+    },
+    "optionSyncContainers": {
+        "message": "Sync Containers",
+        "description": "Label text for sync containers option."
     }
 }
