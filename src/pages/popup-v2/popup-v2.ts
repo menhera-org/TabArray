@@ -149,7 +149,7 @@ const renderer = new ViewRefreshHandler(async () => {
     const browserStateSnapshot = await BrowserStateSnapshot.create();
     const browserSnapshotEnd = Date.now();
     const browserSnapshotTime = browserSnapshotEnd - browserSnapshotStart;
-    if (browserSnapshotTime > 100) {
+    if (browserSnapshotTime > 500) {
       console.info(`Browser snapshot took ${browserSnapshotTime}ms`);
     }
     windowsBuilder.render(browserStateSnapshot);
