@@ -19,10 +19,18 @@
   @license
 **/
 
+// eslint-disable-next-line no-var, @typescript-eslint/no-explicit-any
+declare var ReactDOM: any;
+
+// eslint-disable-next-line no-var, @typescript-eslint/no-explicit-any
+declare var React: any;
+
 import browser from 'webextension-polyfill';
 import { ExtensionService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 import { CookieStore, DisplayedContainer } from 'weeg-containers';
+
+import { Store } from '../../lib/frontend/Store';
 
 import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
@@ -38,7 +46,7 @@ import { ContainerEditorElement } from '../../components/container-editor';
 
 import { settingsButton, containersElement } from './navigation-elements';
 import { setUrl } from './navigation-i18n';
-import { createCreateContainerButton, createTemporaryContainerButton, createPrivateBrowsingButton, renderContainer } from './navigation-renderer';
+import { ContainerButton, CreateContainerButton, TemporatyContainerButton, PrivateBrowsingButton } from './navigation-components';
 
 type EnvType = {
   url: string;
@@ -47,6 +55,11 @@ type EnvType = {
   tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
   privateBrowsingSupported: boolean;
 };
+
+type Action = { type: 'container-updated', cookieStoreId: string, displayedContainer: DisplayedContainer }
+  | { type: 'container-removed', cookieStoreId: string }
+  | { type: 'container-added', displayedContainer: DisplayedContainer }
+  | { type: 'set-state', state: EnvType };
 
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const tabUrlService = TabUrlService.getInstance<TabUrlService>();
@@ -58,6 +71,76 @@ const contextualIdentityFactory = contextualIdentityService.getFactory();
 const displayedContainerService = DisplayedContainerService.getInstance();
 const urlRegistrationService = UrlRegistrationService.getInstance();
 const extensionPageService = ExtensionPageService.getInstance();
+
+const store = new Store<EnvType | null, Action>(null);
+
+store.registerReducer((state, action) => {
+  if (action.type == 'set-state') {
+    return action.state;
+  }
+  if (state == null) return null;
+  if (action.type == 'container-added') {
+    state.displayedContainers.push(action.displayedContainer);
+  } else if (action.type == 'container-removed') {
+    state.displayedContainers = state.displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.id != action.cookieStoreId);
+  } else if (action.type == 'container-updated') {
+    state.displayedContainers = state.displayedContainers.map((displayedContainer) => {
+      if (displayedContainer.cookieStore.id == action.cookieStoreId) {
+        return action.displayedContainer;
+      }
+      return displayedContainer;
+    });
+  }
+  return state;
+});
+
+contextualIdentityFactory.onCreated.addListener((createdContextualIdentity) => {
+  store.dispatchAction({ type: 'container-added', displayedContainer: createdContextualIdentity });
+});
+
+contextualIdentityFactory.onUpdated.addListener((updatedContextualIdentity) => {
+  store.dispatchAction({ type: 'container-updated', cookieStoreId: updatedContextualIdentity.cookieStore.id, displayedContainer: updatedContextualIdentity });
+});
+
+contextualIdentityFactory.onRemoved.addListener((removedContextualIdentity) => {
+  store.dispatchAction({ type: 'container-removed', cookieStoreId: removedContextualIdentity.cookieStore.id });
+});
+
+const Buttons = (state: EnvType | null) => {
+  if (!state) {
+    return <div></div>
+  }
+
+  const reopenInContainer = _reopenInContainer.bind(null, state);
+
+  const displayedContainers = [... state.displayedContainers];
+  state.tabGroupDirectorySnapshot.sortDisplayedContainers(displayedContainers);
+  const buttons = displayedContainers.map((displayedContainer) => <ContainerButton displayedContainer={displayedContainer} onClick={() => {
+    reopenInContainer(displayedContainer.cookieStore.id);
+  }} />);
+
+  buttons.unshift(<TemporatyContainerButton onClick={async () => {
+    const identity = await temporaryContainerService.createTemporaryContainer();
+    reopenInContainer(identity.cookieStore.id);
+  }} />);
+
+  buttons.unshift(<CreateContainerButton onClick={() => {
+    const containerEditorElement = new ContainerEditorElement();
+    document.body.append(containerEditorElement);
+  }} />);
+
+  if (state.privateBrowsingSupported) {
+    buttons.unshift(<PrivateBrowsingButton onClick={() => {
+      reopenInContainer(CookieStore.PRIVATE.id);
+    }} />);
+  }
+
+  return <div>{buttons}</div>
+};
+
+store.registerListener((state) => {
+  ReactDOM.render(Buttons(state), containersElement);
+});
 
 const blankScreen = () => {
   document.body.style.display = 'none';
@@ -122,52 +205,6 @@ const _reopenInContainer = (env: EnvType, cookieStoreId: string) => {
   containerTabOpenerService.reopenTabInContainer(env.tab.id, cookieStoreId, true, env.url);
 };
 
-const _createContainerElement = (env: EnvType, displayedContainer: DisplayedContainer) => {
-  const reopenInContainer = _reopenInContainer.bind(null, env);
-  const containerElement = renderContainer(displayedContainer);
-  const cookieStoreId = displayedContainer.cookieStore.id;
-  containersElement.append(containerElement);
-  containerElement.addEventListener('click', () => {
-    reopenInContainer(cookieStoreId);
-  });
-  contextualIdentityFactory.onRemoved.addListener((removedContextualIdentity) => {
-    if (removedContextualIdentity.cookieStore.id == displayedContainer.cookieStore.id) {
-      containerElement.remove();
-    }
-  });
-  contextualIdentityFactory.onUpdated.addListener((updatedContextualIdentity) => {
-    if (updatedContextualIdentity.cookieStore.id == displayedContainer.cookieStore.id) {
-      renderContainer(updatedContextualIdentity, containerElement);
-    }
-  });
-};
-
-const createSpecialButtons = (env: EnvType, privateBrowsingSupported: boolean) => {
-  const reopenInContainer = _reopenInContainer.bind(null, env);
-
-  if (privateBrowsingSupported) {
-    const privateBrowsingButton = createPrivateBrowsingButton();
-    containersElement.append(privateBrowsingButton);
-    privateBrowsingButton.addEventListener('click', () => {
-      reopenInContainer(CookieStore.PRIVATE.id);
-    });
-  }
-
-  const createContainerButton = createCreateContainerButton();
-  containersElement.append(createContainerButton);
-  createContainerButton.addEventListener('click', () => {
-    const containerEditorElement = new ContainerEditorElement();
-    document.body.append(containerEditorElement);
-  });
-
-  const temporaryContainerButton = createTemporaryContainerButton();
-  containersElement.append(temporaryContainerButton);
-  temporaryContainerButton.addEventListener('click', async () => {
-    const identity = await temporaryContainerService.createTemporaryContainer();
-    reopenInContainer(identity.cookieStore.id);
-  });
-};
-
 const handleRedirect = (env: EnvType) => {
   const { tab } = env;
   const loadUrl = _loadUrl.bind(null, env);
@@ -184,18 +221,11 @@ const handleRedirect = (env: EnvType) => {
 };
 
 envPromise.then(async (env) => {
-  const createContainerElement = _createContainerElement.bind(null, env);
-
-  const { url, displayedContainers, tabGroupDirectorySnapshot, privateBrowsingSupported } = env;
+  const { url } = env;
   setUrl(url);
   handleRedirect(env);
-  createSpecialButtons(env, privateBrowsingSupported);
 
-  [... displayedContainers].sort((a, b) => {
-    return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-  }).forEach(createContainerElement);
-
-  contextualIdentityFactory.onCreated.addListener(createContainerElement);
+  store.dispatchAction({ type: 'set-state', state: env });
 
   if (!errored) {
     restoreScreen();

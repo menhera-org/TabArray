@@ -42,9 +42,13 @@ body {
 }
 
 #containers {
-  display: grid;
   inline-size: max-content;
   margin-inline: auto;
+}
+
+#containers > div {
+  display: block flex;
+  flex-direction: column;
 }
 
 .container-button {

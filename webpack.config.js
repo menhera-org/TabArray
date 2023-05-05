@@ -26,6 +26,8 @@ const path = require('path');
 
 const DeadCodePlugin = require('webpack-deadcode-plugin');
 
+const CopyPlugin = require("copy-webpack-plugin");
+
 module.exports = {
   mode: 'production',
   context: __dirname,
@@ -33,7 +35,7 @@ module.exports = {
   devtool: 'source-map',
 
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.tsx', '.js'],
   },
 
   node: {
@@ -51,7 +53,7 @@ module.exports = {
       filename: 'pages/index/index-tab.js',
     },
     'navigation': {
-      import: './src/pages/navigation/select-container.ts',
+      import: './src/pages/navigation/select-container.tsx',
       filename: 'pages/navigation/confirm.js',
     },
     'options': {
@@ -92,7 +94,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|ts)$/,
+        test: /\.(js|tsx?)$/,
         use: 'ts-loader',
       },
     ],
@@ -105,7 +107,12 @@ module.exports = {
   plugins: [
     new DeadCodePlugin({
       patterns: [
-        'src/**/*.(js|ts)',
+        'src/**/*.(js|ts|tsx)',
+      ],
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: "react/react*.js", to: "./" },
       ],
     }),
   ],
