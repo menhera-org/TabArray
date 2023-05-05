@@ -114,6 +114,7 @@ export class ContainerSyncService {
 
       if (data.deletedTime != null) {
         promises.push(contextualIdentityFactory.remove(syncedIdentity.cookieStore.id));
+        console.info('Removing identity removed from synced storage: name=%s, id=%s, userContextId=%d', data.name, id, userContextId);
       } else if (data.name != syncedIdentity.name || data.icon != syncedIdentity.icon || data.color != syncedIdentity.color) {
         if (data.updatedTime < metadata.syncedTime) {
           data.name = syncedIdentity.name;
