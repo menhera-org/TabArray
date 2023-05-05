@@ -79,6 +79,12 @@ export class InstallationHistoryService {
 
   private async appendValue(value: InstallationInfo): Promise<void> {
     const values = await this.getValue();
+    if (values.length > 0) {
+      const lastValue = values[values.length - 1] as InstallationInfo;
+      if (this.installationEquals(lastValue, value)) {
+        return;
+      }
+    }
     values.push(value);
     await this.setValue(values);
   }
@@ -123,6 +129,19 @@ export class InstallationHistoryService {
       browserVersion,
       browserPlatformOs,
     };
+  }
+
+  public installationEquals(a: InstallationInfo, b: InstallationInfo): boolean {
+    // ignore installationDate
+    return a.commit === b.commit &&
+      a.untracked === b.untracked &&
+      a.signed === b.signed &&
+      a.buildDate === b.buildDate &&
+      a.recordedIntegrity === b.recordedIntegrity &&
+      a.computedIntegrity === b.computedIntegrity &&
+      a.browserName === b.browserName &&
+      a.browserVersion === b.browserVersion &&
+      a.browserPlatformOs === b.browserPlatformOs;
   }
 }
 
