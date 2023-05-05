@@ -28,6 +28,8 @@ const DeadCodePlugin = require('webpack-deadcode-plugin');
 
 const CopyPlugin = require("copy-webpack-plugin");
 
+const TerserPlugin = require('terser-webpack-plugin');
+
 module.exports = {
   mode: 'production',
   context: __dirname,
@@ -102,6 +104,13 @@ module.exports = {
 
   optimization: {
     moduleIds: 'deterministic',
+    minimizer: [
+      new TerserPlugin({
+        exclude: [
+          /react/,
+        ],
+      }),
+    ],
   },
 
   plugins: [
@@ -112,7 +121,10 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [
-        { from: "react/react*.js", to: "./" },
+        {
+          from: "react/react*.js",
+          to: "./",
+        },
       ],
     }),
   ],
