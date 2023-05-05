@@ -19,7 +19,7 @@
   @license
 **/
 
-import { TabAttributeProvider, CompatTab } from "weeg-tabs";
+import { TabAttributeProvider, DummyTab } from "weeg-tabs";
 import { ExtensibleAttributeSet } from "weeg-utils";
 import { EventSink } from "weeg-events";
 
@@ -54,8 +54,8 @@ export class TagService {
     this.onChanged.dispatch();
   }
 
-  public async getTagForTab(tab: CompatTab): Promise<TagType | undefined> {
-    const attributes = (await this._tabAttributeProvieder.getAttributeSets([tab]))[0] as ExtensibleAttributeSet<CompatTab>;
+  public async getTagForTab(tab: DummyTab): Promise<TagType | undefined> {
+    const attributes = (await this._tabAttributeProvieder.getAttributeSets([tab]))[0] as ExtensibleAttributeSet<DummyTab>;
     const tagId = attributes.getAttribute(TagService.ATTR_TAG_ID);
     if (null == tagId) {
       return undefined;
@@ -64,7 +64,7 @@ export class TagService {
     return tag;
   }
 
-  public async setTagIdForTab(tab: CompatTab, tagId: number | null): Promise<void> {
+  public async setTagIdForTab(tab: DummyTab, tagId: number | null): Promise<void> {
     if (null == tagId) {
       tagId = 0;
     }
@@ -75,10 +75,20 @@ export class TagService {
         throw new Error(`Tag ${tagId} does not exist.`);
       }
     }
-    const attributes = (await this._tabAttributeProvieder.getAttributeSets([tab]))[0] as ExtensibleAttributeSet<CompatTab>;
+    const attributes = (await this._tabAttributeProvieder.getAttributeSets([tab]))[0] as ExtensibleAttributeSet<DummyTab>;
     attributes.setAttribute(TagService.ATTR_TAG_ID, tagId);
     await this._tabAttributeProvieder.saveAttributeSets([attributes]);
     this.notifyChanged();
+  }
+
+  public async getTagForTabId(tabId: number): Promise<TagType | undefined> {
+    const tab = { id: tabId } as DummyTab;
+    return this.getTagForTab(tab);
+  }
+
+  public async setTagIdForTabId(tabId: number, tagId: number | null): Promise<void> {
+    const tab = { id: tabId } as DummyTab;
+    return this.setTagIdForTab(tab, tagId);
   }
 }
 

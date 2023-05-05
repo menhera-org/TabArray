@@ -20,7 +20,7 @@
 **/
 
 import { ExtensibleAttribute, ExtensibleAttributeSet } from "weeg-utils";
-import { CompatTab, TabAttributeProvider } from "weeg-tabs";
+import { DummyTab, TabAttributeProvider } from "weeg-tabs";
 
 import { TagDirectory, TagType } from "./TagDirectory";
 import { TagDirectorySnapshot } from "./TagDirectorySnapshot";
@@ -34,12 +34,17 @@ export class TabAttributeMap {
   private static readonly _tabAttributeProvider = new TabAttributeProvider();
   private static readonly _tagDirectory = new TagDirectory();
 
-  private readonly _attributeSetMap = new Map<number, ExtensibleAttributeSet<CompatTab>>();
+  private readonly _attributeSetMap = new Map<number, ExtensibleAttributeSet<DummyTab>>();
   private readonly _tagSnapshot: TagDirectorySnapshot;
   private readonly _tabIds: number[] = [];
 
-  public static async create(tabs: Iterable<CompatTab>): Promise<TabAttributeMap> {
-    const tabArray = Array.from(tabs);
+  public static async create(tabs: Iterable<DummyTab | number>): Promise<TabAttributeMap> {
+    const tabArray = Array.from(tabs).map((tab) => {
+      if ('number' == typeof tab) {
+        return { id: tab };
+      }
+      return tab;
+    });
     const [attributesSets, snapshot] = await Promise.all([
       this._tabAttributeProvider.getAttributeSets(tabArray),
       this._tagDirectory.getSnapshot(),
@@ -47,7 +52,7 @@ export class TabAttributeMap {
     return new TabAttributeMap(attributesSets, snapshot);
   }
 
-  private constructor(attributeSets: ExtensibleAttributeSet<CompatTab>[], tagSnapshot: TagDirectorySnapshot) {
+  private constructor(attributeSets: ExtensibleAttributeSet<DummyTab>[], tagSnapshot: TagDirectorySnapshot) {
     this._tagSnapshot = tagSnapshot;
     for (const attributeSet of attributeSets) {
       const tabId = attributeSet.target.id;
@@ -58,12 +63,6 @@ export class TabAttributeMap {
 
   public getTabIds(): number[] {
     return this._tabIds;
-  }
-
-  public getTab(tabId: number): CompatTab | undefined {
-    const attributeSet = this._attributeSetMap.get(tabId);
-    if (attributeSet == null) return undefined;
-    return attributeSet.target;
   }
 
   public getAttribute<T>(tabId: number, attribute: ExtensibleAttribute<T>): T | undefined {

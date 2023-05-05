@@ -106,8 +106,7 @@ export class TagDirectory {
     for (const tabId of tabAttributeMap.getTabIds()) {
       const foundTagId = tabAttributeMap.getTagIdForTab(tabId);
       if (foundTagId == tagId) {
-        const tab = tabAttributeMap.getTab(tabId) as CompatTab;
-        await tagService.setTagIdForTab(tab, 0);
+        await tagService.setTagIdForTabId(tabId, 0);
       }
     }
   }
