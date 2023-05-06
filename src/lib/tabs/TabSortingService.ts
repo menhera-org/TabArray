@@ -114,29 +114,32 @@ export class TabSortingService extends BackgroundService<void, void> {
       return;
     }
     tabSorting = true;
-    const startTime = Date.now();
     spinnerService.beginTransaction('tab-sorting');
-    const promises: Promise<void>[] = [];
-    let success = false;
     try {
       for (const windowId of await this.getWindowIds()) {
-        promises.push(sortTabsByWindow(windowId));
+        const windowStartTime = Date.now();
+        let windowSuccess = false;
+        try {
+          await sortTabsByWindow(windowId);
+          windowSuccess = true;
+        } catch (e) {
+          console.error(e);
+        } finally {
+          const windowEndTime = Date.now();
+          const sortingDuration = windowEndTime - windowStartTime;
+          performanceHistoryService.addEntry('TabSortingService.execute.byWindow', windowStartTime, sortingDuration);
+          if (windowSuccess) {
+            if (sortingDuration > 500) {
+              console.info('Tab sorting for window %d took %d ms', windowId, sortingDuration);
+            }
+          } else {
+            console.error('Tab sorting for window %d failed in %d ms', windowId, sortingDuration);
+          }
+        }
       }
-      await Promise.all(promises);
-      success = true;
     } catch (e) {
       console.error(e);
     } finally {
-      const endTime = Date.now();
-      const sortingDuration = endTime - startTime;
-      performanceHistoryService.addEntry('TabSortingService.execute', startTime, sortingDuration);
-      if (success) {
-        if (sortingDuration > 500) {
-          console.info('Tab sorting took %d ms', sortingDuration);
-        }
-      } else {
-        console.error('Tab sorting failed in %d ms', sortingDuration);
-      }
       spinnerService.endTransaction('tab-sorting');
       tabSorting = false;
     }
