@@ -23,9 +23,6 @@ import browser from "webextension-polyfill";
 import { CompatTab } from "weeg-tabs";
 
 import { ServiceRegistry } from "../ServiceRegistry";
-import { TabAttributeMap } from "../tabGroups/TabAttributeMap";
-
-import { BrowserStateSnapshot } from "../../legacy-lib/tabs/BrowserStateSnapshot";
 
 export class TabConverterService {
   private static readonly INSTANCE = new TabConverterService();
@@ -33,9 +30,6 @@ export class TabConverterService {
   public static getInstance(): TabConverterService {
     return TabConverterService.INSTANCE;
   }
-
-  public readonly TabAttributeMap = TabAttributeMap;
-  public readonly BrowserStateSnapshot = BrowserStateSnapshot;
 
   private constructor() {
     // nothing.

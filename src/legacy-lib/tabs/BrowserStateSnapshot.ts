@@ -25,6 +25,7 @@ import { SetMap } from 'weeg-types';
 import { CompatTab } from 'weeg-tabs';
 import { DisplayedContainer } from 'weeg-containers';
 import { RegistrableDomainService } from 'weeg-domains';
+import { Asserts } from 'weeg-utils';
 
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
@@ -52,6 +53,7 @@ const performanceHistoryService = PerformanceHistoryService.getInstance<Performa
 
 export class BrowserStateSnapshot {
   public static async create(): Promise<BrowserStateSnapshot> {
+    Asserts.assertNotBackgroundScript();
     const startTime = Date.now();
     const [browserWindows, currentBrowserWindow, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
       browser.windows.getAll({
