@@ -123,7 +123,7 @@ export class TabSortingService extends BackgroundService<void, void> {
           await sortTabsByWindow(windowId);
           windowSuccess = true;
         } catch (e) {
-          console.error(e);
+          console.error('Tab sorting error:', e);
         } finally {
           const windowEndTime = Date.now();
           const sortingDuration = windowEndTime - windowStartTime;
