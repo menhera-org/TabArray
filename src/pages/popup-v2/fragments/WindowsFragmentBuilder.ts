@@ -22,7 +22,7 @@
 import browser from "webextension-polyfill";
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
-import { BrowserStateSnapshot } from "../../../legacy-lib/tabs/BrowserStateSnapshot";
+import { BrowserStateDao } from "../../../lib/states/BrowserStateDao";
 
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
@@ -93,10 +93,10 @@ export class WindowsFragmentBuilder extends AbstractFragmentBuilder {
     topBarElement.headingText = browser.i18n.getMessage('windowsN', this._windowCount.toFixed(0));
   }
 
-  public render(browserStateSnapshot: BrowserStateSnapshot) {
+  public render(browserState: BrowserStateDao) {
     const fragment = this.getFragment();
-    const windowIds = browserStateSnapshot.getWindowIds();
-    this._enabledInPrivateBrowsing = browserStateSnapshot.enabledInPrivateBrowsing;
+    const windowIds = browserState.windowIds;
+    this._enabledInPrivateBrowsing = browserState.enabledInPrivateBrowsing;
     const windowCount = windowIds.length;
     this._windowCount = windowCount;
     if (this.active) {
@@ -104,7 +104,7 @@ export class WindowsFragmentBuilder extends AbstractFragmentBuilder {
     }
 
     const panel = fragment.querySelector('panel-windows') as PanelWindowsElement;
-    panel.setState(browserStateSnapshot);
+    panel.setState(browserState);
   }
 
   public override getFocusableElements(): HTMLElement[] {

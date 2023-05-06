@@ -36,7 +36,7 @@ export type SupergroupType = {
   members: string[];
 };
 
-export type StorageType = {
+export type SupergroupStorageType = {
   [tabGroupId: string]: SupergroupType;
 };
 
@@ -49,7 +49,7 @@ export class TabGroupDirectory {
 
   public readonly onChanged = new EventSink<void>();
 
-  private readonly storage = new StorageItem<StorageType>(TabGroupDirectory.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
+  private readonly storage = new StorageItem<SupergroupStorageType>(TabGroupDirectory.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
   private readonly legacyStorage = new StorageItem<Uint32.Uint32[]>(TabGroupDirectory.LEGACY_STORAGE_KEY, [], StorageItem.AREA_LOCAL);
   private readonly contextualIdentityService = ContextualIdentityService.getInstance();
   private readonly contextualIdentityFactory = this.contextualIdentityService.getFactory();
@@ -96,7 +96,7 @@ export class TabGroupDirectory {
     return userContextIds;
   }
 
-  public async getValue(): Promise<StorageType> {
+  public async getValue(): Promise<SupergroupStorageType> {
     const value = await this.storage.getValue();
     const userContextIds = await this.getLegacyUserContextOrderSorted();
     const cookieStoreIds = userContextIds.map((userContextId) => CookieStore.fromParams({ userContextId, privateBrowsingId: 0 as Uint32.Uint32 }).id);
@@ -151,7 +151,7 @@ export class TabGroupDirectory {
     return value;
   }
 
-  public async setValue(value: StorageType): Promise<void> {
+  public async setValue(value: SupergroupStorageType): Promise<void> {
     await this.storage.setValue(value);
   }
 

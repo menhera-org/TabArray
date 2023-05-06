@@ -19,92 +19,23 @@
   @license
 **/
 
-import browser from 'webextension-polyfill';
-import { ExtensionService } from 'weeg-utils';
 import { SetMap } from 'weeg-types';
 import { CompatTab } from 'weeg-tabs';
 import { DisplayedContainer } from 'weeg-containers';
-import { RegistrableDomainService } from 'weeg-domains';
 import { Asserts } from 'weeg-utils';
 
-import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
-import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { WindowStateSnapshot } from './WindowStateSnapshot';
 import { ContainersStateSnapshot } from './ContainersStateSnapshot';
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
 import { TabAttributeMap } from '../../lib/tabGroups/TabAttributeMap';
-import { PerformanceHistoryService } from '../../lib/PerformanceHistoryService';
+import { BrowserStateService, BrowserStateConstructParams } from '../../lib/states/BrowserStateService';
 
-type ConstructParams = {
-  browserWindows: browser.Windows.Window[];
-  currentWindowId: number;
-  displayedContainers: DisplayedContainer[];
-  enabledInPrivateBrowsing: boolean;
-  tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
-  tabAttributeMap: TabAttributeMap;
-  registrableDomainMap: Map<string, string>;
-};
-
-const tabGroupDirectory = new TabGroupDirectory();
-const extensionService = ExtensionService.getInstance();
-const displayedContainerService = DisplayedContainerService.getInstance();
-const registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
-const performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
+const browserStateService = BrowserStateService.getInstance();
 
 export class BrowserStateSnapshot {
   public static async create(): Promise<BrowserStateSnapshot> {
     Asserts.assertNotBackgroundScript();
-    const startTime = Date.now();
-    const [browserWindows, currentBrowserWindow, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
-      browser.windows.getAll({
-        populate: true,
-        windowTypes: ['normal'],
-      }),
-      browser.windows.get(browser.windows.WINDOW_ID_CURRENT, { populate: false }),
-      displayedContainerService.getDisplayedContainers(),
-      extensionService.isAllowedInPrivateBrowsing(),
-      tabGroupDirectory.getSnapshot(),
-    ]);
-    if (null == currentBrowserWindow.id) {
-      throw new Error('currentBrowserWindow.id is null');
-    }
-    const registrableDomainMap = new Map<string, string>();
-    const urls: string[] = [];
-    const compatTabMap = new Map<number, CompatTab>();
-    for (const browserWindow of browserWindows) {
-      if (browserWindow.tabs == null) continue;
-      for (const browserTab of browserWindow.tabs) {
-        if (browserTab.id == null) continue;
-        compatTabMap.set(browserTab.id, new CompatTab(browserTab));
-        if (browserTab.url) {
-          const url = browserTab.url;
-          if (!urls.includes(url)) {
-            urls.push(url);
-          }
-        }
-      }
-    }
-    const registrableDomains = await registrableDomainService.getRegistrableDomains(urls);
-    if (registrableDomains.length !== urls.length) {
-      throw new Error('registrableDomains.length !== urls.length');
-    }
-    for (let i = 0; i < urls.length; i++) {
-      registrableDomainMap.set(urls[i] as string, registrableDomains[i] as string);
-    }
-
-    const tabAttributeMap = await TabAttributeMap.create(compatTabMap.values());
-    const duration = Date.now() - startTime;
-    performanceHistoryService.addEntry('BrowserStateSnapshot.create', startTime, duration);
-
-    const constructParams = {
-      browserWindows,
-      currentWindowId: currentBrowserWindow.id,
-      displayedContainers,
-      enabledInPrivateBrowsing,
-      tabGroupDirectorySnapshot,
-      tabAttributeMap,
-      registrableDomainMap,
-    };
+    const constructParams = await browserStateService.getConstructParams();
     return new BrowserStateSnapshot(constructParams);
   }
 
@@ -123,7 +54,7 @@ export class BrowserStateSnapshot {
   private readonly _registrableDomainMap: Map<string, string>;
   private readonly _displayedContainers: DisplayedContainer[];
 
-  public constructor(params: ConstructParams) {
+  public constructor(params: BrowserStateConstructParams) {
     const {
       browserWindows,
       currentWindowId,

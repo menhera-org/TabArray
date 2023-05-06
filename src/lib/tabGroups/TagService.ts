@@ -38,9 +38,9 @@ export class TagService {
   }
 
   public readonly onChanged = new EventSink<void>();
+  public readonly tagDirectory = new TagDirectory();
 
   private readonly _tabAttributeProvieder = new TabAttributeProvider();
-  private readonly _tagDirectory = new TagDirectory();
   private readonly _tagChangedTopic = new BroadcastTopic<void>('tag.changed');
 
   private constructor() {
@@ -60,7 +60,7 @@ export class TagService {
     if (null == tagId) {
       return undefined;
     }
-    const tag = await this._tagDirectory.getTag(tagId);
+    const tag = await this.tagDirectory.getTag(tagId);
     return tag;
   }
 
@@ -70,7 +70,7 @@ export class TagService {
     }
     // 0 means no tag.
     if (0 != tagId) {
-      const tag = await this._tagDirectory.getTag(tagId);
+      const tag = await this.tagDirectory.getTag(tagId);
       if (null == tag) {
         throw new Error(`Tag ${tagId} does not exist.`);
       }

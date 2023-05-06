@@ -30,6 +30,7 @@ import { TagDirectory } from "../../lib/tabGroups/TagDirectory";
 import { TagService } from "../../lib/tabGroups/TagService";
 import { FpiService } from "../../lib/config/FpiService";
 import { CompatConsole } from "../../lib/console/CompatConsole";
+import { BrowserStateStore } from "../../lib/states/BrowserStateStore";
 
 import "../../components/ctg/ctg-vertical-layout";
 import "../../components/ctg/ctg-drawer";
@@ -152,7 +153,6 @@ const renderer = new ViewRefreshHandler(async () => {
     if (browserSnapshotTime > 500) {
       console.info(`Browser snapshot took ${browserSnapshotTime}ms`);
     }
-    windowsBuilder.render(browserStateSnapshot);
     containersBuilder.render(browserStateSnapshot.getContainersStateSnapshot());
     const currentWindowSnapshot = browserStateSnapshot.getWindowStateSnapshot(browserStateSnapshot.currentWindowId);
     sitesBuilder.render(browserStateSnapshot.getFirstPartyStateSnapshot(currentWindowSnapshot.isPrivate));
@@ -174,7 +174,7 @@ browser.tabs.onRemoved.addListener(renderInBackground);
 browser.tabs.onMoved.addListener(renderInBackground);
 browser.tabs.onAttached.addListener(renderInBackground);
 browser.tabs.onDetached.addListener(renderInBackground);
-browser.tabs.onReplaced.addListener(renderInBackground);
+browser.tabs.onReplaced.addListener(renderInBackground); // this is not necessary in Firefox
 browser.windows.onCreated.addListener(renderInBackground);
 browser.windows.onRemoved.addListener(renderInBackground);
 browser.contextualIdentities.onCreated.addListener(renderInBackground);
@@ -298,4 +298,10 @@ messagingService.addListener('tab-sorting-started', () => {
 
 messagingService.addListener('tab-sorting-ended', () => {
   topBarElement.endSpinnerTransaction('tab-sorting');
+});
+
+const store = new BrowserStateStore();
+store.onChanged.addListener(() => {
+  windowsBuilder.render(store.value);
+  console.debug('BrowserStateStore changed:', store.value);
 });

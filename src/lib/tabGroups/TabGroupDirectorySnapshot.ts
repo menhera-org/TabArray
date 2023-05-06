@@ -21,17 +21,17 @@
 
 import { DisplayedContainer } from "weeg-containers";
 
-import { StorageType, SupergroupType } from "./TabGroupDirectory";
+import { SupergroupStorageType, SupergroupType } from "./TabGroupDirectory";
 import { TabGroupAttributes, TabGroupFilter } from "./TabGroupAttributes";
 
 export class TabGroupDirectorySnapshot {
-  private readonly _value: StorageType;
+  private readonly _value: SupergroupStorageType;
 
-  public constructor(value: StorageType) {
+  public constructor(value: SupergroupStorageType) {
     this._value = value;
   }
 
-  public get value(): StorageType {
+  public get value(): SupergroupStorageType {
     return structuredClone(this._value);
   }
 
