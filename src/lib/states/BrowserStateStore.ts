@@ -176,14 +176,13 @@ export class BrowserStateStore {
       if (browserWindow.id !== windowId || browserWindow.tabs == null) continue;
       for (let i = 0; i < browserWindow.tabs.length; ++i) {
         const tab = browserWindow.tabs[i] as browser.Tabs.Tab;
-        if (activeInfo.previousTabId != null && tab.id === activeInfo.previousTabId) {
+        if (activeInfo.previousTabId != null && tab.id === activeInfo.previousTabId || tab.id !== activeInfo.tabId) {
           tab.active = false;
           continue;
         }
-        if (tab.id !== activeInfo.tabId) continue;
         tab.active = true;
-        break;
       }
+      break;
     }
     this.update();
   }
