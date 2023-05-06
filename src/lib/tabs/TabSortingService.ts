@@ -21,7 +21,7 @@
 
 import { diffArrays } from 'diff';
 import browser from 'webextension-polyfill';
-import { MessagingService, BackgroundService } from 'weeg-utils';
+import { BackgroundService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 
 import { ServiceRegistry } from '../ServiceRegistry';
@@ -29,14 +29,15 @@ import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
 import { TagService } from '../tabGroups/TagService';
 import { CompatConsole } from '../console/CompatConsole';
 import { PerformanceHistoryService } from '../PerformanceHistoryService';
+import { SpinnerService } from '../SpinnerService';
 
 import { config } from '../../config/config';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tabSortingProvider = new TabSortingProvider();
-const messagingService = MessagingService.getInstance();
 const tagService = TagService.getInstance();
 const performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
+const spinnerService = SpinnerService.getInstance();
 
 // the fact that this value is not preserved long-term in nonpersistent background page is not a problem.
 let tabSorting = false;
@@ -114,7 +115,7 @@ export class TabSortingService extends BackgroundService<void, void> {
     }
     tabSorting = true;
     const startTime = Date.now();
-    messagingService.sendMessageAndIgnoreResponse('tab-sorting-started', { startTime });
+    spinnerService.beginTransaction('tab-sorting');
     const promises: Promise<void>[] = [];
     let success = false;
     try {
@@ -136,7 +137,7 @@ export class TabSortingService extends BackgroundService<void, void> {
       } else {
         console.error('Tab sorting failed in %d ms', sortingDuration);
       }
-      messagingService.sendMessageAndIgnoreResponse('tab-sorting-ended', { endTime });
+      spinnerService.endTransaction('tab-sorting');
       tabSorting = false;
     }
   }

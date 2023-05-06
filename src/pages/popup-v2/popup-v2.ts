@@ -20,7 +20,6 @@
 **/
 
 import browser from "webextension-polyfill";
-import { MessagingService } from "weeg-utils";
 import { PromiseUtils } from "weeg-utils";
 
 import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
@@ -28,6 +27,7 @@ import { ExternalServiceProvider } from "../../lib/ExternalServiceProvider";
 import { FpiService } from "../../lib/config/FpiService";
 import { CompatConsole } from "../../lib/console/CompatConsole";
 import { BrowserStateStore } from "../../lib/states/BrowserStateStore";
+import { SpinnerService } from "../../lib/SpinnerService";
 
 import "../../components/ctg/ctg-vertical-layout";
 import "../../components/ctg/ctg-drawer";
@@ -70,8 +70,8 @@ if (searchParams.get('popup') == '1') {
 
 ExternalServiceProvider.getInstance();
 const popupRenderer = PopupRendererService.getInstance().popupRenderer;
-const messagingService = MessagingService.getInstance();
 const fpiService = FpiService.getInstance();
+const spinnerService = SpinnerService.getInstance();
 
 const extensionName = browser.runtime.getManifest().name;
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
@@ -241,12 +241,12 @@ popupCommandHandler.getCommands().then((commands) => {
 });
 
 // render spinner
-messagingService.addListener('tab-sorting-started', () => {
-  topBarElement.beginSpinnerTransaction('tab-sorting');
+spinnerService.onTransactionBegin.addListener((transactionId) => {
+  topBarElement.beginSpinnerTransaction(transactionId);
 });
 
-messagingService.addListener('tab-sorting-ended', () => {
-  topBarElement.endSpinnerTransaction('tab-sorting');
+spinnerService.onTransactionEnd.addListener((transactionId) => {
+  topBarElement.endSpinnerTransaction(transactionId);
 });
 
 const store = new BrowserStateStore();

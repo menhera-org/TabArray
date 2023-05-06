@@ -35,6 +35,7 @@ import { TabAttributeMap } from '../../lib/tabGroups/TabAttributeMap';
 import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
 import { DisplayedContainerService } from "../tabGroups/DisplayedContainerService";
 import { PerformanceHistoryService } from "../PerformanceHistoryService";
+import { SpinnerService } from "../SpinnerService";
 
 export type BrowserStateConstructParams = {
   browserWindows: browser.Windows.Window[];
@@ -51,6 +52,7 @@ const extensionService = ExtensionService.getInstance();
 const displayedContainerService = DisplayedContainerService.getInstance();
 const registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
 const performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
+const spinnerService = SpinnerService.getInstance();
 
 export class BrowserStateService {
   private static readonly INSTANCE = new BrowserStateService();
@@ -65,57 +67,62 @@ export class BrowserStateService {
 
   public async getConstructParams(): Promise<BrowserStateConstructParams> {
     const startTime = Date.now();
-    const [browserWindows, currentBrowserWindow, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
-      browser.windows.getAll({
-        populate: true,
-        windowTypes: ['normal'],
-      }),
-      browser.windows.get(browser.windows.WINDOW_ID_CURRENT, { populate: false }),
-      displayedContainerService.getDisplayedContainers(),
-      extensionService.isAllowedInPrivateBrowsing(),
-      tabGroupDirectory.getSnapshot(),
-    ]);
-    if (null == currentBrowserWindow.id) {
-      throw new Error('currentBrowserWindow.id is null');
-    }
-    const registrableDomainMap = new Map<string, string>();
-    const urls: string[] = [];
-    const compatTabMap = new Map<number, CompatTab>();
-    for (const browserWindow of browserWindows) {
-      if (browserWindow.tabs == null) continue;
-      for (const browserTab of browserWindow.tabs) {
-        if (browserTab.id == null) continue;
-        compatTabMap.set(browserTab.id, new CompatTab(browserTab));
-        if (browserTab.url) {
-          const url = browserTab.url;
-          if (!urls.includes(url)) {
-            urls.push(url);
+    spinnerService.beginTransaction('browser-state-get');
+    try {
+      const [browserWindows, currentBrowserWindow, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
+        browser.windows.getAll({
+          populate: true,
+          windowTypes: ['normal'],
+        }),
+        browser.windows.get(browser.windows.WINDOW_ID_CURRENT, { populate: false }),
+        displayedContainerService.getDisplayedContainers(),
+        extensionService.isAllowedInPrivateBrowsing(),
+        tabGroupDirectory.getSnapshot(),
+      ]);
+      if (null == currentBrowserWindow.id) {
+        throw new Error('currentBrowserWindow.id is null');
+      }
+      const registrableDomainMap = new Map<string, string>();
+      const urls: string[] = [];
+      const compatTabMap = new Map<number, CompatTab>();
+      for (const browserWindow of browserWindows) {
+        if (browserWindow.tabs == null) continue;
+        for (const browserTab of browserWindow.tabs) {
+          if (browserTab.id == null) continue;
+          compatTabMap.set(browserTab.id, new CompatTab(browserTab));
+          if (browserTab.url) {
+            const url = browserTab.url;
+            if (!urls.includes(url)) {
+              urls.push(url);
+            }
           }
         }
       }
-    }
-    const registrableDomains = await registrableDomainService.getRegistrableDomains(urls);
-    if (registrableDomains.length !== urls.length) {
-      throw new Error('registrableDomains.length !== urls.length');
-    }
-    for (let i = 0; i < urls.length; i++) {
-      registrableDomainMap.set(urls[i] as string, registrableDomains[i] as string);
-    }
+      const registrableDomains = await registrableDomainService.getRegistrableDomains(urls);
+      if (registrableDomains.length !== urls.length) {
+        throw new Error('registrableDomains.length !== urls.length');
+      }
+      for (let i = 0; i < urls.length; i++) {
+        registrableDomainMap.set(urls[i] as string, registrableDomains[i] as string);
+      }
 
-    const tabAttributeMap = await TabAttributeMap.create(compatTabMap.values());
-    const duration = Date.now() - startTime;
-    performanceHistoryService.addEntry('BrowserStateService.getConstructParams', startTime, duration);
+      const tabAttributeMap = await TabAttributeMap.create(compatTabMap.values());
+      const duration = Date.now() - startTime;
+      performanceHistoryService.addEntry('BrowserStateService.getConstructParams', startTime, duration);
 
-    const constructParams = {
-      browserWindows,
-      currentWindowId: currentBrowserWindow.id,
-      displayedContainers,
-      enabledInPrivateBrowsing,
-      tabGroupDirectorySnapshot,
-      tabAttributeMap,
-      registrableDomainMap,
-    };
-    return constructParams;
+      const constructParams = {
+        browserWindows,
+        currentWindowId: currentBrowserWindow.id,
+        displayedContainers,
+        enabledInPrivateBrowsing,
+        tabGroupDirectorySnapshot,
+        tabAttributeMap,
+        registrableDomainMap,
+      };
+      return constructParams;
+    } finally {
+      spinnerService.endTransaction('browser-state-get');
+    }
   }
 
   public getBrowserState(params: BrowserStateConstructParams): BrowserStateDao {
