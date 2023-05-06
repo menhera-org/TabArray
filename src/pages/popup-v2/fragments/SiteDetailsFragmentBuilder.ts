@@ -24,22 +24,27 @@ import { SetMap } from "weeg-types";
 import { CompatTab } from "weeg-tabs";
 import { DisplayedContainer } from "weeg-containers";
 
-import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
+import { BrowserStateDao } from "../../../lib/states/BrowserStateDao";
+import { DisplayedContainerDao } from "../../../lib/states/DisplayedContainerDao";
+import { TabGroupDirectorySnapshot } from "../../../lib/tabGroups/TabGroupDirectorySnapshot";
+import { TabDao } from "../../../lib/states/TabDao";
+import { IndexTabService } from "../../../lib/tabs/IndexTabService";
+
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
+
+import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { PopupRendererService } from "../PopupRendererService";
-import { BrowserStateSnapshot } from "../../../legacy-lib/tabs/BrowserStateSnapshot";
-import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
 
 export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
 
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
+  private readonly _indexTabService = IndexTabService.getInstance();
+
   private _domain = '(none)';
   private _tabCount = 0;
-  private _firstPartyStateSnapshot: ReadonlyMap<string, ReadonlySet<CompatTab>> | null = null;
-  private _browserStateSnapshot: BrowserStateSnapshot | null = null;
-  private _isPrivate = false;
+  private _browserState: BrowserStateDao | null = null;
   private _definedDisplayedContainers: DisplayedContainer[] = [];
   private _tabs: CompatTab[] = [];
 
@@ -75,11 +80,8 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
     topBarElement.headingText = `${this._domain || '(null)'} (${this._tabCount})`;
   }
 
-  public render(browserStateSnapshot: BrowserStateSnapshot, isPrivate: boolean): void {
-    this._browserStateSnapshot = browserStateSnapshot;
-    const firstPartyStateSnapshot = browserStateSnapshot.getFirstPartyStateSnapshot(isPrivate);
-    this._firstPartyStateSnapshot = firstPartyStateSnapshot;
-    this._isPrivate = isPrivate;
+  public render(browserState: BrowserStateDao): void {
+    this._browserState = browserState;
     this.setSite();
     if (this.active) {
       this.renderTopBarWithGlobalItems();
@@ -89,26 +91,23 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   }
 
   private setSite(): void {
-    if (this._firstPartyStateSnapshot == null || this._browserStateSnapshot == null) {
+    if (this._browserState == null) {
       return;
     }
-    const tabGroupDirectorySnapshot = this._browserStateSnapshot.getTabGroupDirectorySnapshot();
-    const tabs = this._firstPartyStateSnapshot.get(this._domain) ?? new Set();
-    this._tabCount = tabs.size;
+    const browserState = this._browserState;
+    const tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(browserState.supergroups);
+    const displayedContainers = browserState.displayedContainers.map((dao) => DisplayedContainerDao.toDisplayedContainer(dao));
+    this._definedDisplayedContainers = [... displayedContainers].sort((a, b) => {
+      return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
+    });
+    const tabIds = browserState.tabIdsBySite[this._domain] ?? [];
+    const tabs = this._indexTabService.filterOutIndexTabs(tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao)));
+    this._tabCount = tabs.length;
     this._tabs = [... tabs];
-    if (this._isPrivate) {
-      this._definedDisplayedContainers = [... this._browserStateSnapshot.getDisplayedContainers()].sort((a, b) => {
-        return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-      }).filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
-    } else {
-      this._definedDisplayedContainers = [... this._browserStateSnapshot.getDisplayedContainers()].sort((a, b) => {
-        return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
-      }).filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == false);
-    }
   }
 
   public renderSite(): void {
-    if (this._firstPartyStateSnapshot == null) {
+    if (this._browserState == null) {
       return;
     }
     const tabsByUserContextId = new SetMap<string, CompatTab>();
@@ -134,14 +133,10 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
       if (!userContext) {
         continue;
       }
-      const userContextElement = this._popupRenderer.renderContainerForFirstPartyDomain(this._domain, userContext, this._isPrivate);
+      const userContextElement = this._popupRenderer.renderContainerForFirstPartyDomain(this._domain, userContext, userContext.cookieStore.isPrivate);
       fragment.appendChild(userContextElement);
       let tabCount = 0;
       for (const tab of tabs) {
-        if (IndexTab.isIndexTabUrl(tab.url)) {
-          continue;
-        }
-
         const tabElement = this._popupRenderer.renderTab(tab, userContext);
         userContextElement.appendChild(tabElement);
         tabCount++;
