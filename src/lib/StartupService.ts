@@ -38,6 +38,8 @@ export class StartupService {
     return this.INSTANCE;
   }
 
+  private _initialized = false;
+
   /**
    * For important initializations.
    */
@@ -48,12 +50,26 @@ export class StartupService {
    */
   public readonly onStartup = new EventSink<browser.Runtime.OnInstalledDetailsType>();
 
+  private callHandlers(details: browser.Runtime.OnInstalledDetailsType) {
+    if (this._initialized) return;
+    this._initialized = true;
+    this.onBeforeStartup.dispatch();
+    this.onStartup.dispatch(details);
+  }
+
   private constructor() {
     if (extensionService.isBackgroundPage()) {
       Asserts.assertTopLevel();
       browser.runtime.onInstalled.addListener((details) => {
-        this.onBeforeStartup.dispatch();
-        this.onStartup.dispatch(details);
+        this.callHandlers(details);
+      });
+      browser.runtime.onStartup.addListener(() => {
+        const details: browser.Runtime.OnInstalledDetailsType = {
+          reason: 'install',
+          previousVersion: browser.runtime.getManifest().version,
+          temporary: false,
+        };
+        this.callHandlers(details);
       });
     }
   }
