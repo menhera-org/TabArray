@@ -153,11 +153,9 @@ const renderer = new ViewRefreshHandler(async () => {
     if (browserSnapshotTime > 500) {
       console.info(`Browser snapshot took ${browserSnapshotTime}ms`);
     }
-    containersBuilder.render(browserStateSnapshot.getContainersStateSnapshot());
     const currentWindowSnapshot = browserStateSnapshot.getWindowStateSnapshot(browserStateSnapshot.currentWindowId);
     sitesBuilder.render(browserStateSnapshot.getFirstPartyStateSnapshot(currentWindowSnapshot.isPrivate));
 
-    containerDetailsBuilder.render(browserStateSnapshot);
     siteDetailsBuilder.render(browserStateSnapshot, currentWindowSnapshot.isPrivate);
   } finally {
     topBarElement.endSpinnerTransaction('popup-rendering');
@@ -303,5 +301,7 @@ messagingService.addListener('tab-sorting-ended', () => {
 const store = new BrowserStateStore();
 store.onChanged.addListener(() => {
   windowsBuilder.render(store.value);
+  containersBuilder.render(store.value);
+  containerDetailsBuilder.render(store.value);
   console.debug('BrowserStateStore changed:', store.value);
 });
