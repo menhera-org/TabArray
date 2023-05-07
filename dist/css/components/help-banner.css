@@ -53,6 +53,7 @@ a {
   flex-direction: row;
   column-gap: .5em;
   align-items: center;
+  min-inline-size: 0;
 }
 
 #help-banner-integrity-hash {
@@ -68,4 +69,5 @@ a {
   font: inherit;
   background-color: transparent;
   color: inherit;
+  inline-size: 50%;
 }
