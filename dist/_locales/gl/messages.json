@@ -569,5 +569,179 @@
     "labelAutoDiscard3600": {
         "message": "1 hora",
         "description": "Label text for autodiscard in 3600 seconds."
+    },
+    "debuggingInformation": {
+        "message": "Información de depuración",
+        "description": "Debugging information page."
+    },
+    "featurePerContainerProxy": {
+        "message": "Proxy por contedor",
+        "description": "Per container proxy feature."
+    },
+    "noProxy": {
+        "message": "Sen proxy",
+        "description": "No proxy option."
+    },
+    "optionsTabProxies": {
+        "message": "Proxies",
+        "description": "Label text for proxies tab."
+    },
+    "proxyName": {
+        "message": "Nome",
+        "description": "Proxy name option."
+    },
+    "proxyProtocol": {
+        "message": "Protocolo",
+        "description": "Proxy protocol option."
+    },
+    "proxyHostname": {
+        "message": "Nome de host",
+        "description": "Proxy hostname option."
+    },
+    "proxyPort": {
+        "message": "Porto",
+        "description": "Proxy port option."
+    },
+    "proxyUsername": {
+        "message": "Nome de usuario",
+        "description": "Proxy username option."
+    },
+    "proxyPassword": {
+        "message": "Contrasinal",
+        "description": "Proxy password option."
+    },
+    "proxyExemptLocalAddresses": {
+        "message": "Non proxy enderezos locais",
+        "description": "Proxy exempt local addresses option."
+    },
+    "proxyDnsRequests": {
+        "message": "Solicitudes de DNS de proxy",
+        "description": "Proxy DNS requests option."
+    },
+    "buttonAddNewProxy": {
+        "message": "Engadir un novo proxy",
+        "description": "Add new proxy button."
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "Proxies dispoñibles",
+        "description": "Available proxies heading."
+    },
+    "buttonDeleteProxy": {
+        "message": "Eliminar proxy",
+        "description": "Delete proxy button."
+    },
+    "newVersionAvailable": {
+        "message": "Nova versión dispoñible: $VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
+    },
+    "optionEnableSorting": {
+        "message": "Activar a clasificación automática de lapelas",
+        "description": "Label text for enabling sorting of containers/tabs."
+    },
+    "buttonNewGroup": {
+        "message": "Novo grupo de contedores",
+        "description": "Button to create a new group of containers."
+    },
+    "editGroupDialogTitle": {
+        "message": "Editar un grupo",
+        "description": "Title of the dialog to edit a group of containers."
+    },
+    "buttonEditGroup": {
+        "message": "Editar un grupo",
+        "description": "Button to edit a group of containers."
+    },
+    "groupOptions": {
+        "message": "Opcións de grupo para $NAME$",
+        "description": "Heading text for group options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "newGroupDialogTitle": {
+        "message": "Crear un novo grupo",
+        "description": "Title of the dialog to create a new group of containers."
+    },
+    "buttonDeleteGroup": {
+        "message": "Eliminar un grupo",
+        "description": "Button to delete a group of containers."
+    },
+    "confirmGroupDelete": {
+        "message": "Queres eliminar permanentemente este grupo de contedores: $NAME$?",
+        "description": "Confirmation message before deleting a group.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "rootGroup": {
+        "message": "(Grupo raíz)",
+        "description": "Root group name."
+    },
+    "newTagDialogTitle": {
+        "message": "Crear unha etiqueta nova",
+        "description": "Title of the dialog to create a new tag."
+    },
+    "setTag": {
+        "message": "Establecer unha etiqueta",
+        "description": "Set a tag to a tab."
+    },
+    "buttonEditTag": {
+        "message": "Editar unha etiqueta",
+        "description": "Button to edit a tag."
+    },
+    "buttonDeleteTag": {
+        "message": "Eliminar unha etiqueta",
+        "description": "Button to delete a tag."
+    },
+    "moveContainer": {
+        "message": "Mover a outro grupo",
+        "description": "Move a container to another group."
+    },
+    "editTagDialogTitle": {
+        "message": "Editar unha etiqueta",
+        "description": "Title of the dialog to edit a tag."
+    },
+    "buttonMove": {
+        "message": "Mover",
+        "description": "Button to move a container to another group."
+    },
+    "buttonNewTag": {
+        "message": "Nova etiqueta",
+        "description": "Button to create a new tag."
+    },
+    "noTag": {
+        "message": "(sen etiqueta)",
+        "description": "No tag name."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Configuración de Firefox",
+        "description": "Label text for firefox settings tab."
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
+    },
+    "optionsTabGeneral": {
+        "message": "Xeral",
+        "description": "Label text for general tab."
+    },
+    "optionsTabSortContainers": {
+        "message": "Clasificar contenedores",
+        "description": "Label text for sort containers tab."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "Idiomas e axentes de usuario",
+        "description": "Label text for language and user agent overrides tab."
     }
 }
