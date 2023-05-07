@@ -66,4 +66,6 @@ a {
   text-overflow: ellipsis;
   overflow: hidden;
   font: inherit;
+  background-color: transparent;
+  color: inherit;
 }
