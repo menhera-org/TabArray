@@ -24,6 +24,7 @@ import browser from 'webextension-polyfill';
 import { InitialWindowsService } from './InitialWindowsService';
 import { DarkThemeMonitor } from '../../legacy-lib/themes/DarkThemeMonitor';
 import { CompatConsole } from '../../lib/console/CompatConsole';
+import { WindowService } from '../../legacy-lib/tabs/WindowService';
 
 import { config } from '../../config/config';
 import { POPUP_PAGE } from '../../defs';
@@ -33,6 +34,7 @@ const LIGHT_THEME_BACKGROUND_COLOR = '#333333';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const initialWindowsService = InitialWindowsService.getInstance();
+const windowService = WindowService.getInstance();
 
 const setBadgeTextForBrowserWindow = (browserWindow: browser.Windows.Window) => {
   if (browserWindow.tabs == null) return;
@@ -47,12 +49,15 @@ const setBadgeTextForBrowserWindow = (browserWindow: browser.Windows.Window) => 
 };
 
 const setBadgeTextForBrowserWindowId = (windowId: number) => {
-  browser.windows.get(windowId, {
-    populate: true,
-  }).then((browserWindow) => {
-    setBadgeTextForBrowserWindow(browserWindow);
-  }).catch((e) => {
-    console.error(e);
+  windowService.isPrivateWindow(windowId).then((isPrivate) => {
+    if (isPrivate) return;
+    browser.windows.get(windowId, {
+      populate: true,
+    }).then((browserWindow) => {
+      setBadgeTextForBrowserWindow(browserWindow);
+    }).catch((e) => {
+      console.error(e);
+    });
   });
 };
 
