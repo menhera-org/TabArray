@@ -106,6 +106,7 @@ windowTabCountService.onChanged.addListener((tabCountHistory) => {
   const windowIds = WindowTabCountHistory.getWindowIds(tabCountHistory);
   for (const windowId of windowIds) {
     const tabCount = WindowTabCountHistory.getLastTabCountForWindow(tabCountHistory, windowId) as number;
+    if (tabCount < 1) return;
     setBadgeTextForWindow(windowId, tabCount);
   }
 });
