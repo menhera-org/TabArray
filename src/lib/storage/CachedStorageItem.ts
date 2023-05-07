@@ -32,7 +32,10 @@ export class CachedStorageItem<T> extends StorageItem<T> {
   private _isUpdating = false;
   private readonly _updateQueue: CachedStorageUpdateCallback<T>[] = [];
 
-  public override async getValue(): Promise<T> {
+  public override async getValue(noCache = false): Promise<T> {
+    if (noCache) {
+      return super.getValue();
+    }
     const syncValue = this.tryGetValueSync();
     if (undefined != syncValue) {
       return syncValue;
