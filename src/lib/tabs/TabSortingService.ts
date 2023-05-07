@@ -127,7 +127,7 @@ export class TabSortingService extends BackgroundService<void, void> {
         } finally {
           const windowEndTime = Date.now();
           const sortingDuration = windowEndTime - windowStartTime;
-          performanceHistoryService.addEntry('TabSortingService.execute.byWindow', windowStartTime, sortingDuration);
+          performanceHistoryService.addEntry(`TabSortingService.execute.byWindow.${windowId}`, windowStartTime, sortingDuration);
           if (windowSuccess) {
             if (sortingDuration > 500) {
               console.info('Tab sorting for window %d took %d ms', windowId, sortingDuration);
