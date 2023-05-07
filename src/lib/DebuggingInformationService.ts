@@ -24,6 +24,7 @@ import { PackageIntegrityService } from "./package/PackageIntegrityService";
 import { ConsoleHistoryService } from "./console/ConsoleHistoryService";
 import { PerformanceHistoryService } from "./PerformanceHistoryService";
 import { InstallationHistoryService } from "./InstallationHistoryService";
+import { WindowTabCountService } from "./windows/WindowTabCountService";
 
 import { ServiceRegistry } from "./ServiceRegistry";
 
@@ -32,6 +33,7 @@ const packageIntegrityService = PackageIntegrityService.getInstance();
 const consoleHistoryService = ConsoleHistoryService.getInstance<ConsoleHistoryService>();
 const performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
 const installationHistoryService = InstallationHistoryService.getInstance();
+const windowTabCountService = WindowTabCountService.getInstance<WindowTabCountService>();
 
 export class DebuggingInformationService {
   private static readonly INSTANCE = new DebuggingInformationService();
@@ -50,12 +52,14 @@ export class DebuggingInformationService {
     const consoleLogs = await consoleHistoryService.getEntries();
     const performanceRecords = await performanceHistoryService.getEntries();
     const installationHistory = await installationHistoryService.getValue();
+    const windowTabCountHistory = await windowTabCountService.getTabCountHistory();
     const info = {
       packageLocation,
       computedIntegrityListing,
       consoleLogs,
       performanceRecords,
       installationHistory,
+      windowTabCountHistory,
     };
     return JSON.stringify(info, null, 2);
   }
