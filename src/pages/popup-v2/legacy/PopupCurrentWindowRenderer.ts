@@ -147,8 +147,7 @@ export class PopupCurrentWindowRenderer {
         case 'create-temporary-container': {
           modalMenuElement.remove();
           const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
-          const contextualIdentity = await this.supergroupService.createChildTemporaryContainer(tabGroupId);
-          console.debug('Created temporary container', contextualIdentity);
+          await this.supergroupService.createChildTemporaryContainer(tabGroupId);
           break;
         }
 
