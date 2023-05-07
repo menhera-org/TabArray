@@ -55,7 +55,7 @@ export class InstallationHistoryFragmentBuilder extends AbstractFragmentBuilder 
     const fragment = document.createElement('ctg-fragment') as CtgFragmentElement;
     fragment.id = this.getFragmentId();
     const table = document.createElement('table');
-    table.id = "logs-table";
+    table.id = "installation-table";
     fragment.appendChild(table);
     const thead = document.createElement('thead');
     table.appendChild(thead);
@@ -78,7 +78,7 @@ export class InstallationHistoryFragmentBuilder extends AbstractFragmentBuilder 
     theadTr.appendChild(theadTh5);
 
     const tbody = document.createElement('tbody');
-    tbody.id = "logs-tbody";
+    tbody.id = "installation-tbody";
     table.appendChild(tbody);
 
     Promise.resolve().then(() => {
@@ -97,7 +97,7 @@ export class InstallationHistoryFragmentBuilder extends AbstractFragmentBuilder 
   }
 
   public render(): void {
-    const tbody = this.getFragment().querySelector('#logs-tbody') as HTMLTableSectionElement;
+    const tbody = this.getFragment().querySelector('#installation-tbody') as HTMLTableSectionElement;
     installationHistoryService.getValue().then((entries) => {
       const scrollBottom = this.frameLayoutElement.scrollHeight - this.frameLayoutElement.scrollTop - this.frameLayoutElement.clientHeight;
       const isAtBottom = scrollBottom < 1;

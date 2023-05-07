@@ -61,7 +61,11 @@ ctg-frame-layout {
   overflow: auto;
 }
 
-#logs-table, #performance-table {
+#fragment-tab-count {
+  block-size: 100%;
+}
+
+#logs-table, #performance-table, #installation-table {
   margin: 0;
   border-collapse: none;
   border-spacing: 0;
@@ -69,12 +73,12 @@ ctg-frame-layout {
   inline-size: 100%;
 }
 
-:is(#logs-table, #performance-table) > thead {
+:is(#logs-table, #performance-table, #installation-table) > thead {
   position: sticky;
   inset-block-start: 0;
 }
 
-:is(#logs-table, #performance-table) > thead > tr > th {
+:is(#logs-table, #performance-table, #installation-table) > thead > tr > th {
   text-align: start;
   font-weight: bold;
   background-color: var(--overlay-color);
@@ -82,13 +86,13 @@ ctg-frame-layout {
   border-block-end: 1px solid var(--border-color);
 }
 
-:is(#logs-table, #performance-table) :is(th, td) {
+:is(#logs-table, #performance-table, #installation-table) :is(th, td) {
   padding-inline: 1em;
   padding-block: .5em;
   box-sizing: border-box;
 }
 
-#logs-tbody, #performance-tbody {
+#logs-tbody, #performance-tbody, #installation-tbody {
   font-family: monospace;
   user-select: text;
 }
@@ -147,4 +151,10 @@ ctg-frame-layout {
 
 .file-path-link:hover {
   text-decoration: underline;
+}
+
+iframe#time-chart {
+  border: none;
+  inline-size: 100%;
+  block-size: 100%;
 }
