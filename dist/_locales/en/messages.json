@@ -747,5 +747,9 @@
     "optionSyncContainers": {
         "message": "Sync Containers",
         "description": "Label text for sync containers option."
+    },
+    "optionAutoHideContainers": {
+        "message": "Auto-hide Unused Containers",
+        "description": "Label text for auto-hide unused containers option."
     }
 }
