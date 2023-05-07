@@ -64,7 +64,7 @@ export class GlobalMenuItems {
 
     const debuggingInfoSaveMenuItem = new CtgMenuItemElement();
     debuggingInfoSaveMenuItem.labelText = browser.i18n.getMessage('saveDebuggingInformation');
-    debuggingInfoSaveMenuItem.iconSrc = '/img/firefox-icons/developer.svg';
+    debuggingInfoSaveMenuItem.iconSrc = '/img/firefox-icons/download.svg';
     topBarElement.addOverflowMenuItem('debugging-save', debuggingInfoSaveMenuItem);
 
     const addonPageMenuItem = new CtgMenuItemElement();
