@@ -569,5 +569,179 @@
     "buttonDone": {
         "message": "Hotovo",
         "description": "Button to complete an action."
+    },
+    "debuggingInformation": {
+        "message": "Informace o ladění",
+        "description": "Debugging information page."
+    },
+    "featurePerContainerProxy": {
+        "message": "Proxy na kontejner",
+        "description": "Per container proxy feature."
+    },
+    "optionsTabProxies": {
+        "message": "Proxys",
+        "description": "Label text for proxies tab."
+    },
+    "noProxy": {
+        "message": "Žádná proxy",
+        "description": "No proxy option."
+    },
+    "proxyName": {
+        "message": "Jméno",
+        "description": "Proxy name option."
+    },
+    "proxyProtocol": {
+        "message": "Protokol",
+        "description": "Proxy protocol option."
+    },
+    "proxyHostname": {
+        "message": "Jméno hostitele",
+        "description": "Proxy hostname option."
+    },
+    "proxyPort": {
+        "message": "Port",
+        "description": "Proxy port option."
+    },
+    "proxyUsername": {
+        "message": "Uživatelské jméno",
+        "description": "Proxy username option."
+    },
+    "proxyPassword": {
+        "message": "Heslo",
+        "description": "Proxy password option."
+    },
+    "proxyExemptLocalAddresses": {
+        "message": "Nepoužívat místní adresy proxy serverů",
+        "description": "Proxy exempt local addresses option."
+    },
+    "proxyDnsRequests": {
+        "message": "Proxy požadavky DNS",
+        "description": "Proxy DNS requests option."
+    },
+    "buttonAddNewProxy": {
+        "message": "Přidat nového proxy",
+        "description": "Add new proxy button."
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "Dostupné servery proxy",
+        "description": "Available proxies heading."
+    },
+    "buttonDeleteProxy": {
+        "message": "Odstranit proxy",
+        "description": "Delete proxy button."
+    },
+    "newVersionAvailable": {
+        "message": "Nová dostupná verze: $VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
+    },
+    "newGroupDialogTitle": {
+        "message": "Vytvořit novou skupinu",
+        "description": "Title of the dialog to create a new group of containers."
+    },
+    "optionEnableSorting": {
+        "message": "Povolit automatické třídění karet",
+        "description": "Label text for enabling sorting of containers/tabs."
+    },
+    "buttonNewGroup": {
+        "message": "Nová skupina kontejnerů",
+        "description": "Button to create a new group of containers."
+    },
+    "buttonEditGroup": {
+        "message": "Upravit skupinu",
+        "description": "Button to edit a group of containers."
+    },
+    "editGroupDialogTitle": {
+        "message": "Upravit skupinu",
+        "description": "Title of the dialog to edit a group of containers."
+    },
+    "groupOptions": {
+        "message": "Možnosti skupiny pro $NAME$",
+        "description": "Heading text for group options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "confirmGroupDelete": {
+        "message": "Chcete trvale odstranit tuto skupinu kontejnerů: $NAME$?",
+        "description": "Confirmation message before deleting a group.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "moveContainer": {
+        "message": "Přesunout do jiné skupiny",
+        "description": "Move a container to another group."
+    },
+    "buttonDeleteGroup": {
+        "message": "Odstranit skupinu",
+        "description": "Button to delete a group of containers."
+    },
+    "editTagDialogTitle": {
+        "message": "Upravit tagu",
+        "description": "Title of the dialog to edit a tag."
+    },
+    "buttonMove": {
+        "message": "Přesunout",
+        "description": "Button to move a container to another group."
+    },
+    "rootGroup": {
+        "message": "(Skupina Kořen)",
+        "description": "Root group name."
+    },
+    "newTagDialogTitle": {
+        "message": "Vytvoření nového tagu",
+        "description": "Title of the dialog to create a new tag."
+    },
+    "buttonNewTag": {
+        "message": "Nový tag",
+        "description": "Button to create a new tag."
+    },
+    "setTag": {
+        "message": "Nastavit tag",
+        "description": "Set a tag to a tab."
+    },
+    "optionsTabSortContainers": {
+        "message": "Třídit kontejnery",
+        "description": "Label text for sort containers tab."
+    },
+    "buttonEditTag": {
+        "message": "Upravit tag",
+        "description": "Button to edit a tag."
+    },
+    "optionsTabGeneral": {
+        "message": "Obecné",
+        "description": "Label text for general tab."
+    },
+    "buttonDeleteTag": {
+        "message": "Odstranit tag",
+        "description": "Button to delete a tag."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "Jazyky a uživatelští agenti",
+        "description": "Label text for language and user agent overrides tab."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Nastavení Firefoxu",
+        "description": "Label text for firefox settings tab."
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
+    },
+    "noTag": {
+        "message": "(bez tagu)",
+        "description": "No tag name."
     }
 }
