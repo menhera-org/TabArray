@@ -743,5 +743,17 @@
     "optionsTabContainerOverrides": {
         "message": "Idiomas e axentes de usuario",
         "description": "Label text for language and user agent overrides tab."
+    },
+    "optionAutoHideContainers": {
+        "message": "Ocultar automaticamente os contedores non utilizados",
+        "description": "Label text for auto-hide unused containers option."
+    },
+    "saveDebuggingInformation": {
+        "message": "Gardar información de depuración",
+        "description": "Save debugging information button."
+    },
+    "optionSyncContainers": {
+        "message": "Sincronizar contedores",
+        "description": "Label text for sync containers option."
     }
 }
