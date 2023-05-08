@@ -175,6 +175,13 @@ export class PanelWindowsElement extends HTMLElement {
     search.addEventListener('input', () => {
       this.searchForString(search.value);
     });
+
+    const windowSelect = this.shadowRoot.querySelector('.window-select') as HTMLSelectElement;
+    windowSelect.addEventListener('change', () => {
+      this._selectedWindowId = parseInt(windowSelect.value);
+      if (!this._browserState) return;
+      this.renderWindow(this._browserState);
+    });
   }
 
   public setState(browserState: BrowserStateDao) {
@@ -205,10 +212,6 @@ export class PanelWindowsElement extends HTMLElement {
     windowSelect.value = this._selectedWindowId.toString();
 
     this.renderWindow(browserState);
-    windowSelect.addEventListener('change', () => {
-      this._selectedWindowId = parseInt(windowSelect.value);
-      this.renderWindow(browserState);
-    });
 
     this.rerenderSearchView();
   }

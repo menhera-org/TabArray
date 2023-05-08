@@ -23,12 +23,15 @@ import browser from "webextension-polyfill";
 import { EventSink } from "weeg-events";
 import { Asserts } from "weeg-utils";
 import { ContextualIdentity } from "weeg-containers";
+import { RegistrableDomainService } from "weeg-domains";
 
 import { BrowserStateDao } from "./BrowserStateDao";
 import { BrowserStateService, BrowserStateConstructParams } from "./BrowserStateService";
 import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
 import { ContextualIdentityService } from "../tabGroups/ContextualIdentityService";
 import { TagService } from "../tabGroups/TagService";
+import { TabGroupAttributes } from "../tabGroups/TabGroupAttributes";
+import { TabGroupDirectorySnapshot } from "../tabGroups/TabGroupDirectorySnapshot";
 
 const browserStateService = BrowserStateService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
@@ -36,6 +39,7 @@ const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 const tagService = TagService.getInstance();
 const tagDirectory = tagService.tagDirectory;
+const registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
 
 export class BrowserStateStore {
   public static readonly FORCE_UPDATE_INTERVAL = 1000 * 60 * 5;
@@ -152,7 +156,7 @@ export class BrowserStateStore {
     });
   }
 
-  public updateBrowserTab(tabId: number, _changeInfo: browser.Tabs.OnUpdatedChangeInfoType, browserTab: browser.Tabs.Tab): void {
+  public async updateBrowserTab(tabId: number, changeInfo: browser.Tabs.OnUpdatedChangeInfoType, browserTab: browser.Tabs.Tab): Promise<void> {
     if (null == this._params) return;
     if (null == browserTab.id || null == browserTab.windowId) return;
     const windowId = browserTab.windowId;
@@ -163,6 +167,12 @@ export class BrowserStateStore {
         if (tab.id !== tabId) continue;
         Object.assign(tab, browserTab);
         break;
+      }
+    }
+    if (changeInfo.url != null) {
+      if (!this._params.registrableDomainMap.has(changeInfo.url)) {
+        const registrableDomain = await registrableDomainService.getRegistrableDomain(changeInfo.url);
+        this._params.registrableDomainMap.set(changeInfo.url, registrableDomain);
       }
     }
     this.update();
@@ -292,6 +302,13 @@ export class BrowserStateStore {
   public createContextualIdentity(identity: ContextualIdentity): void {
     if (null == this._params) return;
     this._params.displayedContainers.push(identity);
+    const rootSupergroupTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId();
+    const supergroups = this._params.tabGroupDirectorySnapshot.value;
+    const rootSupergroup = supergroups[rootSupergroupTabGroupId];
+    if (rootSupergroup) {
+      rootSupergroup.members.push(identity.cookieStore.id);
+      this._params.tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(supergroups);
+    }
     this.update();
   }
 
