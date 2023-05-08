@@ -22,15 +22,20 @@
 import browser from "webextension-polyfill";
 import { CookieStore, DisplayedContainer } from "weeg-containers";
 
-import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
+import { ContainerTabOpenerService } from "../../../lib/tabGroups/ContainerTabOpenerService";
+import { BrowserStateDao } from "../../../lib/states/BrowserStateDao";
+import { DisplayedContainerDao } from "../../../lib/states/DisplayedContainerDao";
+import { TabDao } from "../../../lib/states/TabDao";
+
+import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
+
+import { MenulistWindowElement } from "../../../components/menulist-window";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../../components/ctg/ctg-menu-item";
+
+import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { PopupRendererService } from "../PopupRendererService";
-import { BrowserStateSnapshot } from "../../../legacy-lib/tabs/BrowserStateSnapshot";
-import { MenulistWindowElement } from "../../../components/menulist-window";
-import { ContainerTabOpenerService } from "../../../lib/tabGroups/ContainerTabOpenerService";
-import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
 
 
 export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
@@ -40,7 +45,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   private readonly _popupRenderer = PopupRendererService.getInstance().popupRenderer;
   private _containerName = browser.i18n.getMessage('noContainer');
   private _cookieStoreId = CookieStore.DEFAULT.id;
-  private _browserStateSnapshot: BrowserStateSnapshot | null = null;
+  private _browserState: BrowserStateDao | null = null;
   private _selectedDisplayedContainer: DisplayedContainer | null = null;
 
   public getFragmentId(): string {
@@ -86,9 +91,9 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
     topBarElement.headingText = this._containerName;
   }
 
-  public render(browserStateSnapshot: BrowserStateSnapshot): void {
+  public render(browserState: BrowserStateDao): void {
     // todo
-    this._browserStateSnapshot = browserStateSnapshot;
+    this._browserState = browserState;
     this.setContainer();
     if (this.active) {
       this.renderTopBarWithGlobalItems();
@@ -98,14 +103,14 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   }
 
   private setContainer(): void {
-    if (this._browserStateSnapshot == null) {
+    if (this._browserState == null) {
       return;
     }
-    const containersStateSnapshot = this._browserStateSnapshot.getContainersStateSnapshot();
+    const browserState = this._browserState;
     let selectedDisplayedContainer: DisplayedContainer | null = null;
-    for (const containerAttributes of containersStateSnapshot.displayedContainers) {
-      if (containerAttributes.cookieStore.id === this._cookieStoreId) {
-        selectedDisplayedContainer = containerAttributes;
+    for (const displayedContainer of browserState.displayedContainers.map((dao) => DisplayedContainerDao.toDisplayedContainer(dao))) {
+      if (displayedContainer.cookieStore.id === this._cookieStoreId) {
+        selectedDisplayedContainer = displayedContainer;
         break;
       }
     }
@@ -117,14 +122,15 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   }
 
   public renderContainer(): void {
-    if (this._browserStateSnapshot == null || this._selectedDisplayedContainer == null) {
+    if (this._browserState == null || this._selectedDisplayedContainer == null) {
       return;
     }
 
+    const browserState = this._browserState;
     const fragment = this.getFragment();
     fragment.textContent = '';
-    const containersStateSnapshot = this._browserStateSnapshot.getContainersStateSnapshot();
-    const tabs = containersStateSnapshot.getTabsByContainer(this._cookieStoreId);
+    const tabIds = browserState.tabIdsByContainer[this._cookieStoreId] ?? [];
+    const tabs = tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao));
     const displayedContainer = this._selectedDisplayedContainer;
     let windowId: number = browser.windows.WINDOW_ID_NONE;
     for (const tab of tabs) {
@@ -133,7 +139,7 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
       }
       if (windowId != tab.windowId) {
         const windowElement = new MenulistWindowElement();
-        windowElement.windowName = this._browserStateSnapshot.currentWindowId == tab.windowId
+        windowElement.windowName = this._browserState.currentWindowId == tab.windowId
           ? browser.i18n.getMessage('currentWindow', tab.windowId.toString())
           : browser.i18n.getMessage('windowLabel', tab.windowId.toString());
         fragment.appendChild(windowElement);

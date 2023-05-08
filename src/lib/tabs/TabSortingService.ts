@@ -21,7 +21,7 @@
 
 import { diffArrays } from 'diff';
 import browser from 'webextension-polyfill';
-import { MessagingService, BackgroundService } from 'weeg-utils';
+import { BackgroundService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 
 import { ServiceRegistry } from '../ServiceRegistry';
@@ -29,23 +29,26 @@ import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
 import { TagService } from '../tabGroups/TagService';
 import { CompatConsole } from '../console/CompatConsole';
 import { PerformanceHistoryService } from '../PerformanceHistoryService';
+import { SpinnerService } from '../SpinnerService';
 
 import { config } from '../../config/config';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tabSortingProvider = new TabSortingProvider();
-const messagingService = MessagingService.getInstance();
 const tagService = TagService.getInstance();
 const performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
+const spinnerService = SpinnerService.getInstance();
 
 // the fact that this value is not preserved long-term in nonpersistent background page is not a problem.
 let tabSorting = false;
 
 // https://qiita.com/piroor/items/5e338ec2799dc1d75e6f
 const sortTabsByWindow = async (windowId: number) => {
+  let tabCount = 0;
   try {
     const browserTabs = await browser.tabs.query({windowId: windowId});
     const tabs = browserTabs.map((tab) => new CompatTab(tab));
+    tabCount = tabs.length;
     const pinnedTabs = tabs.filter(tab => tab.pinned);
     let sortedTabs = tabs.filter(tab => !tab.pinned);
 
@@ -87,6 +90,7 @@ const sortTabsByWindow = async (windowId: number) => {
   } catch (e) {
     console.error(e);
   }
+  return tabCount;
 };
 
 export class TabSortingService extends BackgroundService<void, void> {
@@ -113,30 +117,34 @@ export class TabSortingService extends BackgroundService<void, void> {
       return;
     }
     tabSorting = true;
-    const startTime = Date.now();
-    messagingService.sendMessageAndIgnoreResponse('tab-sorting-started', { startTime });
-    const promises: Promise<void>[] = [];
-    let success = false;
+    spinnerService.beginTransaction('tab-sorting');
     try {
       for (const windowId of await this.getWindowIds()) {
-        promises.push(sortTabsByWindow(windowId));
+        const windowStartTime = Date.now();
+        let windowSuccess = false;
+        let windowTabCount = 0;
+        try {
+          windowTabCount = await sortTabsByWindow(windowId);
+          windowSuccess = true;
+        } catch (e) {
+          console.error('Tab sorting error:', e);
+        } finally {
+          const windowEndTime = Date.now();
+          const sortingDuration = windowEndTime - windowStartTime;
+          performanceHistoryService.addEntry(`TabSortingService.execute.byWindow.${windowId}`, windowStartTime, sortingDuration);
+          if (windowSuccess) {
+            if (sortingDuration > 500) {
+              console.info('Tab sorting for window %d took %d ms with %d tabs', windowId, sortingDuration, windowTabCount);
+            }
+          } else {
+            console.error('Tab sorting for window %d failed in %d ms', windowId, sortingDuration);
+          }
+        }
       }
-      await Promise.all(promises);
-      success = true;
     } catch (e) {
       console.error(e);
     } finally {
-      const endTime = Date.now();
-      const sortingDuration = endTime - startTime;
-      performanceHistoryService.addEntry('TabSortingService.execute', startTime, sortingDuration);
-      if (success) {
-        if (sortingDuration > 500) {
-          console.info('Tab sorting took %d ms', sortingDuration);
-        }
-      } else {
-        console.error('Tab sorting failed in %d ms', sortingDuration);
-      }
-      messagingService.sendMessageAndIgnoreResponse('tab-sorting-ended', { endTime });
+      spinnerService.endTransaction('tab-sorting');
       tabSorting = false;
     }
   }

@@ -32,16 +32,15 @@ import { TabUrlService } from '../../lib/tabs/TabUrlService';
 import { ConsoleHistoryService } from '../../lib/console/ConsoleHistoryService';
 import { PerformanceHistoryService } from '../../lib/PerformanceHistoryService';
 import { PackageIntegrityService } from '../../lib/package/PackageIntegrityService';
+import { InstallationHistoryService } from '../../lib/InstallationHistoryService';
 
 import './background-install-handler';
 import './background-index-tab';
 import './background-container-observer';
 import './background-menus';
-import './background-cookie-autoclean';
 import './FramingHeadersService';
 import './background-commands';
 import './background-update-browserAction';
-import './background-temporary-containers';
 import './background-autodiscard';
 import './background-storage-observer';
 import './background-active-container';
@@ -54,6 +53,8 @@ import './background-set-header';
 import './background-content-script-registrar';
 import './background-tab-preview';
 import './background-proxy';
+import './background-closed-tabs';
+import './background-sync';
 // import './background-update-checker';
 import { every15secondsAlarm } from './background-alarms';
 
@@ -77,6 +78,9 @@ TabConverterService.getInstance();
 
 // register the package integrity service
 PackageIntegrityService.getInstance();
+
+// register the installation history service
+InstallationHistoryService.getInstance();
 
 // other services used by this script
 const sanityCheckService = SanityCheckService.getInstance();

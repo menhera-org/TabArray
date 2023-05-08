@@ -22,16 +22,18 @@
 import browser from "webextension-polyfill";
 import { EventSink } from "weeg-events";
 import { HostnameService } from "weeg-domains";
-import { CompatTab } from "weeg-tabs";
 
 import { TabQueryService } from "../../../lib/tabs/TabQueryService";
 import { IndexTabService } from "../../../lib/tabs/IndexTabService";
 import { CompatConsole } from "../../../lib/console/CompatConsole";
+import { BrowserStateDao } from "../../../lib/states/BrowserStateDao";
+import { TabDao } from "../../../lib/states/TabDao";
 
-import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
 import { MenulistSiteElement } from "../../../components/menulist-site";
+
+import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -68,17 +70,18 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
     topBarElement.headingText = browser.i18n.getMessage('sitesN', this._siteCount.toFixed(0));
   }
 
-  public render(firstPartyStateSnapshot: ReadonlyMap<string, ReadonlySet<CompatTab>>): void {
-    this._siteCount = firstPartyStateSnapshot.size;
+  public render(browserState: BrowserStateDao): void {
+    const keys = Object.keys(browserState.tabIdsBySite);
+    this._siteCount = keys.length;
     if (this.active) {
       this.renderTopBarWithGlobalItems();
     }
     const fragment = this.getFragment();
     fragment.textContent = '';
-    const hostnames = this._hostnameService.sortDomains([... firstPartyStateSnapshot.keys()]);
+    const hostnames = this._hostnameService.sortDomains([... keys]);
     for (const domain of hostnames) {
-      const tabSet = firstPartyStateSnapshot.get(domain) ?? new Set();
-      const tabs = this._indexTabService.filterOutIndexTabs([... tabSet]);
+      const tabIds = browserState.tabIdsBySite[domain] ?? [];
+      const tabs = this._indexTabService.filterOutIndexTabs(tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao)));
       const lastAccessedTab = tabs.reduce((a, b) => a.lastAccessed > b.lastAccessed ? a : b);
       const siteElement = new MenulistSiteElement();
       siteElement.domain = domain || '(null)';

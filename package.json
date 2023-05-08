@@ -1,6 +1,6 @@
 {
   "name": "container-tab-groups",
-  "version": "11.7.0",
+  "version": "11.8.0",
   "description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
   "main": "./dist/index.js",
   "scripts": {
@@ -14,20 +14,24 @@
   "devDependencies": {
     "@types/diff": "^5.0.3",
     "@types/glob": "^8.1.0",
-    "@types/node": "^18.16.3",
+    "@types/node": "^18.16.5",
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.4",
     "@types/webextension-polyfill": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
+    "copy-webpack-plugin": "^11.0.0",
     "deterministic-zip-ng": "^2.0.0",
-    "eslint": "^8.39.0",
+    "eslint": "^8.40.0",
     "glob": "^10.2.2",
     "markdown-it": "^13.0.1",
+    "terser-webpack-plugin": "^5.3.8",
     "ts-loader": "^9.4.2",
-    "typedoc": "^0.24.6",
+    "typedoc": "^0.24.7",
     "typescript": "<5.1.0",
     "web-ext": "^7.6.2",
-    "webpack": "^5.81.0",
-    "webpack-cli": "^5.0.2",
+    "webpack": "^5.82.0",
+    "webpack-cli": "^5.1.0",
     "webpack-deadcode-plugin": "^0.1.17"
   },
   "dependencies": {
@@ -37,7 +41,7 @@
     "weeg-domains": "^0.9.0",
     "weeg-events": "^0.4.0",
     "weeg-storage": "^0.5.0",
-    "weeg-tabs": "^0.17.0",
+    "weeg-tabs": "^0.18.0",
     "weeg-types": "^0.4.0",
     "weeg-utils": "^0.11.0"
   }

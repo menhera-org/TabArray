@@ -20,8 +20,8 @@
 **/
 
 import { BackgroundService } from "weeg-utils";
-import { StorageItem } from "weeg-storage";
 
+import { CachedStorageItem } from "./storage/CachedStorageItem";
 import { ServiceRegistry } from "./ServiceRegistry";
 import { StartupService } from "./StartupService";
 
@@ -34,8 +34,7 @@ export type PerformanceRecord = {
 const startupService = StartupService.getInstance();
 
 export class PerformanceHistoryService extends BackgroundService<PerformanceRecord, void> {
-  private readonly storage = new StorageItem<PerformanceRecord[]>("performanceHistory", [], StorageItem.AREA_LOCAL);
-  private storageCache: PerformanceRecord[] | undefined;
+  private readonly storage = new CachedStorageItem<PerformanceRecord[]>("performanceHistory", [], CachedStorageItem.AREA_LOCAL);
 
   public readonly onChanged = this.storage.onChanged;
 
@@ -45,7 +44,6 @@ export class PerformanceHistoryService extends BackgroundService<PerformanceReco
 
   protected override initializeBackground(): void {
     startupService.onBeforeStartup.addListener(() => {
-      this.storageCache = [];
       this.storage.setValue([]).catch((e) => {
         console.error(e);
       });
@@ -53,10 +51,10 @@ export class PerformanceHistoryService extends BackgroundService<PerformanceReco
   }
 
   protected override async execute(input: PerformanceRecord): Promise<void> {
-    const entries = this.storageCache ?? await this.storage.getValue();
-    entries.push(input);
-    this.storageCache = entries;
-    await this.storage.setValue(entries);
+    this.storage.doUpdateTransaction((entries) => {
+      entries.push(input);
+      return entries;
+    });
   }
 
   public addEntry(operationName: string, startTime: number, duration: number): void {
@@ -70,7 +68,7 @@ export class PerformanceHistoryService extends BackgroundService<PerformanceReco
   }
 
   public getEntries(): Promise<PerformanceRecord[]> {
-    return this.storage.getValue();
+    return this.storage.getValue(true);
   }
 
   public async getOperationNames(): Promise<string[]> {

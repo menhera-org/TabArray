@@ -32,6 +32,7 @@ import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContaine
 import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { CompatConsole } from '../../lib/console/CompatConsole';
+import { PerformanceHistoryService } from '../../lib/PerformanceHistoryService';
 
 import { PanoramaStateStore } from "./PanoramaStateStore";
 
@@ -54,6 +55,7 @@ const contextualIdentityFactory = contextualIdentityService.getFactory();
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const displayedContainerService = DisplayedContainerService.getInstance();
 const tabQueryService = TabQueryService.getInstance();
+const performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
 
 document.title = i18n.getMessage('panoramaGrid');
 document.documentElement.lang = i18n.getEffectiveLocale();
@@ -234,7 +236,8 @@ const renderContainer = async (displayedContainer: DisplayedContainer, isPrivate
 };
 
 const render = async () => {
-  console.log('render()');
+  const startTime = Date.now();
+  // console.log('render()');
   const [tabGroupDirectorySnapshot, browserWindow] = await Promise.all([
     tabGroupDirectory.getSnapshot(),
     browser.windows.get(browser.windows.WINDOW_ID_CURRENT),
@@ -255,7 +258,12 @@ const render = async () => {
   }
   containersContainer.textContent = '';
   containersContainer.append(... nonemptyContainerElements, ... emptyContainerElements);
-  console.log('render(): finished');
+  const endTime = Date.now();
+  const duration = endTime - startTime;
+  performanceHistoryService.addEntry('panorama.render', startTime, duration);
+  if (duration > 200) {
+    console.info(`render(): took ${duration}ms`);
+  }
 };
 
 const handler = new ViewRefreshHandler(render);

@@ -20,8 +20,8 @@
 **/
 
 import { BackgroundService } from "weeg-utils";
-import { StorageItem } from "weeg-storage";
 
+import { CachedStorageItem } from "../storage/CachedStorageItem";
 import { ServiceRegistry } from "../ServiceRegistry";
 import { StartupService } from "../StartupService";
 import { OutputType } from "./ConsoleService";
@@ -37,8 +37,7 @@ type ConsoleEntry = {
 const startupService = StartupService.getInstance();
 
 export class ConsoleHistoryService extends BackgroundService<ConsoleEntry, void> {
-  private readonly storage = new StorageItem<ConsoleEntry[]>("consoleHistory", [], StorageItem.AREA_LOCAL);
-  private storageCache: ConsoleEntry[] | undefined;
+  private readonly storage = new CachedStorageItem<ConsoleEntry[]>("consoleHistory", [], CachedStorageItem.AREA_LOCAL);
 
   public readonly onChanged = this.storage.onChanged;
 
@@ -48,7 +47,6 @@ export class ConsoleHistoryService extends BackgroundService<ConsoleEntry, void>
 
   protected override initializeBackground(): void {
     startupService.onBeforeStartup.addListener(() => {
-      this.storageCache = [];
       this.storage.setValue([]).catch((e) => {
         console.error(e);
       });
@@ -56,10 +54,10 @@ export class ConsoleHistoryService extends BackgroundService<ConsoleEntry, void>
   }
 
   protected override async execute(input: ConsoleEntry): Promise<void> {
-    const entries = this.storageCache ?? await this.storage.getValue();
-    entries.push(input);
-    this.storageCache = entries;
-    await this.storage.setValue(entries);
+    this.storage.doUpdateTransaction((entries) => {
+      entries.push(input);
+      return entries;
+    });
   }
 
   public addEntry(entry: ConsoleEntry): void {
@@ -69,7 +67,7 @@ export class ConsoleHistoryService extends BackgroundService<ConsoleEntry, void>
   }
 
   public getEntries(): Promise<ConsoleEntry[]> {
-    return this.storage.getValue();
+    return this.storage.getValue(true);
   }
 }
 

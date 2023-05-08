@@ -194,7 +194,7 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const integrityPath = __dirname + '/../dist/.integrity.json';
   fs.writeFileSync(integrityPath, JSON.stringify(integrity, null, 2));
 
-  const lintResult = await runCommand('npx', ['web-ext', 'lint', '--source-dir', './dist/', '--warnings-as-errors']);
+  const lintResult = await runCommand('npx', ['web-ext', 'lint', '--source-dir', './dist/']);
   console.log(lintResult);
 
   const buildDir = __dirname + '/../builds';

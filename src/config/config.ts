@@ -34,12 +34,14 @@ export const config = {
   'feature.languageOverrides': new StorageConfigurationOption<boolean>('feature.languageOverrides', true),
   'feature.uaOverrides': new StorageConfigurationOption<boolean>('feature.uaOverrides', false),
   'feature.containerProxy': new StorageConfigurationOption<boolean>('feature.containerProxy', false),
+  'feature.syncContainers': new StorageConfigurationOption<boolean>('feature.syncContainers', false, 'local'),
   'newtab.keepContainer': new StorageConfigurationOption<boolean>('newtab.keepContainer', true),
   'tab.external.containerOption': new StorageConfigurationOption<ExternalContainerOption>('tab.external.containerOption', 'choose'),
   'appearance.popupSize': new StorageConfigurationOption<PopupSize>('appearance.popupSize', 'standard'),
   'tab.groups.indexOption': new StorageConfigurationOption<GroupIndexOption>('tab.groups.indexOption', 'never'),
   'tab.autoDiscard.minAge': new StorageConfigurationOption<number>('tab.autoDiscard.minAge', -1),
   'tab.sorting.enabled': new StorageConfigurationOption<boolean>('tab.sorting.enabled', true),
+  'tab.autoHide.enabled': new StorageConfigurationOption<boolean>('tab.autoHide.enabled', false),
 };
 
 

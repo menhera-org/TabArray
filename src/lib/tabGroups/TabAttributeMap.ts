@@ -20,10 +20,11 @@
 **/
 
 import { ExtensibleAttribute, ExtensibleAttributeSet } from "weeg-utils";
-import { CompatTab, TabAttributeProvider } from "weeg-tabs";
+import { DummyTab, TabAttributeProvider } from "weeg-tabs";
 
 import { TagDirectory, TagType } from "./TagDirectory";
 import { TagDirectorySnapshot } from "./TagDirectorySnapshot";
+import { BrowserStateDao } from "../states/BrowserStateDao";
 
 /**
  * Snapshot of attributes for given tabs.
@@ -34,12 +35,17 @@ export class TabAttributeMap {
   private static readonly _tabAttributeProvider = new TabAttributeProvider();
   private static readonly _tagDirectory = new TagDirectory();
 
-  private readonly _attributeSetMap = new Map<number, ExtensibleAttributeSet<CompatTab>>();
-  private readonly _tagSnapshot: TagDirectorySnapshot;
+  private readonly _attributeSetMap = new Map<number, ExtensibleAttributeSet<DummyTab>>();
+  private _tagSnapshot: TagDirectorySnapshot;
   private readonly _tabIds: number[] = [];
 
-  public static async create(tabs: Iterable<CompatTab>): Promise<TabAttributeMap> {
-    const tabArray = Array.from(tabs);
+  public static async create(tabs: Iterable<DummyTab | number>): Promise<TabAttributeMap> {
+    const tabArray = Array.from(tabs).map((tab) => {
+      if ('number' == typeof tab) {
+        return { id: tab };
+      }
+      return tab;
+    });
     const [attributesSets, snapshot] = await Promise.all([
       this._tabAttributeProvider.getAttributeSets(tabArray),
       this._tagDirectory.getSnapshot(),
@@ -47,7 +53,23 @@ export class TabAttributeMap {
     return new TabAttributeMap(attributesSets, snapshot);
   }
 
-  private constructor(attributeSets: ExtensibleAttributeSet<CompatTab>[], tagSnapshot: TagDirectorySnapshot) {
+  public static createFromBrowserState(dao: BrowserStateDao): TabAttributeMap {
+    const tagSnapshot = new TagDirectorySnapshot(dao.tags);
+    const attributeSets: ExtensibleAttributeSet<DummyTab>[] = [];
+    for (const stringTabId in dao.tagIdsForTabs) {
+      const tabId = parseInt(stringTabId, 10);
+      const tagId = dao.tagIdsForTabs[tabId];
+      const dummyTab = { id: tabId };
+      const key = this.ATTR_TAG_ID.key;
+      const attributesDictionary = {
+        [key]: tagId,
+      };
+      attributeSets.push(new ExtensibleAttributeSet<DummyTab>(dummyTab, attributesDictionary));
+    }
+    return new TabAttributeMap(attributeSets, tagSnapshot);
+  }
+
+  private constructor(attributeSets: ExtensibleAttributeSet<DummyTab>[], tagSnapshot: TagDirectorySnapshot) {
     this._tagSnapshot = tagSnapshot;
     for (const attributeSet of attributeSets) {
       const tabId = attributeSet.target.id;
@@ -56,14 +78,18 @@ export class TabAttributeMap {
     }
   }
 
-  public getTabIds(): number[] {
-    return this._tabIds;
+  public async update(): Promise<void> {
+    const tabIds = this._tabIds;
+    const dummyTabs: DummyTab[] = tabIds.map((tabId) => ({ id: tabId }));
+    const attributeSets = await TabAttributeMap._tabAttributeProvider.getAttributeSets(dummyTabs);
+    for (const attributeSet of attributeSets) {
+      const tabId = attributeSet.target.id;
+      this._attributeSetMap.set(tabId, attributeSet);
+    }
   }
 
-  public getTab(tabId: number): CompatTab | undefined {
-    const attributeSet = this._attributeSetMap.get(tabId);
-    if (attributeSet == null) return undefined;
-    return attributeSet.target;
+  public getTabIds(): number[] {
+    return this._tabIds;
   }
 
   public getAttribute<T>(tabId: number, attribute: ExtensibleAttribute<T>): T | undefined {
@@ -88,5 +114,21 @@ export class TabAttributeMap {
 
   public getTagDirectorySnapshot(): TagDirectorySnapshot {
     return this._tagSnapshot;
+  }
+
+  public removeTabId(tabId: number): void {
+    const tabIdIndex = this._tabIds.indexOf(tabId);
+    if (tabIdIndex >= 0) this._tabIds.splice(tabIdIndex, 1);
+    this._attributeSetMap.delete(tabId);
+  }
+
+  public async addTabId(tabId: number): Promise<void> {
+    const attributeSet = await TabAttributeMap._tabAttributeProvider.getAttributeSets([{ id: tabId }]);
+    this._tabIds.push(tabId);
+    this._attributeSetMap.set(tabId, attributeSet[0] as ExtensibleAttributeSet<DummyTab>);
+  }
+
+  public setTagDirectorySnapshot(snapshot: TagDirectorySnapshot): void {
+    this._tagSnapshot = snapshot;
   }
 }

@@ -25,6 +25,10 @@ import { ServiceRegistry } from "../ServiceRegistry";
 import { ActiveContainerBatchOperation } from "./ActiveContainerBatchOperation";
 import { CompatConsole } from "../console/CompatConsole";
 
+import { hideAll } from "../../legacy-lib/modules/containers";
+
+import { config } from "../../config/config";
+
 export type ActiveContainerStorageType = {
   [windowId: number]: string; // cookieStoreId
 };
@@ -67,11 +71,17 @@ export class ActiveContainerService {
 
   public async setActiveContainer(windowId: number, cookieStoreId: string): Promise<void> {
     const value = await this.getValue();
+    let changed = false;
     if (value[windowId] != cookieStoreId) {
       console.debug('ActiveContainerService.setActiveContainer: windowId =', windowId, 'cookieStoreId =', cookieStoreId);
+      changed = true;
+      value[windowId] = cookieStoreId;
+      await this.setValue(value);
     }
-    value[windowId] = cookieStoreId;
-    await this.setValue(value);
+    const autoHideEnabled = await config['tab.autoHide.enabled'].getValue();
+    if (autoHideEnabled && changed) {
+      await hideAll(windowId);
+    }
   }
 
   public async getActiveContainer(windowId: number): Promise<string | undefined> {

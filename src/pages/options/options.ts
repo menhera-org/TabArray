@@ -96,6 +96,8 @@ const paneContainers = document.querySelector<HTMLElement>('#optionsPanes > div[
 const paneContainerOverrides = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="container-overrides"]');
 
 const inputTabSortingEnabled = document.querySelector<HTMLInputElement>('#input-enableSorting');
+const inputSyncContainers = document.querySelector<HTMLInputElement>('#input-syncContainers');
+const inputAutoHideContainers = document.querySelector<HTMLInputElement>('#input-autoHideContainers');
 
 const inputFeatureLanguageOverrides = document.querySelector<HTMLInputElement>('#input-featureLanguageOverrides');
 const inputFeatureUaOverrides = document.querySelector<HTMLInputElement>('#input-featureUaOverrides');
@@ -137,6 +139,15 @@ config['tab.sorting.enabled'].observe((value) => {
 
 inputTabSortingEnabled?.addEventListener('change', () => {
   setConfigValue(config['tab.sorting.enabled'], inputTabSortingEnabled.checked);
+});
+
+// feature.syncContainers setting
+config['feature.syncContainers'].observe((value) => {
+  setInputChecked(inputSyncContainers, value);
+});
+
+inputSyncContainers?.addEventListener('change', () => {
+  setConfigValue(config['feature.syncContainers'], inputSyncContainers.checked);
 });
 
 // feature.languageOverrides setting
@@ -226,4 +237,12 @@ config['feature.containerProxy'].observe((value) => {
 
 inputFeaturePerContainerProxy?.addEventListener('change', () => {
   setConfigValue(config['feature.containerProxy'], inputFeaturePerContainerProxy.checked);
+});
+
+config['tab.autoHide.enabled'].observe((value) => {
+  setInputChecked(inputAutoHideContainers, value);
+});
+
+inputAutoHideContainers?.addEventListener('change', () => {
+  setConfigValue(config['tab.autoHide.enabled'], inputAutoHideContainers.checked);
 });

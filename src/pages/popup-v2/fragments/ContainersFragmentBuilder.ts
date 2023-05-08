@@ -31,6 +31,10 @@ import { TabQueryService } from "../../../lib/tabs/TabQueryService";
 import { TabService } from "../../../lib/tabs/TabService";
 import { IndexTabService } from "../../../lib/tabs/IndexTabService";
 import { CompatConsole } from "../../../lib/console/CompatConsole";
+import { BrowserStateDao } from "../../../lib/states/BrowserStateDao";
+import { TabGroupDirectorySnapshot } from "../../../lib/tabGroups/TabGroupDirectorySnapshot";
+import { DisplayedContainerDao } from "../../../lib/states/DisplayedContainerDao";
+import { TabDao } from "../../../lib/states/TabDao";
 
 import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
 import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
@@ -39,8 +43,6 @@ import { MenulistSupergroupElement } from "../../../components/menulist-supergro
 
 import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
 import { PopupRendererService } from "../PopupRendererService";
-
-import { ContainersStateSnapshot } from "../../../legacy-lib/tabs/ContainersStateSnapshot";
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -123,19 +125,20 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     topBarElement.headingText = `${labelText} (${this._containerCount.toFixed(0)})`;
   }
 
-  public render(containersStateSnapshot: ContainersStateSnapshot): void {
-    this._containerCount = containersStateSnapshot.displayedContainers.length;
+  public render(browserState: BrowserStateDao): void {
+    this._containerCount = browserState.displayedContainers.length;
     if (this.active) {
       this.renderTopBarWithGlobalItems();
     }
-    const tabGroupDirectorySnapshot = containersStateSnapshot.tabGroupDirectorySnapshot;
+    const tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(browserState.supergroups);
+    const displayedContainers = browserState.displayedContainers.map((dao) => DisplayedContainerDao.toDisplayedContainer(dao));
     const fragment = this.getFragment();
     const activeContainersElement = fragment.querySelector('.active-containers') as HTMLDivElement;
     const inactiveContainersElement = fragment.querySelector('.inactive-containers') as HTMLDivElement;
     activeContainersElement.textContent = '';
     inactiveContainersElement.textContent = '';
-    const privateContainers = containersStateSnapshot.displayedContainers.filter((container) => container.cookieStore.isPrivate);
-    const normalContainers = containersStateSnapshot.displayedContainers.filter((container) => !container.cookieStore.isPrivate);
+    const privateContainers = displayedContainers.filter((container) => container.cookieStore.isPrivate);
+    const normalContainers = displayedContainers.filter((container) => !container.cookieStore.isPrivate);
     const privateUserContexts = [... privateContainers];
     const normalUserContexts = [... normalContainers].sort((a, b) => {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
@@ -145,13 +148,13 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
       userContextMap.set(normalUserContext.cookieStore.id, normalUserContext);
     }
     const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupAttributes.getRootSupergroupTabGroupId()) as SupergroupType;
-    this.renderPrivateContainers(containersStateSnapshot, privateUserContexts, activeContainersElement);
-    this.renderSupergroup(0, rootSupergroup, containersStateSnapshot, userContextMap, activeContainersElement);
+    this.renderPrivateContainers(browserState, privateUserContexts, activeContainersElement);
+    this.renderSupergroup(0, rootSupergroup, browserState, userContextMap, activeContainersElement);
   }
 
-  private renderSupergroup(nestingCount: number, supergroup: SupergroupType, containersStateSnapshot: ContainersStateSnapshot, userContextMap: Map<string, DisplayedContainer>, parentElement: HTMLElement) {
+  private renderSupergroup(nestingCount: number, supergroup: SupergroupType, browserState: BrowserStateDao, userContextMap: Map<string, DisplayedContainer>, parentElement: HTMLElement) {
     let tabCount = 0;
-    const tabGroupDirectorySnapshot = containersStateSnapshot.tabGroupDirectorySnapshot;
+    const tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(browserState.supergroups);
     const tabGroupIds = supergroup.members;
     for (const tabGroupId of tabGroupIds) {
       const attributes = new TabGroupAttributes(tabGroupId);
@@ -160,7 +163,8 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
         const userContext = userContextMap.get(tabGroupId);
         if (!userContext) continue;
         const isPrivate = cookieStore.isPrivate;
-        const tabs = this._indexTabService.filterOutIndexTabs([... containersStateSnapshot.getTabsByContainer(cookieStore.id)]);
+        const tabIds = browserState.tabIdsByContainer[userContext.cookieStore.id] ?? [];
+        const tabs = this._indexTabService.filterOutIndexTabs(tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao)));
         const containerElement = this._popupRenderer.renderPartialContainerElement(userContext, isPrivate);
         containerElement.tabCount = tabs.length;
         tabCount += tabs.length;
@@ -187,7 +191,7 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
         supergroupElement.groupName = supergroup.name;
         parentElement.appendChild(supergroupElement);
 
-        const subTabCount = this.renderSupergroup(nestingCount + 1, supergroup, containersStateSnapshot, userContextMap, supergroupElement);
+        const subTabCount = this.renderSupergroup(nestingCount + 1, supergroup, browserState, userContextMap, supergroupElement);
         supergroupElement.tabCount = subTabCount;
         supergroupElement.groupHideButton.disabled = true;
         supergroupElement.groupUnhideButton.disabled = true;
@@ -207,10 +211,11 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     return tabCount;
   }
 
-  private renderPrivateContainers(containersStateSnapshot: ContainersStateSnapshot, userContexts: DisplayedContainer[], parentElement: HTMLElement) {
+  private renderPrivateContainers(browserState: BrowserStateDao, userContexts: DisplayedContainer[], parentElement: HTMLElement) {
     for (const userContext of userContexts) {
       const isPrivate = userContext.cookieStore.isPrivate;
-      const tabs = containersStateSnapshot.getTabsByContainer(userContext.cookieStore.id);
+      const tabIds = browserState.tabIdsByContainer[userContext.cookieStore.id] ?? [];
+      const tabs = tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao));
       const containerElement = this._popupRenderer.renderPartialContainerElement(userContext, isPrivate);
       containerElement.tabCount = tabs.length;
       parentElement.appendChild(containerElement);

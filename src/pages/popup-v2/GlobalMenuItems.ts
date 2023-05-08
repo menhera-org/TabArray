@@ -22,12 +22,14 @@
 import browser from "webextension-polyfill";
 
 import { ExtensionPageService } from "../../lib/ExtensionPageService";
+import { DebuggingInformationService } from "../../lib/DebuggingInformationService";
 
 import { CtgDrawerElement } from "../../components/ctg/ctg-drawer";
 import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
 import { CtgMenuItemElement } from "../../components/ctg/ctg-menu-item";
 
 const extensionPageService = ExtensionPageService.getInstance();
+const debuggingInformationService = DebuggingInformationService.getInstance();
 
 export class GlobalMenuItems {
   public defineTopBarMenuItems(topBarElement: CtgTopBarElement) {
@@ -59,6 +61,11 @@ export class GlobalMenuItems {
     debuggingMenuItem.labelText = browser.i18n.getMessage('debuggingInformation');
     debuggingMenuItem.iconSrc = '/img/firefox-icons/developer.svg';
     topBarElement.addOverflowMenuItem('debugging', debuggingMenuItem);
+
+    const debuggingInfoSaveMenuItem = new CtgMenuItemElement();
+    debuggingInfoSaveMenuItem.labelText = browser.i18n.getMessage('saveDebuggingInformation');
+    debuggingInfoSaveMenuItem.iconSrc = '/img/firefox-icons/download.svg';
+    topBarElement.addOverflowMenuItem('debugging-save', debuggingInfoSaveMenuItem);
 
     const addonPageMenuItem = new CtgMenuItemElement();
     addonPageMenuItem.labelText = browser.i18n.getMessage('buttonAboutAddon');
@@ -109,6 +116,20 @@ export class GlobalMenuItems {
     const debuggingMenuItem = topbarElement.getOverflowMenuItem('debugging') as CtgMenuItemElement;
     debuggingMenuItem.addEventListener('click', () => {
       extensionPageService.openInBackground(ExtensionPageService.DEBUGGING);
+    });
+
+    const debuggingInfoSaveMenuItem = topbarElement.getOverflowMenuItem('debugging-save') as CtgMenuItemElement;
+    debuggingInfoSaveMenuItem.addEventListener('click', async () => {
+      const debuggingInfo = await debuggingInformationService.getDebuggingInformation();
+      const blob = new Blob([debuggingInfo], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ctg-debug-${Date.now()}.json`;
+      a.hidden = true;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     });
 
     const addonPageMenuItem = topbarElement.getOverflowMenuItem('addon-page') as CtgMenuItemElement;

@@ -20,16 +20,14 @@
 **/
 
 import browser from "webextension-polyfill";
-import { MessagingService } from "weeg-utils";
-import { ViewRefreshHandler } from "weeg-utils";
+import { PromiseUtils } from "weeg-utils";
 
 import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
-import { TabGroupDirectory } from "../../lib/tabGroups/TabGroupDirectory";
 import { ExternalServiceProvider } from "../../lib/ExternalServiceProvider";
-import { TagDirectory } from "../../lib/tabGroups/TagDirectory";
-import { TagService } from "../../lib/tabGroups/TagService";
 import { FpiService } from "../../lib/config/FpiService";
 import { CompatConsole } from "../../lib/console/CompatConsole";
+import { BrowserStateStore } from "../../lib/states/BrowserStateStore";
+import { SpinnerService } from "../../lib/SpinnerService";
 
 import "../../components/ctg/ctg-vertical-layout";
 import "../../components/ctg/ctg-drawer";
@@ -53,7 +51,6 @@ import { HelpFragmentBuilder } from "./fragments/HelpFragmentBuilder";
 import { ContainerDetailsFragmentBuilder } from "./fragments/ContainerDetailsFragmentBuilder";
 import { SiteDetailsFragmentBuilder } from "./fragments/SiteDetailsFragmentBuilder";
 
-import { BrowserStateSnapshot } from "../../legacy-lib/tabs/BrowserStateSnapshot";
 
 import { config, privacyConfig } from '../../config/config';
 
@@ -72,12 +69,9 @@ if (searchParams.get('popup') == '1') {
 }
 
 ExternalServiceProvider.getInstance();
-const tabGroupDirectory = new TabGroupDirectory();
-const tagDirectory = new TagDirectory();
 const popupRenderer = PopupRendererService.getInstance().popupRenderer;
-const messagingService = MessagingService.getInstance();
-const tagService = TagService.getInstance();
 const fpiService = FpiService.getInstance();
+const spinnerService = SpinnerService.getInstance();
 
 const extensionName = browser.runtime.getManifest().name;
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
@@ -141,51 +135,6 @@ topBarElement.onBackButtonClicked.addListener(() => {
 
 // not used
 globalMenuItems.defineDrawerMenuItems(drawerElement);
-
-const renderer = new ViewRefreshHandler(async () => {
-  topBarElement.beginSpinnerTransaction('popup-rendering');
-  try {
-    const browserSnapshotStart = Date.now();
-    const browserStateSnapshot = await BrowserStateSnapshot.create();
-    const browserSnapshotEnd = Date.now();
-    const browserSnapshotTime = browserSnapshotEnd - browserSnapshotStart;
-    if (browserSnapshotTime > 100) {
-      console.info(`Browser snapshot took ${browserSnapshotTime}ms`);
-    }
-    windowsBuilder.render(browserStateSnapshot);
-    containersBuilder.render(browserStateSnapshot.getContainersStateSnapshot());
-    const currentWindowSnapshot = browserStateSnapshot.getWindowStateSnapshot(browserStateSnapshot.currentWindowId);
-    sitesBuilder.render(browserStateSnapshot.getFirstPartyStateSnapshot(currentWindowSnapshot.isPrivate));
-
-    containerDetailsBuilder.render(browserStateSnapshot);
-    siteDetailsBuilder.render(browserStateSnapshot, currentWindowSnapshot.isPrivate);
-  } finally {
-    topBarElement.endSpinnerTransaction('popup-rendering');
-    // console.debug('rendering done');
-  }
-});
-
-const renderInBackground = renderer.renderInBackground.bind(renderer);
-
-browser.tabs.onActivated.addListener(renderInBackground);
-browser.tabs.onUpdated.addListener(renderInBackground);
-browser.tabs.onCreated.addListener(renderInBackground);
-browser.tabs.onRemoved.addListener(renderInBackground);
-browser.tabs.onMoved.addListener(renderInBackground);
-browser.tabs.onAttached.addListener(renderInBackground);
-browser.tabs.onDetached.addListener(renderInBackground);
-browser.tabs.onReplaced.addListener(renderInBackground);
-browser.windows.onCreated.addListener(renderInBackground);
-browser.windows.onRemoved.addListener(renderInBackground);
-browser.contextualIdentities.onCreated.addListener(renderInBackground);
-browser.contextualIdentities.onUpdated.addListener(renderInBackground);
-browser.contextualIdentities.onRemoved.addListener(renderInBackground);
-
-tabGroupDirectory.onChanged.addListener(renderInBackground);
-tagDirectory.onChanged.addListener(renderInBackground);
-tagService.onChanged.addListener(renderInBackground);
-
-renderer.renderInBackground();
 
 // Containers view
 
@@ -292,10 +241,35 @@ popupCommandHandler.getCommands().then((commands) => {
 });
 
 // render spinner
-messagingService.addListener('tab-sorting-started', () => {
-  topBarElement.beginSpinnerTransaction('tab-sorting');
+spinnerService.onTransactionBegin.addListener((transactionId) => {
+  topBarElement.beginSpinnerTransaction(transactionId);
 });
 
-messagingService.addListener('tab-sorting-ended', () => {
-  topBarElement.endSpinnerTransaction('tab-sorting');
+spinnerService.onTransactionEnd.addListener((transactionId) => {
+  topBarElement.endSpinnerTransaction(transactionId);
+});
+
+const store = new BrowserStateStore();
+
+let rendering = false;
+const render = async () => {
+  if (rendering) return;
+  rendering = true;
+  try {
+    await PromiseUtils.sleep(200);
+    const value = store.value;
+    windowsBuilder.render(value);
+    containersBuilder.render(value);
+    containerDetailsBuilder.render(value);
+    sitesBuilder.render(value);
+    siteDetailsBuilder.render(value);
+  } finally {
+    rendering = false;
+  }
+};
+
+store.onChanged.addListener(() => {
+  render().catch((e) => {
+    console.error('Rendering errored:', e);
+  });
 });

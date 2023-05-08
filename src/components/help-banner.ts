@@ -25,6 +25,7 @@ import { ExtensionPageService } from "../lib/ExtensionPageService";
 import { DateFormatService } from "../lib/DateFormatService";
 import { CompatConsole } from "../lib/console/CompatConsole";
 import { PackageIntegrityService } from "../lib/package/PackageIntegrityService";
+import { InstallationHistoryService } from "../lib/InstallationHistoryService";
 
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 
@@ -34,6 +35,7 @@ const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const extensionPageService = ExtensionPageService.getInstance();
 const dateFormatService = DateFormatService.getInstance();
 const packageIntegrityService = PackageIntegrityService.getInstance();
+const installationHistoryService = InstallationHistoryService.getInstance();
 
 export class HelpBannerElement extends HTMLElement {
 
@@ -117,17 +119,7 @@ export class HelpBannerElement extends HTMLElement {
       helpBannerBuild.textContent = 'Build '; // untranslated
       const text = await response.text();
       const info = JSON.parse(text);
-      let signed = false;
-      try {
-        const signatureResponse = await fetch('/META-INF/manifest.mf');
-        if (signatureResponse.status != 200) {
-          throw new Error(`Unexpected status code ${signatureResponse.status}`);
-        }
-        await signatureResponse.text();
-        signed = true;
-      } catch (e) {
-        // ignore
-      }
+      const signed = await installationHistoryService.isSigned();
       if (info.commit) {
         const commit = String(info.commit);
         const link = GITHUB_TREE_LINK_BASE + commit;

@@ -26,16 +26,20 @@ import { CompatTab } from 'weeg-tabs';
 
 import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
 import { CompatConsole } from '../lib/console/CompatConsole';
+import { TabGroupDirectorySnapshot } from '../lib/tabGroups/TabGroupDirectorySnapshot';
+import { ContainerVisibilityService } from "../lib/tabGroups/ContainerVisibilityService";
+import { DomFactory } from '../lib/DomFactory';
+import { BrowserStateDao } from '../lib/states/BrowserStateDao';
+import { WindowStateDao } from '../lib/states/WindowStateDao';
+import { DisplayedContainerDao } from '../lib/states/DisplayedContainerDao';
+import { TabDao } from '../lib/states/TabDao';
 
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import { SupergroupEditorElement } from './supergroup-editor';
 import { TagEditorElement } from './tag-editor';
 import { MenulistTabElement } from './menulist-tab';
 
-import { BrowserStateSnapshot } from "../legacy-lib/tabs/BrowserStateSnapshot";
 import * as containers from '../legacy-lib/modules/containers';
-import { ContainerVisibilityService } from "../lib/tabGroups/ContainerVisibilityService";
-import { DomFactory } from '../lib/DomFactory';
 
 import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
 
@@ -55,7 +59,7 @@ export class PanelWindowsElement extends HTMLElement {
   private readonly _containerVisibilityService = ContainerVisibilityService.getInstance();
   private readonly _temporaryContainerService = TemporaryContainerService.getInstance();
   private _isSearching = false;
-  private _browserStateSnapshot: BrowserStateSnapshot | null = null;
+  private _browserState: BrowserStateDao | null = null;
   private _searchString = '';
 
   public constructor() {
@@ -173,25 +177,25 @@ export class PanelWindowsElement extends HTMLElement {
     });
   }
 
-  public setState(browserStateSnapshot: BrowserStateSnapshot) {
+  public setState(browserState: BrowserStateDao) {
     if (this._selectedWindowId == browser.windows.WINDOW_ID_NONE) {
-      this._selectedWindowId = browserStateSnapshot.currentWindowId;
+      this._selectedWindowId = browserState.currentWindowId;
     }
 
-    this._browserStateSnapshot = browserStateSnapshot;
+    this._browserState = browserState;
 
     if (!this.shadowRoot) return;
 
     const windowSelect = this.shadowRoot.querySelector('.window-select') as HTMLSelectElement;
     windowSelect.textContent = '';
-    const windowIds = browserStateSnapshot.getWindowIds();
+    const windowIds = browserState.windowIds;
     if (!windowIds.includes(this._selectedWindowId)) {
-      this._selectedWindowId = browserStateSnapshot.currentWindowId;
+      this._selectedWindowId = browserState.currentWindowId;
     }
     for (const windowId of windowIds) {
       const option = document.createElement('option');
       option.value = windowId.toString();
-      if (windowId == browserStateSnapshot.currentWindowId) {
+      if (windowId == browserState.currentWindowId) {
         option.textContent = browser.i18n.getMessage('currentWindow', windowId.toFixed(0));
       } else {
         option.textContent = browser.i18n.getMessage('windowLabel', windowId.toFixed(0));
@@ -200,26 +204,26 @@ export class PanelWindowsElement extends HTMLElement {
     }
     windowSelect.value = this._selectedWindowId.toString();
 
-    this.renderWindow(browserStateSnapshot);
+    this.renderWindow(browserState);
     windowSelect.addEventListener('change', () => {
       this._selectedWindowId = parseInt(windowSelect.value);
-      this.renderWindow(browserStateSnapshot);
+      this.renderWindow(browserState);
     });
 
     this.rerenderSearchView();
   }
 
-  public renderWindow(browserStateSnapshot: BrowserStateSnapshot) {
+  public renderWindow(browserState: BrowserStateDao) {
     if (!this.shadowRoot) return;
 
-    const currentWindowState = browserStateSnapshot.getWindowStateSnapshot(this._selectedWindowId);
+    const currentWindowState = browserState.windows[this._selectedWindowId] as WindowStateDao;
     const tabCount = this.shadowRoot.querySelector('.tab-count') as HTMLSpanElement;
-    tabCount.textContent = `(${currentWindowState.tabs.length})`;
+    tabCount.textContent = `(${Object.values(currentWindowState.tabs).length})`;
 
     const newGroupMenuItem = this.shadowRoot.querySelector('.new-group') as CtgMenuItemElement;
 
-    const tabGroupDirectorySnapshot = browserStateSnapshot.getTabGroupDirectorySnapshot();
-    let displayedContainers = browserStateSnapshot.getDisplayedContainers();
+    const tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(browserState.supergroups);
+    let displayedContainers = browserState.displayedContainers.map((dao) => DisplayedContainerDao.toDisplayedContainer(dao));
     if (currentWindowState.isPrivate) {
       displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
       newGroupMenuItem.hidden = true;
@@ -231,15 +235,15 @@ export class PanelWindowsElement extends HTMLElement {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
 
-    this.renderPinnedTabs(browserStateSnapshot, displayedContainers);
+    this.renderPinnedTabs(browserState, displayedContainers);
 
     const activeContainersElement = this.shadowRoot.querySelector('.active-containers') as HTMLDivElement;
     activeContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderOpenContainers(currentWindowState, displayedContainers, activeContainersElement, tabGroupDirectorySnapshot, browserStateSnapshot.getTabAttributeMap());
+    this._popupRenderer.currentWindowRenderer.renderOpenContainers(browserState, currentWindowState.id, displayedContainers, activeContainersElement, tabGroupDirectorySnapshot);
 
     const inactiveContainersElement = this.shadowRoot.querySelector('.inactive-containers') as HTMLDivElement;
     inactiveContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(currentWindowState, displayedContainers, inactiveContainersElement, tabGroupDirectorySnapshot, browserStateSnapshot.getTabAttributeMap());
+    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(browserState, currentWindowState.id, displayedContainers, inactiveContainersElement, tabGroupDirectorySnapshot);
 
     this.renderActions();
   }
@@ -290,9 +294,10 @@ export class PanelWindowsElement extends HTMLElement {
     });
   }
 
-  private renderPinnedTabs(browserStateSnapshot: BrowserStateSnapshot, definedUserContexts: readonly DisplayedContainer[]) {
-    const currentWindowState = browserStateSnapshot.getWindowStateSnapshot(this._selectedWindowId);
-    const pinnedTabs = [... currentWindowState.pinnedTabs];
+  private renderPinnedTabs(browserState: BrowserStateDao, definedUserContexts: readonly DisplayedContainer[]) {
+    const currentWindowState = browserState.windows[this._selectedWindowId] as WindowStateDao;
+    const pinnedTabIds = currentWindowState.pinnedTabIds;
+    const pinnedTabs = pinnedTabIds.map((tabId) => TabDao.toCompatTab(currentWindowState.tabs[tabId] as TabDao));
     pinnedTabs.sort((a, b) => a.index - b.index);
     const userContextMap = new Map<string, DisplayedContainer>();
     for (const userContext of definedUserContexts) {
@@ -355,21 +360,20 @@ export class PanelWindowsElement extends HTMLElement {
     searchResultsContainersElement.textContent = '';
     searchResultsTabsElement.textContent = '';
 
-    if (!this._browserStateSnapshot) return;
-    const tabGroupDirectorySnapshot = this._browserStateSnapshot.getTabGroupDirectorySnapshot();
-    const windowStateSnapshot = this._browserStateSnapshot.getWindowStateSnapshot(this._selectedWindowId);
+    if (!this._browserState) return;
+    const tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(this._browserState.supergroups);
+    const windowStateSnapshot = this._browserState.windows[this._selectedWindowId] as WindowStateDao;
     const isPrivate = windowStateSnapshot.isPrivate;
-    let displayedContainers = [... this._browserStateSnapshot.getDisplayedContainers()];
+    let displayedContainers = [... this._browserState.displayedContainers].map((dao) => DisplayedContainerDao.toDisplayedContainer(dao));
     if (isPrivate) {
       displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
     } else {
       displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate != true);
     }
-    const tabAttributeMap = this._browserStateSnapshot.getTabAttributeMap();
-    let tags = tabAttributeMap.getTags();
+    let tags = Object.values(this._browserState.tags);
     const allUserContexts = [... displayedContainers];
     const searchWords = new Set(searchString.split(/\s+/u).map((searchWord) => searchWord.toLowerCase()));
-    let tabs = [... windowStateSnapshot.tabs];
+    let tabs = Object.values(windowStateSnapshot.tabs).map((dao) => TabDao.toCompatTab(dao));
     for (const searchWord of searchWords) {
       displayedContainers = displayedContainers.filter((userContext) => {
         return userContext.name.toLowerCase().includes(searchWord);
@@ -383,7 +387,7 @@ export class PanelWindowsElement extends HTMLElement {
       tabs = tabs.filter((tab) => {
         return tab.title.toLowerCase().includes(searchWord)
           || tab.url.toLowerCase().includes(searchWord)
-          || tagIds.includes(tabAttributeMap.getTagIdForTab(tab.id) ?? 0);
+          || tagIds.includes(this._browserState?.tagIdsForTabs[tab.id] ?? 0);
       });
     }
 
@@ -398,9 +402,9 @@ export class PanelWindowsElement extends HTMLElement {
     }
 
     for (const userContext of displayedContainers) {
-      const tabs = windowStateSnapshot.userContextUnpinnedTabMap.get(userContext.cookieStore.userContextId) || [];
+      const tabIds = windowStateSnapshot.unpinnedTabIdsByContainer[userContext.cookieStore.userContextId] || [];
       const containerElement = this._popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, [], windowStateSnapshot.isPrivate);
-      containerElement.tabCount = tabs.length;
+      containerElement.tabCount = tabIds.length;
       containerElement.containerVisibilityToggleButton.disabled = true;
       searchResultsContainersElement.appendChild(containerElement);
     }

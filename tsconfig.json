@@ -19,7 +19,8 @@
     "moduleResolution": "node",
     "skipLibCheck": true,
     "allowJs": true,
-    "checkJs": false
+    "checkJs": false,
+    "jsx": "react"
   },
   "include": [
     "src/**/*",

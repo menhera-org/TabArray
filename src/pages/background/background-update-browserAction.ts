@@ -21,36 +21,27 @@
 
 import browser from 'webextension-polyfill';
 
-import { InitialWindowsService } from './InitialWindowsService';
-import { DarkThemeMonitor } from '../../legacy-lib/themes/DarkThemeMonitor';
 import { CompatConsole } from '../../lib/console/CompatConsole';
+import { WindowTabCountService, TabCountByWindow, WindowTabCountHistory } from '../../lib/windows/WindowTabCountService';
+
+import { DarkThemeMonitor } from '../../legacy-lib/themes/DarkThemeMonitor';
 
 import { config } from '../../config/config';
 import { POPUP_PAGE } from '../../defs';
+
+import { InitialWindowsService } from './InitialWindowsService';
 
 const DARK_THEME_BACKGROUND_COLOR = '#cccccc';
 const LIGHT_THEME_BACKGROUND_COLOR = '#333333';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const initialWindowsService = InitialWindowsService.getInstance();
+const windowTabCountService = WindowTabCountService.getInstance<WindowTabCountService>();
 
-const setBadgeTextForBrowserWindow = (browserWindow: browser.Windows.Window) => {
-  if (browserWindow.tabs == null) return;
-
-  const tabCount = browserWindow.tabs.length;
+const setBadgeTextForWindow = (windowId: number, tabCount: number) => {
   browser.browserAction.setBadgeText({
     text: tabCount.toString(),
-    windowId: browserWindow.id,
-  }).catch((e) => {
-    console.error(e);
-  });
-};
-
-const setBadgeTextForBrowserWindowId = (windowId: number) => {
-  browser.windows.get(windowId, {
-    populate: true,
-  }).then((browserWindow) => {
-    setBadgeTextForBrowserWindow(browserWindow);
+    windowId,
   }).catch((e) => {
     console.error(e);
   });
@@ -79,25 +70,45 @@ config['appearance.popupSize'].observe((value) => {
 });
 
 initialWindowsService.getInitialWindows().then((browserWindows) => {
-  browserWindows.forEach((browserWindow) => {
-    setBadgeTextForBrowserWindow(browserWindow);
-  });
+  const tabCountByWindow: TabCountByWindow = {};
+  for (const browserWindow of browserWindows) {
+    if (browserWindow.id == null || browserWindow.tabs == null || browserWindow.incognito) continue;
+    tabCountByWindow[browserWindow.id] = browserWindow.tabs.length;
+  }
+  windowTabCountService.setInitialTabCounts(tabCountByWindow);
 });
 
 browser.windows.onCreated.addListener((browserWindow) => {
-  setBadgeTextForBrowserWindow(browserWindow);
+  const tabCount = browserWindow.tabs?.length ?? 1;
+  const windowId = browserWindow.id;
+  if (windowId == null) return;
+  if (browserWindow.incognito) return;
+  windowTabCountService.addWindow(windowId, tabCount);
+});
+
+browser.windows.onRemoved.addListener((windowId) => {
+  windowTabCountService.removeWindow(windowId);
 });
 
 browser.tabs.onCreated.addListener((tab) => {
   if (null == tab.windowId) return;
   const windowId = tab.windowId;
-  setBadgeTextForBrowserWindowId(windowId);
+  windowTabCountService.incrementTabCountForWindow(windowId);
 });
 
 browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
-  if (removeInfo.isWindowClosing) return;
   const windowId = removeInfo.windowId;
-  setBadgeTextForBrowserWindowId(windowId);
+  if (removeInfo.isWindowClosing) return;
+  windowTabCountService.decrementTabCountForWindow(windowId);
+});
+
+windowTabCountService.onChanged.addListener((tabCountHistory) => {
+  const windowIds = WindowTabCountHistory.getWindowIds(tabCountHistory);
+  for (const windowId of windowIds) {
+    const tabCount = WindowTabCountHistory.getLastTabCountForWindow(tabCountHistory, windowId) as number;
+    if (tabCount < 1) return;
+    setBadgeTextForWindow(windowId, tabCount);
+  }
 });
 
 const themeMonitor = new DarkThemeMonitor();

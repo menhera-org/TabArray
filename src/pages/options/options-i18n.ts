@@ -73,7 +73,11 @@ setTextContent('label[for="input-firstPartyIsolate"]', 'labelFirstPartyIsolate')
 
 setTextContent('label[for="input-resistFingerprinting"]', 'labelResistFingerprinting');
 
+setTextContent('label[for="input-syncContainers"]', 'optionSyncContainers');
+
 setTextContent('label[for="select-externalTabContainerOption"]', 'labelExternalTabSelectContainerOption');
+
+setTextContent('label[for="input-autoHideContainers"]', 'optionAutoHideContainers');
 
 setTextContent('#select-externalTabContainerOption > option[value="choose"]', 'labelExternalTabOptionChooseContainer');
 setTextContent('#select-externalTabContainerOption > option[value="sticky"]', 'labelExternalTabOptionStickyContainer');
