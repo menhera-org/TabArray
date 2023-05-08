@@ -19,6 +19,8 @@
   @license
 **/
 
+import { ExtensionService } from "weeg-utils";
+
 import { DirectoryListingService } from "./package/DirectoryListingService";
 import { PackageIntegrityService } from "./package/PackageIntegrityService";
 import { ConsoleHistoryService } from "./console/ConsoleHistoryService";
@@ -28,6 +30,7 @@ import { WindowTabCountService } from "./windows/WindowTabCountService";
 
 import { ServiceRegistry } from "./ServiceRegistry";
 
+const extensionService = ExtensionService.getInstance();
 const directoryListingService = DirectoryListingService.getInstance();
 const packageIntegrityService = PackageIntegrityService.getInstance();
 const consoleHistoryService = ConsoleHistoryService.getInstance<ConsoleHistoryService>();
@@ -53,7 +56,9 @@ export class DebuggingInformationService {
     const performanceRecords = await performanceHistoryService.getEntries();
     const installationHistory = await installationHistoryService.getValue();
     const windowTabCountHistory = await windowTabCountService.getTabCountHistory();
+    const internalUuid = extensionService.getInternalUuid();
     const info = {
+      internalUuid,
       packageLocation,
       computedIntegrityListing,
       consoleLogs,
