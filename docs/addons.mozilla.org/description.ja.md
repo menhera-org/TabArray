@@ -67,7 +67,7 @@ _Chromeのタブグループと、廃止されたアドオンConexの完璧な�
 
 この拡張機能は2023年現在、活発に開発/メンテナンスされていますので、新しい機能/修正をお待ちください。
 
-利用可能な言語: English, 日本語, Esperanto, Français, Español, Русский, Deutsch, Čeština, Galego, Interlingua, 中文 (简体)
+利用可能な言語: English, 日本語, Esperanto, Français, Español, Русский, Deutsch, Čeština, Galego, Interlingua, 中文 (简体), Português (do Brasil)
 (<a href="https://hosted.weblate.org/projects/container-tab-groups/#languages">翻訳を手伝ってください!</a>)
 
 バグの報告はこちらでお願いします: https://github.com/menhera-org/TabArray/issues

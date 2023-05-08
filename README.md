@@ -101,6 +101,7 @@ enough to unnecessitate Simple Tab Groups.
 - Galego
 - Interlingua
 - 中文 (简体)
+- Português (do Brasil)
 
 This project uses Hosted Weblate for translation. You can contribute translations at Hosted Weblate.
 
