@@ -747,5 +747,13 @@
     "saveDebuggingInformation": {
         "message": "Salvar information del recerca de errores",
         "description": "Save debugging information button."
+    },
+    "optionalFeaturesDescription": {
+        "message": "Tu pote activar alcun optional functiones hic, si tu non usa alcun extensiones in conflicto.",
+        "description": "Description text for optional features"
+    },
+    "fpiDescription": {
+        "message": "Iste extension activa First-Party Isolate (FPI) de Firefox per predefinition. Isto significa que cookies por distincte sitos, mesmo por un mesme contentor, es separate per registrable domain. Tu pote inactivar lo hic.",
+        "description": "Description text for FPI"
     }
 }
