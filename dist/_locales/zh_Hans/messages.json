@@ -743,5 +743,17 @@
     "buttonDeleteProxy": {
         "message": "删除代理",
         "description": "Delete proxy button."
+    },
+    "optionSyncContainers": {
+        "message": "同步容器",
+        "description": "Label text for sync containers option."
+    },
+    "optionAutoHideContainers": {
+        "message": "自动隐藏不使用的容器",
+        "description": "Label text for auto-hide unused containers option."
+    },
+    "saveDebuggingInformation": {
+        "message": "保存调试信息",
+        "description": "Save debugging information button."
     }
 }
