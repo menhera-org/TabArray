@@ -743,5 +743,17 @@
     "noTag": {
         "message": "(bez tagu)",
         "description": "No tag name."
+    },
+    "optionSyncContainers": {
+        "message": "Synchronizovat kontejnery",
+        "description": "Label text for sync containers option."
+    },
+    "optionAutoHideContainers": {
+        "message": "Automaticky skrýt nepoužívané kontejnery",
+        "description": "Label text for auto-hide unused containers option."
+    },
+    "saveDebuggingInformation": {
+        "message": "Uložit informace o ladění",
+        "description": "Save debugging information button."
     }
 }
