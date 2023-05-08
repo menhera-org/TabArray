@@ -19,24 +19,13 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
 import { StorageItem } from "weeg-storage";
 import { EventSink } from "weeg-events";
-import { CompatTab } from "weeg-tabs";
 
 import { TagDirectorySnapshot } from "./TagDirectorySnapshot";
+import { TagType, TagStorageType } from "./TagType";
 
-const tabAttributeMapPromise = import("./TabAttributeMap");
-const tagServicePromise = import("./TagService");
-
-export type TagType = {
-  tagId: number;
-  name: string;
-};
-
-export type TagStorageType = {
-  [tagId: number]: TagType;
-};
+export { TagType, TagStorageType };
 
 export class TagDirectory {
   public readonly onChanged = new EventSink<void>();
@@ -93,22 +82,13 @@ export class TagDirectory {
     return tag;
   }
 
-  public async deleteTag(tagId: number): Promise<void> {
-    const { TabAttributeMap } = await tabAttributeMapPromise;
-    const { TagService } = await tagServicePromise;
-    const tagService = TagService.getInstance();
+  /**
+   * Just remove the tag from the directory, but don't remove it from the tabs.
+   */
+  public async removeTagFromDirectory(tagId: number): Promise<void> {
     const value = await this.getValue();
     delete value[tagId];
     await this.setValue(value);
-    const browserTabs = await browser.tabs.query({});
-    const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
-    const tabAttributeMap = await TabAttributeMap.create(tabs);
-    for (const tabId of tabAttributeMap.getTabIds()) {
-      const foundTagId = tabAttributeMap.getTagIdForTab(tabId);
-      if (foundTagId == tagId) {
-        await tagService.setTagIdForTabId(tabId, 0);
-      }
-    }
   }
 
   public async getSnapshot(): Promise<TagDirectorySnapshot> {

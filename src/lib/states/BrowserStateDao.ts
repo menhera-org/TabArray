@@ -20,7 +20,7 @@
 **/
 
 import { TabDao } from "./TabDao";
-import { TagType } from "../tabGroups/TagDirectory";
+import { TagType } from "../tabGroups/tags/TagDirectory";
 import { DisplayedContainerDao } from "./DisplayedContainerDao";
 import { SupergroupStorageType } from "../tabGroups/TabGroupDirectory";
 import { WindowStateDao } from "./WindowStateDao";

@@ -23,8 +23,8 @@ import { CompatTab } from "weeg-tabs";
 import { EventSink } from "weeg-events";
 
 import { TabGroupDirectory } from "./TabGroupDirectory";
-import { TagDirectory } from "./TagDirectory";
-import { TabAttributeMap } from "./TabAttributeMap";
+import { TagDirectory } from "./tags/TagDirectory";
+import { TabAttributeMap } from "./tags/TabAttributeMap";
 import { IndexTab } from "../../legacy-lib/modules/IndexTab";
 
 export class TabSortingProvider {

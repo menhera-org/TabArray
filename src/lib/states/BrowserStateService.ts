@@ -31,7 +31,7 @@ import { TabDao } from "./TabDao";
 import { DisplayedContainerDao } from "./DisplayedContainerDao";
 
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
-import { TabAttributeMap } from '../../lib/tabGroups/TabAttributeMap';
+import { TabAttributeMap } from '../tabGroups/tags/TabAttributeMap';
 import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
 import { DisplayedContainerService } from "../tabGroups/DisplayedContainerService";
 import { PerformanceHistoryService } from "../PerformanceHistoryService";

@@ -24,13 +24,14 @@ import { DummyTab, TabAttributeProvider } from "weeg-tabs";
 
 import { TagDirectory, TagType } from "./TagDirectory";
 import { TagDirectorySnapshot } from "./TagDirectorySnapshot";
-import { BrowserStateDao } from "../states/BrowserStateDao";
+import { BrowserStateDao } from "../../states/BrowserStateDao";
+import { TabAttributeTagId } from "./TabAttributeTagId";
 
 /**
  * Snapshot of attributes for given tabs.
  */
 export class TabAttributeMap {
-  public static readonly ATTR_TAG_ID = new ExtensibleAttribute<number>('tagId');
+  public static readonly ATTR_TAG_ID = TabAttributeTagId;
 
   private static readonly _tabAttributeProvider = new TabAttributeProvider();
   private static readonly _tagDirectory = new TagDirectory();

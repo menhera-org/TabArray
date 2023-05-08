@@ -29,7 +29,7 @@ import { BrowserStateDao } from "./BrowserStateDao";
 import { BrowserStateService, BrowserStateConstructParams } from "./BrowserStateService";
 import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
 import { ContextualIdentityService } from "../tabGroups/ContextualIdentityService";
-import { TagService } from "../tabGroups/TagService";
+import { TagService } from "../tabGroups/tags/TagService";
 import { TabGroupAttributes } from "../tabGroups/TabGroupAttributes";
 import { TabGroupDirectorySnapshot } from "../tabGroups/TabGroupDirectorySnapshot";
 import { CompatConsole } from "../console/CompatConsole";

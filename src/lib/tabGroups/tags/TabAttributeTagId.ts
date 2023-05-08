@@ -19,25 +19,6 @@
   @license
 **/
 
-import browser from 'webextension-polyfill';
-import { CompatTab } from 'weeg-tabs';
+import { ExtensibleAttribute } from "weeg-utils";
 
-import { TagService } from '../lib/tabGroups/tags/TagService';
-
-const tagService = TagService.getInstance();
-
-// new tabs inherit the tag of their opener
-browser.tabs.onCreated.addListener(async (browserTab) => {
-  try {
-    if (null == browserTab.openerTabId) return;
-    const tab = new CompatTab(browserTab);
-    const openerBrowserTab = await browser.tabs.get(browserTab.openerTabId);
-    const openerTab = new CompatTab(openerBrowserTab);
-    const tag = await tagService.getTagForTab(openerTab);
-    if (tag) {
-      await tagService.setTagIdForTab(tab, tag.tagId);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-});
+export const TabAttributeTagId = new ExtensibleAttribute<number>('tagId');

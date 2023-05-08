@@ -19,31 +19,11 @@
   @license
 **/
 
-import { TagType, TagStorageType } from "./TagDirectory";
+export type TagType = {
+  tagId: number;
+  name: string;
+};
 
-export class TagDirectorySnapshot {
-  private readonly _value: TagStorageType;
-
-  public constructor(value: TagStorageType) {
-    this._value = value;
-  }
-
-  public getValue(): TagStorageType {
-    return structuredClone(this._value);
-  }
-
-  public getTags(): TagType[] {
-    const value = this.getValue();
-    return Object.values(value);
-  }
-
-  public getTagIds(): number[] {
-    const value = this.getValue();
-    return Object.keys(value).map((key) => parseInt(key));
-  }
-
-  public getTag(tagId: number): TagType | undefined {
-    const value = this.getValue();
-    return value[tagId];
-  }
-}
+export type TagStorageType = {
+  [tagId: number]: TagType;
+};

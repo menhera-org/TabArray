@@ -19,25 +19,31 @@
   @license
 **/
 
-import browser from 'webextension-polyfill';
-import { CompatTab } from 'weeg-tabs';
+import { TagType, TagStorageType } from "./TagType";
 
-import { TagService } from '../lib/tabGroups/tags/TagService';
+export class TagDirectorySnapshot {
+  private readonly _value: TagStorageType;
 
-const tagService = TagService.getInstance();
-
-// new tabs inherit the tag of their opener
-browser.tabs.onCreated.addListener(async (browserTab) => {
-  try {
-    if (null == browserTab.openerTabId) return;
-    const tab = new CompatTab(browserTab);
-    const openerBrowserTab = await browser.tabs.get(browserTab.openerTabId);
-    const openerTab = new CompatTab(openerBrowserTab);
-    const tag = await tagService.getTagForTab(openerTab);
-    if (tag) {
-      await tagService.setTagIdForTab(tab, tag.tagId);
-    }
-  } catch (e) {
-    console.error(e);
+  public constructor(value: TagStorageType) {
+    this._value = value;
   }
-});
+
+  public getValue(): TagStorageType {
+    return structuredClone(this._value);
+  }
+
+  public getTags(): TagType[] {
+    const value = this.getValue();
+    return Object.values(value);
+  }
+
+  public getTagIds(): number[] {
+    const value = this.getValue();
+    return Object.keys(value).map((key) => parseInt(key));
+  }
+
+  public getTag(tagId: number): TagType | undefined {
+    const value = this.getValue();
+    return value[tagId];
+  }
+}

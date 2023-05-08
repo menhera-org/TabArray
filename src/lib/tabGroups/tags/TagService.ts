@@ -19,17 +19,21 @@
   @license
 **/
 
-import { TabAttributeProvider, DummyTab } from "weeg-tabs";
+import browser from "webextension-polyfill";
+import { TabAttributeProvider, DummyTab, CompatTab } from "weeg-tabs";
 import { ExtensibleAttributeSet } from "weeg-utils";
 import { EventSink } from "weeg-events";
 
-import { ServiceRegistry } from "../ServiceRegistry";
-import { TagType, TagDirectory } from "./TagDirectory";
+import { ServiceRegistry } from "../../ServiceRegistry";
+import { BroadcastTopic } from "../../BroadcastTopic";
+
+import { TagDirectory } from "./TagDirectory";
+import { TagType } from "./TagType";
 import { TabAttributeMap } from "./TabAttributeMap";
-import { BroadcastTopic } from "../BroadcastTopic";
+import { TabAttributeTagId } from "./TabAttributeTagId";
 
 export class TagService {
-  public static readonly ATTR_TAG_ID = TabAttributeMap.ATTR_TAG_ID;
+  public static readonly ATTR_TAG_ID = TabAttributeTagId;
 
   private static readonly INSTANCE = new TagService();
 
@@ -89,6 +93,19 @@ export class TagService {
   public async setTagIdForTabId(tabId: number, tagId: number | null): Promise<void> {
     const tab = { id: tabId } as DummyTab;
     return this.setTagIdForTab(tab, tagId);
+  }
+
+  public async deleteTag(tagId: number): Promise<void> {
+    await this.tagDirectory.removeTagFromDirectory(tagId);
+    const browserTabs = await browser.tabs.query({});
+    const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
+    const tabAttributeMap = await TabAttributeMap.create(tabs);
+    for (const tabId of tabAttributeMap.getTabIds()) {
+      const foundTagId = tabAttributeMap.getTagIdForTab(tabId);
+      if (foundTagId == tagId) {
+        await this.setTagIdForTabId(tabId, 0);
+      }
+    }
   }
 }
 
