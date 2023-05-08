@@ -743,5 +743,17 @@
     "buttonDeleteProxy": {
         "message": "Proxy löschen",
         "description": "Delete proxy button."
+    },
+    "optionSyncContainers": {
+        "message": "Container synchronisieren",
+        "description": "Label text for sync containers option."
+    },
+    "optionAutoHideContainers": {
+        "message": "Unbenutzte Container automatisch ausblenden",
+        "description": "Label text for auto-hide unused containers option."
+    },
+    "saveDebuggingInformation": {
+        "message": "Debugging-Informationen speichern",
+        "description": "Save debugging information button."
     }
 }
