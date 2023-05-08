@@ -266,8 +266,10 @@ export class BrowserStateStore {
     if (null == this._params) return;
     if (browserWindow.id == null) return;
     if (browserWindow.tabs == null) {
+      console.info('browserWindow.tabs is null. fetching asynchronously...');
       browserWindow.tabs = await browser.tabs.query({ windowId: browserWindow.id });
     }
+    this._params.browserWindows = this._params.browserWindows.filter((window) => window.id !== browserWindow.id);
     this._params.browserWindows.push(browserWindow);
     this.update();
   }
