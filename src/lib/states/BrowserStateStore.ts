@@ -32,7 +32,9 @@ import { ContextualIdentityService } from "../tabGroups/ContextualIdentityServic
 import { TagService } from "../tabGroups/TagService";
 import { TabGroupAttributes } from "../tabGroups/TabGroupAttributes";
 import { TabGroupDirectorySnapshot } from "../tabGroups/TabGroupDirectorySnapshot";
+import { CompatConsole } from "../console/CompatConsole";
 
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const browserStateService = BrowserStateService.getInstance();
 const tabGroupDirectory = new TabGroupDirectory();
 const contextualIdentityService = ContextualIdentityService.getInstance();
