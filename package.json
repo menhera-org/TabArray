@@ -27,6 +27,7 @@
     "glob": "^10.2.2",
     "markdown-it": "^13.0.1",
     "parcel": "^2.8.3",
+    "parcel-reporter-static-files-copy": "^1.5.0",
     "parcel-resolver-ignore": "^2.1.3",
     "terser-webpack-plugin": "^5.3.8",
     "ts-loader": "^9.4.2",
@@ -49,75 +50,30 @@
     "weeg-utils": "^0.11.0"
   },
   "browserslist": "Firefox >= 102",
-  "target-background": "dist/background/background.html",
-  "target-content-overrides": "dist/content/overrides.js",
-  "target-content-ext-directory-listing": "dist/content/ext/directory-listing.js",
-  "target-cookies": "dist/pages/cookies/cookies.html",
-  "target-debugging": "dist/pages/debugging/debugging.html",
-  "target-index": "dist/pages/index/index-tab.html",
-  "target-navigation": "dist/pages/navigation/confirm.html",
-  "target-options": "dist/pages/options/options.html",
-  "target-page-action": "dist/pages/page-action/page-action.html",
-  "target-panorama": "dist/pages/panorama/panorama.html",
-  "target-popup-v2": "dist/pages/popup-v2/popup-v2.html",
+  "source": [
+    "src/background/background.html",
+    "src/content/overrides/content.ts",
+    "src/content/ext/directory-listing/directory-listing.ts",
+    "src/pages/cookies/cookies.html",
+    "src/pages/debugging/debugging.html",
+    "src/pages/index/index-tab.html",
+    "src/pages/navigation/confirm.html",
+    "src/pages/options/options.html",
+    "src/pages/page-action/page-action.html",
+    "src/pages/panorama/panorama.html",
+    "src/pages/popup-v2/popup-v2.html"
+  ],
   "targets": {
     "main": {
       "source": "src/index.ts",
       "context": "node"
     },
-    "target-background": {
-      "source": "src/background/background.html",
-      "context": "browser"
-    },
-    "target-content-overrides": {
-      "source": "src/content/overrides/content.ts",
-      "context": "browser"
-    },
-    "target-content-ext-directory-listing": {
-      "source": "src/content/ext/directory-listing/directory-listing.ts",
-      "context": "browser"
-    },
-    "target-cookies": {
-      "source": "src/pages/cookies/cookies.html",
-      "context": "browser"
-    },
-    "target-debugging": {
-      "source": "src/pages/debugging/debugging.html",
-      "context": "browser"
-    },
-    "target-index": {
-      "source": "src/pages/index/index-tab.html",
-      "context": "browser"
-    },
-    "target-navigation": {
-      "source": "src/pages/navigation/confirm.html",
-      "context": "browser"
-    },
-    "target-options": {
-      "source": "src/pages/options/options.html",
-      "context": "browser"
-    },
-    "target-page-action": {
-      "source": "src/pages/page-action/page-action.html",
-      "context": "browser"
-    },
-    "target-panorama": {
-      "source": "src/pages/panorama/panorama.html",
-      "context": "browser"
-    },
-    "target-popup-v2": {
-      "source": "src/pages/popup-v2/popup-v2.html",
+    "default": {
       "context": "browser"
     }
   },
   "parcelIgnore": [
-    "icon\\.svg",
-    "cookies\\.svg",
-    "top-sites\\.svg",
-    "settings\\.svg",
-    "developer\\.svg",
     ".*\\.svg",
-    "react/react.production.min.js",
-    "react/react-dom.production.min.js"
+    "react.*\\.js"
   ]
 }

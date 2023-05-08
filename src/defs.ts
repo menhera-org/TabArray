@@ -36,7 +36,7 @@ export const GITHUB_TREE_LINK_BASE = 'https://github.com/menhera-org/TabArray/tr
 
 /* Content scripts */
 // content scripts for extension pages
-export const CONTENT_EXTENSION_DIRECTORY_LISTING = '/content/ext/directory-listing.js';
+export const CONTENT_EXTENSION_DIRECTORY_LISTING = '/content/ext/directory-listing/directory-listing.js';
 
 export enum NotificationChannelId {
   NEW_VERSION_AVAILABLE = 'new-version-available',
