@@ -419,11 +419,11 @@
         "description": "Reload Tab menu (same as browser's tab menu)"
     },
     "contextMenuMuteTab": {
-        "message": "Couper le son de l’onglet",
+        "message": "Désactiver l'onglet",
         "description": "Mute Tab menu (same as browser's tab menu)"
     },
     "contextMenuUnmuteTab": {
-        "message": "Réactiver le son de l’onglet",
+        "message": "Réactiver l’onglet",
         "description": "Unmute Tab menu (same as browser's tab menu)"
     },
     "contextMenuPinTab": {
@@ -743,5 +743,17 @@
                 "example": "1.0.0"
             }
         }
+    },
+    "optionAutoHideContainers": {
+        "message": "Masquer automatiquement les conteneurs inutilisés",
+        "description": "Label text for auto-hide unused containers option."
+    },
+    "saveDebuggingInformation": {
+        "message": "Sauvegarder les informations de débogage",
+        "description": "Save debugging information button."
+    },
+    "optionSyncContainers": {
+        "message": "Synchroniser les conteneurs",
+        "description": "Label text for sync containers option."
     }
 }
