@@ -743,5 +743,17 @@
                 "example": "1.0.0"
             }
         }
+    },
+    "optionSyncContainers": {
+        "message": "Синхронизировать контейнеры",
+        "description": "Label text for sync containers option."
+    },
+    "optionAutoHideContainers": {
+        "message": "Автоматическое скрытие неиспользуемых контейнеров",
+        "description": "Label text for auto-hide unused containers option."
+    },
+    "saveDebuggingInformation": {
+        "message": "Сохранить информацию об отладке",
+        "description": "Save debugging information button."
     }
 }
