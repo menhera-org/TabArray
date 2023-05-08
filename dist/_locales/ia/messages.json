@@ -735,5 +735,17 @@
                 "example": "1.0.0"
             }
         }
+    },
+    "optionSyncContainers": {
+        "message": "Synchronisar contentores",
+        "description": "Label text for sync containers option."
+    },
+    "optionAutoHideContainers": {
+        "message": "Celar automaticamente non-usate contentores",
+        "description": "Label text for auto-hide unused containers option."
+    },
+    "saveDebuggingInformation": {
+        "message": "Salvar information del recerca de errores",
+        "description": "Save debugging information button."
     }
 }
