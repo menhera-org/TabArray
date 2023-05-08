@@ -743,5 +743,17 @@
                 "example": "1.0.0"
             }
         }
+    },
+    "optionAutoHideContainers": {
+        "message": "使われていないコンテナーを自動で隠す",
+        "description": "Label text for auto-hide unused containers option."
+    },
+    "saveDebuggingInformation": {
+        "message": "デバッグ情報を保存する",
+        "description": "Save debugging information button."
+    },
+    "optionSyncContainers": {
+        "message": "コンテナーを同期する",
+        "description": "Label text for sync containers option."
     }
 }
