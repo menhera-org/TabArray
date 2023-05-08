@@ -51,12 +51,12 @@ import './background-content-script-responder';
 import './background-tags';
 import './background-set-header';
 import './background-content-script-registrar';
-import './background-tab-preview';
+import './background-url-change';
 import './background-proxy';
 import './background-closed-tabs';
 import './background-sync';
 // import './background-update-checker';
-import { every15secondsAlarm } from './background-alarms';
+import { every15secondsAlarm } from './background-include-alarms';
 
 import '../../api/ApiDefinitions';
 

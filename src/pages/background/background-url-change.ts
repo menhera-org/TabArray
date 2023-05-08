@@ -22,6 +22,7 @@
 import browser from 'webextension-polyfill';
 
 import { TabPreviewService } from '../../lib/tabs/TabPreviewService';
+import { injectExtensionContentScript } from './background-include-ext-content';
 
 const tabPreviewService = TabPreviewService.getInstance();
 
@@ -31,6 +32,7 @@ browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
       console.warn(e);
     });
   }
+  injectExtensionContentScript(browserTab);
 }, {
   properties: ['status', 'url'],
 });

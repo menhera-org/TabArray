@@ -20,7 +20,8 @@
 **/
 
 import { ServiceRegistry } from "../ServiceRegistry";
-import { PackageDirectory, PackageDirectoryEntry, PackageFileType } from "./PackageDirectory";
+import { PackageDirectory } from "./PackageDirectory";
+import { DirectoryListingParser } from "./DirectoryListingParser";
 
 export class DirectoryListingService {
   private static readonly INSTANCE = new DirectoryListingService();
@@ -33,67 +34,7 @@ export class DirectoryListingService {
     // empty
   }
 
-  private parseDirectoryListing(listing: string): PackageDirectory {
-    const JAR_SCHEME = 'jar:';
-    const lines = listing.split('\n').map(line => line.trim()).filter(line => line != '');
-    const packageDirectory: PackageDirectory = {
-      packageLocationUrl: "",
-      directoryPath: "",
-      entries: []
-    };
-    let jarMetadataFound = false;
-    for (const line of lines) {
-      const parts = line.split(' ');
-      const code = parts.shift() as string;
-      if (code == '300:') {
-        if (jarMetadataFound) {
-          throw new Error(`Duplicate jar metadata found in directory listing: ${line}`);
-        }
-        jarMetadataFound = true;
-        const jarUrl = parts.join(' ');
-        if (!jarUrl.startsWith(JAR_SCHEME)) {
-          throw new Error(`Invalid jar URL: ${jarUrl}`);
-        }
-        const [fileUrl, path] = jarUrl.slice(JAR_SCHEME.length).split('!') as [string, string];
-        if (!path) {
-          throw new Error(`Invalid jar URL: ${jarUrl}`);
-        }
-        packageDirectory.packageLocationUrl = fileUrl;
-        packageDirectory.directoryPath = path;
-      } else if (code == '201:') {
-        const [filename, contentLength, , fileType] = parts as [string, string, string, string];
-        if (!fileType) {
-          throw new Error(`Invalid file type: ${line}`);
-        }
-        let type: PackageFileType = 'unknown';
-        if (fileType == 'DIRECTORY') {
-          type = 'directory';
-        } else if (fileType == 'FILE') {
-          type = 'file';
-          if (filename.includes('/')) {
-            throw new Error(`Invalid file name: ${line}`);
-          }
-        }
-        const fileSize = parseInt(contentLength, 10);
-        if (isNaN(fileSize)) {
-          throw new Error(`Invalid file size: ${line}`);
-        }
-        const fullPath = packageDirectory.directoryPath + filename;
-
-        const entry: PackageDirectoryEntry = {
-          type,
-          filename,
-          fullPath,
-          fileSize
-        };
-        packageDirectory.entries.push(entry);
-      }
-    }
-    if (!jarMetadataFound) {
-      throw new Error(`No jar metadata found in directory listing`);
-    }
-    return packageDirectory;
-  }
+  private readonly _parser = new DirectoryListingParser();
 
   public async getDirectory(pathUrl: string): Promise<PackageDirectory> {
     if (!pathUrl.startsWith('/') || !pathUrl.endsWith('/')) {
@@ -101,7 +42,7 @@ export class DirectoryListingService {
     }
     const response = await fetch(pathUrl);
     const text = await response.text();
-    const packageDirectory = this.parseDirectoryListing(text);
+    const packageDirectory = this._parser.parse(text);
     return packageDirectory;
   }
 

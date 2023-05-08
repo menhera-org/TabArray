@@ -19,18 +19,21 @@
   @license
 **/
 
-import { ContainerSyncService } from "../../lib/sync/ContainerSyncService";
+import browser from "webextension-polyfill";
 
-import { config } from "../../config/config";
-
-import { everyMinuteAlarm } from "./background-include-alarms";
-
-const containerSyncService = ContainerSyncService.getInstance();
-
-everyMinuteAlarm.onAlarm.addListener(async () => {
-  const enabled = await config['feature.syncContainers'].getValue();
-  if (!enabled) return;
-  containerSyncService.sync().catch((e) => {
-    console.error(e);
-  });
-})
+export const injectExtensionContentScript = (browserTab: browser.Tabs.Tab) => {
+  if (browserTab.url != null && browserTab.url != 'about:blank' && browserTab.id != null) {
+    const url = new URL(browserTab.url);
+    if (url.origin != location.origin) return;
+    if (!url.pathname.endsWith('/')) return;
+    browser.scripting.executeScript({
+      files: ['/content/directory-listing.js'],
+      injectImmediately: true,
+      target: {
+        tabId: browserTab.id,
+      },
+    }).catch((e) => {
+      console.error(e);
+    });
+  }
+};

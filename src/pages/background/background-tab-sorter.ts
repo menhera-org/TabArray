@@ -25,7 +25,7 @@ import { CompatTab } from 'weeg-tabs';
 import { TabSortingService } from '../../lib/tabs/TabSortingService';
 import { StartupService } from '../../lib/StartupService';
 
-import { everyMinuteAlarm } from './background-alarms';
+import { everyMinuteAlarm } from './background-include-alarms';
 
 const tabSortingService = TabSortingService.getInstance<TabSortingService>();
 const startupService = StartupService.getInstance();

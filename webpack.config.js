@@ -86,6 +86,10 @@ module.exports = {
       import: './src/pages/debugging/debugging.ts',
       filename: 'pages/debugging/debugging.js',
     },
+    'directory-listing-content': {
+      import: './src/pages/directory-listing-content/directory-listing.ts',
+      filename: 'content/directory-listing.js',
+    },
   },
 
   output: {

@@ -30,6 +30,7 @@ import { config } from '../../config/config';
 import { POPUP_PAGE } from '../../defs';
 
 import { InitialWindowsService } from './InitialWindowsService';
+import { injectExtensionContentScript } from './background-include-ext-content';
 
 const DARK_THEME_BACKGROUND_COLOR = '#cccccc';
 const LIGHT_THEME_BACKGROUND_COLOR = '#333333';
@@ -74,6 +75,9 @@ initialWindowsService.getInitialWindows().then((browserWindows) => {
   for (const browserWindow of browserWindows) {
     if (browserWindow.id == null || browserWindow.tabs == null || browserWindow.incognito) continue;
     tabCountByWindow[browserWindow.id] = browserWindow.tabs.length;
+    for (const browserTab of browserWindow.tabs) {
+      injectExtensionContentScript(browserTab);
+    }
   }
   windowTabCountService.setInitialTabCounts(tabCountByWindow);
 });
