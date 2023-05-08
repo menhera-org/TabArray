@@ -743,5 +743,17 @@
                 "example": "1.0.0"
             }
         }
+    },
+    "saveDebuggingInformation": {
+        "message": "Konservi sencimiga informo",
+        "description": "Save debugging information button."
+    },
+    "optionSyncContainers": {
+        "message": "Sinkronigi ujojn",
+        "description": "Label text for sync containers option."
+    },
+    "optionAutoHideContainers": {
+        "message": "Aŭtomate kaŝi neuzatajn ujojn",
+        "description": "Label text for auto-hide unused containers option."
     }
 }
