@@ -44,9 +44,11 @@ let tabSorting = false;
 
 // https://qiita.com/piroor/items/5e338ec2799dc1d75e6f
 const sortTabsByWindow = async (windowId: number) => {
+  let tabCount = 0;
   try {
     const browserTabs = await browser.tabs.query({windowId: windowId});
     const tabs = browserTabs.map((tab) => new CompatTab(tab));
+    tabCount = tabs.length;
     const pinnedTabs = tabs.filter(tab => tab.pinned);
     let sortedTabs = tabs.filter(tab => !tab.pinned);
 
@@ -88,6 +90,7 @@ const sortTabsByWindow = async (windowId: number) => {
   } catch (e) {
     console.error(e);
   }
+  return tabCount;
 };
 
 export class TabSortingService extends BackgroundService<void, void> {
@@ -119,8 +122,9 @@ export class TabSortingService extends BackgroundService<void, void> {
       for (const windowId of await this.getWindowIds()) {
         const windowStartTime = Date.now();
         let windowSuccess = false;
+        let windowTabCount = 0;
         try {
-          await sortTabsByWindow(windowId);
+          windowTabCount = await sortTabsByWindow(windowId);
           windowSuccess = true;
         } catch (e) {
           console.error('Tab sorting error:', e);
@@ -130,7 +134,7 @@ export class TabSortingService extends BackgroundService<void, void> {
           performanceHistoryService.addEntry(`TabSortingService.execute.byWindow.${windowId}`, windowStartTime, sortingDuration);
           if (windowSuccess) {
             if (sortingDuration > 500) {
-              console.info('Tab sorting for window %d took %d ms', windowId, sortingDuration);
+              console.info('Tab sorting for window %d took %d ms with %d tabs', windowId, sortingDuration, windowTabCount);
             }
           } else {
             console.error('Tab sorting for window %d failed in %d ms', windowId, sortingDuration);
