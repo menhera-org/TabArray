@@ -98,6 +98,7 @@ dist/**/*.js
 dist/**/*.js.map
 dist/**/*.css.map
 dist/**/*.LICENSE.txt
+dist/**/*.html
 dist/build.json
 dist/.integrity.json
 dist/pages/**/*.css
