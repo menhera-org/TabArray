@@ -331,6 +331,15 @@ export class BrowserStateStore {
       this._params.displayedContainers.splice(i, 1);
       break;
     }
+    const supergroups = this._params.tabGroupDirectorySnapshot.value;
+    for (const supergroupTabGroupId in supergroups) {
+      const supergroup = supergroups[supergroupTabGroupId];
+      if (!supergroup) continue;
+      supergroup.members = supergroup.members.filter((member) => {
+        return member !== identity.cookieStore.id;
+      });
+    }
+    this._params.tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(supergroups);
     this.update();
   }
 
