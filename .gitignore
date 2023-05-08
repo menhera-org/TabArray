@@ -96,9 +96,11 @@ ts-dist
 # Webpack output
 dist/**/*.js
 dist/**/*.js.map
+dist/**/*.css.map
 dist/**/*.LICENSE.txt
 dist/build.json
 dist/.integrity.json
+dist/pages/**/*.css
 
 # web-ext output
 *.xpi
