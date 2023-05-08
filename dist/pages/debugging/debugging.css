@@ -71,6 +71,7 @@ ctg-frame-layout {
   border-spacing: 0;
   padding: 0;
   inline-size: 100%;
+  overflow-wrap: break-word;
 }
 
 :is(#logs-table, #performance-table, #installation-table) > thead {
