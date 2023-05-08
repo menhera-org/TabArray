@@ -419,11 +419,11 @@
         "description": "Reload Tab menu (same as browser's tab menu)"
     },
     "contextMenuMuteTab": {
-        "message": "Silenciar pestaña",
+        "message": "Desactivar pestaña",
         "description": "Mute Tab menu (same as browser's tab menu)"
     },
     "contextMenuUnmuteTab": {
-        "message": "Restaurar sonido en pestaña",
+        "message": "Reactivar pestaña",
         "description": "Unmute Tab menu (same as browser's tab menu)"
     },
     "contextMenuPinTab": {
@@ -743,5 +743,17 @@
     "proxyHostname": {
         "message": "Nombre del equipo",
         "description": "Proxy hostname option."
+    },
+    "optionAutoHideContainers": {
+        "message": "Auto-ocultar contenedores no utilizados",
+        "description": "Label text for auto-hide unused containers option."
+    },
+    "saveDebuggingInformation": {
+        "message": "Guardar información de depuración",
+        "description": "Save debugging information button."
+    },
+    "optionSyncContainers": {
+        "message": "Sincronizar contenedores",
+        "description": "Label text for sync containers option."
     }
 }
