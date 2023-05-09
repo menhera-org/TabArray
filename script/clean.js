@@ -30,7 +30,7 @@ const path = require('path');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs');
 
-const findAndClear = function find(startPath, filter) {
+const findAndClear = function find(startPath, filter, removeDirectory = false) {
   if (!fs.existsSync(startPath)) {
     return;
   }
@@ -39,12 +39,12 @@ const findAndClear = function find(startPath, filter) {
   for (let i = 0; i < files.length; i++) {
     const filename = path.join(startPath, files[i]);
     const stat = fs.lstatSync(filename);
-    if (stat.isDirectory()) {
+    if ((!stat.isDirectory() || removeDirectory) && filename.endsWith(filter)) {
+      console.log('removing:', filename);
+      fs.rmSync(filename, { recursive: true, force: true });
+    } else if (stat.isDirectory()) {
       // recursive search
       find(filename, filter);
-    } else if (filename.endsWith(filter)) {
-      console.log('removing:', filename);
-      fs.unlinkSync(filename);
     }
   }
 };
@@ -68,6 +68,30 @@ const findStartingAndClear = function find(startPath, filter) {
   }
 };
 
+const cleanEmptyFoldersRecursively = (folder) => {
+  var isDir = fs.statSync(folder).isDirectory();
+  if (!isDir) {
+    return;
+  }
+  var files = fs.readdirSync(folder);
+  if (files.length > 0) {
+    files.forEach(function(file) {
+      var fullPath = path.join(folder, file);
+      cleanEmptyFoldersRecursively(fullPath);
+    });
+
+    // re-evaluate files; after deleting subfolder
+    // we may have parent folder empty now
+    files = fs.readdirSync(folder);
+  }
+
+  if (files.length == 0) {
+    console.log("removing: ", folder);
+    fs.rmdirSync(folder);
+    return;
+  }
+};
+
 const distDir = path.join(__dirname, '../dist');
 const distPagesDir = path.join(distDir, 'pages');
 findAndClear(distDir, '.js');
@@ -76,8 +100,38 @@ findAndClear(distDir, '.css.map');
 findAndClear(distDir, '.js.LICENSE.txt');
 findAndClear(distDir, '.html');
 findAndClear(distPagesDir, '.css');
+
+// clean macOS files
 findStartingAndClear(distDir, '.DS_Store');
 findStartingAndClear(distDir, '._');
+
+/*
+  Clean Windows files
+
+  Thumbs.db
+  ehthumbs.db
+  ehthumbs_vista.db
+  *.stackdump
+  [Dd]esktop.ini
+  $RECYCLE.BIN/
+  *.cab
+  *.msi
+  *.msm
+  *.msp
+  *.lnk
+*/
+findAndClear(distDir, '.db');
+findAndClear(distDir, '.stackdump');
+findAndClear(distDir, '.ini');
+findAndClear(distDir, '.cab');
+findAndClear(distDir, '.msi');
+findAndClear(distDir, '.msm');
+findAndClear(distDir, '.msp');
+findAndClear(distDir, '.lnk');
+findAndClear(distDir, '$RECYCLE.BIN', true);
+
+// clean empty folders
+cleanEmptyFoldersRecursively(distDir);
 
 // const buildsDir = path.join(__dirname, '../builds');
 // fs.rmSync(buildsDir, { recursive: true, force: true });
