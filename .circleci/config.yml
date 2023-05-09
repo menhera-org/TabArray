@@ -37,7 +37,7 @@ jobs:
           command: "git config --global user.name 'CircleCI' && git config --global user.email 'circleci@menhera.org'"
       - run:
           name: List SSH keys
-          command: "ls -l ~/ssh/"
+          command: "ls -l ~/.ssh/"
       - run:
           name: Clone repository
           command: "GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_dc:28:3f:db:6c:1b:0e:c1:be:cf:0d:81:84:60:de:0d' git clone git@github.com:menhera-org/ctg-releases.git ~/ctg-releases"
