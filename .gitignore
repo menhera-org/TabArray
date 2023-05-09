@@ -102,6 +102,7 @@ dist/**/*.html
 dist/build.json
 dist/.integrity.json
 dist/pages/**/*.css
+dist/img
 
 # web-ext output
 *.xpi
