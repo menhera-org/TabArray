@@ -59,7 +59,7 @@ jobs:
           command: "( cd ~/ctg-releases && git add . && git commit -m 'CircleCI updates' && git push )"
       - aws-s3/copy:
           from: builds/*.xpi
-          install-aws-cli: false
+          install-aws-cli: true
           to: s3://menhera-downloads/ctg
 
 workflows:
