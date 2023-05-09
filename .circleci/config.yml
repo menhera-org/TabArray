@@ -39,14 +39,17 @@ jobs:
           name: List SSH keys
           command: "ls -l ~/.ssh/"
       - run:
+          name: Set SSH key for use with Git
+          command: "printf 'Host github.com\n  HostName github.com\n  IdentityFile ~/.ssh/id_rsa_dc283fdb6c1b0ec1becf0d818460de0d' >> ~/.ssh/config && chmod 600 ~/.ssh/config"
+      - run:
           name: Clone repository
-          command: "GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_dc283fdb6c1b0ec1becf0d818460de0d' git clone git@github.com:menhera-org/ctg-releases.git ~/ctg-releases"
+          command: "git clone git@github.com:menhera-org/ctg-releases.git ~/ctg-releases"
       - run:
           name: Copy artifacts
           command: "mkdir -p ~/ctg-releases/build-metadata && cp build-metadata/*.json ~/ctg-releases/build-metadata/"
       - run:
           name: Commit artifacts and push to GitHub
-          command: "export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_dc283fdb6c1b0ec1becf0d818460de0d'; ( cd ~/ctg-releases && git add . && git commit -m 'CircleCI updates' && git push )"
+          command: "( cd ~/ctg-releases && git add . && git commit -m 'CircleCI updates' && git push )"
 
 workflows:
   # Below is the definition of your workflow.
