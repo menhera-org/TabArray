@@ -38,6 +38,9 @@ export const GITHUB_TREE_LINK_BASE = 'https://github.com/menhera-org/TabArray/tr
 // content scripts for extension pages
 export const CONTENT_EXTENSION_DIRECTORY_LISTING = '/content/ext/directory-listing/directory-listing.js';
 
+// Public key for verifying signed messages from the official CTG developers (Continuous Integration key)
+export const CTG_OFFICIAL_ED25519_SIGNING_KEY = '2896306f0d985fdd2febcd930b0733c7c86afcd705652f4a4aadd513235d7867';
+
 export enum NotificationChannelId {
   NEW_VERSION_AVAILABLE = 'new-version-available',
 }

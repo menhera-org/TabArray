@@ -112,6 +112,8 @@ dist/manifest.json
 *.xpi
 *.zip
 builds
+build-metadata
+ctg-releases
 
 # Gatsby files
 .cache/

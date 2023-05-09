@@ -34,6 +34,7 @@
     "typescript": "<5.1.0"
   },
   "dependencies": {
+    "@noble/ed25519": "^2.0.0",
     "diff": "^5.1.0",
     "webextension-polyfill": "^0.10.0",
     "weeg-containers": "^0.11.0",

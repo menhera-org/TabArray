@@ -43,6 +43,8 @@ const { glob } = require("glob");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const manifest = require('../src/manifest.json');
 
+const edPromise = import('@noble/ed25519');
+
 /**
  *
  * @param {string} directory
@@ -190,13 +192,13 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const infoPath = __dirname + '/../dist/build.json';
   fs.writeFileSync(infoPath, JSON.stringify(info, null, 2));
 
-  const integrity = await getIntegrityHash();
-  const integrityPath = __dirname + '/../dist/.integrity.json';
-  fs.writeFileSync(integrityPath, JSON.stringify(integrity, null, 2));
-
   const manifestJson = JSON.stringify(manifest, null, 2);
   const manifestPath = __dirname + '/../dist/manifest.json';
   fs.writeFileSync(manifestPath, manifestJson);
+
+  const integrity = await getIntegrityHash();
+  const integrityPath = __dirname + '/../dist/.integrity.json';
+  fs.writeFileSync(integrityPath, JSON.stringify(integrity, null, 2));
 
   const lintResult = await runCommand('npx', ['addons-linter', './dist/']);
   console.log(lintResult);
@@ -204,8 +206,47 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const buildDir = __dirname + '/../builds';
   const destinationFilename = __dirname + '/../builds/' + filename;
 
+  const buildMetadataDir = __dirname + '/../build-metadata';
+
   await fs.promises.mkdir(buildDir, { recursive: true });
+  await fs.promises.mkdir(buildMetadataDir, { recursive: true });
   await zipDirectoryContents(__dirname + '/../dist', destinationFilename);
+
+  const version = String(manifest.version);
+  const hash = integrity.hash;
+  const metadata = {
+    version,
+    commit,
+    untracked,
+    buildDate,
+    hash,
+  };
+  const metadataJson = JSON.stringify(metadata); // no pretty print
+  const buildMetadataFilename = `${buildMetadataDir}/${hash}.json`;
+  fs.writeFileSync(buildMetadataFilename, metadataJson);
+
+  const ed = await edPromise;
+  const signingKey = process.env.ED25519_IDENTITY;
+  if (signingKey && !untracked) {
+    console.log('Generating signature for %s (%s)', filename, hash);
+    const metadataBuffer = Buffer.from(metadataJson, 'utf8');
+    const privKey = Buffer.from(signingKey, 'hex');
+    const pubKey = await ed.getPublicKeyAsync(privKey);
+    const signature = await ed.signAsync(metadataBuffer, privKey);
+    const signatureBuffer = Buffer.from(signature);
+    const metadataBase64 = metadataBuffer.toString('base64');
+    const signatureBase64 = signatureBuffer.toString('base64');
+    const pubKeyBase64 = pubKey.toString('base64');
+
+    const signedMetadata = {
+      metadata: metadataBase64,
+      signature: signatureBase64,
+      publicKey: pubKeyBase64,
+    };
+    const signedMetadataJson = JSON.stringify(signedMetadata, null, 2);
+    const signedMetadataFilename = `${buildMetadataDir}/${hash}.signed.json`;
+    fs.writeFileSync(signedMetadataFilename, signedMetadataJson);
+  }
 
   const realpath = await fs.promises.realpath(destinationFilename);
   return realpath;
