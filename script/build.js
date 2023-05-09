@@ -41,7 +41,7 @@ const zip = require('deterministic-zip-ng');
 const { glob } = require("glob");
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const manifest = require('../dist/manifest.json');
+const manifest = require('../src/manifest.json');
 
 /**
  *
@@ -193,6 +193,10 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const integrity = await getIntegrityHash();
   const integrityPath = __dirname + '/../dist/.integrity.json';
   fs.writeFileSync(integrityPath, JSON.stringify(integrity, null, 2));
+
+  const manifestJson = JSON.stringify(manifest, null, 2);
+  const manifestPath = __dirname + '/../dist/manifest.json';
+  fs.writeFileSync(manifestPath, manifestJson);
 
   const lintResult = await runCommand('npx', ['addons-linter', './dist/']);
   console.log(lintResult);

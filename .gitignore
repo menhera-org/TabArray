@@ -106,6 +106,7 @@ dist/img
 dist/css
 dist/LICENSE
 dist/*.svg
+dist/manifest.json
 
 # web-ext output
 *.xpi

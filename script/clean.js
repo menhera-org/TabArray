@@ -103,6 +103,7 @@ const topLevelCleanFiles = [
   'icon.svg',
   '.integrity.json',
   'build.json',
+  'manifest.json',
 ];
 
 const topLevelCleanPaths = topLevelCleanFiles.map((file) => path.join(distDir, file));
