@@ -234,9 +234,10 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
     const pubKey = await ed.getPublicKeyAsync(privKey);
     const signature = await ed.signAsync(metadataBuffer, privKey);
     const signatureBuffer = Buffer.from(signature);
+    const pubKeyBuffer = Buffer.from(pubKey);
     const metadataBase64 = metadataBuffer.toString('base64');
     const signatureBase64 = signatureBuffer.toString('base64');
-    const pubKeyBase64 = pubKey.toString('base64');
+    const pubKeyBase64 = pubKeyBuffer.toString('base64');
 
     const signedMetadata = {
       metadata: metadataBase64,
