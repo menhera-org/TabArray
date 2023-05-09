@@ -7,6 +7,7 @@ orbs:
   # Orbs reduce the amount of configuration required for common tasks.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
   node: circleci/node@4.7
+  aws-s3: circleci/aws-s3@3.1
 
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
@@ -56,6 +57,10 @@ jobs:
       - run:
           name: Commit artifacts and push to GitHub
           command: "( cd ~/ctg-releases && git add . && git commit -m 'CircleCI updates' && git push )"
+      - aws-s3/copy:
+          from: builds/*.xpi
+          install-aws-cli: false
+          to: s3://menhera-downloads/ctg
 
 workflows:
   # Below is the definition of your workflow.
