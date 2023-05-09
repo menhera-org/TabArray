@@ -27,8 +27,14 @@ jobs:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: npm
       - run:
+          name: Check repository status
+          command: "git status || true"
+      - run:
           name: Build package
           command: npm run build
+      - run:
+          name: Check repository status again
+          command: "git status || true"
       - add_ssh_keys:
           fingerprints:
             - "dc:28:3f:db:6c:1b:0e:c1:be:cf:0d:81:84:60:de:0d"
