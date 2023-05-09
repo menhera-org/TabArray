@@ -23,8 +23,8 @@ import browser from 'webextension-polyfill';
 import { EventSink } from 'weeg-events';
 import { CompatTab } from 'weeg-tabs';
 
-import { TagService } from '../lib/tabGroups/TagService';
-import { TagDirectory, TagType } from '../lib/tabGroups/TagDirectory';
+import { TagService } from '../lib/tabGroups/tags/TagService';
+import { TagDirectory, TagType } from '../lib/tabGroups/tags/TagDirectory';
 
 const tagService = TagService.getInstance();
 const tagDirectory = new TagDirectory();

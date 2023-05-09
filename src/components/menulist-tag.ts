@@ -22,13 +22,14 @@
 import browser from 'webextension-polyfill';
 import { EventSink } from 'weeg-events';
 
-import { TagDirectory, TagType } from '../lib/tabGroups/TagDirectory';
+import { TagType } from '../lib/tabGroups/tags/TagType';
+import { TagService } from '../lib/tabGroups/tags/TagService';
 import { CompatConsole } from '../lib/console/CompatConsole';
 
 import { TagEditorElement } from './tag-editor';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
-const tagDirectory = new TagDirectory();
+const tagService = TagService.getInstance();
 
 export class MenulistTagElement extends HTMLElement {
   public readonly onTagButtonClicked = new EventSink<void>();
@@ -95,7 +96,7 @@ export class MenulistTagElement extends HTMLElement {
       document.body.appendChild(new TagEditorElement(this.tag));
     };
     this.tagDeleteButton.onclick = () => {
-      tagDirectory.deleteTag(this.tag.tagId).catch((e) => {
+      tagService.deleteTag(this.tag.tagId).catch((e) => {
         console.error(e);
       });
     };

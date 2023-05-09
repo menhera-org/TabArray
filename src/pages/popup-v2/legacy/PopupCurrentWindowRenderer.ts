@@ -29,7 +29,7 @@ import { SupergroupType, TabGroupDirectory } from '../../../lib/tabGroups/TabGro
 import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
 import { TabGroupAttributes } from '../../../lib/tabGroups/TabGroupAttributes';
 import { TabQueryService } from '../../../lib/tabs/TabQueryService';
-import { TabAttributeMap } from '../../../lib/tabGroups/TabAttributeMap';
+import { TabAttributeMap } from '../../../lib/tabGroups/tags/TabAttributeMap';
 import { CompatConsole } from '../../../lib/console/CompatConsole';
 import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
 import { WindowStateDao } from '../../../lib/states/WindowStateDao';

@@ -1,0 +1,161 @@
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+
+/*
+  Container Tab Groups
+  Copyright (C) 2023 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+@import url(../../css/theme.css);
+
+:root {
+  inline-size: 100%;
+  block-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 0;
+  /* max-inline-size: max-content;
+  max-block-size: max-content; */
+  display: block flex;
+  flex-direction: column;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  overflow-block: auto;
+  overflow-inline: hidden;
+  margin: 0;
+  display: block flex;
+  position: relative;
+  flex-direction: column;
+  min-inline-size: 0;
+  min-block-size: 0;
+  flex: 1;
+}
+
+ctg-top-bar {
+  z-index: 50;
+}
+
+ctg-vertical-layout, ctg-frame-layout {
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: 0;
+}
+
+ctg-frame-layout {
+  overflow: auto;
+}
+
+#fragment-tab-count {
+  block-size: 100%;
+}
+
+#logs-table, #performance-table, #installation-table {
+  margin: 0;
+  border-collapse: none;
+  border-spacing: 0;
+  padding: 0;
+  inline-size: 100%;
+  overflow-wrap: break-word;
+}
+
+:is(#logs-table, #performance-table, #installation-table) > thead {
+  position: sticky;
+  inset-block-start: 0;
+}
+
+:is(#logs-table, #performance-table, #installation-table) > thead > tr > th {
+  text-align: start;
+  font-weight: bold;
+  background-color: var(--overlay-color);
+  backdrop-filter: blur(1rem);
+  border-block-end: 1px solid var(--border-color);
+}
+
+:is(#logs-table, #performance-table, #installation-table) :is(th, td) {
+  padding-inline: 1em;
+  padding-block: .5em;
+  box-sizing: border-box;
+}
+
+#logs-tbody, #performance-tbody, #installation-tbody {
+  font-family: monospace;
+  user-select: text;
+}
+
+#logs-tbody > tr > td:nth-child(1) {
+  opacity: .5;
+}
+
+#logs-tbody > tr > td:is(:nth-child(2), :nth-child(3)) {
+  color: #844587;
+}
+
+#files {
+  display: block grid;
+  grid-template-columns: 1fr max-content max-content;
+}
+
+#files > * {
+  display: block grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+}
+
+#files > * > * {
+  padding-inline: 1em;
+  padding-block: .5em;
+}
+
+#files-header {
+  font-weight: bold;
+  text-align: start;
+  border-block-end: solid 1px var(--border-color);
+  position: sticky;
+  inset-block-start: 0;
+  background-color: var(--overlay-color);
+  backdrop-filter: blur(1rem);
+}
+
+.file-recorded-integrity, .file-current-integrity {
+  text-align: end;
+  inline-size: 20vi;
+  max-inline-size: 15em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-integrity-changed > :is(.file-recorded-integrity, .file-current-integrity) {
+  color: red;
+}
+
+.file-path-link {
+  text-decoration: none;
+  color: var(--in-content-link-color);
+}
+
+.file-path-link:hover {
+  text-decoration: underline;
+}
+
+iframe#time-chart {
+  border: none;
+  inline-size: 100%;
+  block-size: 100%;
+}

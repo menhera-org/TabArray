@@ -26,7 +26,7 @@ import { CompatTab } from 'weeg-tabs';
 
 import { ServiceRegistry } from '../ServiceRegistry';
 import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
-import { TagService } from '../tabGroups/TagService';
+import { TagService } from '../tabGroups/tags/TagService';
 import { CompatConsole } from '../console/CompatConsole';
 import { PerformanceHistoryService } from '../PerformanceHistoryService';
 import { SpinnerService } from '../SpinnerService';

@@ -69,9 +69,13 @@ const findStartingAndClear = function find(startPath, filter) {
 };
 
 const distDir = path.join(__dirname, '../dist');
+const distPagesDir = path.join(distDir, 'pages');
 findAndClear(distDir, '.js');
 findAndClear(distDir, '.js.map');
+findAndClear(distDir, '.css.map');
 findAndClear(distDir, '.js.LICENSE.txt');
+findAndClear(distDir, '.html');
+findAndClear(distPagesDir, '.css');
 findStartingAndClear(distDir, '.DS_Store');
 findStartingAndClear(distDir, '._');
 

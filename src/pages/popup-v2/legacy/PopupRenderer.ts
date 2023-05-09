@@ -26,7 +26,7 @@ import { CompatTab } from 'weeg-tabs';
 import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOpenerService';
 import { TabQueryService } from '../../../lib/tabs/TabQueryService';
 import { TabService } from '../../../lib/tabs/TabService';
-import { TabAttributeMap } from '../../../lib/tabGroups/TabAttributeMap';
+import { TabAttributeMap } from '../../../lib/tabGroups/tags/TabAttributeMap';
 import { CompatConsole } from '../../../lib/console/CompatConsole';
 
 import { MenulistTabElement } from "../../../components/menulist-tab";

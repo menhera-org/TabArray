@@ -24,7 +24,7 @@ import { CookieStore } from 'weeg-containers';
 import { BackgroundService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 
-import { TagService } from './TagService';
+import { TagService } from './tags/TagService';
 import { ActiveContainerService } from '../states/ActiveContainerService';
 import { ServiceRegistry } from '../ServiceRegistry';
 import { CompatConsole } from '../console/CompatConsole';

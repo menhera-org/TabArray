@@ -22,11 +22,13 @@
 import browser from 'webextension-polyfill';
 import { EventSink } from 'weeg-events';
 
-import { TagDirectory, TagType } from '../lib/tabGroups/TagDirectory';
+import { TagService } from '../lib/tabGroups/tags/TagService';
+import { TagType } from '../lib/tabGroups/tags/TagType';
 
 export type EditorMode = 'create' | 'edit';
 
-const tagDirectory = new TagDirectory();
+const tagService = TagService.getInstance();
+const tagDirectory = tagService.tagDirectory;
 
 export class TagEditorElement extends HTMLElement {
   private _mode: EditorMode;

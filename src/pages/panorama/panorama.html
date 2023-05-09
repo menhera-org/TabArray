@@ -1,0 +1,46 @@
+<!-- vim: set ts=2 sw=2 et ai :
+    Container Tab Groups
+    Copyright (C) 2023 Menhera.org
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+  <head>
+    <meta charset='utf-8'/>
+    <title></title>
+    <link rel='icon' href='/img/firefox-icons/top-sites.svg'/>
+    <link rel='stylesheet' href='chrome://browser/content/extension.css'/>
+    <link rel='stylesheet' href='panorama.css'/>
+    <script type='module' src='panorama.ts'></script>
+  </head>
+  <body>
+    <div id='containers'></div>
+    <div id="topbar">
+      <!-- actually, this should be called bottombar -->
+      <button id="button-new-container">
+        <span class="button-text">buttonNewContainer</span>
+      </button>
+      <button id="button-new-temporary-container">
+        <span class="button-text">buttonNewTemporaryContainer</span>
+      </button>
+      <button id="button-settings">
+        <span class="button-text">buttonSettings</span>
+      </button>
+      <button id="button-help">
+        <span class="button-text">menuItemHelp</span>
+      </button>
+    </div>
+  </body>
+</html>
