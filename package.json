@@ -20,6 +20,7 @@
     "@types/webextension-polyfill": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
+    "addons-linter": "^6.3.1",
     "deterministic-zip-ng": "^2.0.0",
     "eslint": "^8.40.0",
     "glob": "^10.2.2",
