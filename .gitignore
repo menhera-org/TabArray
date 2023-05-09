@@ -93,7 +93,7 @@ out
 # TypeScript output
 ts-dist
 
-# Webpack output
+# Parcel output
 dist/**/*.js
 dist/**/*.js.map
 dist/**/*.css.map
@@ -103,6 +103,9 @@ dist/build.json
 dist/.integrity.json
 dist/pages/**/*.css
 dist/img
+dist/css
+dist/LICENSE
+dist/*.svg
 
 # web-ext output
 *.xpi
