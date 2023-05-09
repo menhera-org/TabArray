@@ -33,6 +33,9 @@ jobs:
           fingerprints:
             - "dc:28:3f:db:6c:1b:0e:c1:be:cf:0d:81:84:60:de:0d"
       - run:
+          name: Add Git name and email
+          command: "git config --global user.name 'CircleCI' && git config --global user.email 'circleci@menhera.org'"
+      - run:
           name: Clone repository
           command: "GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_fingerprint' git clone git@github.com:menhera-org/ctg-releases.git ~/ctg-releases"
       - run:
