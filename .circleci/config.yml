@@ -60,7 +60,7 @@ jobs:
       - aws-s3/copy:
           from: builds/*.xpi
           install-aws-cli: true
-          to: s3://menhera-downloads/ctg
+          to: s3://menhera-downloads/ctg/
 
 workflows:
   # Below is the definition of your workflow.
