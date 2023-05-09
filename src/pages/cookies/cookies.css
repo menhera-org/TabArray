@@ -21,9 +21,9 @@
 
 @import url(../../css/theme.css);
 
-:root {
-  background-color: var(--background-color);
-  color: var(--text-color);
+:root, body {
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
 }
 
 body {
