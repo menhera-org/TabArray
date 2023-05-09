@@ -93,13 +93,32 @@ const cleanEmptyFoldersRecursively = (folder) => {
 };
 
 const distDir = path.join(__dirname, '../dist');
-const distPagesDir = path.join(distDir, 'pages');
+
+// clean generated files and copied static files
+const topLevelCleanFiles = [
+  'pages',
+  'css',
+  'img',
+  'LICENSE',
+  'icon.svg',
+  '.integrity.json',
+  'build.json',
+];
+
+const topLevelCleanPaths = topLevelCleanFiles.map((file) => path.join(distDir, file));
+for (const file of topLevelCleanPaths) {
+  if (fs.existsSync(file)) {
+    console.log('removing:', file);
+    fs.rmSync(file, { recursive: true, force: true });
+  }
+}
+
+// clean generated files
 findAndClear(distDir, '.js');
 findAndClear(distDir, '.js.map');
 findAndClear(distDir, '.css.map');
 findAndClear(distDir, '.js.LICENSE.txt');
 findAndClear(distDir, '.html');
-findAndClear(distPagesDir, '.css');
 
 // clean macOS files
 findStartingAndClear(distDir, '.DS_Store');
