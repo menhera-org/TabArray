@@ -43,7 +43,7 @@ jobs:
           command: "mkdir -p ~/ctg-releases/build-metadata && cp build-metadata/*.json ~/ctg-releases/build-metadata/"
       - run:
           name: Commit artifacts and push to GitHub
-          command: "export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_fingerprint'; ( cd ~/ctg-releases && git commit -am 'CircleCI updates' && git push )"
+          command: "export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_fingerprint'; ( cd ~/ctg-releases && git add . && git commit -m 'CircleCI updates' && git push )"
 
 workflows:
   # Below is the definition of your workflow.
