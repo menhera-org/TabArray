@@ -7,7 +7,6 @@ orbs:
   # Orbs reduce the amount of configuration required for common tasks.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
   node: circleci/node@4.7
-  aws-s3: circleci/aws-s3@3.1
 
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
@@ -30,6 +29,9 @@ jobs:
       - run:
           name: Build package
           command: npm run build
+      - add_ssh_keys:
+          fingerprints:
+            - "dc:28:3f:db:6c:1b:0e:c1:be:cf:0d:81:84:60:de:0d"
 
 workflows:
   # Below is the definition of your workflow.
