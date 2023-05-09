@@ -23,6 +23,8 @@
   Display a nice directory listing for extension directories.
 */
 
+// WebExtensions API is not available in this context.
+
 import { PackageDirectory } from "../../../lib/package/PackageDirectory";
 import { DirectoryListingParser } from "../../../lib/package/DirectoryListingParser";
 
