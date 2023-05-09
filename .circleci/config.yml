@@ -37,13 +37,13 @@ jobs:
           command: "git config --global user.name 'CircleCI' && git config --global user.email 'circleci@menhera.org'"
       - run:
           name: Clone repository
-          command: "GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_fingerprint' git clone git@github.com:menhera-org/ctg-releases.git ~/ctg-releases"
+          command: "GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519_dc:28:3f:db:6c:1b:0e:c1:be:cf:0d:81:84:60:de:0d' git clone git@github.com:menhera-org/ctg-releases.git ~/ctg-releases"
       - run:
           name: Copy artifacts
           command: "mkdir -p ~/ctg-releases/build-metadata && cp build-metadata/*.json ~/ctg-releases/build-metadata/"
       - run:
           name: Commit artifacts and push to GitHub
-          command: "export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa_fingerprint'; ( cd ~/ctg-releases && git add . && git commit -m 'CircleCI updates' && git push )"
+          command: "export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519_dc:28:3f:db:6c:1b:0e:c1:be:cf:0d:81:84:60:de:0d'; ( cd ~/ctg-releases && git add . && git commit -m 'CircleCI updates' && git push )"
 
 workflows:
   # Below is the definition of your workflow.
