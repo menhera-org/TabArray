@@ -43,7 +43,8 @@ const { glob } = require("glob");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const manifest = require('../src/manifest.json');
 
-const edPromise = import('@noble/ed25519');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { ed25519 } = require('@noble/curves/ed25519');
 
 /**
  *
@@ -225,14 +226,13 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const buildMetadataFilename = `${buildMetadataDir}/${hash}.json`;
   fs.writeFileSync(buildMetadataFilename, metadataJson);
 
-  const ed = await edPromise;
   const signingKey = process.env.ED25519_IDENTITY;
   if (signingKey && !untracked) {
     console.log('Generating signature for %s (%s)', filename, hash);
     const metadataBuffer = Buffer.from(metadataJson, 'utf8');
     const privKey = Buffer.from(signingKey, 'hex');
-    const pubKey = await ed.getPublicKeyAsync(privKey);
-    const signature = await ed.signAsync(metadataBuffer, privKey);
+    const pubKey = ed25519.getPublicKey(privKey);
+    const signature = ed25519.sign(metadataBuffer, privKey);
     const signatureBuffer = Buffer.from(signature);
     const pubKeyBuffer = Buffer.from(pubKey);
     const metadataBase64 = metadataBuffer.toString('base64');
