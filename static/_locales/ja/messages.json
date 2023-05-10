@@ -201,7 +201,7 @@
         "description": "Button label to open Panorama Grid"
     },
     "buttonOpenTabInContainer": {
-        "message": "新しいタブを開く",
+        "message": "新しいタブ",
         "description": "Button label to open a new tab in the specified container"
     },
     "buttonTabClose": {
