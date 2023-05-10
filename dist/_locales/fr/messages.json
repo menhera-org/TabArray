@@ -12,7 +12,7 @@
         "description": "Title of the popup page for browserAction."
     },
     "buttonHideInactiveContainers": {
-        "message": "Minimiser les autres conteneurs",
+        "message": "Réduire d'autres conteneurs",
         "description": "Button label to hide inactive containers on a window."
     },
     "buttonNewContainer": {
@@ -169,7 +169,7 @@
         }
     },
     "buttonSettings": {
-        "message": "Réglages",
+        "message": "Paramètres",
         "description": "Menu item to open the extensions's settings."
     },
     "labelResistFingerprinting": {
@@ -181,7 +181,7 @@
         "description": "Heading text of options page for experimental addon features."
     },
     "optionsHeadingFirefox": {
-        "message": "Réglages de Firefox",
+        "message": "Paramètres de Firefox",
         "description": "Heading text of options page for changing Firefox settings."
     },
     "optionsDescriptionExperimental": {
@@ -189,7 +189,7 @@
         "description": "Description text for experimental features options."
     },
     "optionsDescriptionFirefox": {
-        "message": "Vous pouvez y modifier certains réglages cachés de Firefox liés à la confidentialité.",
+        "message": "Ici, vous pouvez modifier certains paramètres cachés de Firefox liés à la confidentialité.",
         "description": "Description text for Firefox settings options."
     },
     "panoramaGrid": {
@@ -209,11 +209,11 @@
         "description": "Button label to close a tab."
     },
     "tooltipCollapseContainers": {
-        "message": "Minimiser les conteneurs",
+        "message": "Réduire des conteneurs",
         "description": "Tooltip for the button to collapse inactive containers."
     },
     "tooltipExpandContainers": {
-        "message": "Élargir les conteneurs",
+        "message": "Développer des conteneurs",
         "description": "Tooltip for the button to expand containers."
     },
     "titleSelectContainer": {
@@ -263,11 +263,11 @@
         "description": "Option to show index tabs for all containers."
     },
     "labelGroupIndexOptionCollapsed": {
-        "message": "Conteneurs minimisés",
+        "message": "Conteneurs réduits",
         "description": "Option to show index tabs for collapsed containers."
     },
     "labelGroupIndexOptionNever": {
-        "message": "Invalide",
+        "message": "Jamais",
         "description": "Option to show index tabs for no containers."
     },
     "optionsHeadingAppearance": {
@@ -375,7 +375,7 @@
         "description": "Heading text of options page for changing container order."
     },
     "optionsDescriptionContainerSortOrder": {
-        "message": "Ce réglage n'a pas d'incidence sur les autres extensions.",
+        "message": "Ce paramètre n'affecte pas d'autres extensions.",
         "description": "Description text for changing container order."
     },
     "commandOpenPopup": {
@@ -419,11 +419,11 @@
         "description": "Reload Tab menu (same as browser's tab menu)"
     },
     "contextMenuMuteTab": {
-        "message": "Désactiver l'onglet",
+        "message": "Couper le son de l'onglet",
         "description": "Mute Tab menu (same as browser's tab menu)"
     },
     "contextMenuUnmuteTab": {
-        "message": "Réactiver l’onglet",
+        "message": "Réactiver le son de l'onglet",
         "description": "Unmute Tab menu (same as browser's tab menu)"
     },
     "contextMenuPinTab": {
@@ -451,7 +451,7 @@
         "description": "Menu item for help view"
     },
     "windowsN": {
-        "message": "Windows ($COUNT$)",
+        "message": "Fenêtres ($COUNT$)",
         "description": "Text for windows view heading",
         "placeholders": {
             "count": {
@@ -461,7 +461,7 @@
         }
     },
     "optionsLabelUserAgent": {
-        "message": "User Agent",
+        "message": "Agent utilisateur",
         "description": "Label text for user agent of a container."
     },
     "userAgentDefault": {
@@ -531,7 +531,7 @@
         "description": "Button to focus to this container."
     },
     "optionsHeadingGeneral": {
-        "message": "Réglages généraux",
+        "message": "Paramètres généraux",
         "description": "Heading text of options page for general settings."
     },
     "labelAutoDiscardMinAge": {
@@ -617,15 +617,15 @@
         "description": "Button to move a container to another group."
     },
     "rootGroup": {
-        "message": "(Groupe Racine)",
+        "message": "(Root-groupe)",
         "description": "Root group name."
     },
     "newTagDialogTitle": {
-        "message": "Créer un nouveau tag",
+        "message": "Créer une nouvelle étiquette",
         "description": "Title of the dialog to create a new tag."
     },
     "editTagDialogTitle": {
-        "message": "Modifier un tag",
+        "message": "Modifier une étiquette",
         "description": "Title of the dialog to edit a tag."
     },
     "optionsTabGeneral": {
@@ -637,19 +637,19 @@
         "description": "Label text for sort containers tab."
     },
     "buttonNewTag": {
-        "message": "Nouveau tag",
+        "message": "Nouvelle étiquette",
         "description": "Button to create a new tag."
     },
     "noTag": {
-        "message": "(Sans tag)",
+        "message": "(Sans étiquette)",
         "description": "No tag name."
     },
     "setTag": {
-        "message": "Réglager d'un tag",
+        "message": "Réglager de l'étiquette",
         "description": "Set a tag to a tab."
     },
     "buttonEditTag": {
-        "message": "Modifier un tag",
+        "message": "Modifier l'étiquette",
         "description": "Button to edit a tag."
     },
     "optionsTabContainerOverrides": {
@@ -657,7 +657,7 @@
         "description": "Label text for language and user agent overrides tab."
     },
     "optionsTabFirefoxSettings": {
-        "message": "Réglages de Firefox",
+        "message": "Paramètres de Firefox",
         "description": "Label text for firefox settings tab."
     },
     "confirmGroupDelete": {
@@ -671,7 +671,7 @@
         }
     },
     "buttonDeleteTag": {
-        "message": "Supprimer un tag",
+        "message": "Supprimer l'étiquette",
         "description": "Button to delete a tag."
     },
     "debuggingInformation": {
@@ -707,7 +707,7 @@
         "description": "Proxy port option."
     },
     "proxyUsername": {
-        "message": "Nom de l'utilisateur",
+        "message": "Nom d'utilisateur",
         "description": "Proxy username option."
     },
     "proxyPassword": {
