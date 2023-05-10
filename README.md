@@ -8,12 +8,12 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/80a4d073dd8edce17391/maintainability)](https://codeclimate.com/github/menhera-org/TabArray/maintainability)
 [![Translation status](https://hosted.weblate.org/widgets/container-tab-groups/-/svg-badge.svg)](https://hosted.weblate.org/engage/container-tab-groups/)
 
-Chrome-like tab groups using isolated containers: The ultimate tab manager and groups for Firefox.
+Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.
 
 [![Extension icon](TabArray.png)](https://addons.mozilla.org/firefox/addon/container-tab-groups/)  
 [Download for Firefox](https://addons.mozilla.org/firefox/addon/container-tab-groups/)
 
-[Latest unsigned builds from CI](https://downloads.menhera.org/ctg/) (Please right-click and save to prevent errors.)
+[Latest unsigned builds from CI](https://downloads.menhera.org/ctg/) (To download builds from this site, please right-click and save to prevent errors when Firefox tries to "install" downloads.)
 
 [About Container Tab Groups](https://www.menhera.org/container-tab-groups/)
 
