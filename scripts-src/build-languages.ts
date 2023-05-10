@@ -21,14 +21,15 @@
 
 /* eslint-env es2020, node */
 
-/*
-  Run with `make clean` and `npm run clean`
-*/
+import fs from 'fs';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs');
+import * as CODES from './language-codes.json';
 
-const buildsDir = path.join(__dirname, '../builds');
-fs.rmSync(buildsDir, { recursive: true, force: true });
+const languageCodesDir = __dirname + '/../dist/language-codes';
+fs.mkdirSync(languageCodesDir, { recursive: true });
+
+for (const code in CODES) {
+  const script = `gLanguageCodes=gLanguageCodes||[];gLanguageCodes.push(${JSON.stringify(code)})`;
+  const path = languageCodesDir + '/' + code + '.js';
+  fs.writeFileSync(path, script);
+}

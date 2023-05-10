@@ -2,8 +2,8 @@
 
 # adapted from https://github.com/piroor/treestyletab/blob/84f49a91c038acc52bc7aa37aab0a572717eeaa2/webextensions/update-contextual-identities-icons.sh
 
-mkdir -p "$(dirname "$0")"/../dist/img
-cd "$(dirname "$0")"/../dist/img
+mkdir -p "$(dirname "$0")"/../static/img
+cd "$(dirname "$0")"/../static/img
 
 mkdir -p contextual-identities
 cd contextual-identities

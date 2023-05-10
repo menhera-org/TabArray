@@ -2,11 +2,13 @@
   "name": "container-tab-groups",
   "version": "11.8.1",
   "description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
-  "main": "./node-dist/index.js",
+  "main": "./scripts/index.js",
   "scripts": {
-    "build": "rimraf dist && rimraf .parcel-cache && eslint . && echo \"ESLint done\" && parcel build && node script/build.js",
-    "clean": "node script/clean.js && node script/clean-builds.js",
-    "test": "node script/test.js"
+    "build-scripts": "rimraf scripts && cd scripts-src && tsc && cd ..",
+    "build": "npm run clean && npm run build-scripts && eslint . && echo \"ESLint done\" && parcel build && node scripts/build.js",
+    "clean": "rimraf dist && rimraf .parcel-cache",
+    "clean-builds": "rimraf builds && rimraf build-metadata",
+    "test": "node scripts/test.js"
   },
   "author": "Menhera.org",
   "license": "GPL-3.0-or-later",
@@ -14,6 +16,7 @@
     "@parcel/transformer-typescript-tsc": "^2.8.3",
     "@types/diff": "^5.0.3",
     "@types/glob": "^8.1.0",
+    "@types/markdown-it": "^12.2.3",
     "@types/node": "^20.1.1",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
@@ -21,7 +24,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
     "addons-linter": "^6.3.1",
-    "deterministic-zip-ng": "^2.0.0",
+    "deterministic-zip-ng": "^2.1.1",
     "eslint": "^8.40.0",
     "glob": "^10.2.2",
     "markdown-it": "^13.0.1",
@@ -60,10 +63,7 @@
     "src/pages/popup-v2/popup-v2.html"
   ],
   "targets": {
-    "main": {
-      "source": "src/index.ts",
-      "context": "node"
-    },
+    "main": false,
     "default": {
       "context": "browser"
     }

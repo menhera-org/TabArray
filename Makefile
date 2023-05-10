@@ -7,8 +7,8 @@ dev:
 clean:
 	npm run clean
 
-typedoc:
-	npm run typedoc
-
 icons:
-	cd script && ./update-contextual-identities-icons.sh
+	./shellscripts/update-contextual-identities-icons.sh
+
+markdown:
+	./shellscripts/build-amo-descriptions.sh

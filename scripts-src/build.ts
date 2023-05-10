@@ -25,32 +25,22 @@
   Run with `make` and `npm run build`
 */
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const crypto = require('crypto');
+import * as crypto from 'crypto';
+import * as fs from 'fs';
+import * as child_process from 'child_process';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs');
+import zip from 'deterministic-zip-ng';
+import { ed25519 } from '@noble/curves/ed25519';
+import { glob } from 'glob';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const child_process = require('child_process');
+const importJson = (path: string): any => {
+  const contents = fs.readFileSync(path, 'utf8');
+  return JSON.parse(contents);
+};
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const zip = require('deterministic-zip-ng');
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { glob } = require("glob");
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const manifest = require('../src/manifest.json');
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const releaseJson = require('../src/release.json');
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJson = require('../package.json');
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { ed25519 } = require('@noble/curves/ed25519');
+const manifest = importJson(__dirname + '/../src/manifest.json');
+const releaseJson = importJson(__dirname + '/../src/release.json');
+const packageJson = importJson(__dirname + '/../package.json');
 
 const baseVersion = String(packageJson.version);
 const isDevelopmentVersion = !!releaseJson.isDevelopmentVersion;
@@ -66,14 +56,8 @@ manifest.version = version;
 const distDir = __dirname + '/../dist';
 fs.mkdirSync(distDir, { recursive: true });
 
-/**
- *
- * @param {string} directory
- * @param {string} outputPath
- * @returns {Promise<void>}
- */
-const zipDirectoryContents = async (directory, outputPath) => {
-  return new Promise((resolve, reject) => {
+const zipDirectoryContents = async (directory: string, outputPath: string) => {
+  return new Promise<void>((resolve, reject) => {
     zip(directory, outputPath, {includes: ['./**/{*,.??*}'], excludes: [], cwd: directory}, (err) => {
       if (err) {
         reject(err);
@@ -84,14 +68,8 @@ const zipDirectoryContents = async (directory, outputPath) => {
   });
 };
 
-/**
- * Runs command asynchronously
- * @param {string} command
- * @param {string[]} args
- * @returns {Promise<string>}
- */
-const runCommand = async (command, args) => {
-  return new Promise((resolve, reject) => {
+const runCommand = async (command: string, args: string[]): Promise<string> => {
+  return new Promise<string>((resolve, reject) => {
     child_process.execFile(command, args, (error, stdout, stderr) => {
       const stderrTrimmed = stderr.trim();
       if (stderrTrimmed) {
@@ -107,10 +85,8 @@ const runCommand = async (command, args) => {
 
 /**
  * Sort paths.
- * @param {string[]} paths
- * @returns {string[]}
  */
-const sortPaths = (paths) => {
+const sortPaths = (paths: string[]) => {
   paths.forEach((path) => {
     if (!path.startsWith('/')) {
       throw new Error(`Invalid path: ${path}`);
@@ -121,8 +97,8 @@ const sortPaths = (paths) => {
     const bParts = b.split('/').slice(1).filter(part => part != '');
     const minLength = Math.min(aParts.length, bParts.length);
     for (let i = 0; i < minLength; i++) {
-      const aPart = aParts[i];
-      const bPart = bParts[i];
+      const aPart = aParts[i] as string;
+      const bPart = bParts[i] as string;
       if (aPart < bPart) {
         return -1;
       } else if (aPart > bPart) {
@@ -141,13 +117,9 @@ const getDistFilePaths = async () => {
   return paths;
 };
 
-/**
- *
- * @returns {Promise<Record<string, string>>}
- */
-const getIntegrityListing = async () => {
+const getIntegrityListing = async (): Promise<Record<string, string>> => {
   const files = sortPaths(await getDistFilePaths());
-  const listing = {};
+  const listing: Record<string, string> = {};
   for (const path of files) {
     const fullPath = DIST_DIR + path;
     const buff = fs.readFileSync(fullPath);

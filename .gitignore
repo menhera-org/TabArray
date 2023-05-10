@@ -92,6 +92,7 @@ out
 
 # TypeScript output
 ts-dist
+scripts
 
 # Parcel output
 dist

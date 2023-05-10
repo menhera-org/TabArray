@@ -23,15 +23,14 @@
 
 /* eslint-env es2020, node */
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const md = require('markdown-it')({
+import fs from 'fs';
+
+import markdownit from 'markdown-it';
+const md = markdownit({
   html: true,
   linkify: true,
   typographer: true
 });
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs');
 
 const input = process.argv[2] ?? 'README.md';
 const source = fs.readFileSync(input, 'utf8');
