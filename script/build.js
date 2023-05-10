@@ -204,12 +204,12 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const lintResult = await runCommand('npx', ['addons-linter', './dist/']);
   console.log(lintResult);
 
-  const buildDir = __dirname + '/../builds';
-  const destinationFilename = __dirname + '/../builds/' + filename;
+  const buildVersionDir = __dirname + `/../builds/${manifest.version}`;
+  const destinationFilename = buildVersionDir + '/' + filename;
 
   const buildMetadataDir = __dirname + '/../build-metadata';
 
-  await fs.promises.mkdir(buildDir, { recursive: true });
+  await fs.promises.mkdir(buildVersionDir, { recursive: true });
   await fs.promises.mkdir(buildMetadataDir, { recursive: true });
   await zipDirectoryContents(__dirname + '/../dist', destinationFilename);
 

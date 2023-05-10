@@ -57,8 +57,8 @@ jobs:
       - run:
           name: Commit artifacts and push to GitHub
           command: "( cd ~/ctg-releases && git add . && git commit -m 'CircleCI updates' && git push )"
-      - aws-s3/copy:
-          from: builds/*.xpi
+      - aws-s3/sync:
+          from: builds/
           install-aws-cli: true
           to: s3://menhera-downloads/ctg/
 
