@@ -44,7 +44,24 @@ const { glob } = require("glob");
 const manifest = require('../src/manifest.json');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const releaseJson = require('../src/release.json');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const packageJson = require('../package.json');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ed25519 } = require('@noble/curves/ed25519');
+
+const baseVersion = String(packageJson.version);
+const isDevelopmentVersion = !!releaseJson.isDevelopmentVersion;
+const basePatchVersion = releaseJson.patchVersion >>> 0;
+if (basePatchVersion > 99) {
+  throw new Error(`Invalid patch version: ${basePatchVersion}`);
+}
+
+const patchVersion = isDevelopmentVersion ? 100 + basePatchVersion : 200 + basePatchVersion;
+const version = `${baseVersion}.${patchVersion}`;
+manifest.version = version;
 
 /**
  *

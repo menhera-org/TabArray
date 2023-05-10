@@ -19,12 +19,20 @@
   @license
 **/
 
+import { Uint32 } from "weeg-types";
+
 /**
  * This is more strict than Mozilla's version comparison algorithm.
  * It does not allow non-numeric parts in the version string.
  */
 export class ExtensionVersion {
+  public static readonly VERSION_REGEXP = /^(0|[1-9][0-9]{0,8})([.](0|[1-9][0-9]{0,8})){0,3}$/;
+
   public static fromString(version: string): ExtensionVersion {
+    version = String(version);
+    if (!ExtensionVersion.VERSION_REGEXP.test(version)) {
+      throw new TypeError('Invalid version for AMO: ' + version);
+    }
     const versionParts = version.split('.').map((part) => parseInt(part, 10));
     versionParts.forEach((part) => {
       if (isNaN(part)) {
@@ -41,6 +49,17 @@ export class ExtensionVersion {
   public readonly versionParts: readonly number[];
 
   private constructor(versionParts: number[]) {
+    if (versionParts.length === 0 || versionParts.length > 4) {
+      throw new TypeError('Invalid number of version parts: ' + versionParts.length);
+    }
+    versionParts.forEach((part) => {
+      if (!Uint32.isUint32(part)) {
+        throw new TypeError('Invalid number in version: ' + part);
+      }
+      if (part > 999999999) {
+        throw new TypeError('Version number too large: ' + part);
+      }
+    });
     this.versionParts = versionParts;
   }
 

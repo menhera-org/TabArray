@@ -1,6 +1,6 @@
 {
   "name": "container-tab-groups",
-  "version": "11.8.0",
+  "version": "11.8.1",
   "description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
   "main": "./dist/index.js",
   "scripts": {
