@@ -104,6 +104,7 @@ const topLevelCleanFiles = [
   '.integrity.json',
   'build.json',
   'manifest.json',
+  '_locales',
 ];
 
 const topLevelCleanPaths = topLevelCleanFiles.map((file) => path.join(distDir, file));
