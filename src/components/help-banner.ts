@@ -26,6 +26,7 @@ import { DateFormatService } from "../lib/DateFormatService";
 import { CompatConsole } from "../lib/console/CompatConsole";
 import { PackageIntegrityService } from "../lib/package/PackageIntegrityService";
 import { InstallationHistoryService } from "../lib/InstallationHistoryService";
+import { ExtensionVersion } from "../lib/ExtensionVersion";
 
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 
@@ -68,7 +69,11 @@ export class HelpBannerElement extends HTMLElement {
     helpBanner.appendChild(helpBannerHeading);
 
     const helpBannerVersion = document.createElement('p');
-    helpBannerVersion.textContent = manifest.version;
+    const version = manifest.version;
+    const versionObj = ExtensionVersion.fromString(version);
+    const patchVersion = versionObj.versionParts[3] ?? 0;
+    const isDevelopmentVersion = patchVersion < 200;
+    helpBannerVersion.textContent = version + (isDevelopmentVersion ? ' (dev)' : '');
     helpBanner.appendChild(helpBannerVersion);
 
     const helpBannerBuild = document.createElement('p');
