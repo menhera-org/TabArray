@@ -41,6 +41,8 @@ export const CONTENT_EXTENSION_DIRECTORY_LISTING = '/content/ext/directory-listi
 // Public key for verifying signed messages from the official CTG developers (Continuous Integration key)
 export const CTG_OFFICIAL_ED25519_SIGNING_KEY = '2896306f0d985fdd2febcd930b0733c7c86afcd705652f4a4aadd513235d7867';
 
+export const CTG_OFFCIAL_SIGNATURE_URL = 'https://menhera-org.github.io/ctg-releases/build-metadata/$1.signed.json';
+
 export enum NotificationChannelId {
   NEW_VERSION_AVAILABLE = 'new-version-available',
 }

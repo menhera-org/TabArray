@@ -46,6 +46,17 @@ a {
   justify-content: center;
 }
 
+.help-banner-version.official::after {
+  content: '';
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 1em;
+  margin-inline-start: .5em;
+  background-color: var(--accent-color);
+  mask: url(/img/firefox-icons/checkmark-circle-fill.svg) no-repeat center / 75%;
+  vertical-align: middle;
+}
+
 #help-banner-integrity {
   inline-size: calc(100% - 2em);
   margin-inline: auto;

@@ -27,6 +27,7 @@ import { CompatConsole } from "../lib/console/CompatConsole";
 import { PackageIntegrityService } from "../lib/package/PackageIntegrityService";
 import { InstallationHistoryService } from "../lib/InstallationHistoryService";
 import { ExtensionVersion } from "../lib/ExtensionVersion";
+import { BuildMetadataService } from "../lib/package/BuildMetadataService";
 
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 
@@ -37,6 +38,7 @@ const extensionPageService = ExtensionPageService.getInstance();
 const dateFormatService = DateFormatService.getInstance();
 const packageIntegrityService = PackageIntegrityService.getInstance();
 const installationHistoryService = InstallationHistoryService.getInstance();
+const buildMetadataService = BuildMetadataService.getInstance();
 
 export class HelpBannerElement extends HTMLElement {
 
@@ -69,6 +71,7 @@ export class HelpBannerElement extends HTMLElement {
     helpBanner.appendChild(helpBannerHeading);
 
     const helpBannerVersion = document.createElement('p');
+    helpBannerVersion.classList.add('help-banner-version');
     const version = manifest.version;
     const versionObj = ExtensionVersion.fromString(version);
     const patchVersion = versionObj.versionParts[3] ?? 0;
@@ -111,11 +114,16 @@ export class HelpBannerElement extends HTMLElement {
     Promise.all([
       packageIntegrityService.getRecordedIntegrityHash(),
       packageIntegrityService.getIntegrityHash(),
-    ]).then(([recordedHash, hash]) => {
+    ]).then(async ([recordedHash, hash]) => {
+      helpBannerIntegrityHash.value = hash;
       if (recordedHash != hash) {
         helpBannerIntegrityStatus.textContent = 'Integrity mismatch'; // untranslated
+      } else {
+        const isOfficial = await buildMetadataService.verifySignature(hash);
+        if (isOfficial) {
+          helpBannerVersion.classList.add('official');
+        }
       }
-      helpBannerIntegrityHash.value = hash;
     }).catch((e) => {
       console.error(e);
     });
