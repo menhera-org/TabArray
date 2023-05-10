@@ -63,6 +63,9 @@ const patchVersion = isDevelopmentVersion ? 100 + basePatchVersion : 200 + baseP
 const version = `${baseVersion}.${patchVersion}`;
 manifest.version = version;
 
+const distDir = __dirname + '/../dist';
+fs.mkdirSync(distDir, { recursive: true });
+
 /**
  *
  * @param {string} directory
