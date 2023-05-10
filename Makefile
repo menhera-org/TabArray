@@ -10,5 +10,5 @@ clean:
 icons:
 	./shellscripts/update-contextual-identities-icons.sh
 
-markdown:
+amo-html:
 	./shellscripts/build-amo-descriptions.sh
