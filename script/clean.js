@@ -105,6 +105,7 @@ const topLevelCleanFiles = [
   'build.json',
   'manifest.json',
   '_locales',
+  'i18n-stats',
 ];
 
 const topLevelCleanPaths = topLevelCleanFiles.map((file) => path.join(distDir, file));

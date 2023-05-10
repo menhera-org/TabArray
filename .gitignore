@@ -108,6 +108,7 @@ dist/LICENSE
 dist/*.svg
 dist/manifest.json
 dist/_locales
+dist/i18n-stats
 
 # web-ext output
 *.xpi
