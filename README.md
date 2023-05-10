@@ -1,6 +1,6 @@
 # Container Tab Groups
 
-![build](https://github.com/menhera-org/TabArray/actions/workflows/node.js.yml/badge.svg)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/menhera-org/TabArray/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/menhera-org/TabArray/tree/main)
 [![Downloads](https://img.shields.io/amo/dw/tab-array@menhera.org)](https://addons.mozilla.org/firefox/addon/container-tab-groups/)
 [![Users](https://img.shields.io/amo/users/tab-array@menhera.org)](https://addons.mozilla.org/firefox/addon/container-tab-groups/)
 [![Made in TypeScript](https://img.shields.io/badge/Made%20in-TypeScript-%233178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
