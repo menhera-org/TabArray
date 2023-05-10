@@ -19,6 +19,8 @@ Chrome-like tab groups using private and isolated containers: The ultimate tab m
 
 ![Screenshot](./social-image.png)
 
+[![CircleCI](https://dl.circleci.com/insights-snapshot/gh/menhera-org/TabArray/main/build/badge.svg?window=30d)](https://app.circleci.com/insights/github/menhera-org/TabArray/workflows/build/overview?branch=main&reporting-window=last-30-days&insights-snapshot=true)
+
 ## Features
 
 _Tab Group = Container_
