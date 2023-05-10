@@ -1,6 +1,6 @@
 {
     "tooltipWindowLabel": {
-        "message": "Mudar para a janela #$ID$",
+        "message": "Mudar para janela #$ID$",
         "description": "Tooltip for a menu item representing a window.",
         "placeholders": {
             "id": {
@@ -10,7 +10,7 @@
         }
     },
     "tooltipContainerCloseAll": {
-        "message": "Fechar todas as guias nesse contêiner",
+        "message": "Fechar todas as abas neste contêiner",
         "description": "Tooltip for a button to close all tabs of a container."
     },
     "tooltipContainerDelete": {
@@ -28,11 +28,11 @@
         }
     },
     "labelNewTabKeepContainer": {
-        "message": "Abrir nova guia no contêiner atual (contêiner fixo)",
+        "message": "Abrir nova aba no contêiner atual (contêiner fixo)",
         "description": "Title of option to always open new tab in current container."
     },
     "buttonOpenTabInContainer": {
-        "message": "Abrir nova guia",
+        "message": "Abrir nova aba",
         "description": "Button label to open a new tab in the specified container"
     },
     "labelFirstPartyIsolate": {
@@ -54,15 +54,15 @@
         "description": "Button label to open Panorama Grid"
     },
     "buttonTabClose": {
-        "message": "Fechar esta guia",
+        "message": "Fechar esta aba",
         "description": "Button label to close a tab."
     },
     "tooltipCollapseContainers": {
-        "message": "Minimizar os contêineres",
+        "message": "Recolher contêineres",
         "description": "Tooltip for the button to collapse inactive containers."
     },
     "descriptionSelectContainer": {
-        "message": "Você está prestes a abrir uma nova guia: $URL$.",
+        "message": "Você está prestes a abrir uma nova aba: $URL$.",
         "description": "Confirmation message before the user chooses a container to open a new tab in.",
         "placeholders": {
             "url": {
@@ -80,7 +80,7 @@
         "description": "Title of the popup page for browserAction."
     },
     "buttonHideInactiveContainers": {
-        "message": "Minimizar outros contêineres",
+        "message": "Recolher outros contêineres",
         "description": "Button label to hide inactive containers on a window."
     },
     "buttonNewContainer": {
@@ -112,19 +112,19 @@
         "description": "Title of the dialog prompting for editting a container."
     },
     "tooltipTabPinButton": {
-        "message": "Fixar esta guia",
+        "message": "Fixar esta aba",
         "description": "Tooltip for the button to pin a tab."
     },
     "tooltipTabUnpinButton": {
-        "message": "Desafixar esta guia",
+        "message": "Desafixar esta aba",
         "description": "Tooltip for the button to unpin a tab."
     },
     "tooltipHideContainerButton": {
-        "message": "Ocultar as guias deste contêiner",
+        "message": "Ocultar as abas deste contêiner",
         "description": "Tooltip for the button to hide the tabs of a container."
     },
     "tooltipUnhideContainerButton": {
-        "message": "Mostrar as guias deste contêiner",
+        "message": "Mostrar as abas deste contêiner",
         "description": "Tooltip for the button to unhide the tabs of a container."
     },
     "tooltipEditContainerButton": {
@@ -179,7 +179,7 @@
         "description": "Virtual container name for tabs with no container."
     },
     "browserActionTitle": {
-        "message": "Guias e grupos",
+        "message": "Abas e grupos",
         "description": "Title of browserAction about tabs and container-based groups."
     },
     "buttonAboutAddon": {
@@ -223,15 +223,15 @@
         "description": "Title of the popup asking the user to choose a container to open a new tab in."
     },
     "promptSelectContainer": {
-        "message": "Selecione um contêiner para abrir esta guia.",
+        "message": "Selecione um contêiner para abrir esta aba.",
         "description": "Message asking the user to select a container for a new tab."
     },
     "labelSelectContainerExternalTabs": {
-        "message": "Selecione um contêiner quando um aplicativo externo abrir uma guia.",
+        "message": "Selecionar um contêiner quando um aplicativo externo abrir uma aba",
         "description": "Option to enable container selection on externally opened tabs."
     },
     "labelExternalTabSelectContainerOption": {
-        "message": "Quando um aplicativo externo abre uma guia:",
+        "message": "Quando um aplicativo externo abre uma aba:",
         "description": "Label for option for handling of externally opened tabs"
     },
     "labelExternalTabOptionChooseContainer": {
@@ -251,7 +251,7 @@
         "description": "Option to show index tabs for all containers."
     },
     "labelGroupIndexOptionCollapsed": {
-        "message": "Contêineres minimizados",
+        "message": "Contêineres recolhidos",
         "description": "Option to show index tabs for collapsed containers."
     },
     "labelGroupIndexOptionNever": {
@@ -361,27 +361,27 @@
         "description": "Tooltip for a button to view cookies."
     },
     "contextMenuNewTab": {
-        "message": "Nova guia",
+        "message": "Nova aba",
         "description": "New Tab menu (same as browser's tab menu)"
     },
     "contextMenuReloadTab": {
-        "message": "Recarregar a guia",
+        "message": "Recarregar aba",
         "description": "Reload Tab menu (same as browser's tab menu)"
     },
     "contextMenuUnmuteTab": {
-        "message": "Reativar a guia",
+        "message": "Ativar som da aba",
         "description": "Unmute Tab menu (same as browser's tab menu)"
     },
     "contextMenuPinTab": {
-        "message": "Fixar a guia",
+        "message": "Fixar aba",
         "description": "Pin Tab menu (same as browser's tab menu)"
     },
     "contextMenuDuplicateTab": {
-        "message": "Duplicar a guia",
+        "message": "Duplicar aba",
         "description": "Duplicate Tab menu (same as browser's tab menu)"
     },
     "contextMenuCloseTab": {
-        "message": "Fechar a guia",
+        "message": "Fechar aba",
         "description": "Close Tab menu (same as browser's tab menu)"
     },
     "optionsLabelLanguages": {
@@ -417,7 +417,7 @@
         }
     },
     "buttonGetStarted": {
-        "message": "Começar a usar",
+        "message": "Começar",
         "description": "Button to get started"
     },
     "featureUaOverrides": {
@@ -501,7 +501,7 @@
         "description": "Button to delete a group of containers."
     },
     "moveContainer": {
-        "message": "Mover para o grupo",
+        "message": "Mover para grupo",
         "description": "Move a container to another group."
     },
     "buttonMove": {
@@ -525,11 +525,11 @@
         "description": "No tag name."
     },
     "setTag": {
-        "message": "Definir uma etiqueta",
+        "message": "Definir etiqueta",
         "description": "Set a tag to a tab."
     },
     "buttonEditTag": {
-        "message": "Editar uma etiqueta",
+        "message": "Editar etiqueta",
         "description": "Button to edit a tag."
     },
     "optionsTabGeneral": {
@@ -609,7 +609,7 @@
         "description": "Save debugging information button."
     },
     "extensionDescription": {
-        "message": "Grupos de guias semelhantes aos do Chrome usando contêineres privados e isolados: O melhor gerenciador de guias e grupos para o Firefox.",
+        "message": "Grupos de abas semelhantes aos do Chrome usando contêineres privados e isolados: O melhor gerenciador de abas e grupos para o Firefox.",
         "description": "Description of the extension."
     },
     "contextMenuHideSelectedContainer": {
@@ -621,7 +621,7 @@
         "description": "Googlebot user agent"
     },
     "labelAutoDiscardMinAge": {
-        "message": "Liberar memória das guias após inatividade por:",
+        "message": "Liberar memória das abas após inatividade por:",
         "description": "Label text for autodiscard min age."
     },
     "labelAutoDiscard10800": {
@@ -633,7 +633,7 @@
         "description": "Label text for autodiscard in 86400 seconds."
     },
     "optionEnableSorting": {
-        "message": "Ativar a classificação automática de guias",
+        "message": "Ativar a classificação automática de abas",
         "description": "Label text for enabling sorting of containers/tabs."
     },
     "buttonNewGroup": {
@@ -665,7 +665,7 @@
         "description": "Title of the dialog to edit a tag."
     },
     "buttonDeleteTag": {
-        "message": "Excluir uma etiqueta",
+        "message": "Excluir etiqueta",
         "description": "Button to delete a tag."
     },
     "optionsTabFirefoxSettings": {
@@ -691,7 +691,7 @@
         "description": "Available proxies heading."
     },
     "labelGroupIndexOption": {
-        "message": "Mostrar uma guia de índice para cada contêiner",
+        "message": "Mostrar uma aba de índice para cada contêiner",
         "description": "Option to show index tabs for containers."
     },
     "labelPopupSize": {
@@ -703,7 +703,7 @@
         "description": "Button to open a new window."
     },
     "tooltipCloseWindow": {
-        "message": "Fechar a janela",
+        "message": "Fechar janela",
         "description": "Tooltip for a button to close all tabs of a window."
     },
     "buttonSidebar": {
@@ -737,11 +737,11 @@
         "description": "Label text for language overrides feature"
     },
     "contextMenuMuteTab": {
-        "message": "Desativar a guia",
+        "message": "Silenciar aba",
         "description": "Mute Tab menu (same as browser's tab menu)"
     },
     "contextMenuUnpinTab": {
-        "message": "Soltar a guia",
+        "message": "Desafixar aba",
         "description": "Unpin Tab menu (same as browser's tab menu)"
     },
     "fpiDescription": {
