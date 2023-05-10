@@ -203,6 +203,7 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
 }).then(async ({filename, commit, untracked, buildDate}) => {
   console.log(`Building ${filename}`);
   const info = {
+    isDevelopmentVersion,
     commit,
     untracked,
     buildDate: new Date(buildDate).toISOString(),
