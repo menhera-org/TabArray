@@ -19,6 +19,8 @@
   @license
 **/
 
+import { DeterministicJSON } from '@menhera/deterministic-json';
+
 import { ServiceRegistry } from "../ServiceRegistry";
 import { DirectoryListingService } from "./DirectoryListingService";
 
@@ -41,6 +43,13 @@ export class PackageIntegrityService {
   public async calculateFileHash(path: string): Promise<string> {
     const encodedPath = directoryListingService.encodePath(path);
     const response = await fetch(encodedPath);
+    if (path == '/manifest.json') {
+      // manifest.json is likely to be modified by AMO, so we need to normalize it
+      const data = await response.json();
+      const json = DeterministicJSON.stringify(data, null, 2);
+      const byteArray = new TextEncoder().encode(json);
+      return this.sha256(byteArray);
+    }
     const byteArray = new Uint8Array(await response.arrayBuffer());
     return this.sha256(byteArray);
   }

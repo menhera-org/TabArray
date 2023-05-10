@@ -37,6 +37,7 @@
     "typescript": "<5.1.0"
   },
   "dependencies": {
+    "@menhera/deterministic-json": "^0.1.0",
     "@noble/curves": "^1.0.0",
     "diff": "^5.1.0",
     "webextension-polyfill": "^0.10.0",

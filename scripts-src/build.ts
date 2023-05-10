@@ -32,6 +32,7 @@ import * as child_process from 'child_process';
 import zip from 'deterministic-zip-ng';
 import { ed25519 } from '@noble/curves/ed25519';
 import { glob } from 'glob';
+import { DeterministicJSON } from '@menhera/deterministic-json';
 
 const importJson = (path: string): any => {
   const contents = fs.readFileSync(path, 'utf8');
@@ -186,7 +187,7 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const infoPath = __dirname + '/../dist/build.json';
   fs.writeFileSync(infoPath, JSON.stringify(info, null, 2));
 
-  const manifestJson = JSON.stringify(manifest, null, 2);
+  const manifestJson = DeterministicJSON.stringify(manifest, null, 2);
   const manifestPath = __dirname + '/../dist/manifest.json';
   fs.writeFileSync(manifestPath, manifestJson);
 
