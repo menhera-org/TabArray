@@ -49,8 +49,8 @@ a {
 .help-banner-version.official::after {
   content: '';
   display: inline-block;
-  inline-size: 1em;
-  block-size: 1em;
+  inline-size: 2em;
+  block-size: 2em;
   margin-inline-start: .5em;
   background-color: var(--accent-color);
   mask: url(/img/firefox-icons/checkmark-circle-fill.svg) no-repeat center / 75%;
