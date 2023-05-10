@@ -110,13 +110,13 @@ export class TabSortingService extends BackgroundService<void, void> {
   }
 
   protected override async execute(): Promise<void> {
-    const enabled = await config['tab.sorting.enabled'].getValue();
-    if (!enabled) return;
     if (tabSorting) {
       console.debug('Tab sorting is already in progress.');
       return;
     }
     tabSorting = true;
+    const enabled = await config['tab.sorting.enabled'].getValue();
+    if (!enabled) return;
     spinnerService.beginTransaction('tab-sorting');
     try {
       for (const windowId of await this.getWindowIds()) {

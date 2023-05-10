@@ -19,14 +19,11 @@
   @license
 **/
 
-import browser from 'webextension-polyfill';
-
 import { ExternalServiceProvider } from '../lib/ExternalServiceProvider';
 import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
 import { PageLoaderService } from '../lib/PageLoaderService';
 import { ContainerCreatorService } from '../lib/tabGroups/ContainerCreatorService';
 import { TabSortingService } from '../lib/tabs/TabSortingService';
-import { SanityCheckService } from '../lib/SenityCheckService';
 import { TabConverterService } from '../lib/tabs/TabConverterService';
 import { TabUrlService } from '../lib/tabs/TabUrlService';
 import { ConsoleHistoryService } from '../lib/console/ConsoleHistoryService';
@@ -56,8 +53,6 @@ import './background-proxy';
 import './background-closed-tabs';
 import './background-sync';
 // import './background-update-checker';
-import { every15secondsAlarm } from './background-include-alarms';
-
 import '../api/ApiDefinitions';
 
 // external services must be registered here
@@ -81,14 +76,3 @@ PackageIntegrityService.getInstance();
 
 // register the installation history service
 InstallationHistoryService.getInstance();
-
-// other services used by this script
-const sanityCheckService = SanityCheckService.getInstance();
-
-// auto reload the extension if the sanity check fails
-every15secondsAlarm.onAlarm.addListener(() => {
-  sanityCheckService.checkForFiles().catch((e) => {
-    console.error('Sanity check failed, reloading', e);
-    browser.runtime.reload();
-  });
-});

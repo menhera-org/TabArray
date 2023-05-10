@@ -25,8 +25,6 @@ import { CompatTab } from 'weeg-tabs';
 import { TabSortingService } from '../lib/tabs/TabSortingService';
 import { StartupService } from '../lib/StartupService';
 
-import { everyMinuteAlarm } from './background-include-alarms';
-
 const tabSortingService = TabSortingService.getInstance<TabSortingService>();
 const startupService = StartupService.getInstance();
 
@@ -73,12 +71,6 @@ browser.tabs.onUpdated.addListener((/*tabId, changeInfo, browserTab*/) => {
 });
 
 startupService.onStartup.addListener(() => {
-  tabSortingService.sortTabs().catch((e) => {
-    console.error(e);
-  });
-});
-
-everyMinuteAlarm.onAlarm.addListener(() => {
   tabSortingService.sortTabs().catch((e) => {
     console.error(e);
   });
