@@ -178,6 +178,8 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   return { filename: `ctg-${version}-${time}-unknown.xpi`, commit: '', untracked: true, buildDate: date.getTime() };
 }).then(async ({filename, commit, untracked, buildDate}) => {
   console.log(`Building ${filename}`);
+  const version = String(manifest.version);
+
   const info = {
     isDevelopmentVersion,
     commit,
@@ -198,16 +200,15 @@ runCommand('git', ['rev-parse', 'HEAD']).then(async (stdout) => {
   const lintResult = await runCommand('npx', ['addons-linter', './dist/']);
   console.log(lintResult);
 
-  const buildVersionDir = __dirname + `/../builds/${manifest.version}`;
+  const buildVersionDir = __dirname + `/../builds/${version}`;
   const destinationFilename = buildVersionDir + '/' + filename;
 
-  const buildMetadataDir = __dirname + '/../build-metadata';
+  const buildMetadataDir = __dirname + '/../build-metadata/' + version;
 
   await fs.promises.mkdir(buildVersionDir, { recursive: true });
   await fs.promises.mkdir(buildMetadataDir, { recursive: true });
   await zipDirectoryContents(__dirname + '/../dist', destinationFilename);
 
-  const version = String(manifest.version);
   const hash = integrity.hash;
   const metadata = {
     version,

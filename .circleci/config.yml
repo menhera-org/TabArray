@@ -36,30 +36,13 @@ jobs:
       - run:
           name: Check repository status again
           command: "git status || true"
-      - add_ssh_keys:
-          fingerprints:
-            - "dc:28:3f:db:6c:1b:0e:c1:be:cf:0d:81:84:60:de:0d"
-      - run:
-          name: Add Git name and email
-          command: "git config --global user.name 'CircleCI' && git config --global user.email 'circleci@menhera.org'"
-      - run:
-          name: List SSH keys
-          command: "ls -l ~/.ssh/"
-      - run:
-          name: Set SSH key for use with Git
-          command: "rm -f ~/.ssh/id_rsa.pub ~/.ssh/id_rsa ~/.ssh/config && git config --global core.sshCommand 'ssh -i ~/.ssh/id_rsa_dc283fdb6c1b0ec1becf0d818460de0d -F /dev/null' && ssh-add -D && ssh-add ~/.ssh/id_rsa_dc283fdb6c1b0ec1becf0d818460de0d"
-      - run:
-          name: Clone repository
-          command: "git clone git@github.com:menhera-org/ctg-releases.git ~/ctg-releases"
-      - run:
-          name: Copy artifacts
-          command: "mkdir -p ~/ctg-releases/build-metadata && cp build-metadata/*.json ~/ctg-releases/build-metadata/"
-      - run:
-          name: Commit artifacts and push to GitHub
-          command: "( cd ~/ctg-releases && git add . && git commit -m 'CircleCI updates' && git push )"
+      - aws-s3/sync:
+          from: build-metadata/
+          install-aws-cli: true
+          to: s3://menhera-downloads/ctg-metadata/
       - aws-s3/sync:
           from: builds/
-          install-aws-cli: true
+          install-aws-cli: false
           to: s3://menhera-downloads/ctg/
 
 workflows:

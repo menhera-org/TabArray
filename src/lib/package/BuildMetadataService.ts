@@ -19,6 +19,7 @@
   @license
 **/
 
+import browser from 'webextension-polyfill';
 import { ed25519 } from '@noble/curves/ed25519';
 
 import { ServiceRegistry } from '../ServiceRegistry';
@@ -51,7 +52,8 @@ export class BuildMetadataService {
   }
 
   public getSignatureUrl(integrityHash: string): string {
-    return CTG_OFFCIAL_SIGNATURE_URL.replace('$1', integrityHash);
+    const version = browser.runtime.getManifest().version;
+    return CTG_OFFCIAL_SIGNATURE_URL.replace('%VERSION%', version).replace('%HASH%', integrityHash);
   }
 
   public async verifySignature(integrityHash: string, signingKey = CTG_OFFICIAL_ED25519_SIGNING_KEY): Promise<boolean> {
