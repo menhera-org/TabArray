@@ -12,7 +12,7 @@
         "description": "Title of the popup page for browserAction."
     },
     "buttonHideInactiveContainers": {
-        "message": "Minimizar otros contenedores",
+        "message": "Contraer otros contenedores",
         "description": "Button label to hide inactive containers on a window."
     },
     "buttonNewContainer": {
@@ -48,11 +48,11 @@
         "description": "Context menu item text for hiding the container of the selected tab."
     },
     "tooltipTabPinButton": {
-        "message": "Anclar esta pestaña",
+        "message": "Fijar esta pestaña",
         "description": "Tooltip for the button to pin a tab."
     },
     "tooltipTabUnpinButton": {
-        "message": "Desenganchar esta pestaña",
+        "message": "Soltar esta pestaña",
         "description": "Tooltip for the button to unpin a tab."
     },
     "tooltipHideContainerButton": {
@@ -209,7 +209,7 @@
         "description": "Button label to close a tab."
     },
     "tooltipCollapseContainers": {
-        "message": "Minimizar los contenedores",
+        "message": "Contraer contenedores",
         "description": "Tooltip for the button to collapse inactive containers."
     },
     "tooltipExpandContainers": {
@@ -263,7 +263,7 @@
         "description": "Option to show index tabs for all containers."
     },
     "labelGroupIndexOptionCollapsed": {
-        "message": "Contenedores minimizados",
+        "message": "Contenedores contraídos",
         "description": "Option to show index tabs for collapsed containers."
     },
     "labelGroupIndexOptionNever": {
@@ -311,7 +311,7 @@
         "description": "Button to open a new window."
     },
     "buttonSidebar": {
-        "message": "Abrir la barra lateral",
+        "message": "Abrir barra lateral",
         "description": "Button to open Sidebar."
     },
     "optionsHeadingUserData": {
@@ -327,7 +327,7 @@
         "description": "Private Browsing page"
     },
     "confirmContainerClearCookie": {
-        "message": "¿Desea borrar las cookies de este contenedor: $NAME$?",
+        "message": "¿Desea limpiar cookies de este contenedor: $NAME$?",
         "description": "Confirmation message before clearing cookies in a container.",
         "placeholders": {
             "name": {
@@ -337,11 +337,11 @@
         }
     },
     "tooltipContainerClearCookie": {
-        "message": "Borrar todas las cookies de este contenedor",
+        "message": "Limpiar todas las cookies de este contenedor",
         "description": "Tooltip for a button to clear all cookies in a container."
     },
     "confirmPrivateBrowsingClearCookie": {
-        "message": "¿Desea borrar las cookies para la navegación privada?",
+        "message": "¿Desea limpiar cookies para la navegación privada?",
         "description": "Confirmation message before clearing cookies for private browsing."
     },
     "buttonEditContainer": {
@@ -371,7 +371,7 @@
         }
     },
     "optionsHeadingContainerSortOrder": {
-        "message": "Clasificar los contenedores",
+        "message": "Ordenar contenedores",
         "description": "Heading text of options page for changing container order."
     },
     "optionsDescriptionContainerSortOrder": {
@@ -407,7 +407,7 @@
         "description": "Tooltip for a button to view cookies."
     },
     "enableCookiesAutoclean": {
-        "message": "Borrar automáticamente las Cookies",
+        "message": "Limpiar cookies automáticamente",
         "description": "Label text for enabling autoclean of cookies."
     },
     "contextMenuNewTab": {
@@ -419,11 +419,11 @@
         "description": "Reload Tab menu (same as browser's tab menu)"
     },
     "contextMenuMuteTab": {
-        "message": "Desactivar pestaña",
+        "message": "Silenciar pestaña",
         "description": "Mute Tab menu (same as browser's tab menu)"
     },
     "contextMenuUnmuteTab": {
-        "message": "Reactivar pestaña",
+        "message": "Restaurar sonido en pestaña",
         "description": "Unmute Tab menu (same as browser's tab menu)"
     },
     "contextMenuPinTab": {
@@ -527,11 +527,11 @@
         "description": "Button to focus to this container."
     },
     "optionsHeadingGeneral": {
-        "message": "Configuración general",
+        "message": "Ajustes generales",
         "description": "Heading text of options page for general settings."
     },
     "labelAutoDiscardMinAge": {
-        "message": "Liberar la memoria de las pestañas tras inactividad por:",
+        "message": "Liberar memoria de las pestañas tras inactividad por:",
         "description": "Label text for autodiscard min age."
     },
     "labelAutoDiscardDisabled": {
@@ -725,7 +725,7 @@
         "description": "Add new proxy button."
     },
     "buttonDeleteProxy": {
-        "message": "Borrar el Proxy",
+        "message": "Borrar Proxy",
         "description": "Delete proxy button."
     },
     "optionsHeadingAvailableProxies": {
