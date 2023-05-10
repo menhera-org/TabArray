@@ -12,7 +12,7 @@
         "description": "Title of the popup page for browserAction."
     },
     "buttonHideInactiveContainers": {
-        "message": "Минимизировать другие контейнеры",
+        "message": "Свернуть другие контейнеры",
         "description": "Button label to hide inactive containers on a window."
     },
     "buttonNewContainer": {
@@ -209,7 +209,7 @@
         "description": "Button label to close a tab."
     },
     "tooltipCollapseContainers": {
-        "message": "Минимизировать контейнеры",
+        "message": "Свернуть контейнеры",
         "description": "Tooltip for the button to collapse inactive containers."
     },
     "tooltipExpandContainers": {
@@ -263,7 +263,7 @@
         "description": "Option to show index tabs for all containers."
     },
     "labelGroupIndexOptionCollapsed": {
-        "message": "Минимизированные контейнеры",
+        "message": "Свернутые контейнеры",
         "description": "Option to show index tabs for collapsed containers."
     },
     "labelGroupIndexOptionNever": {
@@ -631,31 +631,31 @@
         "description": "Root group name."
     },
     "newTagDialogTitle": {
-        "message": "Создать новый тег",
+        "message": "Создать новую метку",
         "description": "Title of the dialog to create a new tag."
     },
     "editTagDialogTitle": {
-        "message": "Редактировать тег",
+        "message": "Изменить метку",
         "description": "Title of the dialog to edit a tag."
     },
     "buttonNewTag": {
-        "message": "Новый тег",
+        "message": "Новая метка",
         "description": "Button to create a new tag."
     },
     "noTag": {
-        "message": "(без тега)",
+        "message": "(без метки)",
         "description": "No tag name."
     },
     "setTag": {
-        "message": "Установить тег",
+        "message": "Установить метку",
         "description": "Set a tag to a tab."
     },
     "buttonEditTag": {
-        "message": "Редактировать тег",
+        "message": "Изменить метку",
         "description": "Button to edit a tag."
     },
     "buttonDeleteTag": {
-        "message": "Удалить тег",
+        "message": "Удалить метку",
         "description": "Button to delete a tag."
     },
     "optionsTabGeneral": {
