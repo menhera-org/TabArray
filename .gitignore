@@ -95,6 +95,7 @@ ts-dist
 
 # Parcel output
 dist
+node-dist
 
 # web-ext output
 *.xpi

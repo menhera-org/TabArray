@@ -2,7 +2,7 @@
   "name": "container-tab-groups",
   "version": "11.8.1",
   "description": "Chrome-like tab groups using private and isolated containers: The ultimate tab manager and groups for Firefox.",
-  "main": "./dist/index.js",
+  "main": "./node-dist/index.js",
   "scripts": {
     "build": "rimraf dist && rimraf .parcel-cache && eslint . && echo \"ESLint done\" && parcel build && node script/build.js",
     "clean": "node script/clean.js && node script/clean-builds.js",
