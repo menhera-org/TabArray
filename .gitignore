@@ -94,21 +94,7 @@ out
 ts-dist
 
 # Parcel output
-dist/**/*.js
-dist/**/*.js.map
-dist/**/*.css.map
-dist/**/*.LICENSE.txt
-dist/**/*.html
-dist/build.json
-dist/.integrity.json
-dist/pages/**/*.css
-dist/img
-dist/css
-dist/LICENSE
-dist/*.svg
-dist/manifest.json
-dist/_locales
-dist/i18n-stats
+dist
 
 # web-ext output
 *.xpi

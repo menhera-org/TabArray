@@ -25,10 +25,13 @@
 const fs = require('fs');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const CODES = require('../dist/language-codes.json');
+const CODES = require('../static/language-codes.json');
+
+const languageCodesDir = __dirname + '/../dist/language-codes';
+fs.mkdirSync(languageCodesDir, { recursive: true });
 
 for (const code in CODES) {
   const script = `gLanguageCodes=gLanguageCodes||[];gLanguageCodes.push(${JSON.stringify(code)})`;
-  const path = __dirname + '/../dist/language-codes/' + code + '.js';
+  const path = languageCodesDir + '/' + code + '.js';
   fs.writeFileSync(path, script);
 }
