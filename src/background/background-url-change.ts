@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 
 import { TabPreviewService } from '../lib/tabs/TabPreviewService';
-import { injectExtensionContentScript } from './background-include-ext-content';
+import { injectExtensionContentScript } from './includes/ext-content';
 
 const tabPreviewService = TabPreviewService.getInstance();
 

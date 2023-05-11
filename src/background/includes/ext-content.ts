@@ -21,7 +21,7 @@
 
 import browser from "webextension-polyfill";
 
-import { EXTENSION_CONTENT_SCRIPTS } from "../content/ext/list";
+import { EXTENSION_CONTENT_SCRIPTS } from "../../content/ext/list";
 
 export const injectExtensionContentScript = (browserTab: browser.Tabs.Tab) => {
   if (browserTab.url != null && browserTab.url != 'about:blank' && browserTab.id != null) {

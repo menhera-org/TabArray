@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 import { PromiseUtils } from 'weeg-utils';
 import { Asserts } from 'weeg-utils';
 
-import { StartupService } from '../lib/StartupService';
+import { StartupService } from '../../lib/StartupService';
 
 // throws if not in background script
 Asserts.assertBackgroundScript();

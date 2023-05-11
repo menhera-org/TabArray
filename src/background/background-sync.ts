@@ -23,7 +23,7 @@ import { ContainerSyncService } from "../lib/sync/ContainerSyncService";
 
 import { config } from "../config/config";
 
-import { everyMinuteAlarm } from "./background-include-alarms";
+import { everyMinuteAlarm } from "./includes/alarms";
 
 const containerSyncService = ContainerSyncService.getInstance();
 

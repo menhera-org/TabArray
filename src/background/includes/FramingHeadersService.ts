@@ -22,7 +22,7 @@
 import browser from 'webextension-polyfill';
 import { Asserts } from 'weeg-utils';
 
-import { CompatConsole } from '../lib/console/CompatConsole';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 // throws an error if not in background script
 Asserts.assertBackgroundScript();

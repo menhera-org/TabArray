@@ -33,7 +33,7 @@ import * as containers from '../legacy-lib/modules/containers';
 import { IndexTab } from '../legacy-lib/modules/IndexTab';
 
 import { config } from '../config/config';
-import { InitialWindowsService } from './InitialWindowsService';
+import { InitialWindowsService } from './includes/InitialWindowsService';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const initialWindowsService = InitialWindowsService.getInstance();

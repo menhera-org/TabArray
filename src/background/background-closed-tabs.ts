@@ -27,7 +27,7 @@ import { TemporaryContainerService } from '../lib/tabGroups/TemporaryContainerSe
 import { CompatConsole } from '../lib/console/CompatConsole';
 import { TabGroupService } from '../lib/tabGroups/TabGroupService';
 import { OpenTabState } from '../lib/tabGroups/OpenTabState';
-import { InitialWindowsService } from './InitialWindowsService';
+import { InitialWindowsService } from './includes/InitialWindowsService';
 
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();

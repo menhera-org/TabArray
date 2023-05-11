@@ -29,8 +29,8 @@ import { DarkThemeMonitor } from '../legacy-lib/themes/DarkThemeMonitor';
 
 import { config } from '../config/config';
 
-import { InitialWindowsService } from './InitialWindowsService';
-import { injectExtensionContentScript } from './background-include-ext-content';
+import { InitialWindowsService } from './includes/InitialWindowsService';
+import { injectExtensionContentScript } from './includes/ext-content';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const initialWindowsService = InitialWindowsService.getInstance();

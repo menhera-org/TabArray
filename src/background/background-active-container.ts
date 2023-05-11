@@ -28,7 +28,7 @@ import { NewTabPageService } from "../lib/tabs/NewTabPageService";
 import { ContainerTabOpenerService } from "../lib/tabGroups/ContainerTabOpenerService";
 import { ExtensionPageService } from "../lib/ExtensionPageService";
 import { CompatConsole } from "../lib/console/CompatConsole";
-import { InitialWindowsService } from "./InitialWindowsService";
+import { InitialWindowsService } from "./includes/InitialWindowsService";
 
 import { config } from "../config/config";
 
