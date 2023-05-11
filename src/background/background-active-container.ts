@@ -24,21 +24,21 @@ import { CookieStore } from "weeg-containers";
 
 import { ActiveContainerService } from "../lib/states/ActiveContainerService";
 import { OpenTabsService } from "../lib/states/OpenTabsService";
-import { StartupService } from "../lib/StartupService";
 import { NewTabPageService } from "../lib/tabs/NewTabPageService";
 import { ContainerTabOpenerService } from "../lib/tabGroups/ContainerTabOpenerService";
 import { ExtensionPageService } from "../lib/ExtensionPageService";
 import { CompatConsole } from "../lib/console/CompatConsole";
+import { InitialWindowsService } from "./InitialWindowsService";
 
 import { config } from "../config/config";
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const activeContainerService = ActiveContainerService.getInstance();
-const startupService = StartupService.getInstance();
 const openTabsService = OpenTabsService.getInstance();
 const newTabPageService = NewTabPageService.getInstance();
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const extensionPageService = ExtensionPageService.getInstance();
+const initialWindowsService = InitialWindowsService.getInstance();
 
 browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   try {
@@ -140,14 +140,9 @@ browser.tabs.onRemoved.addListener(async (tabId) => {
   }
 });
 
-startupService.onStartup.addListener(async () => {
+initialWindowsService.getInitialWindows().then(async (browserWindows) => {
   try {
-    const [batchOperation, browserWindows] = await Promise.all([
-      activeContainerService.beginBatchOperation(),
-      browser.windows.getAll({
-        populate: true,
-      }),
-    ]);
+    const batchOperation = await activeContainerService.beginBatchOperation();
     const windowIds = browserWindows.map((browserWindow) => browserWindow.id as number);
     for (const windowId of await activeContainerService.getWindowIds()) {
       if (!windowIds.includes(windowId)) {

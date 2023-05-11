@@ -24,7 +24,3 @@ import { Alarm } from 'weeg-utils';
 export const everyMinuteAlarm = new Alarm('background.everyMinute', {
   periodInMinutes: 1,
 });
-
-export const every15secondsAlarm = new Alarm('background.every15seconds', {
-  periodInMinutes: 1 / 4,
-});
