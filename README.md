@@ -134,6 +134,8 @@ major.minor.maintenance.build
 
 We make releases when first three version numbers change. The build version (fourth part) is purely informational.
 
+For example, we just call 11.8.1.200 release 11.8.1.
+
 #### Build version
 
 Versions ending with .1xx are development versions, and versions ending with .2xx are release versions.
