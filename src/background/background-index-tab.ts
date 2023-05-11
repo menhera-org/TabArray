@@ -168,6 +168,7 @@ browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
   if (browserTab.incognito) return;
   const tab = new CompatTab(browserTab);
   tabQueryService.queryTabs({ tabGroupId: tab.cookieStore.id }).then(async (tabs) => {
+    const indexTabOption = await config['tab.groups.indexOption'].getValue();
     const indexTabIds: number[] = [];
     let nonIndexTabFound = false;
     for (const tab of tabs) {
@@ -183,7 +184,7 @@ browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
         await indexTabService.unregisterIndexTab(indexTabId);
         await browser.tabs.remove(indexTabId);
       }
-    } else if (nonIndexTabFound && indexTabIds.length < 1) {
+    } else if (nonIndexTabFound && indexTabIds.length < 1 && indexTabOption == 'always') {
       // unpinned tab found, so create an index tab for that container
       await indexTabService.createIndexTab(tab.windowId, tab.cookieStore.id);
     }
