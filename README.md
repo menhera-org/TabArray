@@ -124,6 +124,23 @@ This project uses Hosted Weblate for translation. You can contribute translation
 - The official extension ID is `tab-array@menhera.org`. (Not an email address.)
 - To contact the developers, use [Google Groups](https://groups.google.com/a/menhera.com/g/ctg-l) or [GitHub discussions](https://github.com/menhera-org/TabArray/discussions).
 
+### Version scheme
+
+We use the following version scheme:
+
+```
+major.minor.maintenance.build
+```
+
+We make releases when first three version numbers change. The build version (fourth part) is purely informational.
+
+#### Build version
+
+Versions ending with .1xx are development versions, and versions ending with .2xx are release versions.
+
+The two digits after 1 or 2 indicate patch level.
+
+
 ## FAQs
 
 ### Will this be available for Chrome?
