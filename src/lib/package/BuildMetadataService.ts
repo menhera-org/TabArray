@@ -58,6 +58,9 @@ export class BuildMetadataService {
 
   public async verifySignature(integrityHash: string, signingKey = CTG_OFFICIAL_ED25519_SIGNING_KEY): Promise<boolean> {
     const res = await fetch(this.getSignatureUrl(integrityHash));
+    if (res.status != 200) {
+      return false;
+    }
     const { metadata, signature } = await res.json() as { metadata: string, signature: string, publicKey: string };
     const signatureByteArray = this.base64Decode(signature);
     const byteArray = this.base64Decode(metadata);
