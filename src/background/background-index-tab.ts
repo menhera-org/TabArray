@@ -167,21 +167,25 @@ browser.tabs.onCreated.addListener(async (browserTab) => {
 browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
   if (browserTab.incognito) return;
   const tab = new CompatTab(browserTab);
-  tabQueryService.queryTabs({ tabGroupId: tab.cookieStore.id, pinned: false }).then(async (tabs) => {
+  tabQueryService.queryTabs({ tabGroupId: tab.cookieStore.id }).then(async (tabs) => {
     const indexTabIds: number[] = [];
     let nonIndexTabFound = false;
     for (const tab of tabs) {
       if (IndexTab.isIndexTabUrl(tab.url)) {
         indexTabIds.push(tab.id);
-      } else {
+      } else if (!tab.pinned) {
         nonIndexTabFound = true;
       }
     }
     if (!nonIndexTabFound && indexTabIds.length > 0) {
+      // no unpinned tabs left, so remove the index tab(s) for that container
       for (const indexTabId of indexTabIds) {
         await indexTabService.unregisterIndexTab(indexTabId);
         await browser.tabs.remove(indexTabId);
       }
+    } else if (nonIndexTabFound && indexTabIds.length < 1) {
+      // unpinned tab found, so create an index tab for that container
+      await indexTabService.createIndexTab(tab.windowId, tab.cookieStore.id);
     }
   }).catch((e) => {
     console.error(e);
