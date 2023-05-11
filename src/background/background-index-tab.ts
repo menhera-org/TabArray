@@ -167,6 +167,26 @@ browser.tabs.onCreated.addListener(async (browserTab) => {
 browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
   if (browserTab.incognito) return;
   const tab = new CompatTab(browserTab);
+  tabQueryService.queryTabs({ tabGroupId: tab.cookieStore.id, pinned: false }).then(async (tabs) => {
+    const indexTabIds: number[] = [];
+    let nonIndexTabFound = false;
+    for (const tab of tabs) {
+      if (IndexTab.isIndexTabUrl(tab.url)) {
+        indexTabIds.push(tab.id);
+      } else {
+        nonIndexTabFound = true;
+      }
+    }
+    if (!nonIndexTabFound && indexTabIds.length > 0) {
+      for (const indexTabId of indexTabIds) {
+        await indexTabService.unregisterIndexTab(indexTabId);
+        await browser.tabs.remove(indexTabId);
+      }
+    }
+  }).catch((e) => {
+    console.error(e);
+  });
+
   if (!IndexTab.isIndexTabUrl(tab.url)) {
     return;
   }
