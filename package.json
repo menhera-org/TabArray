@@ -61,7 +61,8 @@
     "src/pages/options/options.html",
     "src/pages/page-action/page-action.html",
     "src/pages/panorama/panorama.html",
-    "src/pages/popup-v2/popup-v2.html"
+    "src/pages/popup-v2/popup-v2.html",
+    "src/pages/navigation/open-container.html"
   ],
   "targets": {
     "main": false,

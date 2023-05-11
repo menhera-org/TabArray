@@ -20,12 +20,18 @@
 **/
 
 import browser from 'webextension-polyfill';
+import { CookieStore } from 'weeg-containers';
 
 import { TabPreviewService } from '../lib/tabs/TabPreviewService';
+import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
+
 import { injectExtensionContentScript } from './includes/ext-content';
 import { handleTabUrlUpdate } from './includes/active-container';
 
+import { OPEN_CONTAINER_PAGE } from '../defs';
+
 const tabPreviewService = TabPreviewService.getInstance();
+const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 
 browser.tabs.onUpdated.addListener((tabId, _changeInfo, browserTab) => {
   if (browserTab.status == 'complete' && browserTab.url && browserTab.url != 'about:blank') {
@@ -35,6 +41,19 @@ browser.tabs.onUpdated.addListener((tabId, _changeInfo, browserTab) => {
   }
   injectExtensionContentScript(browserTab);
   handleTabUrlUpdate(browserTab);
+
+  // handle "open container" page
+  if (browserTab.url && browserTab.url != 'about:blank') {
+    const url = new URL(browserTab.url);
+    if (url.origin == location.origin && url.protocol == location.protocol && url.pathname == OPEN_CONTAINER_PAGE) {
+      const cookieStoreId = url.searchParams.get('cookieStoreId') || CookieStore.DEFAULT.id;
+      containerTabOpenerService.openNewTabInContainer(cookieStoreId, true, browserTab.windowId).then(() => {
+        return browser.tabs.remove(tabId);
+      }).catch((e) => {
+        console.error(e);
+      });
+    }
+  }
 }, {
   properties: ['status', 'url'],
 });

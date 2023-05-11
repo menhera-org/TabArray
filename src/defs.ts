@@ -26,12 +26,17 @@
 export const ADDON_PAGE = 'https://addons.mozilla.org/firefox/addon/container-tab-groups/';
 export const PRIVACY_POLICY_PAGE = 'https://menhera-org.github.io/TabArray/PRIVACY_POLICY.html';
 export const GITHUB_PAGE = 'https://github.com/menhera-org/TabArray';
+
+// extension pages.
 export const PANORAMA_PAGE = '/pages/panorama/panorama.html';
 export const CONFIRM_PAGE = '/pages/navigation/confirm.html';
 export const COOKIES_PAGE = '/pages/cookies/cookies.html';
 export const POPUP_PAGE = '/pages/popup-v2/popup-v2.html';
 export const INDEX_TAB_PAGE = '/pages/index/index-tab.html';
 export const DEBUGGING_PAGE = '/pages/debugging/debugging.html';
+export const OPEN_CONTAINER_PAGE = '/pages/navigation/open-container.html';
+
+// github links
 export const GITHUB_TREE_LINK_BASE = 'https://github.com/menhera-org/TabArray/tree/';
 
 /* Content scripts */
