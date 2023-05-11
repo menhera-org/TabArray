@@ -138,6 +138,9 @@
     "48": "icon.svg",
     "96": "icon.svg"
   },
+  "omnibox": {
+    "keyword": "ctg"
+  },
   "web_accessible_resources": [
     "pages/navigation/confirm.html"
   ]

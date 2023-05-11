@@ -51,6 +51,7 @@ import './background-url-change';
 import './background-proxy';
 import './background-closed-tabs';
 import './background-sync';
+import './background-omnibox';
 // import './background-update-checker';
 import '../api/ApiDefinitions';
 
