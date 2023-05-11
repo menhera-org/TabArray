@@ -23,51 +23,23 @@ import browser from 'webextension-polyfill';
 
 import { CompatConsole } from '../lib/console/CompatConsole';
 import { WindowTabCountService, TabCountByWindow, WindowTabCountHistory } from '../lib/windows/WindowTabCountService';
+import { BrowserActionService } from '../lib/browserAction/BrowserActionService';
 
 import { DarkThemeMonitor } from '../legacy-lib/themes/DarkThemeMonitor';
 
 import { config } from '../config/config';
-import { POPUP_PAGE } from '../defs';
 
 import { InitialWindowsService } from './InitialWindowsService';
 import { injectExtensionContentScript } from './background-include-ext-content';
 
-const DARK_THEME_BACKGROUND_COLOR = '#cccccc';
-const LIGHT_THEME_BACKGROUND_COLOR = '#333333';
-
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const initialWindowsService = InitialWindowsService.getInstance();
 const windowTabCountService = WindowTabCountService.getInstance<WindowTabCountService>();
-
-const setBadgeTextForWindow = (windowId: number, tabCount: number) => {
-  browser.browserAction.setBadgeText({
-    text: tabCount.toString(),
-    windowId,
-  }).catch((e) => {
-    console.error(e);
-  });
-};
-
-const setBadgeTheme = (isDarkTheme: boolean) => {
-  const backgroundColor = isDarkTheme ? DARK_THEME_BACKGROUND_COLOR : LIGHT_THEME_BACKGROUND_COLOR;
-  browser.browserAction.setBadgeBackgroundColor({
-    color: backgroundColor,
-  }).catch((e) => {
-    console.error(e);
-  });
-};
-
-const setPopupSize = (large: boolean) => {
-  browser.browserAction.setPopup({
-    popup: POPUP_PAGE + (large ? '?popup=1&large=1' : '?popup=1'),
-  }).catch((e) => {
-    console.error(e);
-  });
-};
+const browserActionService = BrowserActionService.getInstance();
 
 config['appearance.popupSize'].observe((value) => {
   console.debug('appearance.popupSize changed:', value);
-  setPopupSize(value === 'large');
+  browserActionService.setPopupSize(value === 'large');
 });
 
 initialWindowsService.getInitialWindows().then((browserWindows) => {
@@ -111,15 +83,15 @@ windowTabCountService.onChanged.addListener((tabCountHistory) => {
   for (const windowId of windowIds) {
     const tabCount = WindowTabCountHistory.getLastTabCountForWindow(tabCountHistory, windowId) as number;
     if (tabCount < 1) return;
-    setBadgeTextForWindow(windowId, tabCount);
+    browserActionService.setBadgeTextForWindow(windowId, tabCount);
   }
 });
 
 const themeMonitor = new DarkThemeMonitor();
 const isDarkTheme = themeMonitor.isDarkTheme;
-setBadgeTheme(isDarkTheme);
+browserActionService.setBadgeTheme(isDarkTheme);
 
 themeMonitor.onChanged.addListener(() => {
   const isDarkTheme = themeMonitor.isDarkTheme;
-  setBadgeTheme(isDarkTheme);
+  browserActionService.setBadgeTheme(isDarkTheme);
 });
