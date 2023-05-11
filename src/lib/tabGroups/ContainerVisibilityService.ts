@@ -25,7 +25,7 @@ import { CompatTab } from 'weeg-tabs';
 import { IndexTabService } from '../tabs/IndexTabService';
 import { ServiceRegistry } from '../ServiceRegistry';
 import { CompatConsole } from '../console/CompatConsole';
-import { PerformanceHistoryService } from '../PerformanceHistoryService';
+import { PerformanceHistoryService } from '../history/PerformanceHistoryService';
 
 import { config } from '../../config/config';
 import { WindowContainerHidingHelper } from './WindowContainerHidingHelper';

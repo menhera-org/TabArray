@@ -27,9 +27,9 @@ import { TabSortingService } from '../lib/tabs/TabSortingService';
 import { TabConverterService } from '../lib/tabs/TabConverterService';
 import { TabUrlService } from '../lib/tabs/TabUrlService';
 import { ConsoleHistoryService } from '../lib/console/ConsoleHistoryService';
-import { PerformanceHistoryService } from '../lib/PerformanceHistoryService';
+import { PerformanceHistoryService } from '../lib/history/PerformanceHistoryService';
 import { PackageIntegrityService } from '../lib/package/PackageIntegrityService';
-import { InstallationHistoryService } from '../lib/InstallationHistoryService';
+import { InstallationHistoryService } from '../lib/history/InstallationHistoryService';
 
 import './background-install-handler';
 import './background-index-tab';

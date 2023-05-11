@@ -24,8 +24,8 @@ import { ExtensionService } from "weeg-utils";
 import { DirectoryListingService } from "./package/DirectoryListingService";
 import { PackageIntegrityService } from "./package/PackageIntegrityService";
 import { ConsoleHistoryService } from "./console/ConsoleHistoryService";
-import { PerformanceHistoryService } from "./PerformanceHistoryService";
-import { InstallationHistoryService } from "./InstallationHistoryService";
+import { PerformanceHistoryService } from "./history/PerformanceHistoryService";
+import { InstallationHistoryService } from "./history/InstallationHistoryService";
 import { WindowTabCountService } from "./windows/WindowTabCountService";
 
 import { ServiceRegistry } from "./ServiceRegistry";

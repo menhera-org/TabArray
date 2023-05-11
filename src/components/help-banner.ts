@@ -25,7 +25,7 @@ import { ExtensionPageService } from "../lib/ExtensionPageService";
 import { DateFormatService } from "../lib/DateFormatService";
 import { CompatConsole } from "../lib/console/CompatConsole";
 import { PackageIntegrityService } from "../lib/package/PackageIntegrityService";
-import { InstallationHistoryService } from "../lib/InstallationHistoryService";
+import { InstallationHistoryService } from "../lib/history/InstallationHistoryService";
 import { ExtensionVersion } from "../lib/ExtensionVersion";
 import { BuildMetadataService } from "../lib/package/BuildMetadataService";
 

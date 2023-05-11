@@ -21,9 +21,9 @@
 
 import { BackgroundService } from "weeg-utils";
 
-import { CachedStorageItem } from "./storage/CachedStorageItem";
-import { ServiceRegistry } from "./ServiceRegistry";
-import { StartupService } from "./StartupService";
+import { CachedStorageItem } from "../storage/CachedStorageItem";
+import { ServiceRegistry } from "../ServiceRegistry";
+import { StartupService } from "../StartupService";
 
 export type PerformanceRecord = {
   operationName: string;

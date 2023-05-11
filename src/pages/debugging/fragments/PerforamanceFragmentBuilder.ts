@@ -21,7 +21,7 @@
 
 // this is not translated.
 
-import { PerformanceHistoryService } from "../../../lib/PerformanceHistoryService";
+import { PerformanceHistoryService } from "../../../lib/history/PerformanceHistoryService";
 
 import { AbstractFragmentBuilder } from "../../popup-v2/fragments/AbstractFragmentBuilder";
 

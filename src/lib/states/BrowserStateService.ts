@@ -34,7 +34,7 @@ import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectory
 import { TabAttributeMap } from '../tabGroups/tags/TabAttributeMap';
 import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
 import { DisplayedContainerService } from "../tabGroups/DisplayedContainerService";
-import { PerformanceHistoryService } from "../PerformanceHistoryService";
+import { PerformanceHistoryService } from "../history/PerformanceHistoryService";
 import { SpinnerService } from "../SpinnerService";
 
 export type BrowserStateConstructParams = {

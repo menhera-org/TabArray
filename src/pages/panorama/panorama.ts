@@ -32,7 +32,7 @@ import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContaine
 import { TemporaryContainerService } from '../../lib/tabGroups/TemporaryContainerService';
 import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { CompatConsole } from '../../lib/console/CompatConsole';
-import { PerformanceHistoryService } from '../../lib/PerformanceHistoryService';
+import { PerformanceHistoryService } from '../../lib/history/PerformanceHistoryService';
 
 import { PanoramaStateStore } from "./PanoramaStateStore";
 

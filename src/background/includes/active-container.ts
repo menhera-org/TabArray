@@ -52,6 +52,7 @@ export const setActiveContainerTab = (browserTab: browser.Tabs.Tab) => {
       return;
     }
     const cookieStoreId = browserTab.cookieStoreId;
+    if (cookieStoreId == CookieStore.PRIVATE.id) return;
     activeContainerService.setActiveContainer(browserTab.windowId, cookieStoreId).catch((e) => {
       console.error(e);
     });
@@ -110,7 +111,7 @@ export const handleTabUrlUpdate = (browserTab: browser.Tabs.Tab) => {
 
     const promises: Promise<void>[] = [];
     promises.push(openTabsService.addTab(tabId));
-    if (browserTab.url != null && !extensionPageService.isConfirmPage(browserTab.url) && browserTab.active) {
+    if (browserTab.url != null && !extensionPageService.isConfirmPage(browserTab.url) && browserTab.active && cookieStoreId != CookieStore.PRIVATE.id) {
       // console.debug('Setting active tab to:', browserTab);
       promises.push(activeContainerService.setActiveContainer(windowId, cookieStoreId));
     }

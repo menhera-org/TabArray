@@ -28,7 +28,7 @@ import { ServiceRegistry } from '../ServiceRegistry';
 import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
 import { TagService } from '../tabGroups/tags/TagService';
 import { CompatConsole } from '../console/CompatConsole';
-import { PerformanceHistoryService } from '../PerformanceHistoryService';
+import { PerformanceHistoryService } from '../history/PerformanceHistoryService';
 import { SpinnerService } from '../SpinnerService';
 
 import { config } from '../../config/config';

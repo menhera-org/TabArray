@@ -24,6 +24,7 @@ import { StorageItem } from "weeg-storage";
 import { ServiceRegistry } from "../ServiceRegistry";
 import { ActiveContainerBatchOperation } from "./ActiveContainerBatchOperation";
 import { CompatConsole } from "../console/CompatConsole";
+import { ContainerHistoryService } from "../history/ContainerHistoryService";
 
 import { hideAll } from "../../legacy-lib/modules/containers";
 
@@ -34,6 +35,8 @@ export type ActiveContainerStorageType = {
 };
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
+
+const containerHistoryService = ContainerHistoryService.getInstance<ContainerHistoryService>();
 
 export class ActiveContainerService {
   private static readonly STORAGE_KEY = "activeContainerByWindow";
@@ -71,16 +74,15 @@ export class ActiveContainerService {
 
   public async setActiveContainer(windowId: number, cookieStoreId: string): Promise<void> {
     const value = await this.getValue();
-    let changed = false;
     if (value[windowId] != cookieStoreId) {
       console.debug('ActiveContainerService.setActiveContainer: windowId =', windowId, 'cookieStoreId =', cookieStoreId);
-      changed = true;
       value[windowId] = cookieStoreId;
       await this.setValue(value);
-    }
-    const autoHideEnabled = await config['tab.autoHide.enabled'].getValue();
-    if (autoHideEnabled && changed) {
-      await hideAll(windowId);
+      containerHistoryService.addHistoryEntry(cookieStoreId);
+      const autoHideEnabled = await config['tab.autoHide.enabled'].getValue();
+      if (autoHideEnabled) {
+        await hideAll(windowId);
+      }
     }
   }
 

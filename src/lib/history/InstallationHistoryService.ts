@@ -24,9 +24,9 @@ import { StorageItem } from "weeg-storage";
 import { EventSink } from "weeg-events";
 import { Asserts } from "weeg-utils";
 
-import { ServiceRegistry } from "./ServiceRegistry";
-import { StartupService } from "./StartupService";
-import { PackageIntegrityService } from "./package/PackageIntegrityService";
+import { ServiceRegistry } from "../ServiceRegistry";
+import { StartupService } from "../StartupService";
+import { PackageIntegrityService } from "../package/PackageIntegrityService";
 
 export type InstallationInfo = {
   installationDate: string;

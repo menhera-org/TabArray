@@ -151,6 +151,7 @@ browser.tabs.onCreated.addListener(async (browserTab) => {
     console.warn('Incomplete browser tab', browserTab);
     return;
   }
+  if (browserTab.incognito) return;
   const windowId = browserTab.windowId;
   const cookieStoreId = browserTab.cookieStoreId;
   tabQueryService.queryTabs({ tabGroupId: cookieStoreId }).then(async (tabs) => {

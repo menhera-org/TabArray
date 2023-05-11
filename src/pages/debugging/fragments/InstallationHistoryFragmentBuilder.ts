@@ -22,7 +22,7 @@
 // this is not translated.
 
 import { ConsoleHistoryService } from "../../../lib/console/ConsoleHistoryService";
-import { InstallationHistoryService } from "../../../lib/InstallationHistoryService";
+import { InstallationHistoryService } from "../../../lib/history/InstallationHistoryService";
 
 import { AbstractFragmentBuilder } from "../../popup-v2/fragments/AbstractFragmentBuilder";
 
