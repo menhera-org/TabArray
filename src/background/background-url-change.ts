@@ -23,16 +23,18 @@ import browser from 'webextension-polyfill';
 
 import { TabPreviewService } from '../lib/tabs/TabPreviewService';
 import { injectExtensionContentScript } from './includes/ext-content';
+import { handleTabUrlUpdate } from './includes/active-container';
 
 const tabPreviewService = TabPreviewService.getInstance();
 
-browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
+browser.tabs.onUpdated.addListener((tabId, _changeInfo, browserTab) => {
   if (browserTab.status == 'complete' && browserTab.url && browserTab.url != 'about:blank') {
     tabPreviewService.updateTabPreview(tabId).catch((e) => {
       console.warn(e);
     });
   }
   injectExtensionContentScript(browserTab);
+  handleTabUrlUpdate(browserTab);
 }, {
   properties: ['status', 'url'],
 });

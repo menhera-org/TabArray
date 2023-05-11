@@ -22,15 +22,14 @@
 import browser from "webextension-polyfill";
 import { CookieStore } from "weeg-containers";
 
-import { ActiveContainerService } from "../lib/states/ActiveContainerService";
-import { OpenTabsService } from "../lib/states/OpenTabsService";
-import { NewTabPageService } from "../lib/tabs/NewTabPageService";
-import { ContainerTabOpenerService } from "../lib/tabGroups/ContainerTabOpenerService";
-import { ExtensionPageService } from "../lib/ExtensionPageService";
-import { CompatConsole } from "../lib/console/CompatConsole";
-import { InitialWindowsService } from "./includes/InitialWindowsService";
+import { ActiveContainerService } from "../../lib/states/ActiveContainerService";
+import { OpenTabsService } from "../../lib/states/OpenTabsService";
+import { NewTabPageService } from "../../lib/tabs/NewTabPageService";
+import { ContainerTabOpenerService } from "../../lib/tabGroups/ContainerTabOpenerService";
+import { ExtensionPageService } from "../../lib/ExtensionPageService";
+import { CompatConsole } from "../../lib/console/CompatConsole";
 
-import { config } from "../config/config";
+import { config } from "../../config/config";
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const activeContainerService = ActiveContainerService.getInstance();
@@ -38,12 +37,10 @@ const openTabsService = OpenTabsService.getInstance();
 const newTabPageService = NewTabPageService.getInstance();
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const extensionPageService = ExtensionPageService.getInstance();
-const initialWindowsService = InitialWindowsService.getInstance();
 
-browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
+export const setActiveContainerTab = (browserTab: browser.Tabs.Tab) => {
   try {
-    const browserTab = await browser.tabs.get(tabId);
-    if (browserTab.url == 'about:blank' || browserTab.status == 'loading') {
+    if (browserTab.url == 'about:blank' || browserTab.status == 'loading' || browserTab.windowId == null) {
       return;
     }
     if (null == browserTab.cookieStoreId) {
@@ -55,13 +52,15 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
       return;
     }
     const cookieStoreId = browserTab.cookieStoreId;
-    await activeContainerService.setActiveContainer(windowId, cookieStoreId);
+    activeContainerService.setActiveContainer(browserTab.windowId, cookieStoreId).catch((e) => {
+      console.error(e);
+    });
   } catch (e) {
     console.error(e);
   }
-});
+};
 
-browser.tabs.onCreated.addListener(async (browserTab) => {
+export const reopenNewTab = async (browserTab: browser.Tabs.Tab) => {
   try {
     if (browserTab.windowId == null || browserTab.cookieStoreId == null || browserTab.id == null) {
       return;
@@ -80,71 +79,53 @@ browser.tabs.onCreated.addListener(async (browserTab) => {
       const tabId = browserTab.id;
       await containerTabOpenerService.openNewTabInContainer(activeCookieStoreId, true, windowId);
       await browser.tabs.remove(tabId);
-      return;
     }
   } catch (e) {
     console.error(e);
   }
-});
+};
 
-browser.tabs.onUpdated.addListener(async (_tabId, _changeInfo, browserTab) => {
-  try {
-    if (null == browserTab.cookieStoreId || null == browserTab.windowId || null == browserTab.id) {
-      console.warn('Incomplete tab object passed to onUpdated listener', browserTab);
-      return;
-    }
-    if (browserTab.status == 'loading' || browserTab.url == 'about:blank' && browserTab.title?.includes('/')) {
-      return;
-    }
-    const cookieStoreId = browserTab.cookieStoreId;
-    const windowId = browserTab.windowId;
+export const handleTabUrlUpdate = (browserTab: browser.Tabs.Tab) => {
+  if (null == browserTab.cookieStoreId || null == browserTab.windowId || null == browserTab.id) {
+    console.warn('Incomplete tab object passed to onUpdated listener', browserTab);
+    return;
+  }
+  if (browserTab.status == 'loading' || browserTab.url == 'about:blank' && browserTab.title?.includes('/')) {
+    return;
+  }
+  const cookieStoreId = browserTab.cookieStoreId;
+  const windowId = browserTab.windowId;
+  const tabId = browserTab.id;
 
-    const [configNewTabInContainerEnabled, newTabPageUrl, activeCookieStoreId] = await Promise.all([
-      config['newtab.keepContainer'].getValue(),
-      newTabPageService.getNewTabPageUrl(),
-      activeContainerService.getActiveContainer(windowId)
-    ]);
+  Promise.all([
+    config['newtab.keepContainer'].getValue(),
+    newTabPageService.getNewTabPageUrl(),
+    activeContainerService.getActiveContainer(windowId)
+  ]).then(([configNewTabInContainerEnabled, newTabPageUrl, activeCookieStoreId]) => {
     if (browserTab.url == newTabPageUrl && configNewTabInContainerEnabled && cookieStoreId == CookieStore.DEFAULT.id && activeCookieStoreId != cookieStoreId && null != activeCookieStoreId) {
-      const tabId = browserTab.id;
-      await containerTabOpenerService.openNewTabInContainer(activeCookieStoreId, true, windowId);
-      await browser.tabs.remove(tabId);
-      return;
+      return containerTabOpenerService.openNewTabInContainer(activeCookieStoreId, true, windowId).then(() => {
+        return browser.tabs.remove(tabId);
+      });
     }
+
     const promises: Promise<void>[] = [];
-    promises.push(openTabsService.addTab(browserTab.id));
+    promises.push(openTabsService.addTab(tabId));
     if (browserTab.url != null && !extensionPageService.isConfirmPage(browserTab.url) && browserTab.active) {
       // console.debug('Setting active tab to:', browserTab);
       promises.push(activeContainerService.setActiveContainer(windowId, cookieStoreId));
     }
-    await Promise.all(promises);
-  } catch (e) {
+    return Promise.all(promises).then(() => {
+      // nothing.
+    });
+  }).catch((e) => {
     console.error(e);
-  }
-}, {
-  properties: ['status', 'url'],
-});
+  });
+};
 
-browser.windows.onRemoved.addListener(async (windowId) => {
-  try {
-    await activeContainerService.removeWindow(windowId);
-  } catch (e) {
-    console.error(e);
-  }
-});
-
-browser.tabs.onRemoved.addListener(async (tabId) => {
-  try {
-    await openTabsService.removeTab(tabId);
-  } catch (e) {
-    console.error(e);
-  }
-});
-
-initialWindowsService.getInitialWindows().then(async (browserWindows) => {
-  try {
-    const batchOperation = await activeContainerService.beginBatchOperation();
+export const doBatchOperationOnInitialWindows = (browserWindows: browser.Windows.Window[]) => {
+  activeContainerService.beginBatchOperation().then((batchOperation) => {
     const windowIds = browserWindows.map((browserWindow) => browserWindow.id as number);
-    for (const windowId of await activeContainerService.getWindowIds()) {
+    for (const windowId of batchOperation.getWindowIds()) {
       if (!windowIds.includes(windowId)) {
         batchOperation.removeWindow(windowId);
       }
@@ -163,11 +144,11 @@ initialWindowsService.getInitialWindows().then(async (browserWindows) => {
       }
     }
     const tabIds = openBrowserTabs.map((browserTab) => browserTab.id as number);
-    await Promise.all([
+    return Promise.all([
       openTabsService.setValue(tabIds),
       activeContainerService.commitBatchOperation(batchOperation),
     ]);
-  } catch (e) {
+  }).catch((e) => {
     console.error(e);
-  }
-});
+  });
+};

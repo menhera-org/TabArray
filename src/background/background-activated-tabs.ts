@@ -27,6 +27,8 @@ import { TabQueryService } from '../lib/tabs/TabQueryService';
 
 import { config } from '../config/config';
 
+import { setActiveContainerTab } from './includes/active-container';
+
 const containerVisibilityService = ContainerVisibilityService.getInstance();
 const tabQueryService = TabQueryService.getInstance();
 
@@ -47,6 +49,7 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   try {
     const browserTab = await browser.tabs.get(tabId);
     if (browserTab.cookieStoreId == null || browserTab.id == null) return;
+    setActiveContainerTab(browserTab);
     const tab = new CompatTab(browserTab);
     const cookieStore = tab.cookieStore;
     if (cookieStore.isPrivate) {
