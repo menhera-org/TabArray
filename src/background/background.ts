@@ -37,7 +37,7 @@ import './background-container-observer';
 import './background-menus';
 import './includes/FramingHeadersService';
 import './background-commands';
-import './background-update-browserAction';
+import './background-tab-lifecycle';
 import './background-autodiscard';
 import './background-storage-observer';
 import './background-active-container';
