@@ -19,11 +19,16 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
+import { Asserts } from "weeg-utils";
+
+import { CachedStorageItem } from "../storage/CachedStorageItem";
 
 import { ServiceRegistry } from "../ServiceRegistry";
 
 export type OpenTabsStorageType = number[];
+
+// only allow access from background script
+Asserts.assertBackgroundScript();
 
 export class OpenTabsService {
   private static readonly STORAGE_KEY = "openTabs";
@@ -34,7 +39,7 @@ export class OpenTabsService {
     return OpenTabsService.INSTANCE;
   }
 
-  private readonly _storage = new StorageItem<OpenTabsStorageType>(OpenTabsService.STORAGE_KEY, [], StorageItem.AREA_LOCAL);
+  private readonly _storage = new CachedStorageItem<OpenTabsStorageType>(OpenTabsService.STORAGE_KEY, [], CachedStorageItem.AREA_LOCAL);
 
   private constructor() {
     // nothing.
@@ -49,21 +54,23 @@ export class OpenTabsService {
   }
 
   public async removeTab(tabId: number): Promise<void> {
-    const value = await this.getValue();
-    const index = value.indexOf(tabId);
-    if (index !== -1) {
-      value.splice(index, 1);
-      await this.setValue(value);
-    }
+    this._storage.doUpdateTransaction((value) => {
+      const index = value.indexOf(tabId);
+      if (index !== -1) {
+        value.splice(index, 1);
+      }
+      return value;
+    });
   }
 
   public async addTab(tabId: number): Promise<void> {
-    const value = await this.getValue();
-    const index = value.indexOf(tabId);
-    if (index === -1) {
-      value.push(tabId);
-      await this.setValue(value);
-    }
+    this._storage.doUpdateTransaction((value) => {
+      const index = value.indexOf(tabId);
+      if (index === -1) {
+        value.push(tabId);
+      }
+      return value;
+    });
   }
 
   public async hasTab(tabId: number): Promise<boolean> {

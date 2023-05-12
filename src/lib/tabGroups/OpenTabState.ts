@@ -28,6 +28,9 @@ type StorageType = {
   [cookieStoreId: string]: number[]; // tabIds
 };
 
+/**
+ * This is only used in background scripts.
+ */
 export class OpenTabState {
   public readonly onContainerClosed = new EventSink<string>();
 
