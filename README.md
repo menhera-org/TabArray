@@ -142,6 +142,28 @@ Versions ending with .1xx are development versions, and versions ending with .2x
 
 The two digits after 1 or 2 indicate patch level.
 
+## Building the extension
+
+1. Clone this repository.
+2. Install the latest Node.JS/NPM using [NVM](https://github.com/nvm-sh/nvm).
+3. In this directory, run `npm install`.
+4. Run `npm run build`.
+
+
+### Reproducible builds
+
+This project uses reproducible builds. This means built extennsions from the same source is always the same.
+
+To use this feature, make sure that:
+
+- You build an extension directly from a Git repository (not Tarballs or Zip archives).
+
+Since the hashes are the same, your built extension from the official source should show a green checkmark ("ofiicial build") next to the version in the help view.
+
+When checking the integrity of package, certain files are ignored:
+
+- Cryptographic signature files from Mozilla are ignored. (So that versions from addons.mozilla.org should show that they are "official.")
+- The `manifest.json` file may be transformed by Mozilla, so only equivalence is checked.
 
 ## FAQs
 
@@ -155,12 +177,6 @@ So it would not be possible.
 
 See the [issues](https://github.com/menhera-org/TabArray/issues).
 Something missing you need? Please file a new feature request there.
-
-## Building the extension
-
-1. Install the latest Node.JS/NPM using [NVM](https://github.com/nvm-sh/nvm).
-2. In this directory, run `npm install`.
-3. Run `npm run build` for production builds, and `npm run dev` for development builds.
 
 ## License
 
