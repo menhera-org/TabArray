@@ -537,7 +537,7 @@
         "description": "Heading text for domains in cookies table."
     },
     "contextMenuUnmuteTab": {
-        "message": "Registerkarten aufheben",
+        "message": "Ton in Tab wiederherstellen",
         "description": "Unmute Tab menu (same as browser's tab menu)"
     },
     "sitesN": {
@@ -755,5 +755,41 @@
     "saveDebuggingInformation": {
         "message": "Debugging-Informationen speichern",
         "description": "Save debugging information button."
+    },
+    "extensionBuild": {
+        "message": "Erstellen",
+        "description": "Label text indicating an extension build (built extension package)."
+    },
+    "extensionDevBuild": {
+        "message": "(entwicklungsversion)",
+        "description": "Label text indicating a development-version extension build."
+    },
+    "extensionBuildUnknown": {
+        "message": "(unbekannte)",
+        "description": "Label text indicating an unknown extension build."
+    },
+    "extensionUnsigned": {
+        "message": "(ohne Vorzeichen)",
+        "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
+    },
+    "extensionSigned": {
+        "message": "(unterzeichnet)",
+        "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
+    },
+    "extensionUntracked": {
+        "message": "(ungesichert)",
+        "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "packageIntegrity": {
+        "message": "Integrität",
+        "description": "Label text indicating the integrity of an extension package."
+    },
+    "packageIntegrityMismatch": {
+        "message": "Unstimmigkeit der Integrität",
+        "description": "Label text indicating the integrity of an extension package does not match the expected value."
+    },
+    "resistFingerprintingWarning": {
+        "message": "privacy.resistFingerprinting ist eine erweiterte Schutzeinstellung, die im Tor-Browser verwendet wird und dein Surferlebnis einschränken kann.",
+        "description": "Warning message for privacy.resistFingerprinting."
     }
 }
