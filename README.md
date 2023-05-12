@@ -152,7 +152,7 @@ The two digits after 1 or 2 indicate patch level.
 
 ### Reproducible builds
 
-This project uses reproducible builds. This means built extennsions from the same source is always the same.
+This project uses reproducible builds. This means built extensions from the same source is always the same.
 
 To use this feature, make sure that:
 
