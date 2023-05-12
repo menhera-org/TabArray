@@ -57,7 +57,8 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
     }
 
     if (tabIsPreviouslyOpen) {
-      console.info('Ignoring manually navigated tab: %d', details.tabId);
+      // we have commented this out because it is IO intensive
+      // console.info('Ignoring manually navigated tab: %d', details.tabId);
       return false;
     }
 

@@ -20,7 +20,7 @@
 **/
 
 import { ConsoleFormatter } from "./ConsoleFormatter";
-import { ConsoleHistoryService } from "./ConsoleHistoryService";
+import { ConsoleHistoryService, ConsoleEntry } from "./ConsoleHistoryService";
 
 /**
  * Console output types.
@@ -42,6 +42,9 @@ export class ConsoleService {
     return ConsoleService.INSTANCE;
   }
 
+  private _inTransaction = false;
+  private readonly _uncomittedEntries: ConsoleEntry[] = [];
+
   private constructor() {
     // Singleton
   }
@@ -49,6 +52,21 @@ export class ConsoleService {
   public getContext(): string {
     const filename = location.pathname.split('/').filter(a => a.trim()).pop() ?? 'unknown';
     return filename.split('.')[0] as string;
+  }
+
+  public beginTransaction(): void {
+    this._inTransaction = true;
+  }
+
+  public commitTransaction(): void {
+    this._inTransaction = false;
+    consoleHistoryService.addEntries(this._uncomittedEntries);
+    this._uncomittedEntries.length = 0;
+  }
+
+  public cancelTransaction(): void {
+    this._inTransaction = false;
+    this._uncomittedEntries.length = 0;
   }
 
   public output(tag: string, outputType: OutputType, ... args: unknown[]): void {
@@ -68,12 +86,17 @@ export class ConsoleService {
         return '(unknown)';
       }
     }).join(' ');
-    consoleHistoryService.addEntry({
+    const entry: ConsoleEntry = {
       unixTime: Date.now(),
       context,
       tag,
       outputType,
       message: stringifiedArgs,
-    });
+    };
+    if (this._inTransaction) {
+      this._uncomittedEntries.push(entry);
+    } else {
+      consoleHistoryService.addEntry(entry);
+    }
   }
 }

@@ -26,7 +26,7 @@ import { ServiceRegistry } from "../ServiceRegistry";
 import { StartupService } from "../StartupService";
 import { OutputType } from "./ConsoleService";
 
-type ConsoleEntry = {
+export type ConsoleEntry = {
   unixTime: number; // milliseconds since epoch
   context: string;
   tag: string;
@@ -36,7 +36,7 @@ type ConsoleEntry = {
 
 const startupService = StartupService.getInstance();
 
-export class ConsoleHistoryService extends BackgroundService<ConsoleEntry, void> {
+export class ConsoleHistoryService extends BackgroundService<ConsoleEntry[], void> {
   private readonly storage = new CachedStorageItem<ConsoleEntry[]>("consoleHistory", [], CachedStorageItem.AREA_LOCAL);
 
   public readonly onChanged = this.storage.onChanged;
@@ -53,15 +53,21 @@ export class ConsoleHistoryService extends BackgroundService<ConsoleEntry, void>
     });
   }
 
-  protected override async execute(input: ConsoleEntry): Promise<void> {
+  protected override async execute(input: ConsoleEntry[]): Promise<void> {
     this.storage.doUpdateTransaction((entries) => {
-      entries.push(input);
+      entries.push(... input);
       return entries;
     });
   }
 
   public addEntry(entry: ConsoleEntry): void {
-    this.call(entry).catch((e) => {
+    this.call([entry]).catch((e) => {
+      console.error(e);
+    });
+  }
+
+  public addEntries(entries: ConsoleEntry[]): void {
+    this.call(entries).catch((e) => {
       console.error(e);
     });
   }
