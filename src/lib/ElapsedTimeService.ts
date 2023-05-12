@@ -52,6 +52,7 @@ export class ElapsedTimeService {
 
   public async getElapsedTime(): Promise<number> {
     const startedTime = this._cachedValue ?? await this._storage.getValue();
+    this._cachedValue = startedTime;
     if (startedTime == 0) {
       return 0;
     }
