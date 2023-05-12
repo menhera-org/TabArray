@@ -25,6 +25,8 @@ Chrome-like tab groups using private and isolated containers: The ultimate tab m
 
 _Tab Group = Container_
 
+_Better than Chrome!_
+
 - Requires no setup before/after installation.
 - Isolated cookies/logins for each of tab groups because they are containers.
 - Per-window container management.
@@ -39,6 +41,11 @@ _Tab Group = Container_
 - Enables First-Party Isolate (privacy.firstparty.isolate; FPI) by default. (Configurable.) **This means that cookies for different sites, even for a same container, are separated by registrable domain.** It also enables natural and flicker-free openings of new windows by websites, unlike simulated FPI by manipulating containers. This is the way Tor Browser is using.
 - Allows the user to enable fingerprinting resistance (privacy.resistFingerprinting).
 - Per-container overrides of the language and the user agent settings.
+
+### Groups and tags
+
+- You can group containers.
+- You can use tags to organize tabs inside a single container or no container.
 
 ## Usage
 
@@ -152,7 +159,7 @@ The two digits after 1 or 2 indicate patch level.
 
 ### Reproducible builds
 
-This project uses reproducible builds. This means built extensions from the same source is always the same.
+This project uses reproducible builds. This means built extensions from the same source are always the same.
 
 To use this feature, make sure that:
 
