@@ -28,8 +28,11 @@ import { ProxyInfo, HttpProxyInfo } from '../lib/proxies/ProxyInfo';
 import { ProxyPreset } from '../lib/proxies/ProxyPreset';
 import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
 import { TabGroupService } from '../lib/tabGroups/TabGroupService';
+import { CompatConsole } from '../lib/console/CompatConsole';
 
 import { config } from '../config/config';
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
