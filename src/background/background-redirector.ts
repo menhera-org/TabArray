@@ -43,6 +43,7 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
     if (details.cookieStoreId == null || details.cookieStoreId != CookieStore.DEFAULT.id || details.tabId == -1 || details.frameId != 0 || details.originUrl || details.incognito) return false;
     const cookieStoreId = details.cookieStoreId;
 
+    // all of these IO operations are now cached.
     const [elapsedTime, externalTabContainerOption, tabIsPreviouslyOpen] = await Promise.all([
       elapsedTimeService.getElapsedTime(),
       config['tab.external.containerOption'].getValue(),

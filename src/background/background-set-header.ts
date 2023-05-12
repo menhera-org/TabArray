@@ -66,6 +66,7 @@ browser.webRequest.onBeforeSendHeaders.addListener(async (details) => {
 
   const cookieStoreId = details.cookieStoreId;
 
+  // all of these IO operations are now cached.
   const [userAgent, acceptLanguages, featureLanguageOverridesEnabled, featureUserAgentOverridesEnabled] = await Promise.all([
     userAgentSettings.getUserAgent(cookieStoreId),
     languageSettings.getAcceptLanguages(cookieStoreId),
