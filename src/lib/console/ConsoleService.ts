@@ -60,6 +60,7 @@ export class ConsoleService {
 
   public commitTransaction(): void {
     this._inTransaction = false;
+    if (this._uncomittedEntries.length < 1) return;
     consoleHistoryService.addEntries(this._uncomittedEntries);
     this._uncomittedEntries.length = 0;
   }

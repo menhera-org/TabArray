@@ -23,10 +23,13 @@ import browser from 'webextension-polyfill';
 
 import { UrlRegistrationService } from '../../lib/UrlRegistrationService';
 import { CompatConsole } from '../../lib/console/CompatConsole';
+import { ConsoleService } from '../../lib/console/ConsoleService';
 
 import { CONFIRM_PAGE } from '../../defs';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
+
+const consoleService = ConsoleService.getInstance();
 
 /**
  * The type of the handler function. Returns whether to redirect the request.
@@ -42,6 +45,7 @@ export class BeforeRequestHandler {
   public constructor(handler: HandlerType) {
     this._handler = handler;
     this._rawListener = async (details: browser.WebRequest.OnBeforeRequestDetailsType) => {
+      consoleService.beginTransaction();
       const whetherToRedirect = await this._handler(details);
       const result: browser.WebRequest.BlockingResponse = {};
       if (whetherToRedirect) {
@@ -51,6 +55,7 @@ export class BeforeRequestHandler {
         result.redirectUrl = confirmUrl;
         console.log('Redirecting %s to %s', details.url, confirmUrl);
       }
+      consoleService.commitTransaction();
       return result;
     };
   }
