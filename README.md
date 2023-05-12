@@ -66,9 +66,10 @@ This extension is intended to replace the following features/extensions:
 - Conex, an extension which is not updated recently.
 - Google Chrome's tab groups.
 
-## Known bugs
+## Known issues
 
 - View source (view-source: URLs) on No Container does not work. This is the limitation of WebExtensions API.
+- HTTP requests in "No Container" (default container) are a little slower than ones in containers.
 
 ## Compatiblity
 
