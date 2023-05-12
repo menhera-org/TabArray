@@ -76,7 +76,7 @@ export class HelpBannerElement extends HTMLElement {
     const versionObj = ExtensionVersion.fromString(version);
     const patchVersion = versionObj.versionParts[3] ?? 0;
     const isDevelopmentVersion = patchVersion < 200;
-    helpBannerVersion.textContent = version + (isDevelopmentVersion ? ' (dev)' : '');
+    helpBannerVersion.textContent = version + (isDevelopmentVersion ? ' ' + browser.i18n.getMessage('extensionDevBuild') : '');
     helpBanner.appendChild(helpBannerVersion);
 
     const helpBannerBuild = document.createElement('p');
@@ -92,14 +92,14 @@ export class HelpBannerElement extends HTMLElement {
 
     const helpBannerIntegrityStatus = document.createElement('div');
     helpBannerIntegrityStatus.id = 'help-banner-integrity-status';
-    helpBannerIntegrityStatus.textContent = 'Integrity'; // untranslated
+    helpBannerIntegrityStatus.textContent = browser.i18n.getMessage('packageIntegrity');
     helpBannerIntegrity.appendChild(helpBannerIntegrityStatus);
 
     const helpBannerIntegrityHash = document.createElement('input');
     helpBannerIntegrityHash.id = 'help-banner-integrity-hash';
     helpBannerIntegrityHash.type = 'text';
     helpBannerIntegrityHash.readOnly = true;
-    helpBannerIntegrityHash.value = '(unknown hash)';
+    helpBannerIntegrityHash.value = '(unknown hash)'; // untranslated
     helpBannerIntegrity.appendChild(helpBannerIntegrityHash);
 
     Promise.all([
@@ -117,7 +117,7 @@ export class HelpBannerElement extends HTMLElement {
     ]).then(async ([recordedHash, hash]) => {
       helpBannerIntegrityHash.value = hash;
       if (recordedHash != hash) {
-        helpBannerIntegrityStatus.textContent = 'Integrity mismatch'; // untranslated
+        helpBannerIntegrityStatus.textContent = browser.i18n.getMessage('packageIntegrityMismatch');
       } else {
         const isOfficial = await buildMetadataService.verifySignature(hash);
         if (isOfficial) {
@@ -129,7 +129,7 @@ export class HelpBannerElement extends HTMLElement {
     });
 
     fetch('/build.json').then(async (response) => {
-      helpBannerBuild.textContent = 'Build '; // untranslated
+      helpBannerBuild.textContent = browser.i18n.getMessage('extensionBuild');
       const text = await response.text();
       const info = JSON.parse(text);
       const signed = await installationHistoryService.isSigned();
@@ -143,15 +143,15 @@ export class HelpBannerElement extends HTMLElement {
         commitLink.target = '_blank';
         helpBannerBuild.appendChild(commitLink);
       } else {
-        helpBannerBuild.append('unknown'); // untranslated
+        helpBannerBuild.append(browser.i18n.getMessage('extensionBuildUnknown'));
       }
       if (info.untracked) {
-        helpBannerBuild.append(' (untracked)'); // untranslated
+        helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionUntracked'));
       }
       if (signed) {
-        helpBannerBuild.append(' (signed)'); // untranslated
+        helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionSigned'));
       } else {
-        helpBannerBuild.append(' (unsigned)'); // untranslated
+        helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionUnsigned'));
       }
       helpBannerBuild.appendChild(document.createElement('br'));
       const date = new Date(info.buildDate);
