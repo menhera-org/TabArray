@@ -66,6 +66,7 @@ setTextContent('#optionsDescriptionFirefox', 'optionsDescriptionFirefox');
 setTextContent('#fpiDescription', 'fpiDescription');
 setTextContent('#optionsDescriptionContainerSortOrder', 'optionsDescriptionContainerSortOrder');
 setTextContent('#optionsHeadingAvailableProxies', 'optionsHeadingAvailableProxies');
+setTextContent('#resistFingerprintingWarning', 'resistFingerprintingWarning');
 
 setTextContent('label[for="input-newtabKeepContainer"]', 'labelNewTabKeepContainer');
 
