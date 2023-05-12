@@ -755,5 +755,41 @@
     "optionSyncContainers": {
         "message": "Sincronizar contenedores",
         "description": "Label text for sync containers option."
+    },
+    "extensionBuild": {
+        "message": "Compilación",
+        "description": "Label text indicating an extension build (built extension package)."
+    },
+    "extensionUnsigned": {
+        "message": "(no firmado)",
+        "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
+    },
+    "extensionSigned": {
+        "message": "(firmado)",
+        "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
+    },
+    "extensionUntracked": {
+        "message": "(sin rastreo)",
+        "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "extensionBuildUnknown": {
+        "message": "(desconocido)",
+        "description": "Label text indicating an unknown extension build."
+    },
+    "extensionDevBuild": {
+        "message": "(versión de desarrollo)",
+        "description": "Label text indicating a development-version extension build."
+    },
+    "packageIntegrityMismatch": {
+        "message": "Desaajuste de consistencia",
+        "description": "Label text indicating the integrity of an extension package does not match the expected value."
+    },
+    "resistFingerprintingWarning": {
+        "message": "privacy.resistFingerprinting es una configuración de protección avanzada utilizada en Tor Browser y puede limitar tu experiencia de navegación.",
+        "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "packageIntegrity": {
+        "message": "Integridad",
+        "description": "Label text indicating the integrity of an extension package."
     }
 }
