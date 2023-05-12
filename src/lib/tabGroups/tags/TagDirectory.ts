@@ -37,13 +37,20 @@ export class TagDirectory {
   public readonly onChanged = new EventSink<void>();
 
   private readonly _storage = new StorageItem<TagStorageType>("tagDirectory", {}, StorageItem.AREA_LOCAL);
+  private _storageCache: TagStorageType | undefined;
 
   private constructor() {
-    this._storage.onChanged.addListener(() => this.onChanged.dispatch());
+    this._storage.onChanged.addListener((value) => {
+      this._storageCache = value;
+      this.onChanged.dispatch();
+    });
   }
 
   public async getValue(): Promise<TagStorageType> {
-    return this._storage.getValue();
+    if (this._storageCache) return this._storageCache;
+    const value = await this._storage.getValue();
+    this._storageCache = value;
+    return value;
   }
 
   public async setValue(value: TagStorageType): Promise<void> {
