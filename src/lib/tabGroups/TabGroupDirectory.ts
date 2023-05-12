@@ -56,16 +56,31 @@ export class TabGroupDirectory {
 
   private readonly storage = new StorageItem<SupergroupStorageType>(TabGroupDirectory.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
   private readonly legacyStorage = new StorageItem<Uint32.Uint32[]>(TabGroupDirectory.LEGACY_STORAGE_KEY, [], StorageItem.AREA_LOCAL);
+
+  private storageCache: SupergroupStorageType | undefined;
+  private legacyStorageCache: Uint32.Uint32[] | undefined;
+
   private readonly contextualIdentityService = ContextualIdentityService.getInstance();
   private readonly contextualIdentityFactory = this.contextualIdentityService.getFactory();
 
   private constructor() {
-    this.storage.onChanged.addListener(() => this.onChanged.dispatch());
-    this.legacyStorage.onChanged.addListener(() => this.onChanged.dispatch());
+    this.storage.onChanged.addListener((value) => {
+      this.storageCache = value;
+      this.onChanged.dispatch();
+    });
+
+    this.legacyStorage.onChanged.addListener((value) => {
+      this.legacyStorageCache = value;
+      this.onChanged.dispatch();
+    });
   }
 
   private async getLegacyUserContextOrder(): Promise<Uint32.Uint32[]> {
+    if (this.legacyStorageCache !== undefined) {
+      return this.legacyStorageCache;
+    }
     const value = await this.legacyStorage.getValue();
+    this.legacyStorageCache = value;
     return value;
   }
 
@@ -101,8 +116,17 @@ export class TabGroupDirectory {
     return userContextIds;
   }
 
-  public async getValue(): Promise<SupergroupStorageType> {
+  private async getRawValue(): Promise<SupergroupStorageType> {
+    if (this.storageCache !== undefined) {
+      return this.storageCache;
+    }
     const value = await this.storage.getValue();
+    this.storageCache = value;
+    return value;
+  }
+
+  public async getValue(): Promise<SupergroupStorageType> {
+    const value = await this.getRawValue();
     const userContextIds = await this.getLegacyUserContextOrderSorted();
     const cookieStoreIds = userContextIds.map((userContextId) => CookieStore.fromParams({ userContextId, privateBrowsingId: 0 as Uint32.Uint32 }).id);
     const rootSupergroupId = TabGroupAttributes.getRootSupergroupTabGroupId();
