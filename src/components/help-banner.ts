@@ -24,10 +24,8 @@ import browser from "webextension-polyfill";
 import { ExtensionPageService } from "../lib/ExtensionPageService";
 import { DateFormatService } from "../lib/DateFormatService";
 import { CompatConsole } from "../lib/console/CompatConsole";
-import { PackageIntegrityService } from "../lib/package/PackageIntegrityService";
-import { InstallationHistoryService } from "../lib/history/InstallationHistoryService";
 import { ExtensionVersion } from "../lib/ExtensionVersion";
-import { BuildMetadataService } from "../lib/package/BuildMetadataService";
+import { PackageInformationService } from "../lib/package/PackageInformationService";
 
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 
@@ -36,9 +34,7 @@ import { GITHUB_TREE_LINK_BASE } from "../defs";
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const extensionPageService = ExtensionPageService.getInstance();
 const dateFormatService = DateFormatService.getInstance();
-const packageIntegrityService = PackageIntegrityService.getInstance();
-const installationHistoryService = InstallationHistoryService.getInstance();
-const buildMetadataService = BuildMetadataService.getInstance();
+const packageInformationService = PackageInformationService.getInstance<PackageInformationService>();
 
 export class HelpBannerElement extends HTMLElement {
 
@@ -111,52 +107,44 @@ export class HelpBannerElement extends HTMLElement {
       console.error(e);
     });
 
-    Promise.all([
-      packageIntegrityService.getRecordedIntegrityHash(),
-      packageIntegrityService.getIntegrityHash(),
-    ]).then(async ([recordedHash, hash]) => {
+    packageInformationService.getPackageInformation().then((info) => {
+      const {recordedHash, computedHash: hash, isOfficial, buildInfo, isSigned: signed} = info;
       helpBannerIntegrityHash.value = hash;
       if (recordedHash != hash) {
         helpBannerIntegrityStatus.textContent = browser.i18n.getMessage('packageIntegrityMismatch');
       } else {
-        const isOfficial = await buildMetadataService.verifySignature(hash);
         if (isOfficial) {
           helpBannerVersion.classList.add('official');
         }
       }
-    }).catch((e) => {
-      console.error(e);
-    });
-
-    fetch('/build.json').then(async (response) => {
-      helpBannerBuild.textContent = browser.i18n.getMessage('extensionBuild');
-      const text = await response.text();
-      const info = JSON.parse(text);
-      const signed = await installationHistoryService.isSigned();
-      if (info.commit) {
-        const commit = String(info.commit);
-        const link = GITHUB_TREE_LINK_BASE + commit;
-        const shortCommit = commit.slice(0, 7);
-        const commitLink = document.createElement('a');
-        commitLink.href = link;
-        commitLink.textContent = shortCommit;
-        commitLink.target = '_blank';
-        helpBannerBuild.appendChild(commitLink);
-      } else {
-        helpBannerBuild.append(browser.i18n.getMessage('extensionBuildUnknown'));
+      {
+        helpBannerBuild.textContent = browser.i18n.getMessage('extensionBuild');
+        const info = buildInfo;
+        if (info.commit) {
+          const commit = String(info.commit);
+          const link = GITHUB_TREE_LINK_BASE + commit;
+          const shortCommit = commit.slice(0, 7);
+          const commitLink = document.createElement('a');
+          commitLink.href = link;
+          commitLink.textContent = shortCommit;
+          commitLink.target = '_blank';
+          helpBannerBuild.appendChild(commitLink);
+        } else {
+          helpBannerBuild.append(browser.i18n.getMessage('extensionBuildUnknown'));
+        }
+        if (info.untracked) {
+          helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionUntracked'));
+        }
+        if (signed) {
+          helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionSigned'));
+        } else {
+          helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionUnsigned'));
+        }
+        helpBannerBuild.appendChild(document.createElement('br'));
+        const date = new Date(info.buildDate);
+        const dateString = dateFormatService.localeFormat(date);
+        helpBannerBuild.append(`(${dateString})`);
       }
-      if (info.untracked) {
-        helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionUntracked'));
-      }
-      if (signed) {
-        helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionSigned'));
-      } else {
-        helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionUnsigned'));
-      }
-      helpBannerBuild.appendChild(document.createElement('br'));
-      const date = new Date(info.buildDate);
-      const dateString = dateFormatService.localeFormat(date);
-      helpBannerBuild.append(`(${dateString})`);
     }).catch((e) => {
       console.error(e);
       const message = String(e.message ?? e);
