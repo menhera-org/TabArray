@@ -27,7 +27,7 @@ import { TagService } from '../lib/tabGroups/tags/TagService';
 import { TagDirectory, TagType } from '../lib/tabGroups/tags/TagDirectory';
 
 const tagService = TagService.getInstance();
-const tagDirectory = new TagDirectory();
+const tagDirectory = TagDirectory.getInstance();
 
 export class ModalSetTagElement extends HTMLElement {
   private _tabId: number;

@@ -28,11 +28,17 @@ import { TagType, TagStorageType } from "./TagType";
 export { TagType, TagStorageType };
 
 export class TagDirectory {
+  private static readonly INSTANCE = new TagDirectory();
+
+  public static getInstance(): TagDirectory {
+    return TagDirectory.INSTANCE;
+  }
+
   public readonly onChanged = new EventSink<void>();
 
   private readonly _storage = new StorageItem<TagStorageType>("tagDirectory", {}, StorageItem.AREA_LOCAL);
 
-  public constructor() {
+  private constructor() {
     this._storage.onChanged.addListener(() => this.onChanged.dispatch());
   }
 

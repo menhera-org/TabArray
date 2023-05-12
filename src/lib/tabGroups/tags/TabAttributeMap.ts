@@ -34,7 +34,7 @@ export class TabAttributeMap {
   public static readonly ATTR_TAG_ID = TabAttributeTagId;
 
   private static readonly _tabAttributeProvider = new TabAttributeProvider();
-  private static readonly _tagDirectory = new TagDirectory();
+  private static readonly _tagDirectory = TagDirectory.getInstance();
 
   private readonly _attributeSetMap = new Map<number, ExtensibleAttributeSet<DummyTab>>();
   private _tagSnapshot: TagDirectorySnapshot;

@@ -42,7 +42,7 @@ export class TagService {
   }
 
   public readonly onChanged = new EventSink<void>();
-  public readonly tagDirectory = new TagDirectory();
+  public readonly tagDirectory = TagDirectory.getInstance();
 
   private readonly _tabAttributeProvieder = new TabAttributeProvider();
   private readonly _tagChangedTopic = new BroadcastTopic<void>('tag.changed');
