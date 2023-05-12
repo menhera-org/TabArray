@@ -32,13 +32,15 @@ export abstract class AbstractPerContainerSettings<T> implements PerContainerSet
   public readonly onChanged = new EventSink<void>();
 
   private readonly _storage: StorageItem<Record<string, T>>;
+  private _storageCache: Record<string, T> | undefined;
 
   protected abstract getStorageKey(): string;
 
   protected constructor() {
     Asserts.assertTopLevelInBackgroundScript();
     this._storage = new StorageItem<Record<string, T>>(this.getStorageKey(), {}, StorageItem.AREA_LOCAL);
-    this._storage.onChanged.addListener(() => {
+    this._storage.onChanged.addListener((value) => {
+      this._storageCache = value;
       this.onChanged.dispatch();
     });
   }
@@ -55,7 +57,12 @@ export abstract class AbstractPerContainerSettings<T> implements PerContainerSet
   }
 
   protected async getValue(): Promise<Record<string, T>> {
-    return await this._storage.getValue();
+    if (undefined !== this._storageCache) {
+      return this._storageCache;
+    }
+    const value = await this._storage.getValue();
+    this._storageCache = value;
+    return value;
   }
 
   protected async setValue(value: Record<string, T>): Promise<void> {
