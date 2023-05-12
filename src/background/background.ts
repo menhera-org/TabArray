@@ -35,7 +35,6 @@ import './background-install-handler';
 import './background-index-tab';
 import './background-container-observer';
 import './background-menus';
-import './includes/FramingHeadersService';
 import './background-commands';
 import './background-tab-lifecycle';
 import './background-autodiscard';
