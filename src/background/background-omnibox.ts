@@ -60,11 +60,12 @@ const getPanoramaGridSuggestion = (): browser.Omnibox.SuggestResult => {
   };
 };
 
+browser.omnibox.setDefaultSuggestion({
+  description: DEFAULT_SUGGESTION,
+});
+
 browser.omnibox.onInputStarted.addListener(() => {
   console.debug('omnibox.onInputStarted');
-  browser.omnibox.setDefaultSuggestion({
-    description: DEFAULT_SUGGESTION,
-  });
 });
 
 browser.omnibox.onInputChanged.addListener(async (text, suggest) => {
