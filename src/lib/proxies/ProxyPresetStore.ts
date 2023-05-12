@@ -35,15 +35,23 @@ export class ProxyPresetStore {
   public readonly onChanged = new EventSink<void>();
 
   private readonly _storage = new StorageItem<StorageType>('proxyPresets', {}, StorageItem.AREA_LOCAL);
+  private _storageCache: StorageType | undefined;
 
   public constructor() {
     Asserts.assertTopLevelInBackgroundScript();
-    this._storage.onChanged.addListener(() => {
+    this._storage.onChanged.addListener((value) => {
+      this._storageCache = value;
       this.onChanged.dispatch();
     });
   }
+
   private async getValue(): Promise<StorageType> {
-    return await this._storage.getValue();
+    if (undefined !== this._storageCache) {
+      return this._storageCache;
+    }
+    const value = await this._storage.getValue();
+    this._storageCache = value;
+    return value;
   }
 
   private async setValue(value: StorageType): Promise<void> {
