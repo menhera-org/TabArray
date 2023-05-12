@@ -755,5 +755,41 @@
     "saveDebuggingInformation": {
         "message": "Save Debugging Information",
         "description": "Save debugging information button."
+    },
+    "resistFingerprintingWarning": {
+        "message": "privacy.resistFingerprinting is an advanced protection setting used in Tor Browser and it may limit your browsing experience.",
+        "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "extensionBuild": {
+        "message": "Build",
+        "description": "Label text indicating an extension build (built extension package)."
+    },
+    "extensionDevBuild": {
+        "message": "(dev)",
+        "description": "Label text indicating a development-version extension build."
+    },
+    "extensionUnsigned": {
+        "message": "(unsigned)",
+        "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
+    },
+    "extensionSigned": {
+        "message": "(signed)",
+        "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
+    },
+    "extensionUntracked": {
+        "message": "(untracked)",
+        "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "extensionBuildUnknown": {
+        "message": "(unknown)",
+        "description": "Label text indicating an unknown extension build."
+    },
+    "packageIntegrity": {
+        "message": "Integrity",
+        "description": "Label text indicating the integrity of an extension package."
+    },
+    "packageIntegrityMismatch": {
+        "message": "Integrity Mismatch",
+        "description": "Label text indicating the integrity of an extension package does not match the expected value."
     }
 }
