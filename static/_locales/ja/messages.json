@@ -755,5 +755,41 @@
     "optionSyncContainers": {
         "message": "コンテナーを同期する",
         "description": "Label text for sync containers option."
+    },
+    "packageIntegrity": {
+        "message": "整合性",
+        "description": "Label text indicating the integrity of an extension package."
+    },
+    "packageIntegrityMismatch": {
+        "message": "整合性の不一致",
+        "description": "Label text indicating the integrity of an extension package does not match the expected value."
+    },
+    "resistFingerprintingWarning": {
+        "message": "privacy.resistFingerprinting は Tor Browser で使われている高度な保護設定で，あなたのブラウジング体験を制限する可能性があります。",
+        "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "extensionUnsigned": {
+        "message": "(未署名)",
+        "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
+    },
+    "extensionBuild": {
+        "message": "ビルド",
+        "description": "Label text indicating an extension build (built extension package)."
+    },
+    "extensionDevBuild": {
+        "message": "(開発版)",
+        "description": "Label text indicating a development-version extension build."
+    },
+    "extensionUntracked": {
+        "message": "(未トラック)",
+        "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "extensionSigned": {
+        "message": "(署名済み)",
+        "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
+    },
+    "extensionBuildUnknown": {
+        "message": "(不明)",
+        "description": "Label text indicating an unknown extension build."
     }
 }
