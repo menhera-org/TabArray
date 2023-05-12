@@ -30,6 +30,7 @@ import { ConsoleHistoryService } from '../lib/console/ConsoleHistoryService';
 import { PerformanceHistoryService } from '../lib/history/PerformanceHistoryService';
 import { PackageIntegrityService } from '../lib/package/PackageIntegrityService';
 import { InstallationHistoryService } from '../lib/history/InstallationHistoryService';
+import { PackageInformationService } from '../lib/package/PackageInformationService';
 
 import './background-install-handler';
 import './background-index-tab';
@@ -66,6 +67,7 @@ TabSortingService.getInstance<TabSortingService>();
 TabUrlService.getInstance<TabUrlService>();
 ConsoleHistoryService.getInstance<ConsoleHistoryService>();
 PerformanceHistoryService.getInstance<PerformanceHistoryService>();
+PackageInformationService.getInstance<PackageInformationService>();
 
 // register the tab converter service
 TabConverterService.getInstance();
