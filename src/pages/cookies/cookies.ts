@@ -33,7 +33,7 @@ import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorag
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const contentStorageStatistics = new ContentStorageStatistics();
 const cookieProvider = contentStorageStatistics.cookieProvider;
-const tabGroupDirectory = new TabGroupDirectory();
+const tabGroupDirectory = TabGroupDirectory.getInstance();
 const displayedContainerService = DisplayedContainerService.getInstance();
 const tabGroupService = TabGroupService.getInstance();
 

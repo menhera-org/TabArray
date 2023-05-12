@@ -47,7 +47,7 @@ export type BrowserStateConstructParams = {
   registrableDomainMap: Map<string, string>;
 };
 
-const tabGroupDirectory = new TabGroupDirectory();
+const tabGroupDirectory = TabGroupDirectory.getInstance();
 const extensionService = ExtensionService.getInstance();
 const displayedContainerService = DisplayedContainerService.getInstance();
 const registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();

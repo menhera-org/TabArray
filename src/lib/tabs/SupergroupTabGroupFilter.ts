@@ -25,7 +25,7 @@ import { CompatTab, TabGroupFilter } from "weeg-tabs";
 import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
 import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
 
-const tabGroupDirectory = new TabGroupDirectory();
+const tabGroupDirectory = TabGroupDirectory.getInstance();
 
 export class SupergroupTabGroupFilter implements TabGroupFilter {
   public readonly tabGroupId: string;

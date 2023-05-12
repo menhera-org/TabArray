@@ -27,7 +27,7 @@ import { TabGroupAttributes } from '../lib/tabGroups/TabGroupAttributes';
 
 export type EditorMode = 'create' | 'edit';
 
-const tabGroupDirectory = new TabGroupDirectory();
+const tabGroupDirectory = TabGroupDirectory.getInstance();
 
 export class SupergroupEditorElement extends HTMLElement {
   private _mode: EditorMode;

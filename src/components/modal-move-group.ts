@@ -24,7 +24,7 @@ import { EventSink } from 'weeg-events';
 
 import { TabGroupDirectory, SupergroupType } from '../lib/tabGroups/TabGroupDirectory';
 
-const tabGroupDirectory = new TabGroupDirectory();
+const tabGroupDirectory = TabGroupDirectory.getInstance();
 
 export class ModalMoveGroupElement extends HTMLElement {
   private _tabGroupId: string;

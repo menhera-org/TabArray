@@ -46,7 +46,7 @@ import { ContainerEditorElement } from '../../../components/container-editor';
 
 import * as containers from '../../../legacy-lib/modules/containers';
 
-const tabGroupDirectory = new TabGroupDirectory();
+const tabGroupDirectory = TabGroupDirectory.getInstance();
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 

@@ -33,7 +33,7 @@ import { LanguageSettings } from "../overrides/LanguageSettings";
 import { UserAgentSettings } from "../overrides/UserAgentSettings";
 import { ProxySettings } from "../proxies/ProxySettings";
 
-const tabGroupDirectory = new TabGroupDirectory();
+const tabGroupDirectory = TabGroupDirectory.getInstance();
 const containerVisibilityService = ContainerVisibilityService.getInstance();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();

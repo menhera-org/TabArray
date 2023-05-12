@@ -46,6 +46,11 @@ export type SupergroupStorageType = {
 export class TabGroupDirectory {
   private static readonly STORAGE_KEY = 'tabGroupDirectory';
   private static readonly LEGACY_STORAGE_KEY = 'userContextSortingOrder';
+  private static readonly INSTANCE = new TabGroupDirectory();
+
+  public static getInstance(): TabGroupDirectory {
+    return TabGroupDirectory.INSTANCE;
+  }
 
   public readonly onChanged = new EventSink<void>();
 
@@ -54,7 +59,7 @@ export class TabGroupDirectory {
   private readonly contextualIdentityService = ContextualIdentityService.getInstance();
   private readonly contextualIdentityFactory = this.contextualIdentityService.getFactory();
 
-  public constructor() {
+  private constructor() {
     this.storage.onChanged.addListener(() => this.onChanged.dispatch());
     this.legacyStorage.onChanged.addListener(() => this.onChanged.dispatch());
   }

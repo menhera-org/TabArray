@@ -36,7 +36,7 @@ import { CompatConsole } from "../console/CompatConsole";
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const browserStateService = BrowserStateService.getInstance();
-const tabGroupDirectory = new TabGroupDirectory();
+const tabGroupDirectory = TabGroupDirectory.getInstance();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 const tagService = TagService.getInstance();

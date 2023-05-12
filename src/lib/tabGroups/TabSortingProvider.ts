@@ -28,7 +28,7 @@ import { TabAttributeMap } from "./tags/TabAttributeMap";
 import { IndexTab } from "../../legacy-lib/modules/IndexTab";
 
 export class TabSortingProvider {
-  private static readonly tabGroupDirectory = new TabGroupDirectory();
+  private static readonly tabGroupDirectory = TabGroupDirectory.getInstance();
   private static readonly tagDirectory = new TagDirectory();
 
   public readonly onChanged = new EventSink<void>();

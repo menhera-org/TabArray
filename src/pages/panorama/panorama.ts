@@ -49,7 +49,7 @@ import { HelpBannerElement } from '../../components/help-banner';
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const panoramaStateStore = new PanoramaStateStore();
 const temporaryContainerService = TemporaryContainerService.getInstance();
-const tabGroupDirectory = new TabGroupDirectory();
+const tabGroupDirectory = TabGroupDirectory.getInstance();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();

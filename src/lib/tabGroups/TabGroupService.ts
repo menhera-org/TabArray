@@ -43,7 +43,7 @@ export class TabGroupService {
     return TabGroupService.INSTANCE;
   }
 
-  public readonly directory = new TabGroupDirectory();
+  public readonly directory = TabGroupDirectory.getInstance();
   public readonly optionDirectory = new TabGroupOptionDirectory();
   public readonly contentStorageStatistics = new ContentStorageStatistics();
 
