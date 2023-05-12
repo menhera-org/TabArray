@@ -33,6 +33,8 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
   private readonly local: StorageItem<T>;
   private readonly sync: StorageItem<T>;
 
+  private _cachedValue: T | undefined;
+
   public readonly onChanged = new EventSink<T>();
   public readonly defaultArea: StorageArea;
 
@@ -43,11 +45,12 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
     this.defaultArea = defaultArea;
 
     this.observe((value) => {
+      this._cachedValue = value;
       this.onChanged.dispatch(value);
     }, false);
   }
 
-  public async getValue(): Promise<T> {
+  private async getRawValue(): Promise<T> {
     if (await this.managed.hasValue()) {
       return await this.managed.getValue();
     }
@@ -55,6 +58,15 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
       return await this.local.getValue();
     }
     return await this.sync.getValue();
+  }
+
+  public async getValue(): Promise<T> {
+    if (this._cachedValue !== undefined) {
+      return this._cachedValue;
+    }
+    const value = await this.getRawValue();
+    this._cachedValue = value;
+    return value;
   }
 
   public async setValue(value: T, storageArea = this.defaultArea): Promise<void> {
@@ -127,10 +139,9 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
 
   public observe(observer: (value: T) => void, reportInitialValue = true) {
     if (reportInitialValue) {
-      (async () => {
-        const currentValue = await this.getValue();
-        observer(currentValue);
-      })();
+      this.getValue().then(observer).catch((e) => {
+        console.error(e);
+      });
     }
 
     this.observeManaged(observer);
