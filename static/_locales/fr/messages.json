@@ -765,11 +765,11 @@
         "description": "Label text indicating an extension build (built extension package)."
     },
     "extensionUnsigned": {
-        "message": "(non signé)",
+        "message": "(non signée)",
         "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
     },
     "extensionBuildUnknown": {
-        "message": "(inconnu)",
+        "message": "(inconnue)",
         "description": "Label text indicating an unknown extension build."
     },
     "packageIntegrity": {
@@ -785,11 +785,11 @@
         "description": "Warning message for privacy.resistFingerprinting."
     },
     "extensionSigned": {
-        "message": "(signé)",
+        "message": "(signée)",
         "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
     },
     "extensionUntracked": {
-        "message": "(non suivi)",
+        "message": "(non suivie)",
         "description": "Label text indicating an extension built from source not tracked in source control."
     }
 }
