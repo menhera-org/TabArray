@@ -765,11 +765,11 @@
         "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
     },
     "extensionUntracked": {
-        "message": "(необеспеченный)",
+        "message": "(неисследованный)",
         "description": "Label text indicating an extension built from source not tracked in source control."
     },
     "extensionBuildUnknown": {
-        "message": "(неизвестно)",
+        "message": "(неизвестная)",
         "description": "Label text indicating an unknown extension build."
     },
     "packageIntegrity": {
@@ -785,7 +785,7 @@
         "description": "Label text indicating a development-version extension build."
     },
     "extensionSigned": {
-        "message": "(подписано)",
+        "message": "(подписанное)",
         "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
     },
     "packageIntegrityMismatch": {
