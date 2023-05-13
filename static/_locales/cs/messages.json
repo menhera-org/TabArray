@@ -757,7 +757,7 @@
         "description": "Save debugging information button."
     },
     "extensionUnsigned": {
-        "message": "(bez znaménka)",
+        "message": "(nepodepsané)",
         "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
     },
     "resistFingerprintingWarning": {
@@ -773,11 +773,11 @@
         "description": "Label text indicating a development-version extension build."
     },
     "extensionSigned": {
-        "message": "(podepsáno)",
+        "message": "(podepsáné)",
         "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
     },
     "extensionUntracked": {
-        "message": "(nesledované)",
+        "message": "(nesledovaný)",
         "description": "Label text indicating an extension built from source not tracked in source control."
     },
     "extensionBuildUnknown": {
