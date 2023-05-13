@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest an idea for this project (Container Tab Groups)
 title: ''
 labels: enhancement
 assignees: ''
