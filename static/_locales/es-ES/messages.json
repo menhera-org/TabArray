@@ -761,11 +761,11 @@
         "description": "Label text indicating an extension build (built extension package)."
     },
     "extensionUnsigned": {
-        "message": "(no firmado)",
+        "message": "(sin signo)",
         "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
     },
     "extensionSigned": {
-        "message": "(firmado)",
+        "message": "(firmada)",
         "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
     },
     "extensionUntracked": {
@@ -773,7 +773,7 @@
         "description": "Label text indicating an extension built from source not tracked in source control."
     },
     "extensionBuildUnknown": {
-        "message": "(desconocido)",
+        "message": "(desconocida)",
         "description": "Label text indicating an unknown extension build."
     },
     "extensionDevBuild": {
