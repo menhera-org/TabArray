@@ -31,6 +31,7 @@ import { PerformanceHistoryService } from '../lib/history/PerformanceHistoryServ
 import { PackageIntegrityService } from '../lib/package/PackageIntegrityService';
 import { InstallationHistoryService } from '../lib/history/InstallationHistoryService';
 import { PackageInformationService } from '../lib/package/PackageInformationService';
+import { CookieCopyService } from '../lib/cookies/CookieCopyService';
 
 import './background-install-handler';
 import './background-index-tab';
@@ -77,3 +78,6 @@ PackageIntegrityService.getInstance();
 
 // register the installation history service
 InstallationHistoryService.getInstance();
+
+// register the cookie copy service
+CookieCopyService.getInstance();
