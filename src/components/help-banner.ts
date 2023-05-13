@@ -107,7 +107,7 @@ export class HelpBannerElement extends HTMLElement {
       console.error(e);
     });
 
-    packageInformationService.getPackageInformation().then((info) => {
+    Promise.resolve().then(() => packageInformationService.getPackageInformation()).then((info) => {
       const {recordedHash, computedHash: hash, isOfficial, buildInfo, isSigned: signed} = info;
       helpBannerIntegrityHash.value = hash;
       if (recordedHash != hash) {
