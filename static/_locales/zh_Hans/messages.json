@@ -755,5 +755,41 @@
     "saveDebuggingInformation": {
         "message": "保存调试信息",
         "description": "Save debugging information button."
+    },
+    "resistFingerprintingWarning": {
+        "message": "privacy.resistFingerprinting是Tor浏览器中使用的一种高级保护设置，它可能会限制你的浏览体验。",
+        "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "extensionDevBuild": {
+        "message": "(开发版本)",
+        "description": "Label text indicating a development-version extension build."
+    },
+    "extensionUnsigned": {
+        "message": "无符号",
+        "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
+    },
+    "extensionBuild": {
+        "message": "构建",
+        "description": "Label text indicating an extension build (built extension package)."
+    },
+    "extensionSigned": {
+        "message": "(已签名)",
+        "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
+    },
+    "extensionUntracked": {
+        "message": "(未追踪到)",
+        "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "extensionBuildUnknown": {
+        "message": "(未知)",
+        "description": "Label text indicating an unknown extension build."
+    },
+    "packageIntegrity": {
+        "message": "相容性",
+        "description": "Label text indicating the integrity of an extension package."
+    },
+    "packageIntegrityMismatch": {
+        "message": "相容性的不一致",
+        "description": "Label text indicating the integrity of an extension package does not match the expected value."
     }
 }
