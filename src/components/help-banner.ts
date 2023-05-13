@@ -20,6 +20,7 @@
 **/
 
 import browser from "webextension-polyfill";
+import { PromiseUtils } from "weeg-utils";
 
 import { ExtensionPageService } from "../lib/ExtensionPageService";
 import { DateFormatService } from "../lib/DateFormatService";
@@ -107,7 +108,7 @@ export class HelpBannerElement extends HTMLElement {
       console.error(e);
     });
 
-    Promise.resolve().then(() => packageInformationService.getPackageInformation()).then((info) => {
+    PromiseUtils.sleep(500).then(() => packageInformationService.getPackageInformation()).then((info) => {
       const {recordedHash, computedHash: hash, isOfficial, buildInfo, isSigned: signed} = info;
       helpBannerIntegrityHash.value = hash;
       if (recordedHash != hash) {
