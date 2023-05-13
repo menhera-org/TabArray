@@ -755,5 +755,41 @@
     "saveDebuggingInformation": {
         "message": "Сохранить информацию об отладке",
         "description": "Save debugging information button."
+    },
+    "extensionBuild": {
+        "message": "Создать",
+        "description": "Label text indicating an extension build (built extension package)."
+    },
+    "extensionUnsigned": {
+        "message": "(без знака)",
+        "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
+    },
+    "extensionUntracked": {
+        "message": "(неисследованный)",
+        "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "extensionBuildUnknown": {
+        "message": "(неизвестная)",
+        "description": "Label text indicating an unknown extension build."
+    },
+    "packageIntegrity": {
+        "message": "Целостность",
+        "description": "Label text indicating the integrity of an extension package."
+    },
+    "resistFingerprintingWarning": {
+        "message": "privacy.resistFingerprinting - это расширенная настройка защиты, используемая в браузере Tor, которая может ограничивать возможности просмотра веб-страниц.",
+        "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "extensionDevBuild": {
+        "message": "(версия разработки)",
+        "description": "Label text indicating a development-version extension build."
+    },
+    "extensionSigned": {
+        "message": "(подписанное)",
+        "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
+    },
+    "packageIntegrityMismatch": {
+        "message": "Несоответствие целостности",
+        "description": "Label text indicating the integrity of an extension package does not match the expected value."
     }
 }

@@ -755,5 +755,41 @@
     "optionsHeadingContainerOverrides": {
         "message": "Substituições por contêiner",
         "description": "Heading text of options page for container overrides."
+    },
+    "resistFingerprintingWarning": {
+        "message": "privacy.resistFingerprinting é uma configuração de proteção avançada usada no Navegador Tor e pode limitar sua experiência de navegação.",
+        "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "extensionBuild": {
+        "message": "Criar",
+        "description": "Label text indicating an extension build (built extension package)."
+    },
+    "extensionDevBuild": {
+        "message": "(versão de desenvolvimento)",
+        "description": "Label text indicating a development-version extension build."
+    },
+    "extensionUnsigned": {
+        "message": "(sem sinal)",
+        "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
+    },
+    "extensionSigned": {
+        "message": "(assinada)",
+        "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
+    },
+    "extensionUntracked": {
+        "message": "(não rastreada)",
+        "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "extensionBuildUnknown": {
+        "message": "(desconhecida)",
+        "description": "Label text indicating an unknown extension build."
+    },
+    "packageIntegrity": {
+        "message": "Integridade",
+        "description": "Label text indicating the integrity of an extension package."
+    },
+    "packageIntegrityMismatch": {
+        "message": "Incompatibilidade de integridade",
+        "description": "Label text indicating the integrity of an extension package does not match the expected value."
     }
 }

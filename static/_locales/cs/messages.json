@@ -755,5 +755,41 @@
     "saveDebuggingInformation": {
         "message": "Uložit informace o ladění",
         "description": "Save debugging information button."
+    },
+    "extensionUnsigned": {
+        "message": "(nepodepsané)",
+        "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
+    },
+    "resistFingerprintingWarning": {
+        "message": "privacy.resistFingerprinting je pokročilé nastavení ochrany používané v prohlížeči Tor Browser, které může omezit vaše procházení.",
+        "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "extensionBuild": {
+        "message": "Vytvořit",
+        "description": "Label text indicating an extension build (built extension package)."
+    },
+    "extensionDevBuild": {
+        "message": "(vývojová verze)",
+        "description": "Label text indicating a development-version extension build."
+    },
+    "extensionSigned": {
+        "message": "(podepsáné)",
+        "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
+    },
+    "extensionUntracked": {
+        "message": "(nesledovaný)",
+        "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "extensionBuildUnknown": {
+        "message": "(neznámé)",
+        "description": "Label text indicating an unknown extension build."
+    },
+    "packageIntegrity": {
+        "message": "Integrita",
+        "description": "Label text indicating the integrity of an extension package."
+    },
+    "packageIntegrityMismatch": {
+        "message": "Nesoulad v integritě",
+        "description": "Label text indicating the integrity of an extension package does not match the expected value."
     }
 }

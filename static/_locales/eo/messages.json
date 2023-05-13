@@ -755,5 +755,41 @@
     "optionAutoHideContainers": {
         "message": "Aŭtomate kaŝi neuzatajn ujojn",
         "description": "Label text for auto-hide unused containers option."
+    },
+    "extensionBuild": {
+        "message": "Build",
+        "description": "Label text indicating an extension build (built extension package)."
+    },
+    "extensionSigned": {
+        "message": "(subskribita)",
+        "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
+    },
+    "extensionUntracked": {
+        "message": "(nespurita)",
+        "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "extensionBuildUnknown": {
+        "message": "(nekonata)",
+        "description": "Label text indicating an unknown extension build."
+    },
+    "packageIntegrity": {
+        "message": "Integreco",
+        "description": "Label text indicating the integrity of an extension package."
+    },
+    "packageIntegrityMismatch": {
+        "message": "Integreca Miskongruo",
+        "description": "Label text indicating the integrity of an extension package does not match the expected value."
+    },
+    "extensionDevBuild": {
+        "message": "(dev)",
+        "description": "Label text indicating a development-version extension build."
+    },
+    "resistFingerprintingWarning": {
+        "message": "privacy.resistFingerprinting estas altnivela protekta agordo uzata en Tor-Retumilo kaj ĝi povas limigi vian foliumadan sperton.",
+        "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "extensionUnsigned": {
+        "message": "(sensubskribita)",
+        "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
     }
 }
