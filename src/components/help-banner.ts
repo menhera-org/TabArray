@@ -120,6 +120,7 @@ export class HelpBannerElement extends HTMLElement {
       {
         helpBannerBuild.textContent = browser.i18n.getMessage('extensionBuild');
         const info = buildInfo;
+        helpBannerBuild.append(' ');
         if (info.commit) {
           const commit = String(info.commit);
           const link = GITHUB_TREE_LINK_BASE + commit;
