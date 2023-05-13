@@ -773,11 +773,11 @@
         "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
     },
     "extensionSigned": {
-        "message": "(unterzeichnet)",
+        "message": "(unterzeichnete)",
         "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
     },
     "extensionUntracked": {
-        "message": "(ungesichert)",
+        "message": "(unverfolgte)",
         "description": "Label text indicating an extension built from source not tracked in source control."
     },
     "packageIntegrity": {
