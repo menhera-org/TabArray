@@ -24,7 +24,7 @@ import browser from 'webextension-polyfill';
 import { StartupService } from '../lib/StartupService';
 import { CompatConsole } from '../lib/console/CompatConsole';
 
-import { ADDON_PAGE } from '../defs';
+import { ISSUES_PAGE } from '../defs';
 import { MIGRATIONS } from './includes/extension-version-migrations';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
@@ -39,4 +39,4 @@ startupService.onStartup.addListener((details) => {
   });
 });
 
-browser.runtime.setUninstallURL(ADDON_PAGE).catch((e) => console.error(e));
+browser.runtime.setUninstallURL(ISSUES_PAGE).catch((e) => console.error(e));

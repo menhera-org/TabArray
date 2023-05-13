@@ -35,6 +35,7 @@ export const POPUP_PAGE = '/pages/popup-v2/popup-v2.html';
 export const INDEX_TAB_PAGE = '/pages/index/index-tab.html';
 export const DEBUGGING_PAGE = '/pages/debugging/debugging.html';
 export const OPEN_CONTAINER_PAGE = '/pages/navigation/open-container.html';
+export const ISSUES_PAGE = 'https://github.com/menhera-org/TabArray/issues/new/choose';
 
 // github links
 export const GITHUB_TREE_LINK_BASE = 'https://github.com/menhera-org/TabArray/tree/';
