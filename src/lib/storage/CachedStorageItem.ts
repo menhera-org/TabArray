@@ -37,7 +37,7 @@ export class CachedStorageItem<T> extends StorageItem<T> {
       return super.getValue();
     }
     const syncValue = this.tryGetValueSync();
-    if (undefined != syncValue) {
+    if (undefined !== syncValue) {
       return syncValue;
     }
     const value = await super.getValue();
