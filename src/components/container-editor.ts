@@ -95,6 +95,7 @@ export class ContainerEditorElement extends HTMLElement {
     cookieCopySelect.id = 'cookie-copy-select';
     cookieCopySelect.disabled = true;
     cookieCopy.appendChild(cookieCopySelect);
+    modalContent.appendChild(cookieCopy);
 
     this._displayedContainerService.getDisplayedContainers().then((containers) => {
       containers.forEach((container) => {
