@@ -33,19 +33,28 @@ export class NewTabPageService {
 
   public readonly newTabPageUrlChanged = new EventSink<string>();
 
+  private _cache: string | undefined;
+
   private constructor() {
     browser.browserSettings.newTabPageOverride.onChange.addListener((details) => {
       if (!details) return;
-      if (!details.value) return;
-      this.newTabPageUrlChanged.dispatch(details.value);
+      if (null == details.value) return;
+      const value = this.setFallbackValue(details.value);
+      if (this._cache === value) return;
+      this._cache = value;
+      this.newTabPageUrlChanged.dispatch(value);
     });
   }
 
+  private setFallbackValue(value: string | undefined | null): string {
+    return value || "about:newtab";
+  }
+
   public async getNewTabPageUrl(): Promise<string> {
+    if (this._cache !== undefined) return this._cache;
     const details = await browser.browserSettings.newTabPageOverride.get({});
-    if (!details.value) {
-      return "about:newtab";
-    }
+    const value = this.setFallbackValue(details.value);
+    this._cache = value;
     return details.value;
   }
 }
