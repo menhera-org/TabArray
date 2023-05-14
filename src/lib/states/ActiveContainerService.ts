@@ -19,12 +19,11 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-
 import { ServiceRegistry } from "../ServiceRegistry";
 import { ActiveContainerBatchOperation } from "./ActiveContainerBatchOperation";
 import { CompatConsole } from "../console/CompatConsole";
 import { ContainerHistoryService } from "../history/ContainerHistoryService";
+import { ReadCachedStorageItem } from "../storage/ReadCachedStorageItem";
 
 import { hideAll } from "../../legacy-lib/modules/containers";
 
@@ -47,7 +46,7 @@ export class ActiveContainerService {
     return ActiveContainerService.INSTANCE;
   }
 
-  private readonly _storage = new StorageItem<ActiveContainerStorageType>(ActiveContainerService.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
+  private readonly _storage = new ReadCachedStorageItem<ActiveContainerStorageType>(ActiveContainerService.STORAGE_KEY, {}, ReadCachedStorageItem.AREA_LOCAL);
 
   private constructor() {
     // nothing.
