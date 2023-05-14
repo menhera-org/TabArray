@@ -8,11 +8,11 @@ The following versions are supported:
 | ------- | ------------------ |
 | Latest version on addons.mozilla.org   | :white_check_mark: |
 | Latest 11.x.x | :white_check_mark:  |
-| < 10   | :x:                |
+| < 11   | :x:                |
 
 ## Reporting a Vulnerability
 
-Report important security issues to board at menhera.com.
+Report important security issues to https://github.com/menhera-org/TabArray/security/advisories/new.
 Report other issues at [GitHub](https://github.com/menhera-org/TabArray/issues).
 
 We expect to fix an issue in a few days (depending on the complexity of the issue).
