@@ -154,8 +154,8 @@ The two digits after 1 or 2 indicate patch level.
 
 1. Clone this repository.
 2. Install the latest Node.JS/NPM using [NVM](https://github.com/nvm-sh/nvm).
-3. In this directory, run `npm install`.
-4. Run `npm run build`.
+3. In this directory, run `npm install` to install dependencies.
+4. Run `npm run build` to build the extension. Built extension's path is printed on console (usually under the `builds/` directory).
 
 
 ### Reproducible builds
@@ -165,6 +165,7 @@ This project uses reproducible builds. This means built extensions from the same
 To use this feature, make sure that:
 
 - You build an extension directly from a Git repository (not Tarballs or Zip archives).
+- You have Git installed.
 
 Since the hashes are the same, your built extension from the official source should show a green checkmark ("ofiicial build") next to the version in the help view.
 
