@@ -21,10 +21,12 @@
 
 import browser from 'webextension-polyfill';
 import { EventSink } from 'weeg-events';
-import { ContextualIdentity } from 'weeg-containers';
+import { ContextualIdentity, CookieStore } from 'weeg-containers';
 
 import { SupergroupService } from '../lib/tabGroups/SupergroupService';
 import { ContainerCreatorService } from '../lib/tabGroups/ContainerCreatorService';
+import { DisplayedContainerService } from '../lib/tabGroups/DisplayedContainerService';
+import { CookieCopyService } from '../lib/cookies/CookieCopyService';
 
 import { ColorPickerElement } from './container-color-picker';
 import { IconPickerElement } from './container-icon-picker';
@@ -36,6 +38,8 @@ export class ContainerEditorElement extends HTMLElement {
   private _contextualIdentity: ContextualIdentity | undefined;
   private readonly _supergroupService = SupergroupService.getInstance();
   private readonly _containerCreatorService = ContainerCreatorService.getInstance<ContainerCreatorService>();
+  private readonly _displayedContainerService = DisplayedContainerService.getInstance();
+  private readonly _cookieCopyService = CookieCopyService.getInstance();
 
   public readonly onContainerCreated = new EventSink<string>();
   public readonly onContainerUpdated = new EventSink<string>();
@@ -76,6 +80,38 @@ export class ContainerEditorElement extends HTMLElement {
     const colorPicker = new ColorPickerElement();
     colorPicker.id = 'color-picker';
     modalContent.appendChild(colorPicker);
+
+    const cookieCopy = document.createElement('p');
+    const cookieCopyCheckbox = document.createElement('input');
+    cookieCopyCheckbox.type = 'checkbox';
+    cookieCopyCheckbox.id = 'cookie-copy-checkbox';
+    cookieCopyCheckbox.checked = false;
+    cookieCopy.appendChild(cookieCopyCheckbox);
+    const cookieCopyLabel = document.createElement('label');
+    cookieCopyLabel.textContent = browser.i18n.getMessage('copyCookiesFrom');
+    cookieCopyLabel.htmlFor = 'cookie-copy-checkbox';
+    cookieCopy.appendChild(cookieCopyLabel);
+    const cookieCopySelect = document.createElement('select');
+    cookieCopySelect.id = 'cookie-copy-select';
+    cookieCopySelect.disabled = true;
+    cookieCopy.appendChild(cookieCopySelect);
+
+    this._displayedContainerService.getDisplayedContainers().then((containers) => {
+      containers.forEach((container) => {
+        const option = document.createElement('option');
+        option.value = container.cookieStore.id;
+        option.textContent = container.name;
+        if (container.cookieStore.id == CookieStore.DEFAULT.id) {
+          option.selected = true;
+        }
+        cookieCopySelect.appendChild(option);
+      });
+    });
+
+    cookieCopyCheckbox.addEventListener('change', () => {
+      cookieCopySelect.disabled = !cookieCopyCheckbox.checked;
+    });
+
     const modalActions = document.createElement('div');
     modalActions.id = 'modal-actions';
     const cancelButton = document.createElement('button');
@@ -94,6 +130,7 @@ export class ContainerEditorElement extends HTMLElement {
       input.value = contextualIdentity.name;
       iconPicker.value = contextualIdentity.icon;
       colorPicker.value = contextualIdentity.color;
+      cookieCopy.hidden = true;
     } else {
       this._mode = 'create';
       modalTitle.textContent = browser.i18n.getMessage('newContainerDialogTitle');
@@ -105,6 +142,20 @@ export class ContainerEditorElement extends HTMLElement {
       this.onCancel.dispatch();
       this.remove();
     });
+
+    const containerCreated = (cookieStoreId: string) => {
+      const whetherToCopyCookies = cookieCopyCheckbox.checked;
+      if (whetherToCopyCookies) {
+        const sourceCookieStoreId = cookieCopySelect.value;
+        this._cookieCopyService.copyAllCookiesToContainer(sourceCookieStoreId, cookieStoreId).then(() => {
+          this.onContainerCreated.dispatch(cookieStoreId);
+        }).catch((e) => {
+          console.error(e);
+        });
+      } else {
+        this.onContainerCreated.dispatch(cookieStoreId);
+      }
+    };
 
     okButton.addEventListener('click', async () => {
       const name = input.value.trim().replace(/^\s*|\s*$/gu, '');
@@ -118,14 +169,14 @@ export class ContainerEditorElement extends HTMLElement {
             icon,
             color,
           });
-          this.onContainerCreated.dispatch(contextualIdentity.cookieStore.id);
+          containerCreated(contextualIdentity.cookieStore.id);
         } else {
           const cookieStoreId = await this._containerCreatorService.create(
             name,
             color,
             icon,
           ) as string;
-          this.onContainerCreated.dispatch(cookieStoreId);
+          containerCreated(cookieStoreId);
         }
       } else if (this._mode === 'edit') {
         if (!this._contextualIdentity) {
