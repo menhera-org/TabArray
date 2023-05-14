@@ -103,7 +103,7 @@ export const handleTabUrlUpdate = (browserTab: browser.Tabs.Tab) => {
     newTabPageService.getNewTabPageUrl(),
     activeContainerService.getActiveContainer(windowId)
   ]).then(([configNewTabInContainerEnabled, newTabPageUrl, activeCookieStoreId]) => {
-    if (browserTab.url == newTabPageUrl && configNewTabInContainerEnabled && cookieStoreId == CookieStore.DEFAULT.id && activeCookieStoreId != cookieStoreId && null != activeCookieStoreId) {
+    if (browserTab.openerTabId == null && browserTab.url == newTabPageUrl && configNewTabInContainerEnabled && cookieStoreId == CookieStore.DEFAULT.id && activeCookieStoreId != cookieStoreId && null != activeCookieStoreId) {
       return containerTabOpenerService.openNewTabInContainer(activeCookieStoreId, true, windowId).then(() => {
         return browser.tabs.remove(tabId);
       });
