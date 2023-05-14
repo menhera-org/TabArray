@@ -791,5 +791,17 @@
     "packageIntegrity": {
         "message": "Integridad",
         "description": "Label text indicating the integrity of an extension package."
+    },
+    "copyCookiesFrom": {
+        "message": "Copiar las cookies de:",
+        "description": "Label text for copy cookies from option."
+    },
+    "copyCookiesTo": {
+        "message": "Copiar las cookies a:",
+        "description": "Label text for copy cookies to option."
+    },
+    "copyCookies": {
+        "message": "Copiar las cookies",
+        "description": "Copy cookies button or label text."
     }
 }
