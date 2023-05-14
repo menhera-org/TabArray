@@ -66,7 +66,7 @@ export const reopenNewTab = async (browserTab: browser.Tabs.Tab) => {
     if (browserTab.windowId == null || browserTab.cookieStoreId == null || browserTab.id == null) {
       return;
     }
-    if (browserTab.status == 'loading') {
+    if (browserTab.status == 'loading' || browserTab.url == 'about:blank' && browserTab.title?.includes('/')) {
       return;
     }
     const windowId = browserTab.windowId;
@@ -76,7 +76,7 @@ export const reopenNewTab = async (browserTab: browser.Tabs.Tab) => {
       newTabPageService.getNewTabPageUrl(),
       activeContainerService.getActiveContainer(windowId)
     ]);
-    if (browserTab.url != 'about:blank' && browserTab.url == newTabPageUrl && configNewTabInContainerEnabled && cookieStoreId == CookieStore.DEFAULT.id && activeCookieStoreId != cookieStoreId && null != activeCookieStoreId) {
+    if (browserTab.openerTabId == null && browserTab.url == newTabPageUrl && configNewTabInContainerEnabled && cookieStoreId == CookieStore.DEFAULT.id && activeCookieStoreId != cookieStoreId && null != activeCookieStoreId) {
       const tabId = browserTab.id;
       await containerTabOpenerService.openNewTabInContainer(activeCookieStoreId, true, windowId);
       await browser.tabs.remove(tabId);
