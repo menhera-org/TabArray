@@ -56,7 +56,9 @@ initialWindowsService.getInitialWindows().then((browserWindows) => {
       injectExtensionContentScript(browserTab);
     }
   }
-  windowTabCountService.setInitialTabCounts(tabCountByWindow);
+  windowTabCountService.setInitialTabCounts(tabCountByWindow).catch((e) => {
+    console.error(e);
+  });
   doBatchOperationOnInitialWindows(browserWindows);
 });
 
