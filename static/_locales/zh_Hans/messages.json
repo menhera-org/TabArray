@@ -791,5 +791,17 @@
     "packageIntegrityMismatch": {
         "message": "相容性的不一致",
         "description": "Label text indicating the integrity of an extension package does not match the expected value."
+    },
+    "copyCookies": {
+        "message": "复制cookie",
+        "description": "Copy cookies button or label text."
+    },
+    "copyCookiesFrom": {
+        "message": "复制cookie从：",
+        "description": "Label text for copy cookies from option."
+    },
+    "copyCookiesTo": {
+        "message": "复制cookie到：",
+        "description": "Label text for copy cookies to option."
     }
 }
