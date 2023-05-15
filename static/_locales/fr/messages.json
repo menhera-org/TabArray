@@ -791,5 +791,17 @@
     "extensionUntracked": {
         "message": "(non suivie)",
         "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "copyCookiesFrom": {
+        "message": "Copier les cookies de :",
+        "description": "Label text for copy cookies from option."
+    },
+    "copyCookiesTo": {
+        "message": "Copier les cookies sur :",
+        "description": "Label text for copy cookies to option."
+    },
+    "copyCookies": {
+        "message": "Copier les cookies",
+        "description": "Copy cookies button or label text."
     }
 }
