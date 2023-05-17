@@ -21,6 +21,22 @@
 
 @import url(../../css/theme.css);
 
+* {
+  --warning-background-color: #ffddb1;
+  --warning-text-color: #7e5f1a;
+  --error-background-color: #fdd2d0;
+  --error-text-color: #95210f;
+}
+
+@media (prefers-color-scheme: dark) {
+  * {
+    --warning-background-color: #7e5f1a;
+    --warning-text-color: #ffddb1;
+    --error-background-color: #95210f;
+    --error-text-color: #fdd2d0;
+  }
+}
+
 :root {
   inline-size: 100%;
   block-size: 100%;
@@ -96,6 +112,16 @@ ctg-frame-layout {
 #logs-tbody, #performance-tbody, #installation-tbody {
   font-family: monospace;
   user-select: text;
+}
+
+#logs-tbody > tr[data-log-level="warning"] {
+  background-color: var(--warning-background-color);
+  color: var(--warning-text-color);
+}
+
+#logs-tbody > tr[data-log-level="error"] {
+  background-color: var(--error-background-color);
+  color: var(--error-text-color);
 }
 
 #logs-tbody > tr > td:nth-child(1) {
