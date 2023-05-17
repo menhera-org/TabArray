@@ -60,6 +60,14 @@ const getPanoramaGridSuggestion = (): browser.Omnibox.SuggestResult => {
   };
 };
 
+const tryConstructUrl = (url: string, base?: string): URL | null => {
+  try {
+    return new URL(url, base);
+  } catch (e) {
+    return null;
+  }
+};
+
 browser.omnibox.setDefaultSuggestion({
   description: DEFAULT_SUGGESTION,
 });
@@ -94,17 +102,17 @@ browser.omnibox.onInputChanged.addListener(async (text, suggest) => {
 });
 
 browser.omnibox.onInputEntered.addListener((text) => {
-  try {
-    const url = new URL(text);
-    if (url.pathname == PANORAMA_PAGE) {
-      extensionPageService.openInBackground(ExtensionPageService.PANORAMA);
-      return;
-    }
-    const cookieStoreId = url.searchParams.get("cookieStoreId") || CookieStore.DEFAULT.id;
-    containerTabOpenerService.openNewTabInContainer(cookieStoreId, true).catch((e) => {
-      console.error(e);
-    });
-  } catch (e) {
-    console.warn(e);
+  const url = tryConstructUrl(text);
+  if (null == url) {
+    console.info('Invalid input entered on omnibox: %s', text);
+    return;
   }
+  if (url.pathname == PANORAMA_PAGE) {
+    extensionPageService.openInBackground(ExtensionPageService.PANORAMA);
+    return;
+  }
+  const cookieStoreId = url.searchParams.get("cookieStoreId") || CookieStore.DEFAULT.id;
+  containerTabOpenerService.openNewTabInContainer(cookieStoreId, true).catch((e) => {
+    console.error(e);
+  });
 });
