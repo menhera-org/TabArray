@@ -33,7 +33,7 @@ export class ReadCachedStorageItem<T> extends StorageItem<T> {
 
   public constructor(key: string, defaultValue: T, storageArea: ReadCachedStorageArea) {
     super(key, defaultValue, storageArea);
-    super.onChanged.addListener((value) => {
+    this.onChanged.addListener((value) => {
       this._cachedValue = value;
     });
   }
