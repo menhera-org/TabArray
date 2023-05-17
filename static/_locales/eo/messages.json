@@ -791,5 +791,17 @@
     "extensionUnsigned": {
         "message": "(sensubskribita)",
         "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
+    },
+    "copyCookies": {
+        "message": "Kopii kuketojn",
+        "description": "Copy cookies button or label text."
+    },
+    "copyCookiesTo": {
+        "message": "Kopii kuketojn al:",
+        "description": "Label text for copy cookies to option."
+    },
+    "copyCookiesFrom": {
+        "message": "Kopii kuketojn el:",
+        "description": "Label text for copy cookies from option."
     }
 }

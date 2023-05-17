@@ -791,5 +791,17 @@
     "packageIntegrityMismatch": {
         "message": "Несоответствие целостности",
         "description": "Label text indicating the integrity of an extension package does not match the expected value."
+    },
+    "copyCookiesFrom": {
+        "message": "Скопировать файлы cookie из:",
+        "description": "Label text for copy cookies from option."
+    },
+    "copyCookiesTo": {
+        "message": "Скопировать файлы cookie в:",
+        "description": "Label text for copy cookies to option."
+    },
+    "copyCookies": {
+        "message": "Скопировать файлы cookie",
+        "description": "Copy cookies button or label text."
     }
 }
