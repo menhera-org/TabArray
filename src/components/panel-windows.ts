@@ -91,7 +91,8 @@ export class PanelWindowsElement extends HTMLElement {
     const mainElement = DomFactory.createElement('div', this.shadowRoot, { classNames: ['main'] });
     DomFactory.createElement('div', mainElement, { classNames: ['pinned-tabs'] });
     DomFactory.createElement('div', mainElement, { classNames: ['active-containers'] });
-    const detailsElement = DomFactory.createElement('details', mainElement, { classNames: ['inactive-containers-details'] });
+    const detailsElement = DomFactory.createElement<HTMLDetailsElement>('details', mainElement, { classNames: ['inactive-containers-details'] });
+    detailsElement.open = true;
     const summaryElement = DomFactory.createElement('summary', detailsElement, { classNames: ['inactive-containers-summary'] });
     summaryElement.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
     DomFactory.createElement('div', detailsElement, { classNames: ['inactive-containers'] });
