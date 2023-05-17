@@ -121,6 +121,8 @@ This project uses Hosted Weblate for translation. You can contribute translation
 
 [Translate to your language](https://hosted.weblate.org/engage/container-tab-groups/)
 
+**When translation is "closed for maintenance", please notify @metastable-void.**
+
 ### Translation Managers
 
 - metastable-void (ja, eo, ia)
