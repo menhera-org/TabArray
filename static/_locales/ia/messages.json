@@ -791,5 +791,17 @@
     "resistFingerprintingWarning": {
         "message": "privacy.resistFingerprinting es un parametro avantiate de protection usate in Tor Browser e lo pote limitar tu experientia de navigation.",
         "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "copyCookiesFrom": {
+        "message": "Copiar cookies de:",
+        "description": "Label text for copy cookies from option."
+    },
+    "copyCookiesTo": {
+        "message": "Copiar cookies a:",
+        "description": "Label text for copy cookies to option."
+    },
+    "copyCookies": {
+        "message": "Copiar cookies",
+        "description": "Copy cookies button or label text."
     }
 }

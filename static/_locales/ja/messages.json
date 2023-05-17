@@ -791,5 +791,17 @@
     "extensionBuildUnknown": {
         "message": "(不明)",
         "description": "Label text indicating an unknown extension build."
+    },
+    "copyCookiesTo": {
+        "message": "クッキーのコピー先：",
+        "description": "Label text for copy cookies to option."
+    },
+    "copyCookies": {
+        "message": "クッキーをコピーする",
+        "description": "Copy cookies button or label text."
+    },
+    "copyCookiesFrom": {
+        "message": "クッキーのコピー元：",
+        "description": "Label text for copy cookies from option."
     }
 }

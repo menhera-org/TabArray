@@ -791,5 +791,17 @@
     "resistFingerprintingWarning": {
         "message": "privacy.resistFingerprinting ist eine erweiterte Schutzeinstellung, die im Tor-Browser verwendet wird und dein Surferlebnis einschränken kann.",
         "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "copyCookiesTo": {
+        "message": "Cookies kopieren nach:",
+        "description": "Label text for copy cookies to option."
+    },
+    "copyCookiesFrom": {
+        "message": "Cookies kopieren aus:",
+        "description": "Label text for copy cookies from option."
+    },
+    "copyCookies": {
+        "message": "Cookies kopieren",
+        "description": "Copy cookies button or label text."
     }
 }
