@@ -94,13 +94,17 @@ browser.omnibox.onInputChanged.addListener(async (text, suggest) => {
 });
 
 browser.omnibox.onInputEntered.addListener((text) => {
-  const url = new URL(text);
-  if (url.pathname == PANORAMA_PAGE) {
-    extensionPageService.openInBackground(ExtensionPageService.PANORAMA);
-    return;
+  try {
+    const url = new URL(text);
+    if (url.pathname == PANORAMA_PAGE) {
+      extensionPageService.openInBackground(ExtensionPageService.PANORAMA);
+      return;
+    }
+    const cookieStoreId = url.searchParams.get("cookieStoreId") || CookieStore.DEFAULT.id;
+    containerTabOpenerService.openNewTabInContainer(cookieStoreId, true).catch((e) => {
+      console.error(e);
+    });
+  } catch (e) {
+    console.warn(e);
   }
-  const cookieStoreId = url.searchParams.get("cookieStoreId") || CookieStore.DEFAULT.id;
-  containerTabOpenerService.openNewTabInContainer(cookieStoreId, true).catch((e) => {
-    console.error(e);
-  });
 });
