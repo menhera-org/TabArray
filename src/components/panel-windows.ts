@@ -94,7 +94,7 @@ export class PanelWindowsElement extends HTMLElement {
     DomFactory.createElement('div', mainElement, { classNames: ['pinned-tabs'] });
     DomFactory.createElement('div', mainElement, { classNames: ['active-containers'] });
     const detailsElement = DomFactory.createElement<HTMLDetailsElement>('details', mainElement, { classNames: ['inactive-containers-details'] });
-    detailsElement.open = true;
+    detailsElement.open = config['menu.hideEmptyContainers'].tryGetValueSync() ?? true;
 
     config['menu.hideEmptyContainers'].getValue().then((hideEmptyContainers) => {
       if (hideEmptyContainers) {

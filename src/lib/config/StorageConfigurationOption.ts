@@ -69,6 +69,10 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
     return value;
   }
 
+  public tryGetValueSync(): T | undefined {
+    return this._cachedValue;
+  }
+
   public async setValue(value: T, storageArea = this.defaultArea): Promise<void> {
     switch (storageArea) {
       case 'local': {
