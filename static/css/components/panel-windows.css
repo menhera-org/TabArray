@@ -107,7 +107,7 @@ select.window-select.browser-style {
   color: inherit;
 }
 
-.inactive-containers, .actions {
+details.inactive-containers-details, .actions {
   border-block-start: solid 1px var(--border-color);
 }
 
@@ -117,4 +117,10 @@ select.window-select.browser-style {
 
 .search-results-containers:not(:empty) {
   border-block-end: solid 1px var(--border-color);
+}
+
+details.inactive-containers-details > summary {
+  font-weight: bold;
+  margin-block-end: 0;
+  padding: 0.5em;
 }

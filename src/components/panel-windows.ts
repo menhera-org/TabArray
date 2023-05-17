@@ -91,7 +91,10 @@ export class PanelWindowsElement extends HTMLElement {
     const mainElement = DomFactory.createElement('div', this.shadowRoot, { classNames: ['main'] });
     DomFactory.createElement('div', mainElement, { classNames: ['pinned-tabs'] });
     DomFactory.createElement('div', mainElement, { classNames: ['active-containers'] });
-    DomFactory.createElement('div', mainElement, { classNames: ['inactive-containers'] });
+    const detailsElement = DomFactory.createElement('details', mainElement, { classNames: ['inactive-containers-details'] });
+    const summaryElement = DomFactory.createElement('summary', detailsElement, { classNames: ['inactive-containers-summary'] });
+    summaryElement.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
+    DomFactory.createElement('div', detailsElement, { classNames: ['inactive-containers'] });
     DomFactory.createElement('div', mainElement, { classNames: ['actions'] });
 
     const searchResultsElement = DomFactory.createElement('div', this.shadowRoot, { classNames: ['search-results'] });
