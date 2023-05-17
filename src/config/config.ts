@@ -42,6 +42,7 @@ export const config = {
   'tab.autoDiscard.minAge': new StorageConfigurationOption<number>('tab.autoDiscard.minAge', -1),
   'tab.sorting.enabled': new StorageConfigurationOption<boolean>('tab.sorting.enabled', true),
   'tab.autoHide.enabled': new StorageConfigurationOption<boolean>('tab.autoHide.enabled', false),
+  'menu.hideEmptyContainers': new StorageConfigurationOption<boolean>('menu.hideEmptyContainers', false),
 };
 
 

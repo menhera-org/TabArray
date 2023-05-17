@@ -34,6 +34,8 @@ import { WindowStateDao } from '../lib/states/WindowStateDao';
 import { DisplayedContainerDao } from '../lib/states/DisplayedContainerDao';
 import { TabDao } from '../lib/states/TabDao';
 
+import { config } from '../config/config';
+
 import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
 import { SupergroupEditorElement } from './supergroup-editor';
 import { TagEditorElement } from './tag-editor';
@@ -93,6 +95,21 @@ export class PanelWindowsElement extends HTMLElement {
     DomFactory.createElement('div', mainElement, { classNames: ['active-containers'] });
     const detailsElement = DomFactory.createElement<HTMLDetailsElement>('details', mainElement, { classNames: ['inactive-containers-details'] });
     detailsElement.open = true;
+
+    config['menu.hideEmptyContainers'].getValue().then((hideEmptyContainers) => {
+      if (hideEmptyContainers) {
+        detailsElement.open = false;
+      }
+    });
+
+    detailsElement.addEventListener('toggle', async () => {
+      const hidden = !detailsElement.open;
+      const value = await config['menu.hideEmptyContainers'].getValue();
+      if (value != hidden) {
+        config['menu.hideEmptyContainers'].setValue(hidden);
+      }
+    });
+
     const summaryElement = DomFactory.createElement('summary', detailsElement, { classNames: ['inactive-containers-summary'] });
     summaryElement.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
     DomFactory.createElement('div', detailsElement, { classNames: ['inactive-containers'] });
