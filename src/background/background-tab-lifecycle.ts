@@ -20,6 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
+import { CompatTab } from 'weeg-tabs';
 
 import { CompatConsole } from '../lib/console/CompatConsole';
 import { WindowTabCountService, TabCountByWindow, WindowTabCountHistory } from '../lib/windows/WindowTabCountService';
@@ -34,6 +35,7 @@ import { config } from '../config/config';
 import { InitialWindowsService } from './includes/InitialWindowsService';
 import { injectExtensionContentScript } from './includes/ext-content';
 import { reopenNewTab, doBatchOperationOnInitialWindows } from './includes/active-container';
+import { loadingTabs } from './includes/loading-tabs';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const initialWindowsService = InitialWindowsService.getInstance();
@@ -80,6 +82,8 @@ browser.windows.onRemoved.addListener((windowId) => {
 browser.tabs.onCreated.addListener((browserTab) => {
   if (null == browserTab.windowId) return;
   const windowId = browserTab.windowId;
+  const tab = new CompatTab(browserTab);
+  loadingTabs.add(tab);
   windowTabCountService.incrementTabCountForWindow(windowId);
   reopenNewTab(browserTab);
 });

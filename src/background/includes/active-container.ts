@@ -21,6 +21,7 @@
 
 import browser from "webextension-polyfill";
 import { CookieStore } from "weeg-containers";
+import { CompatTab } from "weeg-tabs";
 
 import { ActiveContainerService } from "../../lib/states/ActiveContainerService";
 import { OpenTabsService } from "../../lib/states/OpenTabsService";
@@ -31,6 +32,8 @@ import { CompatConsole } from "../../lib/console/CompatConsole";
 
 import { config } from "../../config/config";
 
+import { loadingTabs } from "./loading-tabs";
+
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const activeContainerService = ActiveContainerService.getInstance();
 const openTabsService = OpenTabsService.getInstance();
@@ -39,8 +42,14 @@ const containerTabOpenerService = ContainerTabOpenerService.getInstance<Containe
 const extensionPageService = ExtensionPageService.getInstance();
 
 export const setActiveContainerTab = (browserTab: browser.Tabs.Tab) => {
+  if (browserTab.id == null) {
+    return;
+  }
+  if (loadingTabs.isLoading(browserTab.id)) {
+    return;
+  }
   try {
-    if (browserTab.url == 'about:blank' || browserTab.status == 'loading' || browserTab.windowId == null) {
+    if (browserTab.url == 'about:blank' && browserTab.title?.includes('/') || browserTab.status == 'loading' || browserTab.windowId == null) {
       return;
     }
     if (null == browserTab.cookieStoreId) {
@@ -78,8 +87,11 @@ export const reopenNewTab = async (browserTab: browser.Tabs.Tab) => {
     ]);
     if (browserTab.openerTabId == null && browserTab.url == newTabPageUrl && configNewTabInContainerEnabled && cookieStoreId == CookieStore.DEFAULT.id && activeCookieStoreId != cookieStoreId && null != activeCookieStoreId) {
       const tabId = browserTab.id;
-      await containerTabOpenerService.openNewTabInContainer(activeCookieStoreId, true, windowId);
       await browser.tabs.remove(tabId);
+      await containerTabOpenerService.openNewTabInContainer(activeCookieStoreId, true, windowId);
+    } else {
+      const tab = new CompatTab(browserTab);
+      loadingTabs.notifyLoadFinished(tab);
     }
   } catch (e) {
     console.error(e);
@@ -108,6 +120,9 @@ export const handleTabUrlUpdate = (browserTab: browser.Tabs.Tab) => {
         return browser.tabs.remove(tabId);
       });
     }
+
+    // because no more processing is needed
+    loadingTabs.notifyTabDisappeared(tabId);
 
     const promises: Promise<void>[] = [];
     promises.push(openTabsService.addTab(tabId));
