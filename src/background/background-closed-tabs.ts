@@ -28,7 +28,6 @@ import { CompatConsole } from '../lib/console/CompatConsole';
 import { TabGroupService } from '../lib/tabGroups/TabGroupService';
 import { OpenTabState } from '../lib/tabGroups/OpenTabState';
 import { InitialWindowsService } from './includes/InitialWindowsService';
-import { loadingTabs } from './includes/loading-tabs';
 
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
@@ -61,7 +60,6 @@ initialWindowsService.getInitialWindows().then((browserWindows) => {
 
 browser.tabs.onRemoved.addListener(async (tabId) => {
   try {
-    loadingTabs.notifyTabDisappeared(tabId);
     openTabs.removeTabId(tabId);
   } catch (e) {
     console.error(e);

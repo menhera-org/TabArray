@@ -20,13 +20,13 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { CompatTab } from 'weeg-tabs';
 
 import { CompatConsole } from '../lib/console/CompatConsole';
 import { WindowTabCountService, TabCountByWindow, WindowTabCountHistory } from '../lib/windows/WindowTabCountService';
 import { BrowserActionService } from '../lib/browserAction/BrowserActionService';
 import { ActiveContainerService } from '../lib/states/ActiveContainerService';
 import { OpenTabsService } from '../lib/states/OpenTabsService';
+import { TagService } from '../lib/tabGroups/tags/TagService';
 
 import { DarkThemeMonitor } from '../legacy-lib/themes/DarkThemeMonitor';
 
@@ -34,8 +34,9 @@ import { config } from '../config/config';
 
 import { InitialWindowsService } from './includes/InitialWindowsService';
 import { injectExtensionContentScript } from './includes/ext-content';
-import { reopenNewTab, doBatchOperationOnInitialWindows } from './includes/active-container';
-import { loadingTabs } from './includes/loading-tabs';
+import { doBatchOperationOnInitialWindows } from './includes/active-container';
+import { TabState } from './includes/TabState';
+import { TabStateStore } from './includes/TabStateStore';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const initialWindowsService = InitialWindowsService.getInstance();
@@ -43,6 +44,8 @@ const windowTabCountService = WindowTabCountService.getInstance<WindowTabCountSe
 const browserActionService = BrowserActionService.getInstance();
 const activeContainerService = ActiveContainerService.getInstance();
 const openTabsService = OpenTabsService.getInstance();
+const tagService = TagService.getInstance();
+const tabStateStore = TabStateStore.getInstance();
 
 config['appearance.popupSize'].observe((value) => {
   console.debug('appearance.popupSize changed:', value);
@@ -82,10 +85,23 @@ browser.windows.onRemoved.addListener((windowId) => {
 browser.tabs.onCreated.addListener((browserTab) => {
   if (null == browserTab.windowId) return;
   const windowId = browserTab.windowId;
-  const tab = new CompatTab(browserTab);
-  loadingTabs.add(tab);
   windowTabCountService.incrementTabCountForWindow(windowId);
-  reopenNewTab(browserTab);
+
+  const tabState = TabState.createFromBrowserTab(browserTab);
+  if (tabState.url != 'about:blank' || !tabState.isLoading) {
+    tabStateStore.onBeforeTabCreated.dispatch(tabState);
+  }
+
+  if (null != browserTab.openerTabId && null != browserTab.id && browserTab.openerTabId > 0) {
+    const tabId = browserTab.id;
+    const openerTabId = browserTab.openerTabId;
+    tagService.getTagForTabId(openerTabId).then((tag) => {
+      if (!tag) return;
+      return tagService.setTagIdForTabId(tabId, tag.tagId);
+    }).catch((e) => {
+      console.error(e);
+    });
+  }
 });
 
 browser.tabs.onRemoved.addListener((tabId, removeInfo) => {

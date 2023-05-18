@@ -24,35 +24,50 @@ import { CookieStore } from 'weeg-containers';
 
 import { TabPreviewService } from '../lib/tabs/TabPreviewService';
 import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
+import { OpenTabsService } from '../lib/states/OpenTabsService';
+import { TabStateStore } from './includes/TabStateStore';
 
 import { injectExtensionContentScript } from './includes/ext-content';
-import { handleTabUrlUpdate } from './includes/active-container';
+import { TabState } from './includes/TabState';
 
 import { OPEN_CONTAINER_PAGE } from '../defs';
 
 const tabPreviewService = TabPreviewService.getInstance();
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
+const openTabsService = OpenTabsService.getInstance();
+const tabStateStore = TabStateStore.getInstance();
 
-browser.tabs.onUpdated.addListener((tabId, _changeInfo, browserTab) => {
-  if (browserTab.status == 'complete' && browserTab.url && browserTab.url != 'about:blank') {
-    tabPreviewService.updateTabPreview(tabId).catch((e) => {
-      console.warn(e);
-    });
-  }
-  injectExtensionContentScript(browserTab);
-  handleTabUrlUpdate(browserTab);
+browser.tabs.onUpdated.addListener((_tabId, _changeInfo, browserTab) => {
+  try {
+    const tabState = TabState.createFromBrowserTab(browserTab);
+    if (tabState.url == 'about:blank' && tabState.isLoading) return;
+    if (tabState.isLoading == false) {
+      tabPreviewService.updateTabPreview(tabState.id).catch((e) => {
+        console.warn(e);
+      });
+    }
 
-  // handle "open container" page
-  if (browserTab.url && browserTab.url != 'about:blank') {
-    const url = new URL(browserTab.url);
+    const url = new URL(tabState.url);
+
+    // handle "open container" page
     if (url.origin == location.origin && url.protocol == location.protocol && url.pathname == OPEN_CONTAINER_PAGE) {
       const cookieStoreId = url.searchParams.get('cookieStoreId') || CookieStore.DEFAULT.id;
-      containerTabOpenerService.openNewTabInContainer(cookieStoreId, true, browserTab.windowId).then(() => {
-        return browser.tabs.remove(tabId);
+      containerTabOpenerService.openNewTabInContainer(cookieStoreId, true, tabState.windowId).then(() => {
+        return browser.tabs.remove(tabState.id);
       }).catch((e) => {
         console.error(e);
       });
+      return;
     }
+
+    injectExtensionContentScript(browserTab);
+    openTabsService.hasTab(tabState.id).then((hasTab) => {
+      if (!hasTab) {
+        tabStateStore.onBeforeTabCreated.dispatch(tabState);
+      }
+    });
+  } catch (e) {
+    console.error(e);
   }
 }, {
   properties: ['status', 'url'],

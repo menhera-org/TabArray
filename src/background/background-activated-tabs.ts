@@ -24,13 +24,17 @@ import { CompatTab } from "weeg-tabs";
 
 import { ContainerVisibilityService } from '../lib/tabGroups/ContainerVisibilityService';
 import { TabQueryService } from '../lib/tabs/TabQueryService';
+import { IndexTabService } from '../lib/tabs/IndexTabService';
 
 import { config } from '../config/config';
 
-import { setActiveContainerTab } from './includes/active-container';
+import { TabState } from './includes/TabState';
+import { TabStateStore } from './includes/TabStateStore';
 
 const containerVisibilityService = ContainerVisibilityService.getInstance();
 const tabQueryService = TabQueryService.getInstance();
+const indexTabService = IndexTabService.getInstance();
+const tabStateStore = TabStateStore.getInstance();
 
 const activateTab = async (windowId: number, index: number) => {
   const nextTabs = await browser.tabs.query({
@@ -49,15 +53,16 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
   try {
     const browserTab = await browser.tabs.get(tabId);
     if (browserTab.cookieStoreId == null || browserTab.id == null) return;
-    setActiveContainerTab(browserTab);
+
     const tab = new CompatTab(browserTab);
     const cookieStore = tab.cookieStore;
     if (cookieStore.isPrivate) {
       return;
     }
+
     try {
-      const indexTabUrl = await browser.sessions.getTabValue(browserTab.id, 'indexTabUrl');
-      if (!indexTabUrl) {
+      const indexTabUserContextId = await indexTabService.getIndexTabUserContextId(browserTab.id);
+      if (null == indexTabUserContextId) {
         throw void 0;
       }
 
@@ -88,6 +93,11 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
 
     if (!browserTab.pinned) {
       await containerVisibilityService.showContainerOnWindow(windowId, cookieStore.id);
+    }
+
+    const tabState = TabState.createFromBrowserTab(browserTab);
+    if (tabState.url != 'about:blank' || tabState.isLoading == false) {
+      tabStateStore.onTabActivated.dispatch(tabState);
     }
   } catch (e) {
     console.error(e);

@@ -45,7 +45,6 @@ import './background-redirector';
 import './background-tab-sorter';
 import './background-activated-tabs';
 import './background-content-script-responder';
-import './background-tags';
 import './background-set-header';
 import './background-content-script-registrar';
 import './background-url-change';
@@ -53,6 +52,7 @@ import './background-proxy';
 import './background-closed-tabs';
 import './background-sync';
 import './background-omnibox';
+import './background-created-tab';
 // import './background-update-checker';
 import '../api/ApiDefinitions';
 

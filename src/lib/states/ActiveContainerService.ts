@@ -19,23 +19,19 @@
   @license
 **/
 
+import { EventSink } from "weeg-events";
+
 import { ServiceRegistry } from "../ServiceRegistry";
 import { ActiveContainerBatchOperation } from "./ActiveContainerBatchOperation";
 import { CompatConsole } from "../console/CompatConsole";
-import { ContainerHistoryService } from "../history/ContainerHistoryService";
 import { ReadCachedStorageItem } from "../storage/ReadCachedStorageItem";
-
-import { hideAll } from "../../legacy-lib/modules/containers";
-
-import { config } from "../../config/config";
+import { ContainerOnWindow } from "../../background/includes/TabState";
 
 export type ActiveContainerStorageType = {
   [windowId: number]: string; // cookieStoreId
 };
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
-
-const containerHistoryService = ContainerHistoryService.getInstance<ContainerHistoryService>();
 
 export class ActiveContainerService {
   private static readonly STORAGE_KEY = "activeContainerByWindow";
@@ -47,6 +43,8 @@ export class ActiveContainerService {
   }
 
   private readonly _storage = new ReadCachedStorageItem<ActiveContainerStorageType>(ActiveContainerService.STORAGE_KEY, {}, ReadCachedStorageItem.AREA_LOCAL);
+
+  public readonly onContainerActivated = new EventSink<ContainerOnWindow>();
 
   private constructor() {
     // nothing.
@@ -77,11 +75,7 @@ export class ActiveContainerService {
       console.debug('ActiveContainerService.setActiveContainer: windowId =', windowId, 'cookieStoreId =', cookieStoreId);
       value[windowId] = cookieStoreId;
       await this.setValue(value);
-      containerHistoryService.addHistoryEntry(cookieStoreId);
-      const autoHideEnabled = await config['tab.autoHide.enabled'].getValue();
-      if (autoHideEnabled) {
-        await hideAll(windowId);
-      }
+      this.onContainerActivated.dispatch({ windowId, cookieStoreId });
     }
   }
 
