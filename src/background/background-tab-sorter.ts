@@ -29,8 +29,10 @@ const tabSortingService = TabSortingService.getInstance<TabSortingService>();
 const startupService = StartupService.getInstance();
 const openTabsService = OpenTabsService.getInstance();
 
-browser.tabs.onAttached.addListener(async () => {
-  await tabSortingService.sortTabs();
+browser.tabs.onAttached.addListener(() => {
+  tabSortingService.sortTabs().catch((e) => {
+    console.error(e);
+  });
 });
 
 openTabsService.onTabCreated.addListener(() => {
