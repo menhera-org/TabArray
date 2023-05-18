@@ -20,32 +20,23 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { CompatTab } from 'weeg-tabs';
 
 import { TabSortingService } from '../lib/tabs/TabSortingService';
 import { StartupService } from '../lib/StartupService';
+import { OpenTabsService } from '../lib/states/OpenTabsService';
 
 const tabSortingService = TabSortingService.getInstance<TabSortingService>();
 const startupService = StartupService.getInstance();
+const openTabsService = OpenTabsService.getInstance();
 
 browser.tabs.onAttached.addListener(async () => {
   await tabSortingService.sortTabs();
 });
 
-browser.tabs.onCreated.addListener((browserTab) => {
-  try {
-    if (null == browserTab.cookieStoreId || null == browserTab.windowId || null == browserTab.id || null == browserTab.url) return;
-    const tab = new CompatTab(browserTab);
-    if (tab.isPrivate) {
-      return;
-    }
-
-    tabSortingService.sortTabs().catch((e) => {
-      console.error(e);
-    });
-  } catch (e) {
+openTabsService.onTabCreated.addListener(() => {
+  tabSortingService.sortTabs().catch((e) => {
     console.error(e);
-  }
+  });
 });
 
 browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {

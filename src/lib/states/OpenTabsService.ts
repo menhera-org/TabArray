@@ -20,6 +20,7 @@
 **/
 
 import { Asserts } from "weeg-utils";
+import { EventSink } from "weeg-events";
 
 import { CachedStorageItem } from "../storage/CachedStorageItem";
 
@@ -41,6 +42,9 @@ export class OpenTabsService {
 
   private readonly _storage = new CachedStorageItem<OpenTabsStorageType>(OpenTabsService.STORAGE_KEY, [], CachedStorageItem.AREA_LOCAL);
 
+  public readonly onTabCreated = new EventSink<number>();
+  public readonly onTabRemoved = new EventSink<number>();
+
   private constructor() {
     // nothing.
   }
@@ -58,6 +62,9 @@ export class OpenTabsService {
       const index = value.indexOf(tabId);
       if (index !== -1) {
         value.splice(index, 1);
+        Promise.resolve().then(() => {
+          this.onTabRemoved.dispatch(tabId);
+        });
       }
       return value;
     });
@@ -68,6 +75,9 @@ export class OpenTabsService {
       const index = value.indexOf(tabId);
       if (index === -1) {
         value.push(tabId);
+        Promise.resolve().then(() => {
+          this.onTabCreated.dispatch(tabId);
+        });
       }
       return value;
     });
