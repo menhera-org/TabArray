@@ -24,11 +24,12 @@
 */
 
 // WebExtensions API is not available in this context.
+import { executeOnce } from '../once-guard';
 
 import { PackageDirectory } from "../../../lib/package/PackageDirectory";
 import { DirectoryListingParser } from "../../../lib/package/DirectoryListingParser";
 
-(async () => {
+executeOnce(async () => {
   const pre = document.querySelector('pre');
   if (!pre) return;
   const listingText = pre.textContent ?? '';
@@ -109,6 +110,4 @@ import { DirectoryListingParser } from "../../../lib/package/DirectoryListingPar
 
   document.body.style.fontFamily = 'system-ui';
   document.body.appendChild(table);
-})().catch((e) => {
-  console.warn(e);
 });

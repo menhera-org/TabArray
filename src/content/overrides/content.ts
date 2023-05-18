@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { LanguageStore } from './LanguageStore';
-import './content-interfaces';
+import '../content-interfaces';
 import './content-localstorage';
 import { UaDataService } from '../../lib/overrides/UaDataService';
 
