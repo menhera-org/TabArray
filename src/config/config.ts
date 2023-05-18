@@ -24,6 +24,7 @@ import { EventSink } from 'weeg-events';
 
 import { ConfigurationOption } from '../lib/config/ConfigurationOption';
 import { StorageConfigurationOption } from '../lib/config/StorageConfigurationOption';
+import { ConfigurationSerializer } from '../lib/config/ConfigurationSerializer';
 
 export type ExternalContainerOption = 'choose' | 'sticky' | 'disabled';
 export type PopupSize = 'standard' | 'large';
@@ -108,3 +109,25 @@ export const privacyConfig = {
   resistFingerprinting: new BrowserBooleanSetting(browser.privacy.websites.resistFingerprinting),
   cookieConfigBehavior: new CookieBahavorSetting(),
 };
+
+export const getSerializedConfig = async () => {
+  const serialized: Record<string, Record<string, unknown>> = {};
+  serialized.config = await ConfigurationSerializer.serializeConfiguration(config);
+  serialized.privacyConfig = await ConfigurationSerializer.serializeConfiguration(privacyConfig);
+  return serialized;
+};
+
+export const onConfigChanged = new EventSink<void>();
+export const onPrivacyConfigChanged = new EventSink<void>();
+
+for (const key in config) {
+  config[key as keyof typeof config].onChanged.addListener(() => {
+    onConfigChanged.dispatch();
+  });
+}
+
+for (const key in privacyConfig) {
+  privacyConfig[key as keyof typeof privacyConfig].onChanged.addListener(() => {
+    onPrivacyConfigChanged.dispatch();
+  });
+}

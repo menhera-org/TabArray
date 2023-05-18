@@ -28,6 +28,8 @@ import { PerformanceHistoryService } from "./history/PerformanceHistoryService";
 import { InstallationHistoryService } from "./history/InstallationHistoryService";
 import { WindowTabCountService } from "./windows/WindowTabCountService";
 
+import { getSerializedConfig } from "../config/config";
+
 import { ServiceRegistry } from "./ServiceRegistry";
 
 const extensionService = ExtensionService.getInstance();
@@ -56,6 +58,7 @@ export class DebuggingInformationService {
     const performanceRecords = await performanceHistoryService.getEntries();
     const installationHistory = await installationHistoryService.getValue();
     const windowTabCountHistory = await windowTabCountService.getTabCountHistory();
+    const config = await getSerializedConfig();
     const internalUuid = extensionService.getInternalUuid();
     const info = {
       internalUuid,
@@ -65,6 +68,7 @@ export class DebuggingInformationService {
       performanceRecords,
       installationHistory,
       windowTabCountHistory,
+      config,
     };
     return JSON.stringify(info, null, 2);
   }
