@@ -13,7 +13,7 @@
   "author": "Menhera.org",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@parcel/transformer-typescript-tsc": "^2.8.3",
+    "@parcel/transformer-typescript-tsc": "^2.9.1",
     "@types/diff": "^5.0.3",
     "@types/glob": "^8.1.0",
     "@types/markdown-it": "^12.2.3",
