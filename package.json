@@ -33,7 +33,7 @@
     "parcel": "^2.9.1",
     "rimraf": "^5.0.1",
     "typedoc": "^0.24.7",
-    "typescript": "<5.1.0"
+    "typescript": "<5.2.0"
   },
   "dependencies": {
     "@menhera/deterministic-json": "^0.1.0",
