@@ -133,13 +133,13 @@ export class BrowserStateStore {
     for (const browserWindow of this._params.browserWindows) {
       if (browserWindow.id !== windowId || browserWindow.tabs == null) continue;
       windowFound = true;
-      browserWindow.tabs.push(browserTab);
-      browserWindow.tabs.sort((a, b) => {
-        if (a.windowId != b.windowId) {
-          return (a.windowId ?? 0) - (b.windowId ?? 0);
-        }
-        return a.index - b.index;
-      });
+      const index = browserTab.index;
+      browserWindow.tabs.splice(index, 0, browserTab);
+      for (let i = 0; i < browserWindow.tabs.length; ++i) {
+        const tab = browserWindow.tabs[i];
+        if (!tab) continue;
+        tab.index = i;
+      }
     }
     if (!windowFound) {
       const browserWindow: browser.Windows.Window = {
