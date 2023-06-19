@@ -25,7 +25,7 @@
     "@typescript-eslint/parser": "^5.59.9",
     "addons-linter": "^6.7.0",
     "deterministic-zip-ng": "^2.1.1",
-    "eslint": "^8.42.0",
+    "eslint": "^8.43.0",
     "glob": "^10.2.6",
     "markdown-it": "^13.0.1",
     "parcel-reporter-static-files-copy": "^1.5.0",
