@@ -30,7 +30,7 @@
     "markdown-it": "^13.0.1",
     "parcel-reporter-static-files-copy": "^1.5.0",
     "parcel-resolver-ignore": "^2.1.5",
-    "parcel": "^2.9.1",
+    "parcel": "^2.9.3",
     "rimraf": "^5.0.1",
     "typedoc": "^0.24.8",
     "typescript": "<5.2.0"
