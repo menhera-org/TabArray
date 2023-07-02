@@ -26,6 +26,7 @@ import { TabGroupAttributes, TabGroupFilter } from "./TabGroupAttributes";
 
 export class TabGroupDirectorySnapshot {
   private readonly _value: SupergroupStorageType;
+  private _containerOrderCache: string[] | undefined;
 
   public constructor(value: SupergroupStorageType) {
     this._value = value;
@@ -36,7 +37,7 @@ export class TabGroupDirectorySnapshot {
   }
 
   public getSupergroupTabGroupIds(): string[] {
-    const value = this.value;
+    const value = this._value;
     const tabGroupIds: string[] = [];
     for (const tabGroupId in value) {
       tabGroupIds.push(tabGroupId);
@@ -50,7 +51,7 @@ export class TabGroupDirectorySnapshot {
   }
 
   public getParentTabGroupId(tabGroupId: string): string | undefined {
-    const value = this.value;
+    const value = this._value;
     for (const supergroupId in value) {
       const supergroup = value[supergroupId] as SupergroupType;
       if (supergroup.members.includes(tabGroupId)) {
@@ -61,7 +62,7 @@ export class TabGroupDirectorySnapshot {
   }
 
   public hasChildTabGroupId(tabGroupId: string, childTabGroupId: string): boolean {
-    const value = this.value;
+    const value = this._value;
     const supergroup = value[tabGroupId] as SupergroupType;
     if (!supergroup) return false;
     if (supergroup.members.includes(childTabGroupId)) return true;
@@ -78,7 +79,7 @@ export class TabGroupDirectorySnapshot {
     if (cache.has(rootTabGroupId)) return;
     cache.add(rootTabGroupId);
 
-    const value = this.value;
+    const value = this._value;
     const supergroup = value[rootTabGroupId] as SupergroupType;
     if (!supergroup) return;
 
@@ -136,7 +137,10 @@ export class TabGroupDirectorySnapshot {
    * Returns an ordered list of cookie store IDs. Private cookie store is not returned.
    */
   public getContainerOrder(tabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): string[] {
-    return this.getTabGroupIdsInternal({ cookieStore: true, supergroup: false }, tabGroupId);
+    if (this._containerOrderCache) return this._containerOrderCache;
+    const order = this.getTabGroupIdsInternal({ cookieStore: true, supergroup: false }, tabGroupId);
+    this._containerOrderCache = order;
+    return order;
   }
 
   /**
