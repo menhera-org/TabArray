@@ -49,6 +49,6 @@ export class ReadCachedStorageItem<T> extends StorageItem<T> {
   }
 
   public tryGetValueSync(): T | undefined {
-    return structuredClone(this._cachedValue);
+    return this._cachedValue;
   }
 }

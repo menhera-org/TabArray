@@ -38,7 +38,7 @@ export class TagDirectorySnapshot {
   }
 
   public getTagIds(): number[] {
-    const value = this.getValue();
+    const value = this._value;
     return Object.keys(value).map((key) => parseInt(key));
   }
 

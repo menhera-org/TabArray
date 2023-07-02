@@ -52,17 +52,16 @@ export class CachedStorageItem<T> extends StorageItem<T> {
   }
 
   public tryGetValueSync(): T | undefined {
-    return structuredClone(this._cachedValue);
+    return this._cachedValue;
   }
 
   public override setValue(value: T): Promise<void> {
-    value = structuredClone(value);
     this._cachedValue = value;
     return super.setValue(value);
   }
 
   public override clearValue(): Promise<void> {
-    this._cachedValue = structuredClone(this.defaultValue);
+    this._cachedValue = this.defaultValue;
     return super.clearValue();
   }
 
