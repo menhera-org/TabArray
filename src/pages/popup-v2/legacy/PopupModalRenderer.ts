@@ -47,7 +47,7 @@ const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 export class PopupModalRenderer {
   private readonly _popupRenderer: PopupRenderer;
   private readonly _utils: PopupUtils;
-  private readonly _keyHandlersStack = new Array<KeyHandlers>();
+  private readonly _keyHandlersStack: KeyHandlers[] = [];
   private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
   private readonly _contextualIdentityFactory = this._contextualIdentityService.getFactory();
   private readonly _tabGroupService = TabGroupService.getInstance();
