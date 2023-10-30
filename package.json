@@ -28,7 +28,7 @@
     "eslint": "^8.49.0",
     "glob": "^10.3.3",
     "markdown-it": "^13.0.1",
-    "parcel-reporter-static-files-copy": "^1.5.0",
+    "parcel-reporter-static-files-copy": "^1.5.3",
     "parcel-resolver-ignore": "^2.1.5",
     "parcel": "^2.9.3",
     "rimraf": "^5.0.1",
