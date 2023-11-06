@@ -14,7 +14,7 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@parcel/transformer-typescript-tsc": "^2.9.3",
-    "@types/diff": "^5.0.3",
+    "@types/diff": "^5.0.7",
     "@types/glob": "^8.1.0",
     "@types/markdown-it": "^13.0.5",
     "@types/node": "^20.5.7",
