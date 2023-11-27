@@ -31,7 +31,7 @@
     "parcel-reporter-static-files-copy": "^1.5.3",
     "parcel-resolver-ignore": "^2.1.5",
     "parcel": "^2.9.3",
-    "rimraf": "^5.0.1",
+    "rimraf": "^5.0.5",
     "typedoc": "^0.24.8",
     "typescript": "<5.3.0"
   },
