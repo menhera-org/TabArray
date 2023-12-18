@@ -1,1 +1,807 @@
-{}
+{
+    "menuItemMain": {
+        "message": "Contentores",
+        "description": "Menu item for containers view."
+    },
+    "contextMenuUnmuteTab": {
+        "message": "Ativar som da guia",
+        "description": "Unmute Tab menu (same as browser's tab menu)"
+    },
+    "labelExternalTabOptionDisabled": {
+        "message": "Abrir no contentor padrão (Sem contentor)",
+        "description": "Option to disable handling of externally opened tabs."
+    },
+    "optionsTabProxies": {
+        "message": "Proxies",
+        "description": "Label text for proxies tab."
+    },
+    "tooltipContainerCloseAll": {
+        "message": "Fechar todas as guias neste contentor",
+        "description": "Tooltip for a button to close all tabs of a container."
+    },
+    "rootGroup": {
+        "message": "(Grupo de raiz)",
+        "description": "Root group name."
+    },
+    "editGroupDialogTitle": {
+        "message": "Editar um grupo",
+        "description": "Title of the dialog to edit a group of containers."
+    },
+    "buttonHideInactiveContainers": {
+        "message": "Recolher outros contentores",
+        "description": "Button label to hide inactive containers on a window."
+    },
+    "commandOpenSidebar": {
+        "message": "Abrir a barra lateral",
+        "description": "Description text for using command to open sidebar."
+    },
+    "tooltipCloseWindow": {
+        "message": "Fechar janela",
+        "description": "Tooltip for a button to close all tabs of a window."
+    },
+    "featurePerContainerProxy": {
+        "message": "Proxy por contentor",
+        "description": "Per container proxy feature."
+    },
+    "labelPopupSizeLarge": {
+        "message": "Grande",
+        "description": "Label text for large popup size."
+    },
+    "windowLabel": {
+        "message": "Janela #$ID$",
+        "description": "Label for a window with ID.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "cookiesHeadingDomain": {
+        "message": "Domínio",
+        "description": "Heading text for domains in cookies table."
+    },
+    "buttonOk": {
+        "message": "OK",
+        "description": "Button label to confirm an action."
+    },
+    "optionsLabelLanguages": {
+        "message": "Idiomas",
+        "description": "Label text for languages of a container."
+    },
+    "buttonCancel": {
+        "message": "Cancelar",
+        "description": "Button label to cancel an action."
+    },
+    "confirmContainerDelete": {
+        "message": "Deseja apagar permanentemente este contentor: $NAME$?",
+        "description": "Confirmation message before deleting a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "packageIntegrityMismatch": {
+        "message": "Incompatibilidade de integridade",
+        "description": "Label text indicating the integrity of an extension package does not match the expected value."
+    },
+    "buttonEditGroup": {
+        "message": "Editar grupo",
+        "description": "Button to edit a group of containers."
+    },
+    "enableCookiesAutoclean": {
+        "message": "Limpar cookies automaticamente",
+        "description": "Label text for enabling autoclean of cookies."
+    },
+    "menuItemWindows": {
+        "message": "Janelas",
+        "description": "Menu item for windows view"
+    },
+    "optionsLabelUserAgent": {
+        "message": "Agente de utilizador",
+        "description": "Label text for user agent of a container."
+    },
+    "buttonNewGroup": {
+        "message": "Novo grupo de contentores",
+        "description": "Button to create a new group of containers."
+    },
+    "privateBrowsing": {
+        "message": "Navegação privada",
+        "description": "Private Browsing page"
+    },
+    "optionsDescriptionExperimental": {
+        "message": "A desativação de algumas destas opções pode resolver comportamentos com erros quando observados.",
+        "description": "Description text for experimental features options."
+    },
+    "optionSyncContainers": {
+        "message": "Sincronizar contentores",
+        "description": "Label text for sync containers option."
+    },
+    "buttonTabClose": {
+        "message": "Fechar esta guia",
+        "description": "Button label to close a tab."
+    },
+    "extensionUntracked": {
+        "message": "(não rastreada)",
+        "description": "Label text indicating an extension built from source not tracked in source control."
+    },
+    "labelSelectContainerExternalTabs": {
+        "message": "Selecionar um contentor quando uma aplicação externo abrir uma guia",
+        "description": "Option to enable container selection on externally opened tabs."
+    },
+    "buttonDone": {
+        "message": "Concluído",
+        "description": "Button to complete an action."
+    },
+    "buttonAddNewProxy": {
+        "message": "Adicionar novo proxy",
+        "description": "Add new proxy button."
+    },
+    "titleSelectContainer": {
+        "message": "Selecionar um contentor",
+        "description": "Title of the popup asking the user to choose a container to open a new tab in."
+    },
+    "optionAutoHideContainers": {
+        "message": "Ocultar automaticamente os contentores não utilizados",
+        "description": "Label text for auto-hide unused containers option."
+    },
+    "buttonClear": {
+        "message": "Limpar",
+        "description": "Button to clear data."
+    },
+    "buttonDeleteContainer": {
+        "message": "Apagar contentor…",
+        "description": "Button to delete a container."
+    },
+    "noTag": {
+        "message": "(sem etiqueta)",
+        "description": "No tag name."
+    },
+    "tooltipContainerClearCookie": {
+        "message": "Limpar todos os cookies neste contentor",
+        "description": "Tooltip for a button to clear all cookies in a container."
+    },
+    "buttonEditTag": {
+        "message": "Editar etiqueta",
+        "description": "Button to edit a tag."
+    },
+    "contextMenuPinTab": {
+        "message": "Fixar guia",
+        "description": "Pin Tab menu (same as browser's tab menu)"
+    },
+    "buttonAboutAddon": {
+        "message": "Mais sobre Container Tab Groups e comentários…",
+        "description": "Menu item to open the extension's addons.mozilla.org page."
+    },
+    "tooltipContainerDelete": {
+        "message": "Apagar permanentemente este contentor",
+        "description": "Tooltip for a button to permanently delete a container."
+    },
+    "buttonDeleteProxy": {
+        "message": "Apagar proxy",
+        "description": "Delete proxy button."
+    },
+    "optionEnableSorting": {
+        "message": "Ativar a classificação automática de guias",
+        "description": "Label text for enabling sorting of containers/tabs."
+    },
+    "debuggingInformation": {
+        "message": "Informações de depuração",
+        "description": "Debugging information page."
+    },
+    "optionsHeadingExperimental": {
+        "message": "Recursos experimentais",
+        "description": "Heading text of options page for experimental addon features."
+    },
+    "tooltipTabUnpinButton": {
+        "message": "Desafixar esta guia",
+        "description": "Tooltip for the button to unpin a tab."
+    },
+    "descriptionSelectContainer": {
+        "message": "Está prestes a abrir uma nova guia: $URL$.",
+        "description": "Confirmation message before the user chooses a container to open a new tab in.",
+        "placeholders": {
+            "url": {
+                "content": "$1",
+                "example": "https://example.com/"
+            }
+        }
+    },
+    "optionsHeadingContainerSortOrder": {
+        "message": "Classificar contentores",
+        "description": "Heading text of options page for changing container order."
+    },
+    "github": {
+        "message": "GitHub",
+        "description": "GitHub link"
+    },
+    "searchPlaceholder": {
+        "message": "Pesquisar contentores",
+        "description": "Placeholder text for searching containers."
+    },
+    "cookiesHeadingActions": {
+        "message": "Ações",
+        "description": "Heading text for action buttons in cookies table."
+    },
+    "labelFirstPartyIsolate": {
+        "message": "Ativar First-Party Isolate (FPI)",
+        "description": "Option to enable first-party isolation."
+    },
+    "newVersionAvailable": {
+        "message": "Nova versão disponível: $VERSION$",
+        "description": "New version available message.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
+    },
+    "moveContainer": {
+        "message": "Mover para grupo",
+        "description": "Move a container to another group."
+    },
+    "buttonNewWindow": {
+        "message": "Nova janela",
+        "description": "Button to open a new window."
+    },
+    "userAgentDefault": {
+        "message": "Padrão",
+        "description": "Default user agent"
+    },
+    "buttonNewTemporaryContainer": {
+        "message": "Novo contentor temporário",
+        "description": "Button to open a new temporary container."
+    },
+    "containerOptions": {
+        "message": "Opções de contentor para: $NAME$",
+        "description": "Menu title for container options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "labelExternalTabOptionStickyContainer": {
+        "message": "Abrir no último contentor ativo",
+        "description": "Option to use the last active container for externally opened tabs."
+    },
+    "optionsTabFirefoxSettings": {
+        "message": "Configurações do Firefox",
+        "description": "Label text for firefox settings tab."
+    },
+    "fpiDescription": {
+        "message": "Esta extensão ativa o recurso First-Party Isolate (FPI) do Firefox por padrão. Isso significa que os cookies de locais diferentes, mesmo para um mesmo contentor, são separados por domínio registrável. Pode desativá-lo aqui.",
+        "description": "Description text for FPI"
+    },
+    "windowTitlePrefaceTemplate": {
+        "message": "($CONTAINER$)",
+        "description": "String to add before window title",
+        "placeholders": {
+            "container": {
+                "content": "$1",
+                "example": "Container 1"
+            }
+        }
+    },
+    "newContainerNamePlaceholder": {
+        "message": "Nome do contentor",
+        "description": "Placeholder for the input field of the name of a new container."
+    },
+    "proxyPort": {
+        "message": "Porto",
+        "description": "Proxy port option."
+    },
+    "newContainerDialogTitle": {
+        "message": "Criar um novo contentor",
+        "description": "Title of the dialog prompting for creating a new container."
+    },
+    "tooltipExpandContainers": {
+        "message": "Expanda os contentores",
+        "description": "Tooltip for the button to expand containers."
+    },
+    "labelGroupIndexOptionNever": {
+        "message": "Nunca",
+        "description": "Option to show index tabs for no containers."
+    },
+    "optionsHeadingAvailableProxies": {
+        "message": "Proxies disponíveis",
+        "description": "Available proxies heading."
+    },
+    "extensionDescription": {
+        "message": "Grupos de guias semelhantes aos do Chrome usando contentores privados e isolados: O melhor gestor de guias e grupos para o Firefox.",
+        "description": "Description of the extension."
+    },
+    "buttonNewContainer": {
+        "message": "Criar um novo contentor…",
+        "description": "Button label to create a new container."
+    },
+    "setTag": {
+        "message": "Definir etiqueta",
+        "description": "Set a tag to a tab."
+    },
+    "panoramaGrid": {
+        "message": "Grade Panorâmica",
+        "description": "Panorama Grid page (grid view of container and tabs)"
+    },
+    "copyCookiesFrom": {
+        "message": "Copiar cookies de:",
+        "description": "Label text for copy cookies from option."
+    },
+    "optionsTabGeneral": {
+        "message": "Geral",
+        "description": "Label text for general tab."
+    },
+    "proxyDnsRequests": {
+        "message": "Solicitações de proxy DNS",
+        "description": "Proxy DNS requests option."
+    },
+    "contextMenuUnpinTab": {
+        "message": "Desafixar guia",
+        "description": "Unpin Tab menu (same as browser's tab menu)"
+    },
+    "focusToThisContainer": {
+        "message": "Focar neste contentor",
+        "description": "Button to focus to this container."
+    },
+    "editTagDialogTitle": {
+        "message": "Editar uma etiqueta",
+        "description": "Title of the dialog to edit a tag."
+    },
+    "tooltipCollapseContainers": {
+        "message": "Recolher contentores",
+        "description": "Tooltip for the button to collapse inactive containers."
+    },
+    "contextMenuReloadTab": {
+        "message": "Recarregar guia",
+        "description": "Reload Tab menu (same as browser's tab menu)"
+    },
+    "copyCookiesTo": {
+        "message": "Copiar cookies para:",
+        "description": "Label text for copy cookies to option."
+    },
+    "extensionUnsigned": {
+        "message": "(sem sinal)",
+        "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
+    },
+    "privacyPolicy": {
+        "message": "Política de privacidade",
+        "description": "Privacy Policy page"
+    },
+    "labelExternalTabOptionChooseContainer": {
+        "message": "Escolher um contentor todas as vezes",
+        "description": "Option to choose a container every time an external application opens a tab."
+    },
+    "optionsHeadingAppearance": {
+        "message": "Opções de aparência",
+        "description": "Heading text of options page for changing appearance settings."
+    },
+    "editContainerDialogTitle": {
+        "message": "Editar um contentor",
+        "description": "Title of the dialog prompting for editting a container."
+    },
+    "labelAutoDiscard10800": {
+        "message": "3 horas",
+        "description": "Label text for autodiscard in 10800 seconds."
+    },
+    "optionsTabContainerOverrides": {
+        "message": "Idiomas e agentes de utilizador",
+        "description": "Label text for language and user agent overrides tab."
+    },
+    "labelAutoDiscard1800": {
+        "message": "30 minutos",
+        "description": "Label text for autodiscard in 1800 seconds."
+    },
+    "tooltipWindowLabel": {
+        "message": "Mudar para janela #$ID$",
+        "description": "Tooltip for a menu item representing a window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "saveDebuggingInformation": {
+        "message": "Gravar informações de depuração",
+        "description": "Save debugging information button."
+    },
+    "userAgentGooglebot": {
+        "message": "Googlebot",
+        "description": "Googlebot user agent"
+    },
+    "tooltipCookies": {
+        "message": "Exibir cookies",
+        "description": "Tooltip for a button to view cookies."
+    },
+    "buttonSidebar": {
+        "message": "Abrir barra lateral",
+        "description": "Button to open Sidebar."
+    },
+    "featureUaOverrides": {
+        "message": "Substituições de agente de utilizador por contentor",
+        "description": "Label text for UA overrides feature"
+    },
+    "labelAutoDiscard3600": {
+        "message": "1 hora",
+        "description": "Label text for autodiscard in 3600 seconds."
+    },
+    "optionsDescriptionFirefox": {
+        "message": "Aqui pode alterar algumas configurações ocultas do Firefox relacionadas à privacidade.",
+        "description": "Description text for Firefox settings options."
+    },
+    "optionsTabSortContainers": {
+        "message": "Classificar os contentores",
+        "description": "Label text for sort containers tab."
+    },
+    "optionalFeaturesDescription": {
+        "message": "Se não usar nenhuma extensão conflitante, poderá ativar alguns recursos opcionais aqui.",
+        "description": "Description text for optional features"
+    },
+    "labelPopupSize": {
+        "message": "Tamanho do pop-up",
+        "description": "Prompt for changing popup size."
+    },
+    "noContainer": {
+        "message": "Sem contentor",
+        "description": "Virtual container name for tabs with no container."
+    },
+    "confirmContainerClearCookie": {
+        "message": "Deseja limpar os cookies deste contentor: $NAME$?",
+        "description": "Confirmation message before clearing cookies in a container.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Container 3"
+            }
+        }
+    },
+    "optionsHeadingGeneral": {
+        "message": "Configurações gerais",
+        "description": "Heading text of options page for general settings."
+    },
+    "confirmGroupDelete": {
+        "message": "Deseja apagar permanentemente este grupo de contentores: $NAME$?",
+        "description": "Confirmation message before deleting a group.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "contextMenuNewTab": {
+        "message": "Nova guia",
+        "description": "New Tab menu (same as browser's tab menu)"
+    },
+    "labelAutoDiscard86400": {
+        "message": "1 dia",
+        "description": "Label text for autodiscard in 86400 seconds."
+    },
+    "buttonNewTag": {
+        "message": "Nova etiqueta",
+        "description": "Button to create a new tag."
+    },
+    "defaultContainerName": {
+        "message": "Contentor #$ID$",
+        "description": "Descriptive default name of a container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "newGroupDialogTitle": {
+        "message": "Criar um novo grupo",
+        "description": "Title of the dialog to create a new group of containers."
+    },
+    "optionsHeadingFirefox": {
+        "message": "Configurações do Firefox",
+        "description": "Heading text of options page for changing Firefox settings."
+    },
+    "commandOpenPopup": {
+        "message": "Abrir a janela pop-up",
+        "description": "Description text for using command to open popup."
+    },
+    "currentWindowMoreContainers": {
+        "message": "Mais contentores para esta janela"
+    },
+    "currentWindow": {
+        "message": "Esta janela (#$ID$)",
+        "description": "Title of popup section for the current window.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "2"
+            }
+        }
+    },
+    "optionsDescriptionContainerSortOrder": {
+        "message": "Esta configuração não afeta outras extensões.",
+        "description": "Description text for changing container order."
+    },
+    "labelAutoDiscard900": {
+        "message": "15 minutos",
+        "description": "Label text for autodiscard in 900 seconds."
+    },
+    "resistFingerprintingWarning": {
+        "message": "privacy.resistFingerprinting é uma configuração de proteção avançada usada no Navegador Tor e pode limitar a sua experiência de navegação.",
+        "description": "Warning message for privacy.resistFingerprinting."
+    },
+    "buttonDeleteGroup": {
+        "message": "Apagar grupo",
+        "description": "Button to delete a group of containers."
+    },
+    "userAgentCustom": {
+        "message": "Personalizado",
+        "description": "Custom user agent"
+    },
+    "promptSelectContainer": {
+        "message": "Selecione um contentor para abrir esta guia.",
+        "description": "Message asking the user to select a container for a new tab."
+    },
+    "proxyHostname": {
+        "message": "Nome do host",
+        "description": "Proxy hostname option."
+    },
+    "tooltipTabPinButton": {
+        "message": "Fixar esta guia",
+        "description": "Tooltip for the button to pin a tab."
+    },
+    "proxyPassword": {
+        "message": "Palavra-passe",
+        "description": "Proxy password option."
+    },
+    "headingReopen": {
+        "message": "Reabrir no contentor",
+        "description": "Heading text for reopen in container."
+    },
+    "buttonNewPrivateWindow": {
+        "message": "Nova janela privada",
+        "description": "Button to open a new private window."
+    },
+    "proxyProtocol": {
+        "message": "Protocolo",
+        "description": "Proxy protocol option."
+    },
+    "newTagDialogTitle": {
+        "message": "Criar uma nova etiqueta",
+        "description": "Title of the dialog to create a new tag."
+    },
+    "labelAutoDiscard43200": {
+        "message": "12 horas",
+        "description": "Label text for autodiscard in 43200 seconds."
+    },
+    "labelResistFingerprinting": {
+        "message": "Ativar o recurso de resistência à impressão digital do Firefox (privacy.resistFingerprinting)",
+        "description": "Option to enable privacy.resistFingerprinting."
+    },
+    "buttonSettings": {
+        "message": "Configurações",
+        "description": "Menu item to open the extensions's settings."
+    },
+    "invalidContainerName": {
+        "message": "Contentor indisponível $ID$",
+        "description": "Name shown for an unavailable container.",
+        "placeholders": {
+            "id": {
+                "content": "$1",
+                "example": "443"
+            }
+        }
+    },
+    "buttonEditContainer": {
+        "message": "Editar contentor…",
+        "description": "Button to edit a container."
+    },
+    "extensionBuild": {
+        "message": "Criar",
+        "description": "Label text indicating an extension build (built extension package)."
+    },
+    "labelNewTabKeepContainer": {
+        "message": "Abrir nova guia no contentor atual (contentor fixo)",
+        "description": "Title of option to always open new tab in current container."
+    },
+    "headingCookies": {
+        "message": "Cookies",
+        "description": "Heading text of cookies page."
+    },
+    "menuItemHelp": {
+        "message": "Ajuda",
+        "description": "Menu item for help view"
+    },
+    "labelAutoDiscardMinAge": {
+        "message": "Liberar memória das guias após inatividade por:",
+        "description": "Label text for autodiscard min age."
+    },
+    "extensionDevBuild": {
+        "message": "(versão de desenvolvimento)",
+        "description": "Label text indicating a development-version extension build."
+    },
+    "contextMenuCloseTab": {
+        "message": "Fechar guia",
+        "description": "Close Tab menu (same as browser's tab menu)"
+    },
+    "buttonMove": {
+        "message": "Mover",
+        "description": "Button to move a container to another group."
+    },
+    "labelGroupIndexOption": {
+        "message": "Mostrar uma guia de índice para cada contentor",
+        "description": "Option to show index tabs for containers."
+    },
+    "labelExternalTabSelectContainerOption": {
+        "message": "Quando uma aplicação externa abre uma guia:",
+        "description": "Label for option for handling of externally opened tabs"
+    },
+    "optionsHeadingContainerOverrides": {
+        "message": "Substituições por contentor",
+        "description": "Heading text of options page for container overrides."
+    },
+    "tooltipUnhideContainerButton": {
+        "message": "Mostrar as guias deste contentor",
+        "description": "Tooltip for the button to unhide the tabs of a container."
+    },
+    "buttonOpenTabInContainer": {
+        "message": "Abrir nova guia",
+        "description": "Button label to open a new tab in the specified container"
+    },
+    "optionsHeadingUserData": {
+        "message": "Os seus dados",
+        "description": "Heading text of options page for managing user data."
+    },
+    "labelGroupIndexOptionAlways": {
+        "message": "Todos os contentores",
+        "description": "Option to show index tabs for all containers."
+    },
+    "copyCookies": {
+        "message": "Copiar cookies",
+        "description": "Copy cookies button or label text."
+    },
+    "contextMenuDuplicateTab": {
+        "message": "Duplicar guia",
+        "description": "Duplicate Tab menu (same as browser's tab menu)"
+    },
+    "browserActionTitle": {
+        "message": "Guias e grupos",
+        "description": "Title of browserAction about tabs and container-based groups."
+    },
+    "labelAutoDiscardDisabled": {
+        "message": "Desativado",
+        "description": "Label text for autodiscard disabled."
+    },
+    "extensionBuildUnknown": {
+        "message": "(desconhecida)",
+        "description": "Label text indicating an unknown extension build."
+    },
+    "buttonDeleteTag": {
+        "message": "Apagar etiqueta",
+        "description": "Button to delete a tag."
+    },
+    "tooltipEditContainerButton": {
+        "message": "Editar este contentor",
+        "description": "Tooltip for the button to edit a container."
+    },
+    "proxyUsername": {
+        "message": "Nome de utilizador",
+        "description": "Proxy username option."
+    },
+    "newContainerNameLabel": {
+        "message": "Nome",
+        "description": "Label for inputting the name of a new container."
+    },
+    "sitesN": {
+        "message": "Locais ($COUNT$)",
+        "description": "Text for sites view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "userAgentChrome": {
+        "message": "Chrome",
+        "description": "Chrome user agent"
+    },
+    "effectiveLocale": {
+        "message": "pt",
+        "description": "Locale of this messages.json."
+    },
+    "contextMenuMuteTab": {
+        "message": "Silenciar guia",
+        "description": "Mute Tab menu (same as browser's tab menu)"
+    },
+    "buttonPanorama": {
+        "message": "Abrir grade panorâmica",
+        "description": "Button label to open Panorama Grid"
+    },
+    "menuItemSites": {
+        "message": "Locais",
+        "description": "Menu item for sites view"
+    },
+    "groupOptions": {
+        "message": "Opções de grupo para $NAME$",
+        "description": "Heading text for group options.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Group 3"
+            }
+        }
+    },
+    "confirmPrivateBrowsingClearCookie": {
+        "message": "Deseja limpar os cookies para navegação privada?",
+        "description": "Confirmation message before clearing cookies for private browsing."
+    },
+    "featureLanguageOverrides": {
+        "message": "Substituições de idioma por contentor",
+        "description": "Label text for language overrides feature"
+    },
+    "windowsN": {
+        "message": "Janelas ($COUNT$)",
+        "description": "Text for windows view heading",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "extensionSigned": {
+        "message": "(assinada)",
+        "description": "Label text indicating a signed extension. (Cryptographically signed by Mozilla)"
+    },
+    "proxyName": {
+        "message": "Nome",
+        "description": "Proxy name option."
+    },
+    "noProxy": {
+        "message": "Sem proxy",
+        "description": "No proxy option."
+    },
+    "labelGroupIndexOptionCollapsed": {
+        "message": "Contentores recolhidos",
+        "description": "Option to show index tabs for collapsed containers."
+    },
+    "labelAutoDiscard21600": {
+        "message": "6 horas",
+        "description": "Label text for autodiscard in 21600 seconds."
+    },
+    "contextMenuHideSelectedContainer": {
+        "message": "Ocultar este contentor",
+        "description": "Context menu item text for hiding the container of the selected tab."
+    },
+    "buttonContainerClearCookie": {
+        "message": "Limpar cookies…",
+        "description": "Button to clear cookies in a container."
+    },
+    "labelPopupSizeStandard": {
+        "message": "Padrão",
+        "description": "Label text for standard popup size."
+    },
+    "buttonGetStarted": {
+        "message": "Começar",
+        "description": "Button to get started"
+    },
+    "proxyExemptLocalAddresses": {
+        "message": "Não fazer proxy de endereços locais",
+        "description": "Proxy exempt local addresses option."
+    },
+    "browserActionPopupTitle": {
+        "message": "Container Tab Groups: Página pop-up",
+        "description": "Title of the popup page for browserAction."
+    },
+    "packageIntegrity": {
+        "message": "Integridade",
+        "description": "Label text indicating the integrity of an extension package."
+    },
+    "tooltipHideContainerButton": {
+        "message": "Ocultar as guias deste contentor",
+        "description": "Tooltip for the button to hide the tabs of a container."
+    }
+}
