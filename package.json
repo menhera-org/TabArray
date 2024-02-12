@@ -32,7 +32,7 @@
     "parcel-resolver-ignore": "^2.2.0",
     "parcel": "^2.9.3",
     "rimraf": "^5.0.5",
-    "typedoc": "^0.25.7",
+    "typedoc": "^0.25.8",
     "typescript": "<5.4.0"
   },
   "dependencies": {
