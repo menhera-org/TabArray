@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@menhera/deterministic-json": "^0.1.0",
-    "@noble/curves": "^1.2.0",
+    "@noble/curves": "^1.4.0",
     "diff": "^5.1.0",
     "webextension-polyfill": "^0.10.0",
     "weeg-containers": "^0.12.0",
