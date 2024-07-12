@@ -50,18 +50,18 @@ export class CssColor {
       if (colorCode.length === 3) {
         return new CssColor(
           Srgb.from8bit(
-            parseInt(colorCode[0] ?? '' + colorCode[0] ?? '', 16),
-            parseInt(colorCode[1] ?? '' + colorCode[1] ?? '', 16),
-            parseInt(colorCode[2] ?? '' + colorCode[2] ?? '', 16)
+            parseInt((colorCode[0] ?? '') + (colorCode[0] ?? ''), 16),
+            parseInt((colorCode[1] ?? '') + (colorCode[1] ?? ''), 16),
+            parseInt((colorCode[2] ?? '') + (colorCode[2] ?? ''), 16)
           ),
           1
         );
       } else if (colorCode.length === 6) {
         return new CssColor(
           Srgb.from8bit(
-            parseInt(colorCode[0] ?? '' + colorCode[1] ?? '', 16),
-            parseInt(colorCode[2] ?? '' + colorCode[3] ?? '', 16),
-            parseInt(colorCode[4] ?? '' + colorCode[5] ?? '', 16)
+            parseInt((colorCode[0] ?? '') + (colorCode[1] ?? ''), 16),
+            parseInt((colorCode[2] ?? '') + (colorCode[3] ?? ''), 16),
+            parseInt((colorCode[4] ?? '') + (colorCode[5] ?? ''), 16)
           ),
           1
         );

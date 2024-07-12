@@ -23,9 +23,6 @@
     "jsx": "react"
   },
   "include": [
-    "src/**/*",
-    "*.js",
-    ".eslintrc.cjs",
-    "script/*.js"
+    "src/**/*"
   ]
 }

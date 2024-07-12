@@ -34,6 +34,11 @@ import { ed25519 } from '@noble/curves/ed25519';
 import { glob } from 'glob';
 import { DeterministicJSON } from '@menhera/deterministic-json';
 
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 const importJson = (path: string): any => {
   const contents = fs.readFileSync(path, 'utf8');
   return JSON.parse(contents);

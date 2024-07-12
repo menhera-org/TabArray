@@ -7,7 +7,7 @@
     "types": [
       "node",
     ],
-    "module": "CommonJS",
+    "module": "es2020",
     "sourceMap": true,
     "declaration": true,
     "newLine": "lf",
