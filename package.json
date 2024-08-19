@@ -14,7 +14,7 @@
   "author": "Menhera.org",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@eslint/js": "^9.6.0",
+    "@eslint/js": "^9.9.0",
     "@parcel/transformer-typescript-tsc": "^2.9.3",
     "@types/diff": "^5.0.8",
     "@types/eslint__js": "^8.42.3",
