@@ -27,7 +27,7 @@
     "addons-linter": "^6.33.0",
     "deterministic-zip-ng": "^2.1.1",
     "eslint": "^8.57.1",
-    "glob": "^10.4.5",
+    "glob": "^11.0.0",
     "markdown-it": "^14.1.0",
     "parcel": "^2.12.0",
     "parcel-reporter-static-files-copy": "^1.5.3",
