@@ -38,7 +38,7 @@ executeOnce(async () => {
   let directory: PackageDirectory;
   try {
     directory = parser.parse(listingText);
-  } catch (e) {
+  } catch (_e) {
     return;
   }
   const table = document.createElement('table');

@@ -38,6 +38,6 @@ window.addEventListener('storage', notifyStorageData);
 
 try {
   notifyStorageData();
-} catch (e) {
+} catch (_e) {
   // ignore
 }

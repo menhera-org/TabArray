@@ -83,7 +83,7 @@ export class ConsoleService {
     const stringifiedArgs = formattedArgs.map(a => {
       try {
         return String(a);
-      } catch (e) {
+      } catch (_e) {
         return '(unknown)';
       }
     }).join(' ');

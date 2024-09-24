@@ -210,7 +210,7 @@ browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
   ],
 });
 
-browser.tabs.onUpdated.addListener(async (tabId, changeInfo, browserTab) => {
+browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
   if (browserTab.incognito) return;
   browserTab.id = tabId;
   const tab = new CompatTab(browserTab);

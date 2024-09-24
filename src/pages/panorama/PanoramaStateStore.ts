@@ -39,7 +39,7 @@ export class PanoramaStateStore {
       // preview images are also cached upstream in TabPreviewService.
       const url = await tabPreviewService.getTabPreview(tabId);
       this.previewUrls.set(tabId, url);
-    } catch (e) {
+    } catch (_e) {
       // ignore.
     }
   }

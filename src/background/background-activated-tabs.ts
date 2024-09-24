@@ -87,7 +87,7 @@ browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
       } else if (indexTabOption == 'collapsed') {
         await activateTab(windowId, browserTab.index + 1);
       }
-    } catch (e) {
+    } catch (_e) {
       // nothing.
     }
 

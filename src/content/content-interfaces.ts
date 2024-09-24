@@ -28,7 +28,7 @@ type CloneIntoOptions = {
 
 declare const cloneInto: <T,>(value: T, scope?: unknown, options?: CloneIntoOptions) => T;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 declare const exportFunction: <T extends Function>(fn: T, scope?: unknown, options?: CloneIntoOptions) => T;
 
 interface Object {

@@ -63,7 +63,7 @@ const getPanoramaGridSuggestion = (): browser.Omnibox.SuggestResult => {
 const tryConstructUrl = (url: string, base?: string): URL | null => {
   try {
     return new URL(url, base);
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 };

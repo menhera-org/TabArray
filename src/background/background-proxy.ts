@@ -100,15 +100,15 @@ proxySettings.presetStore.onChanged.addListener(() => {
   });
 });
 
-browser.proxy && browser.webRequest.onCompleted.addListener(handleCompleted, {
+void (browser.proxy && browser.webRequest.onCompleted.addListener(handleCompleted, {
   urls: ['<all_urls>'],
-});
+}));
 
-browser.proxy && browser.webRequest.onErrorOccurred.addListener(handleCompleted, {
+void (browser.proxy && browser.webRequest.onErrorOccurred.addListener(handleCompleted, {
   urls: ['<all_urls>'],
-});
+}));
 
-browser.proxy && browser.webRequest.onAuthRequired.addListener(async (details) => {
+void (browser.proxy && browser.webRequest.onAuthRequired.addListener(async (details) => {
   try {
     if (!details.isProxy || !details.cookieStoreId) {
       return {};
@@ -139,9 +139,9 @@ browser.proxy && browser.webRequest.onAuthRequired.addListener(async (details) =
   }
 }, {
   urls: ['<all_urls>'],
-}, ['blocking']);
+}, ['blocking']));
 
-browser.proxy && browser.proxy.onRequest.addListener(async (details) => {
+void (browser.proxy && browser.proxy.onRequest.addListener(async (details) => {
   try {
     if (!details.cookieStoreId) {
       console.warn('Proxy request without cookieStoreId');
@@ -162,8 +162,8 @@ browser.proxy && browser.proxy.onRequest.addListener(async (details) => {
   }
 }, {
   urls: ['<all_urls>'],
-});
+}));
 
-browser.proxy && browser.proxy.onError.addListener((error) => {
+void (browser.proxy && browser.proxy.onError.addListener((error) => {
   console.error('proxy.onError:', error);
-});
+}));

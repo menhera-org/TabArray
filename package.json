@@ -26,7 +26,7 @@
     "@types/webextension-polyfill": "^0.10.7",
     "addons-linter": "^6.33.0",
     "deterministic-zip-ng": "^2.1.1",
-    "eslint": "^8.57.1",
+    "eslint": "^9.11.1",
     "glob": "^11.0.0",
     "markdown-it": "^14.1.0",
     "parcel": "^2.12.0",
@@ -35,7 +35,7 @@
     "rimraf": "^6.0.1",
     "typedoc": "^0.26.7",
     "typescript": "<5.4.0",
-    "typescript-eslint": "^7.18.0"
+    "typescript-eslint": "^8.7.0"
   },
   "dependencies": {
     "@menhera/deterministic-json": "^0.1.0",

@@ -98,7 +98,7 @@ export class InstallationHistoryService {
       }
       await signatureResponse.text();
       signed = true;
-    } catch (e) {
+    } catch (_e) {
       // ignore
     }
     return signed;

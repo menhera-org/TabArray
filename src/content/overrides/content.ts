@@ -123,7 +123,7 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
     try {
       userAgent = window.parent?.navigator.userAgent ?? userAgent;
       userAgent = window.top?.navigator.userAgent ?? userAgent;
-    } catch (e) {
+    } catch (_e) {
       // ignore.
     }
     const brands = uaDataService.getBrands(userAgent);
@@ -160,7 +160,7 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
             loadTimes: () => { /* nothing */ },
           }, window, { cloneFunctions: true }),
         });
-      } catch (e) {
+      } catch (_e) {
         // ignore
       }
     }

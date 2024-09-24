@@ -228,7 +228,7 @@ const renderContainer = async (displayedContainer: DisplayedContainer, isPrivate
         }
         location.hash = `#${cookieStore.id}`;
       }, 100);
-    } catch (e) {
+    } catch (_e) {
       // ignore
     }
   })

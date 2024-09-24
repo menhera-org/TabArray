@@ -196,7 +196,7 @@ export class PopupModalRenderer {
           });
         });
       });
-    } catch (e) {
+    } catch (_e) {
       return contextualIdentity;
     }
   }

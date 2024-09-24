@@ -10,6 +10,25 @@ export default tseslint.config(
   {
     ignores: ["**/static/**", "**/scripts/**", "**/scripts-src/**"],
   },
+  {
+    linterOptions: {
+      reportUnusedDisableDirectives: "off",
+    },
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "args": "all",
+          "argsIgnorePattern": "^_",
+          "caughtErrors": "all",
+          "caughtErrorsIgnorePattern": "^_",
+          "destructuredArrayIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+          "ignoreRestSiblings": true
+        }
+      ]
+    }
+  },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
 );

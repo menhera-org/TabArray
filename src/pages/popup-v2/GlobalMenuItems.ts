@@ -85,8 +85,7 @@ export class GlobalMenuItems {
     this.defineEventHandlers(topBarElement);
   }
 
-  public defineDrawerMenuItems(drawerElement: CtgDrawerElement) {
-    drawerElement;
+  public defineDrawerMenuItems(_drawerElement: CtgDrawerElement) {
     // not used
   }
 

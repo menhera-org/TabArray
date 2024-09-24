@@ -71,7 +71,7 @@ export class PackageInformationService extends BackgroundService<void, PackageIn
     if (recordedHash == computedHash) {
       try {
         isOfficial = await buildMetadataService.verifySignature(computedHash);
-      } catch (e) {
+      } catch (_e) {
         // ignore
       }
     }
