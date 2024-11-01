@@ -25,8 +25,13 @@ import { ServiceRegistry } from "./ServiceRegistry";
 import { StartupService } from "./StartupService";
 import { RandomIdService } from "./RandomIdService";
 
+type UrlEntry = {
+  url: string; // url
+  addedAt: number; // timestamp
+};
+
 type StorageType = {
-  [urlId: string]: string; // url
+  [urlId: string]: UrlEntry;
 };
 
 const startupService = StartupService.getInstance();
@@ -39,7 +44,7 @@ export class UrlRegistrationService {
     return this.INSTANCE;
   }
 
-  private readonly _storage = new StorageItem<StorageType>('registeredUrls', {}, StorageItem.AREA_LOCAL);
+  private readonly _storage = new StorageItem<StorageType>('registeredUrlsWithDate', {}, StorageItem.AREA_LOCAL);
 
   private constructor() {
     // nothing
@@ -49,25 +54,43 @@ export class UrlRegistrationService {
     await this._storage.setValue({});
   }
 
+  private cleanupStorage(storage: StorageType): StorageType {
+    const now = Date.now();
+    const newStorage: StorageType = {};
+    for (const [urlId, entry] of Object.entries(storage)) {
+      if (now - entry.addedAt < 24 * 60 * 60 * 1000 * 30) {
+        newStorage[urlId] = entry;
+      }
+    }
+    return newStorage;
+  }
+
+  private newEntry(url: string): UrlEntry {
+    return {
+      url,
+      addedAt: Date.now(),
+    };
+  }
+
   public async registerUrl(url: string): Promise<string> {
     new URL(url); // throws for invalid URLs
     const storage = await this._storage.getValue();
     const urlId = randomIdService.getRandomId();
-    storage[urlId] = url;
-    await this._storage.setValue(storage);
+    storage[urlId] = this.newEntry(url);
+    await this._storage.setValue(this.cleanupStorage(storage));
     return urlId;
   }
 
   public async getUrl(urlId: string): Promise<string | null> {
     const storage = await this._storage.getValue();
-    return storage[urlId] ?? null;
+    return storage[urlId]?.url ?? null;
   }
 
   public async getAndRevokeUrl(urlId: string): Promise<string | null> {
     const storage = await this._storage.getValue();
-    const url = storage[urlId] ?? null;
+    const url = storage[urlId]?.url ?? null;
     delete storage[urlId];
-    await this._storage.setValue(storage);
+    await this._storage.setValue(this.cleanupStorage(storage));
     return url;
   }
 }

@@ -166,7 +166,7 @@ document.onerror = (e) => {
 const params = new URLSearchParams(location.search);
 
 const urlId = params.get('urlId') || '';
-const urlPromise = urlRegistrationService.getAndRevokeUrl(urlId);
+const urlPromise = urlRegistrationService.getUrl(urlId);
 const currentTabPromise = browser.tabs.getCurrent();
 
 const envPromise: Promise<EnvType> = Promise.all([
@@ -193,7 +193,9 @@ settingsButton.addEventListener('click', () => {
 
 const _loadUrl = (env: EnvType) => {
   blankScreen();
-  return tabUrlService.loadUrlInTab(env.tab.id, env.url);
+  return urlRegistrationService.getAndRevokeUrl(urlId).then(() => {
+    return tabUrlService.loadUrlInTab(env.tab.id, env.url);
+  });
 };
 
 const _reopenInContainer = (env: EnvType, cookieStoreId: string) => {
@@ -202,7 +204,9 @@ const _reopenInContainer = (env: EnvType, cookieStoreId: string) => {
     return;
   }
   blankScreen();
-  containerTabOpenerService.reopenTabInContainer(env.tab.id, cookieStoreId, true, env.url);
+  urlRegistrationService.getAndRevokeUrl(urlId).then(() => {
+    containerTabOpenerService.reopenTabInContainer(env.tab.id, cookieStoreId, true, env.url);
+  });
 };
 
 const handleRedirect = (env: EnvType) => {
