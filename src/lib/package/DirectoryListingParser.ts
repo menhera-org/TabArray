@@ -82,7 +82,9 @@ export class DirectoryListingParser {
       }
     }
     if (!jarMetadataFound) {
-      throw new Error(`No jar metadata found in directory listing`);
+      void 0;
+      // no longer supported in current Firefox
+      // throw new Error(`No jar metadata found in directory listing`);
     }
     return packageDirectory;
   }
