@@ -33,7 +33,7 @@
     "parcel-reporter-static-files-copy": "^1.5.3",
     "parcel-resolver-ignore": "^2.2.0",
     "rimraf": "^6.0.1",
-    "typedoc": "^0.26.7",
+    "typedoc": "^0.27.2",
     "typescript": "<5.4.0",
     "typescript-eslint": "^8.7.0"
   },
