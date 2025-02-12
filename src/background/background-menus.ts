@@ -28,9 +28,11 @@ import { PopupTabContextMenuItem } from '../lib/menus/PopupTabContextMenuItem';
 import { ExtensionPageService } from '../lib/ExtensionPageService';
 
 import { ContainerVisibilityService } from '../lib/tabGroups/ContainerVisibilityService';
+import { TemporaryContainerService } from '../lib/tabGroups/TemporaryContainerService';
 
 const MENU_ID_TAB_HIDE_CONTAINER = 'tab-hide-container';
 const MENU_ID_TAB_FOCUS_CONTAINER = 'tab-focus-container';
+const MENU_ID_TAB_NEW_TEMPORARY_CONTAINER = 'tab-new-temporary-container';
 
 const MENU_ID_CONTEXT_TAB_NEW_TAB = 'context-tab-new-tab';
 const MENU_ID_CONTEXT_TAB_SEPARATOR_1 = 'context-tab-separator-1';
@@ -49,6 +51,7 @@ const MENU_ID_TOOLS_SETTINGS = 'tools-settings';
 
 const extensionPageService = ExtensionPageService.getInstance();
 const containerVisibilityService = ContainerVisibilityService.getInstance();
+const temporaryContainerService = TemporaryContainerService.getInstance();
 
 const defineTabMenuHandler = (menuItem: MenuItem, action: 'onClicked' | 'onShown', handler: (tab: CompatTab) => void) => {
   menuItem[action].addListener((info) => {
@@ -117,6 +120,12 @@ export const menus = {
     contexts: ['tab'],
   }),
 
+  [MENU_ID_TAB_NEW_TEMPORARY_CONTAINER]: new MenuItem({
+    id: MENU_ID_TAB_NEW_TEMPORARY_CONTAINER,
+    title: browser.i18n.getMessage('buttonNewTemporaryContainer'),
+    contexts: ['tab'],
+  }),
+
   [MENU_ID_ACTION_SETTINGS]: new MenuItem({
     id: MENU_ID_ACTION_SETTINGS,
     title: browser.i18n.getMessage('buttonSettings'),
@@ -152,6 +161,14 @@ defineTabMenuHandler(menus[MENU_ID_TAB_FOCUS_CONTAINER], 'onShown', (tab) => {
   }
 });
 
+defineTabMenuHandler(menus[MENU_ID_TAB_NEW_TEMPORARY_CONTAINER], 'onShown', (tab) => {
+  if (tab.isPrivate) {
+    menus[MENU_ID_TAB_NEW_TEMPORARY_CONTAINER].disable();
+  } else {
+    menus[MENU_ID_TAB_NEW_TEMPORARY_CONTAINER].enable();
+  }
+});
+
 defineTabMenuHandler(menus[MENU_ID_TAB_HIDE_CONTAINER], 'onClicked', (tab) => {
   const cookieStore = new CookieStore(tab.cookieStore.id);
   if (cookieStore.isPrivate) {
@@ -176,6 +193,19 @@ defineTabMenuHandler(menus[MENU_ID_TAB_FOCUS_CONTAINER], 'onClicked', (tab) => {
   }
 
   containerVisibilityService.focusContainerOnWindow(tab.windowId, cookieStore.id).catch(e => console.error(e));
+});
+
+defineTabMenuHandler(menus[MENU_ID_TAB_NEW_TEMPORARY_CONTAINER], 'onClicked', (tab) => {
+  const cookieStore = new CookieStore(tab.cookieStore.id);
+  if (cookieStore.isPrivate) {
+    return;
+  }
+
+  if (tab.windowId == null) {
+    return;
+  }
+
+  temporaryContainerService.createTemporaryContainer().catch(e => console.error(e));
 });
 
 defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_NEW_TAB], 'onClicked', (tab) => {
