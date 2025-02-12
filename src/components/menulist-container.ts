@@ -126,7 +126,11 @@ export class MenulistContainerElement extends HTMLElement {
       }
     };
     this.containerButton.onclick = () => {
-      this.onContainerClick.dispatch();
+      if (!this.containerHidden) {
+        this.onContainerClick.dispatch();
+      } else {
+        this.onContainerUnhide.dispatch();
+      }
     };
     this.containerCloseButton.onclick = () => {
       this.onContainerClose.dispatch();
