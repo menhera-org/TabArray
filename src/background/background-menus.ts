@@ -29,6 +29,7 @@ import { ExtensionPageService } from '../lib/ExtensionPageService';
 
 import { ContainerVisibilityService } from '../lib/tabGroups/ContainerVisibilityService';
 import { TemporaryContainerService } from '../lib/tabGroups/TemporaryContainerService';
+import * as containers from '../legacy-lib/modules/containers';
 
 const MENU_ID_TAB_HIDE_CONTAINER = 'tab-hide-container';
 const MENU_ID_TAB_FOCUS_CONTAINER = 'tab-focus-container';
@@ -192,7 +193,9 @@ defineTabMenuHandler(menus[MENU_ID_TAB_FOCUS_CONTAINER], 'onClicked', (tab) => {
     return;
   }
 
-  containerVisibilityService.focusContainerOnWindow(tab.windowId, cookieStore.id).catch(e => console.error(e));
+  const windowId = tab.windowId;
+
+  containerVisibilityService.focusContainerOnWindow(windowId, cookieStore.id).then(() => containers.hideAll(windowId)).catch(e => console.error(e));
 });
 
 defineTabMenuHandler(menus[MENU_ID_TAB_NEW_TEMPORARY_CONTAINER], 'onClicked', (tab) => {
