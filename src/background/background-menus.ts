@@ -30,6 +30,7 @@ import { ExtensionPageService } from '../lib/ExtensionPageService';
 import { ContainerVisibilityService } from '../lib/tabGroups/ContainerVisibilityService';
 
 const MENU_ID_TAB_HIDE_CONTAINER = 'tab-hide-container';
+const MENU_ID_TAB_FOCUS_CONTAINER = 'tab-focus-container';
 
 const MENU_ID_CONTEXT_TAB_NEW_TAB = 'context-tab-new-tab';
 const MENU_ID_CONTEXT_TAB_SEPARATOR_1 = 'context-tab-separator-1';
@@ -110,6 +111,12 @@ export const menus = {
     contexts: ['tab'],
   }),
 
+  [MENU_ID_TAB_FOCUS_CONTAINER]: new MenuItem({
+    id: MENU_ID_TAB_FOCUS_CONTAINER,
+    title: browser.i18n.getMessage('focusToThisContainer'),
+    contexts: ['tab'],
+  }),
+
   [MENU_ID_ACTION_SETTINGS]: new MenuItem({
     id: MENU_ID_ACTION_SETTINGS,
     title: browser.i18n.getMessage('buttonSettings'),
@@ -137,6 +144,14 @@ defineTabMenuHandler(menus[MENU_ID_TAB_HIDE_CONTAINER], 'onShown', (tab) => {
   }
 });
 
+defineTabMenuHandler(menus[MENU_ID_TAB_FOCUS_CONTAINER], 'onShown', (tab) => {
+  if (tab.isPrivate) {
+    menus[MENU_ID_TAB_FOCUS_CONTAINER].disable();
+  } else {
+    menus[MENU_ID_TAB_FOCUS_CONTAINER].enable();
+  }
+});
+
 defineTabMenuHandler(menus[MENU_ID_TAB_HIDE_CONTAINER], 'onClicked', (tab) => {
   const cookieStore = new CookieStore(tab.cookieStore.id);
   if (cookieStore.isPrivate) {
@@ -148,6 +163,19 @@ defineTabMenuHandler(menus[MENU_ID_TAB_HIDE_CONTAINER], 'onClicked', (tab) => {
   }
 
   containerVisibilityService.hideContainerOnWindow(tab.windowId, cookieStore.id).catch(e => console.error(e));
+});
+
+defineTabMenuHandler(menus[MENU_ID_TAB_FOCUS_CONTAINER], 'onClicked', (tab) => {
+  const cookieStore = new CookieStore(tab.cookieStore.id);
+  if (cookieStore.isPrivate) {
+    return;
+  }
+
+  if (tab.windowId == null) {
+    return;
+  }
+
+  containerVisibilityService.focusContainerOnWindow(tab.windowId, cookieStore.id).catch(e => console.error(e));
 });
 
 defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_NEW_TAB], 'onClicked', (tab) => {

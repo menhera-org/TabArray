@@ -21,6 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { CompatTab } from 'weeg-tabs';
+import { CookieStore } from 'weeg-containers';
 
 import { IndexTabService } from '../tabs/IndexTabService';
 import { ServiceRegistry } from '../ServiceRegistry';
@@ -31,6 +32,7 @@ import { config } from '../../config/config';
 import { WindowContainerHidingHelper } from './WindowContainerHidingHelper';
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';
 import { WindowService } from '../../legacy-lib/tabs/WindowService';
+import { TabQueryService } from '../tabs/TabQueryService';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -47,6 +49,7 @@ export class ContainerVisibilityService {
   private readonly _windowService = WindowService.getInstance();
   private readonly _indexTabService = IndexTabService.getInstance();
   private readonly _performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
+  private readonly _tabQueryService = TabQueryService.getInstance();
 
   private constructor() {
     // nothing.
@@ -59,6 +62,36 @@ export class ContainerVisibilityService {
     const browserTabs = await browser.tabs.query({ windowId, cookieStoreId });
     const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
     return tabs;
+  }
+
+  /**
+   * Focus to the last accessed tab in the container.
+   * @param windowId
+   * @param cookieStoreId
+   * @returns
+   */
+  public async focusContainerOnWindow(windowId: number, cookieStoreId: string): Promise<void> {
+    const cookieStore = new CookieStore(cookieStoreId);
+    const {isPrivate, userContextId} = cookieStore;
+    if (isPrivate) {
+      console.assert(userContextId === 0, 'Private windows should only have userContextId 0');
+    }
+    const tabs = await this._tabQueryService.queryTabs({
+      tabGroupId: cookieStoreId,
+      windowId,
+    });
+    if (tabs.length === 0) {
+      return;
+    }
+    const lastAccessedTab = tabs.reduce((a, b) => {
+      if (a.pinned && !b.pinned) {
+        return b;
+      } else if (!a.pinned && b.pinned) {
+        return a;
+      }
+      return a.lastAccessed > b.lastAccessed ? a : b;
+    });
+    lastAccessedTab.focus();
   }
 
   public async hideContainerOnWindow(windowId: number, cookieStoreId: string): Promise<boolean> {

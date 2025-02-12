@@ -20,7 +20,6 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { Uint32 } from "weeg-types";
 import { CookieStore, DisplayedContainer } from 'weeg-containers';
 import { CompatTab } from 'weeg-tabs';
 
@@ -45,6 +44,7 @@ import { ModalMoveGroupElement } from '../../../components/modal-move-group';
 import { ContainerEditorElement } from '../../../components/container-editor';
 
 import * as containers from '../../../legacy-lib/modules/containers';
+import { ContainerVisibilityService } from '../../../lib/tabGroups/ContainerVisibilityService';
 
 const tabGroupDirectory = TabGroupDirectory.getInstance();
 
@@ -54,35 +54,10 @@ export class PopupCurrentWindowRenderer {
   private readonly popupRenderer: PopupRenderer;
   private readonly supergroupService = SupergroupService.getInstance();
   private readonly tabQueryService = TabQueryService.getInstance();
+  private readonly containerVisibilityService = ContainerVisibilityService.getInstance();
 
   public constructor(popupRenderer: PopupRenderer) {
     this.popupRenderer = popupRenderer;
-  }
-
-  private async focusContainerOnWindow(windowId: number, userContextId: Uint32.Uint32, isPrivate: boolean): Promise<void> {
-    if (isPrivate) {
-      console.assert(userContextId === 0, 'Private windows should only have userContextId 0');
-    }
-    const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : CookieStore.fromParams({
-      userContextId,
-      privateBrowsingId: 0 as Uint32.Uint32,
-    }).id;
-    const tabs = await this.tabQueryService.queryTabs({
-      tabGroupId: cookieStoreId,
-      windowId,
-    });
-    if (tabs.length === 0) {
-      return;
-    }
-    const lastAccessedTab = tabs.reduce((a, b) => {
-      if (a.pinned && !b.pinned) {
-        return b;
-      } else if (!a.pinned && b.pinned) {
-        return a;
-      }
-      return a.lastAccessed > b.lastAccessed ? a : b;
-    });
-    lastAccessedTab.focus();
   }
 
   private renderInactiveContainer(windowState: WindowStateDao, displayedContainer: DisplayedContainer): MenulistContainerElement {
@@ -94,7 +69,7 @@ export class PopupCurrentWindowRenderer {
     const containerElement = this.popupRenderer.renderContainerWithTabs(windowState.id, displayedContainer, tabs, windowState.isPrivate, tabAttributeMap);
     containerElement.containerHighlightButtonEnabled = true;
     containerElement.onContainerHighlight.addListener(async () => {
-      await this.focusContainerOnWindow(windowState.id, displayedContainer.cookieStore.userContextId, windowState.isPrivate);
+      await this.containerVisibilityService.focusContainerOnWindow(windowState.id, displayedContainer.cookieStore.id);
       await containers.hideAll(windowState.id);
     });
     return containerElement;
