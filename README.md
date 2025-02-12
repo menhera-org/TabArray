@@ -191,7 +191,7 @@ Something missing you need? Please file a new feature request there.
 
 ## License
 
-Copyright &copy; 2023 Menhera.org contributors.
+Copyright &copy; 2025 Menhera.org contributors.
 
 Licensed under GNU GPL version 3 **or later**.
 
