@@ -42,7 +42,7 @@ export class DirectoryListingService {
     }
     const response = await fetch(pathUrl);
     const text = await response.text();
-    const packageDirectory = this._parser.parse(text);
+    const packageDirectory = this._parser.parse(text, pathUrl);
     return packageDirectory;
   }
 

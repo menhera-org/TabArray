@@ -25,12 +25,12 @@ import { PackageDirectory, PackageDirectoryEntry, PackageFileType } from "./Pack
  * Parse Firefox's jar listing text.
  */
 export class DirectoryListingParser {
-  public parse(listing: string): PackageDirectory {
+  public parse(listing: string, dirPath: string): PackageDirectory {
     const JAR_SCHEME = 'jar:';
     const lines = listing.split('\n').map(line => line.trim()).filter(line => line != '');
     const packageDirectory: PackageDirectory = {
       packageLocationUrl: "",
-      directoryPath: "",
+      directoryPath: dirPath,
       entries: []
     };
     let jarMetadataFound = false;
