@@ -385,7 +385,7 @@
         "description": "Placeholder text for searching containers."
     },
     "buttonSidebar": {
-        "message": "Aperir le barra lateral",
+        "message": "Aperir barra lateral",
         "description": "Button to open Sidebar."
     },
     "privateBrowsing": {
@@ -593,7 +593,7 @@
         }
     },
     "buttonEditGroup": {
-        "message": "Modificar un gruppo",
+        "message": "Modificar gruppo",
         "description": "Button to edit a group of containers."
     },
     "buttonDeleteGroup": {
