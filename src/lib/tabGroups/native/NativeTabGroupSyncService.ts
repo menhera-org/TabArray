@@ -25,14 +25,19 @@ import { CookieStore } from 'weeg-containers';
 import { ServiceRegistry } from '../../ServiceRegistry';
 import { StartupService } from '../../StartupService';
 import { CookieStoreService } from '../CookieStoreService';
-import { DisplayedContainerService } from '../DisplayedContainerService';
 import { ConsoleService } from '../../console/ConsoleService';
 import { NativeTabGroupService } from './NativeTabGroupService';
 import { NativeTabGroupMappingStore } from './NativeTabGroupMappingStore';
 import { NativeTabGroup } from './NativeTabGroupTypes';
-import { ContextualIdentityService } from '../ContextualIdentityService';
+import { NativeTabGroupCoordinator } from './NativeTabGroupCoordinator';
+import { TabGroupDirectory } from '../TabGroupDirectory';
 
 const consoleService = ConsoleService.getInstance();
+
+type ContainerWindowData = {
+  tabIds: number[];
+  minIndex: number;
+};
 
 export class NativeTabGroupSyncService {
   private static readonly INSTANCE = new NativeTabGroupSyncService();
@@ -45,8 +50,8 @@ export class NativeTabGroupSyncService {
   private readonly cookieStoreService = CookieStoreService.getInstance();
   private readonly nativeTabGroupService = NativeTabGroupService.getInstance();
   private readonly mappingStore = NativeTabGroupMappingStore.getInstance();
-  private readonly displayedContainerService = DisplayedContainerService.getInstance();
-  private readonly contextualIdentityFactory = ContextualIdentityService.getInstance().getFactory();
+  private readonly coordinator = NativeTabGroupCoordinator.getInstance();
+  private readonly tabGroupDirectory = TabGroupDirectory.getInstance();
 
   private readonly managedRemovalGroupIds = new Set<number>();
 
@@ -58,11 +63,7 @@ export class NativeTabGroupSyncService {
       this.enqueueSync();
     });
 
-    this.nativeTabGroupService.onGroupUpdated.addListener(this.handleNativeGroupUpdated);
     this.nativeTabGroupService.onGroupRemoved.addListener(this.handleNativeGroupRemoved);
-    this.nativeTabGroupService.onGroupMoved.addListener(() => {
-      this.enqueueSync();
-    });
 
     browser.tabs.onUpdated.addListener((_tabId, changeInfo) => {
       if (Object.prototype.hasOwnProperty.call(changeInfo, 'pinned')) {
@@ -90,34 +91,26 @@ export class NativeTabGroupSyncService {
   }
 
   public async synchronize(): Promise<void> {
-    const enabled = await this.nativeTabGroupService.isEnabled();
-    if (!enabled) {
+    if (!await this.nativeTabGroupService.isEnabled()) {
       return;
     }
 
-    const [cookieStores, displayedContainers, mappingTable, nativeGroups, tabs] = await Promise.all([
+    const [cookieStores, mappingTable, nativeGroups, tabs, snapshot] = await Promise.all([
       this.cookieStoreService.getCookieStores(),
-      this.displayedContainerService.getDisplayedContainers(),
       this.mappingStore.getAll(),
       this.nativeTabGroupService.query(),
       browser.tabs.query({}),
+      this.tabGroupDirectory.getSnapshot(),
     ]);
 
     const managedContainers = new Set(cookieStores.filter((cookieStore) => this.shouldManageCookieStore(cookieStore)).map((cookieStore) => cookieStore.id));
     const nativeGroupMap = new Map<number, NativeTabGroup>(nativeGroups.map((group) => [group.id, group]));
 
-    const containerNames = new Map<string, string>();
-    for (const container of displayedContainers) {
-      const { cookieStore, name } = container;
-      if (!this.shouldManageCookieStore(cookieStore)) {
-        continue;
-      }
-      containerNames.set(cookieStore.id, name);
-    }
+    const containerWindowData = new Map<string, Map<number, ContainerWindowData>>();
+    const windowContainerData = new Map<number, Map<string, ContainerWindowData>>();
 
-    const containerWindowTabs = new Map<string, Map<number, number[]>>();
     for (const tab of tabs) {
-      if (!tab.cookieStoreId || tab.windowId === undefined) {
+      if (!tab.cookieStoreId || tab.windowId === undefined || tab.id === undefined) {
         continue;
       }
       if (tab.windowType && tab.windowType !== 'normal') {
@@ -126,51 +119,66 @@ export class NativeTabGroupSyncService {
       if (tab.pinned) {
         continue;
       }
-      if (tab.id === undefined) {
-        continue;
-      }
       if (!managedContainers.has(tab.cookieStoreId)) {
         continue;
       }
-      let windowMap = containerWindowTabs.get(tab.cookieStoreId);
+
+      let containerMap = containerWindowData.get(tab.cookieStoreId);
+      if (!containerMap) {
+        containerMap = new Map<number, ContainerWindowData>();
+        containerWindowData.set(tab.cookieStoreId, containerMap);
+      }
+      let containerEntry = containerMap.get(tab.windowId);
+      if (!containerEntry) {
+        containerEntry = { tabIds: [], minIndex: Number.POSITIVE_INFINITY };
+        containerMap.set(tab.windowId, containerEntry);
+      }
+      containerEntry.tabIds.push(tab.id);
+      if (typeof tab.index === 'number' && tab.index < containerEntry.minIndex) {
+        containerEntry.minIndex = tab.index;
+      }
+
+      let windowMap = windowContainerData.get(tab.windowId);
       if (!windowMap) {
-        windowMap = new Map<number, number[]>();
-        containerWindowTabs.set(tab.cookieStoreId, windowMap);
+        windowMap = new Map<string, ContainerWindowData>();
+        windowContainerData.set(tab.windowId, windowMap);
       }
-      let tabIds = windowMap.get(tab.windowId);
-      if (!tabIds) {
-        tabIds = [];
-        windowMap.set(tab.windowId, tabIds);
+      const existingEntry = windowMap.get(tab.cookieStoreId);
+      if (!existingEntry) {
+        windowMap.set(tab.cookieStoreId, containerEntry);
+      } else {
+        if (containerEntry.minIndex < existingEntry.minIndex) {
+          existingEntry.minIndex = containerEntry.minIndex;
+        }
+        existingEntry.tabIds = containerEntry.tabIds;
       }
-      tabIds.push(tab.id);
+    }
+
+    for (const containerId of managedContainers) {
+      const containerWindows = containerWindowData.get(containerId);
+      if (!containerWindows) {
+        continue;
+      }
+      for (const [windowId, data] of containerWindows) {
+        if (data.tabIds.length === 0) {
+          continue;
+        }
+        const group = await this.coordinator.ensureTabsGrouped(windowId, containerId, data.tabIds);
+        if (group) {
+          nativeGroupMap.set(group.id, group);
+        }
+      }
+      await this.coordinator.syncNativeGroupsFromContainer(containerId);
     }
 
     for (const [containerId, entries] of Object.entries(mappingTable)) {
-      const seenWindows = new Set<number>();
-      const windowsWithTabsMap = containerWindowTabs.get(containerId);
+      const containerWindows = containerWindowData.get(containerId);
       for (const entry of entries.slice()) {
         const group = nativeGroupMap.get(entry.nativeGroupId);
-        if (group && group.windowId !== entry.windowId) {
-          const updatedEntry = {
-            windowId: group.windowId,
-            nativeGroupId: group.id,
-            lastKnownTitle: entry.lastKnownTitle,
-          };
-          await this.mappingStore.upsert(containerId, updatedEntry);
-          entry.windowId = group.windowId;
-        }
-
-        if (seenWindows.has(entry.windowId)) {
-          await this.deleteMappingAndGroup(containerId, entry.windowId, entry.nativeGroupId, Boolean(group));
-          continue;
-        }
-        seenWindows.add(entry.windowId);
-
         const shouldManage = managedContainers.has(containerId);
-        const tabsForWindow = windowsWithTabsMap?.get(entry.windowId) ?? [];
-        const hasTabsInWindow = tabsForWindow.length > 0;
+        const hasTabs = containerWindows ? (containerWindows.get(entry.windowId)?.tabIds.length ?? 0) > 0 : false;
 
-        if (!shouldManage || !hasTabsInWindow) {
+        if (!shouldManage || !hasTabs) {
           await this.deleteMappingAndGroup(containerId, entry.windowId, entry.nativeGroupId, Boolean(group));
           continue;
         }
@@ -181,18 +189,23 @@ export class NativeTabGroupSyncService {
       }
     }
 
-    for (const containerId of managedContainers) {
-      const containerName = containerNames.get(containerId) ?? containerId;
-      const windowsWithTabsMap = containerWindowTabs.get(containerId);
-      if (!windowsWithTabsMap || windowsWithTabsMap.size === 0) {
+    const containerOrder = snapshot.getContainerOrder();
+    for (const [windowId, containerMap] of windowContainerData) {
+      const orderedContainers: string[] = [];
+      for (const containerId of containerOrder) {
+        if (containerMap.has(containerId)) {
+          orderedContainers.push(containerId);
+        }
+      }
+      for (const containerId of containerMap.keys()) {
+        if (!orderedContainers.includes(containerId)) {
+          orderedContainers.push(containerId);
+        }
+      }
+      if (orderedContainers.length === 0) {
         continue;
       }
-      for (const [windowId, tabIds] of windowsWithTabsMap.entries()) {
-        if (tabIds.length === 0) {
-          continue;
-        }
-        await this.ensureContainerHasNativeGroup(containerId, windowId, containerName, nativeGroupMap, tabIds);
-      }
+      await this.coordinator.reorderNativeGroups(windowId, orderedContainers);
     }
   }
 
@@ -218,62 +231,6 @@ export class NativeTabGroupSyncService {
     await this.mappingStore.delete(containerId, windowId);
   }
 
-  private async ensureContainerHasNativeGroup(containerId: string, windowId: number, containerName: string, nativeGroupMap: Map<number, NativeTabGroup>, tabIds: number[]): Promise<void> {
-    const mappings = await this.mappingStore.get(containerId);
-    const mappingEntry = mappings.find((entry) => entry.windowId === windowId);
-    let nativeGroup = mappingEntry ? nativeGroupMap.get(mappingEntry.nativeGroupId) : undefined;
-
-    if (nativeGroup && nativeGroup.windowId !== windowId) {
-      await this.mappingStore.delete(containerId, windowId);
-      nativeGroup = undefined;
-    }
-
-    if (!mappingEntry || !nativeGroup) {
-      nativeGroup = await this.createNativeGroup(containerId, containerName, windowId, tabIds);
-      if (!nativeGroup) {
-        return;
-      }
-      nativeGroupMap.set(nativeGroup.id, nativeGroup);
-      await this.mappingStore.upsert(containerId, { windowId, nativeGroupId: nativeGroup.id, lastKnownTitle: containerName });
-      return;
-    }
-
-    try {
-      await browser.tabs.group({ groupId: nativeGroup.id, tabIds });
-    } catch (error) {
-      consoleService.output('NativeTabGroupSyncService', 'warn', `Failed to attach tabs to native tab group ${nativeGroup.id} for container ${containerId} in window ${windowId}`, error);
-    }
-
-    const expectedTitle = containerName;
-    const currentTitle = nativeGroup.title ?? '';
-    if (currentTitle !== expectedTitle) {
-      try {
-        nativeGroup = await this.nativeTabGroupService.update(nativeGroup.id, { title: expectedTitle });
-        nativeGroupMap.set(nativeGroup.id, nativeGroup);
-      } catch (error) {
-        consoleService.output('NativeTabGroupSyncService', 'warn', `Failed to update native tab group ${nativeGroup.id} title for container ${containerId} in window ${windowId}`, error);
-        return;
-      }
-    }
-
-    if (mappingEntry.lastKnownTitle !== expectedTitle) {
-      await this.mappingStore.upsert(containerId, { windowId, nativeGroupId: nativeGroup.id, lastKnownTitle: expectedTitle });
-    }
-  }
-
-  private async createNativeGroup(containerId: string, containerName: string, windowId: number, tabIds: number[]): Promise<NativeTabGroup | undefined> {
-    if (tabIds.length === 0) {
-      consoleService.output('NativeTabGroupSyncService', 'warn', `Cannot create native tab group for ${containerId} in window ${windowId}: no tabs available.`);
-      return undefined;
-    }
-    try {
-      return await this.nativeTabGroupService.create({ windowId, title: containerName, tabIds });
-    } catch (error) {
-      consoleService.output('NativeTabGroupSyncService', 'warn', `Failed to create native tab group for container ${containerId} in window ${windowId}`, error);
-      return undefined;
-    }
-  }
-
   private enqueueSync(): void {
     if (this.syncRunning) {
       this.pendingSync = true;
@@ -291,12 +248,6 @@ export class NativeTabGroupSyncService {
     });
   }
 
-  private readonly handleNativeGroupUpdated = (group: NativeTabGroup): void => {
-    this.handleNativeGroupTitleChange(group).catch((error) => {
-      consoleService.output('NativeTabGroupSyncService', 'warn', `Failed to process native group ${group.id} update`, error);
-    });
-  };
-
   private readonly handleNativeGroupRemoved = (group: NativeTabGroup): void => {
     if (this.managedRemovalGroupIds.has(group.id)) {
       // Ignored; we initiated this removal.
@@ -306,26 +257,6 @@ export class NativeTabGroupSyncService {
       consoleService.output('NativeTabGroupSyncService', 'warn', `Failed to handle native tab group removal for ${group.id}`, error);
     });
   };
-
-  private async handleNativeGroupTitleChange(group: NativeTabGroup): Promise<void> {
-    const match = await this.mappingStore.findContainerIdByGroupId(group.id);
-    if (!match) {
-      return;
-    }
-    const { containerId, entry } = match;
-    const title = (group.title ?? '').trim();
-    if (title.length > 0) {
-      try {
-        const identity = await this.contextualIdentityFactory.get(containerId);
-        if (identity.name !== title) {
-          await this.contextualIdentityFactory.setParams(containerId, { name: title });
-        }
-      } catch (error) {
-        consoleService.output('NativeTabGroupSyncService', 'warn', `Failed to update container ${containerId} name from native tab group ${group.id}`, error);
-      }
-    }
-    await this.mappingStore.upsert(containerId, { windowId: entry.windowId, nativeGroupId: group.id, lastKnownTitle: title });
-  }
 
   private async handleExternalNativeGroupRemoval(group: NativeTabGroup): Promise<void> {
     const match = await this.mappingStore.findContainerIdByGroupId(group.id);

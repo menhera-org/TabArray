@@ -135,6 +135,19 @@ export class NativeTabGroupService {
     return await api.update(groupId, updateInfo);
   }
 
+  public async get(groupId: NativeTabGroupId): Promise<NativeTabGroup> {
+    const api = await this.getApiOrThrow();
+    if (typeof api.get === 'function') {
+      return await api.get(groupId);
+    }
+    const groups = await api.query({});
+    const match = groups.find((group) => group.id === groupId);
+    if (!match) {
+      throw new Error(`Native tab group ${groupId} not found`);
+    }
+    return match;
+  }
+
   public async move(groupId: NativeTabGroupId, moveInfo: NativeTabGroupMoveInfo): Promise<NativeTabGroup> {
     const api = await this.getApiOrThrow();
     return await api.move(groupId, moveInfo);

@@ -26,6 +26,7 @@ import { CompatTab } from 'weeg-tabs';
 
 import { ServiceRegistry } from '../ServiceRegistry';
 import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
+import { NativeTabGroupCoordinator } from '../tabGroups/native/NativeTabGroupCoordinator';
 import { TagService } from '../tabGroups/tags/TagService';
 import { CompatConsole } from '../console/CompatConsole';
 import { PerformanceHistoryService } from '../history/PerformanceHistoryService';
@@ -114,9 +115,12 @@ export class TabSortingService extends BackgroundService<void, void> {
       console.debug('Tab sorting is already in progress.');
       return;
     }
-    tabSorting = true;
     const enabled = await config['tab.sorting.enabled'].getValue();
     if (!enabled) return;
+    if (await NativeTabGroupCoordinator.getInstance().isEnabled()) {
+      return;
+    }
+    tabSorting = true;
     spinnerService.beginTransaction('tab-sorting');
     try {
       for (const windowId of await this.getWindowIds()) {

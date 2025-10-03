@@ -16,7 +16,11 @@
 - Group creation is handled via `browser.tabs.group({ createProperties })` (the tabGroups API does not provide a direct create method), and we immediately update the resulting group metadata through `browser.tabGroups.update` to inject container titles/colors.
 - During reconciliation we gather the non-pinned tab IDs per container/window and pass them to `browser.tabs.group` so the native group actually contains the same set of tabs (re-grouping on subsequent passes keeps new tabs enrolled).
 - Pinned tabs are excluded from the accounting because Firefox does not associate them with tab groups; pin/unpin events trigger reconciliation so windows that only have pinned tabs drop out of the native-mirroring flow automatically.
+- Manual tab sorting is disabled whenever native groups are available; on startup we translate the container order into `browser.tabGroups.move` calls per window so native groups mirror the UI ordering.
+- Container show/hide now collapses or expands the corresponding native group (instead of hiding tabs) while still focusing the correct fallback tab.
+- Tab creation, movement, and user-initiated tab opens all funnel through the native coordinator so tabs land in the correct native group (creating it if needed) even for manual Firefox actions.
+- Container and native colors stay in sync via a shared mapper (grey ↔ toolbar, cyan ↔ turquoise, etc.), so changing colors on either side immediately updates the counterpart.
 
 ## Follow-ups
 - Reconfirm the Firefox version once Mozilla publishes the stable release notes and adjust the gate if needed.
-- Expand the reconciliation logic so future updates can synchronize ordering (using `browser.tabGroups.onMoved`) and propagate container-initiated renames in real time.
+- Monitor future Firefox releases for additional tab group APIs (e.g., bulk move/collapse events) that could simplify the coordinator logic.

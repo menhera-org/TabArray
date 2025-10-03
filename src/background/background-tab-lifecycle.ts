@@ -27,6 +27,7 @@ import { BrowserActionService } from '../lib/browserAction/BrowserActionService'
 import { ActiveContainerService } from '../lib/states/ActiveContainerService';
 import { OpenTabsService } from '../lib/states/OpenTabsService';
 import { TagService } from '../lib/tabGroups/tags/TagService';
+import { NativeTabGroupCoordinator } from '../lib/tabGroups/native/NativeTabGroupCoordinator';
 
 import { DarkThemeMonitor } from '../legacy-lib/themes/DarkThemeMonitor';
 
@@ -45,6 +46,7 @@ const browserActionService = BrowserActionService.getInstance();
 const activeContainerService = ActiveContainerService.getInstance();
 const openTabsService = OpenTabsService.getInstance();
 const tagService = TagService.getInstance();
+const nativeTabGroupCoordinator = NativeTabGroupCoordinator.getInstance();
 const tabStateStore = TabStateStore.getInstance();
 
 config['appearance.popupSize'].observe((value) => {
@@ -102,6 +104,58 @@ browser.tabs.onCreated.addListener((browserTab) => {
       console.error(e);
     });
   }
+
+  if (browserTab.id != null && browserTab.windowId != null && browserTab.cookieStoreId && !browserTab.pinned) {
+    nativeTabGroupCoordinator.isEnabled().then((enabled) => {
+      if (!enabled) {
+        return;
+      }
+      nativeTabGroupCoordinator.ensureTabsGrouped(browserTab.windowId as number, browserTab.cookieStoreId as string, [browserTab.id as number]).catch((error) => {
+        console.error(error);
+      });
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+});
+
+browser.tabs.onAttached.addListener((tabId, attachInfo) => {
+  nativeTabGroupCoordinator.isEnabled().then((enabled) => {
+    if (!enabled) {
+      return;
+    }
+    browser.tabs.get(tabId).then((tab) => {
+      if (!tab.cookieStoreId || tab.pinned) {
+        return;
+      }
+      nativeTabGroupCoordinator.ensureTabsGrouped(attachInfo.newWindowId, tab.cookieStoreId, [tabId]).catch((error) => {
+        console.error(error);
+      });
+    }).catch((error) => {
+      console.error(error);
+    });
+  }).catch((error) => {
+    console.error(error);
+  });
+});
+
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (!('groupId' in changeInfo)) {
+    return;
+  }
+  if (tab.windowId == null || !tab.cookieStoreId || tab.pinned) {
+    return;
+  }
+  nativeTabGroupCoordinator.isEnabled().then((enabled) => {
+    if (!enabled) {
+      return;
+    }
+    nativeTabGroupCoordinator.ensureTabsGrouped(tab.windowId as number, tab.cookieStoreId as string, [tabId]).catch((error) => {
+      console.error(error);
+    });
+  }).catch((error) => {
+    console.error(error);
+  });
 });
 
 browser.tabs.onRemoved.addListener((tabId, removeInfo) => {

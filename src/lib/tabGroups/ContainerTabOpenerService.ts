@@ -28,6 +28,7 @@ import { TagService } from './tags/TagService';
 import { ActiveContainerService } from '../states/ActiveContainerService';
 import { ServiceRegistry } from '../ServiceRegistry';
 import { CompatConsole } from '../console/CompatConsole';
+import { NativeTabGroupCoordinator } from './native/NativeTabGroupCoordinator';
 
 type TabOpenActionType = {
   tabId?: number;
@@ -41,19 +42,36 @@ type TabOpenActionType = {
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tagService = TagService.getInstance();
 const activeContainerService = ActiveContainerService.getInstance();
+const nativeCoordinator = NativeTabGroupCoordinator.getInstance();
 
 const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number, active: boolean) => {
-  const browserTab = await browser.tabs.create({
+  let targetGroupId: number | undefined;
+  if (await nativeCoordinator.isEnabled()) {
+    try {
+      const existingGroup = await nativeCoordinator.getGroupForWindow(windowId, cookieStoreId);
+      targetGroupId = existingGroup?.id;
+    } catch (_error) {
+      // ignore
+    }
+  }
+  const createOptions: browser.Tabs.CreateCreateProperties = {
     url,
     cookieStoreId,
     windowId,
     active: false,
-  });
+  };
+  if (typeof targetGroupId === 'number') {
+    (createOptions as Record<string, unknown>).groupId = targetGroupId;
+  }
+  const browserTab = await browser.tabs.create(createOptions);
   if (!browserTab.id) return browser.tabs.TAB_ID_NONE;
   await Promise.all([
     active ? browser.tabs.update(browserTab.id, {active}) : Promise.resolve(),
     browser.tabs.remove(currentTabId),
   ]);
+  if (await nativeCoordinator.isEnabled() && browserTab.windowId != null) {
+    await nativeCoordinator.ensureTabsGrouped(browserTab.windowId, cookieStoreId, [browserTab.id]);
+  }
   return browserTab.id;
 };
 
@@ -130,11 +148,24 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
     for (const browserWindow of browserWindows) {
       if (browserWindow.id == null) continue;
       activeContainerService.setActiveContainer(browserWindow.id, cookieStoreId);
-      const browserTab = await browser.tabs.create({
+      let targetGroupId: number | undefined;
+      if (await nativeCoordinator.isEnabled()) {
+        try {
+          const existingGroup = await nativeCoordinator.getGroupForWindow(browserWindow.id, cookieStoreId);
+          targetGroupId = existingGroup?.id;
+        } catch (_error) {
+          // ignore
+        }
+      }
+      const createOptions: browser.Tabs.CreateCreateProperties = {
         cookieStoreId,
         windowId: browserWindow.id,
         active,
-      });
+      };
+      if (typeof targetGroupId === 'number') {
+        (createOptions as Record<string, unknown>).groupId = targetGroupId;
+      }
+      const browserTab = await browser.tabs.create(createOptions);
       const tab = new CompatTab(browserTab);
       if (tagId) {
         await tagService.setTagIdForTab(tab, tagId);
@@ -143,6 +174,9 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
         await browser.windows.update(browserWindow.id, {
           focused: true,
         });
+      }
+      if (await nativeCoordinator.isEnabled() && browserTab.id != null) {
+        await nativeCoordinator.ensureTabsGrouped(browserWindow.id, cookieStoreId, [browserTab.id]);
       }
       return browserTab.id ?? browser.tabs.TAB_ID_NONE;
     }
@@ -159,6 +193,9 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
     const openedTab = new CompatTab(openedBrowserTab);
     if (tagId) {
       await tagService.setTagIdForTab(openedTab, tagId);
+    }
+    if (await nativeCoordinator.isEnabled() && openedBrowserTab.id != null && openedBrowserWindow.id != null) {
+      await nativeCoordinator.ensureTabsGrouped(openedBrowserWindow.id, cookieStoreId, [openedBrowserTab.id]);
     }
     const openedTabId = openedBrowserTab.id ?? browser.tabs.TAB_ID_NONE;
     return openedTabId;
