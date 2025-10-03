@@ -75,15 +75,28 @@ export class NativeTabGroupService {
 
   public async create(createInfo: NativeTabGroupCreateInfo): Promise<NativeTabGroup> {
     const api = await this.getApiOrThrow();
-    const createProperties: browser.Tabs.GroupCreateInfo = {};
-    if (typeof createInfo.windowId === 'number') {
-      createProperties.windowId = createInfo.windowId;
-    }
-    if (typeof createInfo.index === 'number') {
-      createProperties.index = createInfo.index;
+    const tabIdsParam = createInfo.tabIds;
+    if (!tabIdsParam || tabIdsParam.length === 0) {
+      throw new Error('NativeTabGroupService.create requires at least one tabId.');
     }
 
-    const groupId = await browser.tabs.group({ createProperties });
+    const tabIds = [... new Set(tabIdsParam)];
+
+    const groupOptions: browser.Tabs.GroupOptions = {
+      tabIds,
+    };
+
+    if (typeof createInfo.windowId === 'number' || typeof createInfo.index === 'number') {
+      groupOptions.createProperties = {};
+      if (typeof createInfo.windowId === 'number') {
+        groupOptions.createProperties.windowId = createInfo.windowId;
+      }
+      if (typeof createInfo.index === 'number') {
+        groupOptions.createProperties.index = createInfo.index;
+      }
+    }
+
+    const groupId = await browser.tabs.group(groupOptions);
 
     const updatePayload: NativeTabGroupUpdateInfo = {};
     if (typeof createInfo.title === 'string') {
@@ -96,14 +109,22 @@ export class NativeTabGroupService {
       await api.update(groupId, updatePayload);
     }
 
-    const [createdGroup] = await api.query({ groupIds: [groupId] });
-    if (createdGroup) {
-      return createdGroup;
+    try {
+      return await api.get(groupId);
+    } catch (_error) {
+      // Fallback to query-based lookup below.
+    }
+
+    const queryWindowId = createInfo.windowId;
+    const candidateGroups = await api.query(queryWindowId !== undefined ? { windowId: queryWindowId } : {});
+    const match = candidateGroups.find((group) => group.id === groupId);
+    if (match) {
+      return match;
     }
 
     return {
       id: groupId,
-      windowId: createInfo.windowId ?? (await this.resolveWindowId(groupId, api)) ?? -1,
+      windowId: createInfo.windowId ?? -1,
       title: updatePayload.title,
       color: updatePayload.color,
     };
@@ -177,10 +198,6 @@ export class NativeTabGroupService {
     return nativeTabGroupsApi;
   }
 
-  private async resolveWindowId(groupId: NativeTabGroupId, api: NativeTabGroupsNamespace): Promise<number | undefined> {
-    const [group] = await api.query({ groupIds: [groupId] });
-    return group?.windowId;
-  }
 }
 
 ServiceRegistry.getInstance().registerService('NativeTabGroupService', NativeTabGroupService.getInstance());

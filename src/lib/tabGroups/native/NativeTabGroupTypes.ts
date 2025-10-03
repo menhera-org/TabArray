@@ -31,7 +31,6 @@ export interface NativeTabGroup {
 
 export interface NativeTabGroupQueryInfo {
   windowId?: number;
-  groupIds?: NativeTabGroupId[];
 }
 
 export interface NativeTabGroupCreateInfo {
@@ -39,6 +38,7 @@ export interface NativeTabGroupCreateInfo {
   index?: number;
   title?: string;
   color?: string;
+  tabIds: number[];
 }
 
 export interface NativeTabGroupUpdateInfo {
@@ -60,6 +60,7 @@ export interface WebExtEvent<T extends (...args: unknown[]) => unknown> {
 
 export interface NativeTabGroupsNamespace {
   query(queryInfo?: NativeTabGroupQueryInfo): Promise<NativeTabGroup[]>;
+  get(groupId: NativeTabGroupId): Promise<NativeTabGroup>;
   update(groupId: NativeTabGroupId, updateInfo: NativeTabGroupUpdateInfo): Promise<NativeTabGroup>;
   move(groupId: NativeTabGroupId, moveInfo: NativeTabGroupMoveInfo): Promise<NativeTabGroup>;
   remove(groupId: NativeTabGroupId): Promise<void>;

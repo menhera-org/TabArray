@@ -67,6 +67,7 @@ export class NativeTabGroupFeatureGate {
 
   private hasRequiredMethods(tabGroups: NativeTabGroupsNamespace): boolean {
     return typeof tabGroups.query === 'function'
+      && typeof tabGroups.get === 'function'
       && typeof tabGroups.update === 'function'
       && typeof tabGroups.move === 'function'
       && typeof tabGroups.remove === 'function';

@@ -115,27 +115,39 @@ export class NativeTabGroupSyncService {
       containerNames.set(cookieStore.id, name);
     }
 
-    const containerWindowUsage = new Map<string, Set<number>>();
+    const containerWindowTabs = new Map<string, Map<number, number[]>>();
     for (const tab of tabs) {
       if (!tab.cookieStoreId || tab.windowId === undefined) {
+        continue;
+      }
+      if (tab.windowType && tab.windowType !== 'normal') {
         continue;
       }
       if (tab.pinned) {
         continue;
       }
+      if (tab.id === undefined) {
+        continue;
+      }
       if (!managedContainers.has(tab.cookieStoreId)) {
         continue;
       }
-      let windowSet = containerWindowUsage.get(tab.cookieStoreId);
-      if (!windowSet) {
-        windowSet = new Set<number>();
-        containerWindowUsage.set(tab.cookieStoreId, windowSet);
+      let windowMap = containerWindowTabs.get(tab.cookieStoreId);
+      if (!windowMap) {
+        windowMap = new Map<number, number[]>();
+        containerWindowTabs.set(tab.cookieStoreId, windowMap);
       }
-      windowSet.add(tab.windowId);
+      let tabIds = windowMap.get(tab.windowId);
+      if (!tabIds) {
+        tabIds = [];
+        windowMap.set(tab.windowId, tabIds);
+      }
+      tabIds.push(tab.id);
     }
 
     for (const [containerId, entries] of Object.entries(mappingTable)) {
       const seenWindows = new Set<number>();
+      const windowsWithTabsMap = containerWindowTabs.get(containerId);
       for (const entry of entries.slice()) {
         const group = nativeGroupMap.get(entry.nativeGroupId);
         if (group && group.windowId !== entry.windowId) {
@@ -155,8 +167,8 @@ export class NativeTabGroupSyncService {
         seenWindows.add(entry.windowId);
 
         const shouldManage = managedContainers.has(containerId);
-        const windowsWithTabs = containerWindowUsage.get(containerId);
-        const hasTabsInWindow = windowsWithTabs ? windowsWithTabs.has(entry.windowId) : false;
+        const tabsForWindow = windowsWithTabsMap?.get(entry.windowId) ?? [];
+        const hasTabsInWindow = tabsForWindow.length > 0;
 
         if (!shouldManage || !hasTabsInWindow) {
           await this.deleteMappingAndGroup(containerId, entry.windowId, entry.nativeGroupId, Boolean(group));
@@ -171,12 +183,15 @@ export class NativeTabGroupSyncService {
 
     for (const containerId of managedContainers) {
       const containerName = containerNames.get(containerId) ?? containerId;
-      const windowsWithTabs = containerWindowUsage.get(containerId);
-      if (!windowsWithTabs || windowsWithTabs.size === 0) {
+      const windowsWithTabsMap = containerWindowTabs.get(containerId);
+      if (!windowsWithTabsMap || windowsWithTabsMap.size === 0) {
         continue;
       }
-      for (const windowId of windowsWithTabs) {
-        await this.ensureContainerHasNativeGroup(containerId, windowId, containerName, nativeGroupMap);
+      for (const [windowId, tabIds] of windowsWithTabsMap.entries()) {
+        if (tabIds.length === 0) {
+          continue;
+        }
+        await this.ensureContainerHasNativeGroup(containerId, windowId, containerName, nativeGroupMap, tabIds);
       }
     }
   }
@@ -203,7 +218,7 @@ export class NativeTabGroupSyncService {
     await this.mappingStore.delete(containerId, windowId);
   }
 
-  private async ensureContainerHasNativeGroup(containerId: string, windowId: number, containerName: string, nativeGroupMap: Map<number, NativeTabGroup>): Promise<void> {
+  private async ensureContainerHasNativeGroup(containerId: string, windowId: number, containerName: string, nativeGroupMap: Map<number, NativeTabGroup>, tabIds: number[]): Promise<void> {
     const mappings = await this.mappingStore.get(containerId);
     const mappingEntry = mappings.find((entry) => entry.windowId === windowId);
     let nativeGroup = mappingEntry ? nativeGroupMap.get(mappingEntry.nativeGroupId) : undefined;
@@ -214,13 +229,19 @@ export class NativeTabGroupSyncService {
     }
 
     if (!mappingEntry || !nativeGroup) {
-      nativeGroup = await this.createNativeGroup(containerId, containerName, windowId);
+      nativeGroup = await this.createNativeGroup(containerId, containerName, windowId, tabIds);
       if (!nativeGroup) {
         return;
       }
       nativeGroupMap.set(nativeGroup.id, nativeGroup);
       await this.mappingStore.upsert(containerId, { windowId, nativeGroupId: nativeGroup.id, lastKnownTitle: containerName });
       return;
+    }
+
+    try {
+      await browser.tabs.group({ groupId: nativeGroup.id, tabIds });
+    } catch (error) {
+      consoleService.output('NativeTabGroupSyncService', 'warn', `Failed to attach tabs to native tab group ${nativeGroup.id} for container ${containerId} in window ${windowId}`, error);
     }
 
     const expectedTitle = containerName;
@@ -240,9 +261,13 @@ export class NativeTabGroupSyncService {
     }
   }
 
-  private async createNativeGroup(containerId: string, containerName: string, windowId: number): Promise<NativeTabGroup | undefined> {
+  private async createNativeGroup(containerId: string, containerName: string, windowId: number, tabIds: number[]): Promise<NativeTabGroup | undefined> {
+    if (tabIds.length === 0) {
+      consoleService.output('NativeTabGroupSyncService', 'warn', `Cannot create native tab group for ${containerId} in window ${windowId}: no tabs available.`);
+      return undefined;
+    }
     try {
-      return await this.nativeTabGroupService.create({ windowId, title: containerName });
+      return await this.nativeTabGroupService.create({ windowId, title: containerName, tabIds });
     } catch (error) {
       consoleService.output('NativeTabGroupSyncService', 'warn', `Failed to create native tab group for container ${containerId} in window ${windowId}`, error);
       return undefined;

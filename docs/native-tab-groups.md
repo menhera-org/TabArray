@@ -14,6 +14,7 @@
 - The sync pass also recreates missing native tab groups and aligns their titles with the corresponding container names. Native-side renames now call back into `browser.contextualIdentities.update()` so the displayed container label tracks the group immediately.
 - Mapping now scopes to individual windows: if a container has no tabs in a window we delete the mapped native group there, while windows with active tabs get their own native instance so multiple windows can host the same container in parallel.
 - Group creation is handled via `browser.tabs.group({ createProperties })` (the tabGroups API does not provide a direct create method), and we immediately update the resulting group metadata through `browser.tabGroups.update` to inject container titles/colors.
+- During reconciliation we gather the non-pinned tab IDs per container/window and pass them to `browser.tabs.group` so the native group actually contains the same set of tabs (re-grouping on subsequent passes keeps new tabs enrolled).
 - Pinned tabs are excluded from the accounting because Firefox does not associate them with tab groups; pin/unpin events trigger reconciliation so windows that only have pinned tabs drop out of the native-mirroring flow automatically.
 
 ## Follow-ups
