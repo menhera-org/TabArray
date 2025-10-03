@@ -30,7 +30,7 @@ import * as fs from 'fs';
 import * as child_process from 'child_process';
 
 import zip from 'deterministic-zip-ng';
-import { ed25519 } from '@noble/curves/ed25519';
+import { ed25519 } from '@noble/curves/ed25519.js';
 import { glob } from 'glob';
 import { DeterministicJSON } from '@menhera/deterministic-json';
 

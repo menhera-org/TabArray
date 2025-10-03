@@ -20,11 +20,14 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { ed25519 } from '@noble/curves/ed25519';
+import { ed25519 } from '@noble/curves/ed25519.js';
 
 import { ServiceRegistry } from '../ServiceRegistry';
 
 import { CTG_OFFCIAL_SIGNATURE_URL, CTG_OFFICIAL_ED25519_SIGNING_KEY } from "../../defs";
+
+const fromHexString = (hexString: string) =>
+  Uint8Array.from(hexString.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)).map(byte => byte | 0) ?? []);
 
 /**
  * Cryptographically saying, verifying the codes using the same codebase makes little sense,
@@ -64,7 +67,7 @@ export class BuildMetadataService {
     const { metadata, signature } = await res.json() as { metadata: string, signature: string, publicKey: string };
     const signatureByteArray = this.base64Decode(signature);
     const byteArray = this.base64Decode(metadata);
-    if (!ed25519.verify(signatureByteArray, byteArray, signingKey)) {
+    if (!ed25519.verify(signatureByteArray, byteArray, fromHexString(signingKey))) {
       return false;
     }
     const metadataJson = new TextDecoder().decode(byteArray);
