@@ -67,7 +67,10 @@ export class NativeTabGroupService {
 
   public async query(queryInfo?: NativeTabGroupQueryInfo): Promise<NativeTabGroup[]> {
     const api = await this.getApiOrThrow();
-    return await api.query(queryInfo);
+    if (queryInfo) {
+      return await api.query(queryInfo);
+    }
+    return await api.query();
   }
 
   public async create(createInfo: NativeTabGroupCreateInfo): Promise<NativeTabGroup> {
