@@ -209,7 +209,7 @@ export class NativeTabGroupCoordinator {
     }
   }
 
-  private async syncNativeGroupFromContainer(groupId: number, containerId: string, identity: ContextualIdentity): Promise<void> {
+  private async syncNativeGroupFromContainer(groupId: number, _containerId: string, identity: ContextualIdentity): Promise<void> {
     const nativeColor = mapContainerColorToNative(identity.color);
     const updatePayload: { title?: string; color?: string; } = {};
     if (identity.name) {
