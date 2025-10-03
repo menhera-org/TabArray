@@ -32,6 +32,8 @@ import { PackageIntegrityService } from '../lib/package/PackageIntegrityService'
 import { InstallationHistoryService } from '../lib/history/InstallationHistoryService';
 import { PackageInformationService } from '../lib/package/PackageInformationService';
 import { CookieCopyService } from '../lib/cookies/CookieCopyService';
+import { NativeTabGroupService } from '../lib/tabGroups/native/NativeTabGroupService';
+import { NativeTabGroupSyncService } from '../lib/tabGroups/native/NativeTabGroupSyncService';
 
 import './background-install-handler';
 import './background-index-tab';
@@ -81,3 +83,9 @@ InstallationHistoryService.getInstance();
 
 // register the cookie copy service
 CookieCopyService.getInstance();
+
+// register the native tab group service
+NativeTabGroupService.getInstance();
+
+// register the native tab group sync service
+NativeTabGroupSyncService.getInstance();
