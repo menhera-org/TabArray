@@ -75,7 +75,38 @@ export class NativeTabGroupService {
 
   public async create(createInfo: NativeTabGroupCreateInfo): Promise<NativeTabGroup> {
     const api = await this.getApiOrThrow();
-    return await api.create(createInfo);
+    const createProperties: browser.Tabs.GroupCreateInfo = {};
+    if (typeof createInfo.windowId === 'number') {
+      createProperties.windowId = createInfo.windowId;
+    }
+    if (typeof createInfo.index === 'number') {
+      createProperties.index = createInfo.index;
+    }
+
+    const groupId = await browser.tabs.group({ createProperties });
+
+    const updatePayload: NativeTabGroupUpdateInfo = {};
+    if (typeof createInfo.title === 'string') {
+      updatePayload.title = createInfo.title;
+    }
+    if (typeof createInfo.color === 'string') {
+      updatePayload.color = createInfo.color;
+    }
+    if (Object.keys(updatePayload).length > 0) {
+      await api.update(groupId, updatePayload);
+    }
+
+    const [createdGroup] = await api.query({ groupIds: [groupId] });
+    if (createdGroup) {
+      return createdGroup;
+    }
+
+    return {
+      id: groupId,
+      windowId: createInfo.windowId ?? (await this.resolveWindowId(groupId, api)) ?? -1,
+      title: updatePayload.title,
+      color: updatePayload.color,
+    };
   }
 
   public async update(groupId: NativeTabGroupId, updateInfo: NativeTabGroupUpdateInfo): Promise<NativeTabGroup> {
@@ -144,6 +175,11 @@ export class NativeTabGroupService {
       throw new Error('Native tab groups API is unavailable.');
     }
     return nativeTabGroupsApi;
+  }
+
+  private async resolveWindowId(groupId: NativeTabGroupId, api: NativeTabGroupsNamespace): Promise<number | undefined> {
+    const [group] = await api.query({ groupIds: [groupId] });
+    return group?.windowId;
   }
 }
 
