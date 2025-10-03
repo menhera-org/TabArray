@@ -91,9 +91,6 @@ export class NativeTabGroupService {
       if (typeof createInfo.windowId === 'number') {
         groupOptions.createProperties.windowId = createInfo.windowId;
       }
-      if (typeof createInfo.index === 'number') {
-        groupOptions.createProperties.index = createInfo.index;
-      }
     }
 
     const groupId = await browser.tabs.group(groupOptions);

@@ -29,6 +29,7 @@ import { NativeTabGroup } from './NativeTabGroupTypes';
 import { ContextualIdentityService } from '../ContextualIdentityService';
 import { mapContainerColorToNative, mapNativeColorToContainer } from './NativeTabGroupColorMapper';
 import { ConsoleService } from '../../console/ConsoleService';
+import { TabGroupDirectory } from '../TabGroupDirectory';
 
 const consoleService = ConsoleService.getInstance();
 
@@ -42,6 +43,7 @@ export class NativeTabGroupCoordinator {
   private readonly nativeService = NativeTabGroupService.getInstance();
   private readonly mappingStore = NativeTabGroupMappingStore.getInstance();
   private readonly contextualIdentityFactory = ContextualIdentityService.getInstance().getFactory();
+  private readonly tabGroupDirectory = TabGroupDirectory.getInstance();
 
   private readonly pendingContainerUpdates = new Set<string>();
   private readonly pendingNativeUpdates = new Set<number>();
@@ -105,6 +107,7 @@ export class NativeTabGroupCoordinator {
       nativeGroupId: createdGroup.id,
       lastKnownTitle: identity.name,
     });
+    await this.reorderWindowNativeGroups(windowId);
     return createdGroup;
   }
 
@@ -241,6 +244,7 @@ export class NativeTabGroupCoordinator {
     if (typeof group.title === 'string') {
       await this.updateMappingLastKnownTitle(group.id, group.title);
     }
+    await this.reorderWindowNativeGroups(group.windowId);
   }
 
   private async handleContainerUpdated(containerId: string): Promise<void> {
@@ -281,6 +285,41 @@ export class NativeTabGroupCoordinator {
       nativeGroupId: match.entry.nativeGroupId,
       lastKnownTitle: title,
     });
+  }
+
+  private async reorderWindowNativeGroups(windowId: number): Promise<void> {
+    if (!await this.isEnabled()) {
+      return;
+    }
+    const mappingTable = await this.mappingStore.getAll();
+    const containersInWindow: string[] = [];
+    for (const [containerId, entries] of Object.entries(mappingTable)) {
+      if (entries.some((entry) => entry.windowId === windowId)) {
+        containersInWindow.push(containerId);
+      }
+    }
+    if (containersInWindow.length === 0) {
+      return;
+    }
+    const snapshot = await this.tabGroupDirectory.getSnapshot();
+    const containerOrder = snapshot.getContainerOrder();
+    const orderedSet = new Set<string>();
+    const orderedContainers: string[] = [];
+    for (const containerId of containerOrder) {
+      if (containersInWindow.includes(containerId)) {
+        orderedContainers.push(containerId);
+        orderedSet.add(containerId);
+      }
+    }
+    for (const containerId of containersInWindow) {
+      if (!orderedSet.has(containerId)) {
+        orderedContainers.push(containerId);
+      }
+    }
+    if (orderedContainers.length === 0) {
+      return;
+    }
+    await this.reorderNativeGroups(windowId, orderedContainers);
   }
 }
 
