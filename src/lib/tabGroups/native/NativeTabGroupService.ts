@@ -82,7 +82,7 @@ export class NativeTabGroupService {
 
     const tabIds = [... new Set(tabIdsParam)];
 
-    const groupOptions: browser.Tabs.GroupOptions = {
+    const groupOptions: browser.Tabs.GroupOptionsType = {
       tabIds,
     };
 
