@@ -22,8 +22,9 @@
 import browser from 'webextension-polyfill';
 
 import { ServiceRegistry } from '../../ServiceRegistry';
+import { NativeTabGroupsNamespace } from './NativeTabGroupTypes';
 
-const browserWithTabGroups = browser as unknown as { tabGroups?: unknown };
+const browserWithTabGroups = browser as unknown as { tabGroups?: NativeTabGroupsNamespace };
 
 type BrowserInfo = Awaited<ReturnType<typeof browser.runtime.getBrowserInfo>>;
 
@@ -47,9 +48,13 @@ export class NativeTabGroupFeatureGate {
   }
 
   public async isNativeTabGroupSupported(): Promise<boolean> {
-    const tabGroupsAvailable = typeof browserWithTabGroups.tabGroups !== 'undefined';
-    if (!tabGroupsAvailable) {
+    const tabGroups = browserWithTabGroups.tabGroups;
+    if (!tabGroups) {
       return false;
+    }
+
+    if (this.hasRequiredMethods(tabGroups)) {
+      return true;
     }
 
     const majorVersion = await this.getBrowserMajorVersion();
@@ -58,6 +63,14 @@ export class NativeTabGroupFeatureGate {
     }
 
     return majorVersion >= NativeTabGroupFeatureGate.MINIMUM_SUPPORTED_VERSION;
+  }
+
+  private hasRequiredMethods(tabGroups: NativeTabGroupsNamespace): boolean {
+    return typeof tabGroups.query === 'function'
+      && typeof tabGroups.create === 'function'
+      && typeof tabGroups.update === 'function'
+      && typeof tabGroups.move === 'function'
+      && typeof tabGroups.remove === 'function';
   }
 
   public async assertNativeSupport(): Promise<void> {

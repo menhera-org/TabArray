@@ -5,7 +5,7 @@
 - Runtime checks also verify that `browser.tabGroups` exists so Nightly/Beta users with the pref disabled will gracefully fall back to the container-only flow.
 
 ## Detection approach
-- `NativeTabGroupFeatureGate.isNativeTabGroupSupported()` wins only when both the API namespace is present and the runtime browser version meets the baseline. Version parsing is done against the major segment of `browser.runtime.getBrowserInfo().version`.
+- `NativeTabGroupFeatureGate.isNativeTabGroupSupported()` first checks that the namespace exposes the expected CRUD methods and returns true immediately when that capability lands. Otherwise it falls back to the browser-version guard (major segment of `browser.runtime.getBrowserInfo().version`).
 - `assertNativeSupport()` is a helper for startup paths that must fail fast when we expect native tab groups to be available (for example, after a stored mapping confirms the user previously had the feature).
 
 ## Startup cleanup
