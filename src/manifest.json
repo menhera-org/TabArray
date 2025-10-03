@@ -15,6 +15,7 @@
   "permissions": [
     "tabs",
     "tabHide",
+    "tabGroups",
     "<all_urls>",
     "cookies",
     "contextualIdentities",
