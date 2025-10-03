@@ -11,7 +11,10 @@
 ## Startup cleanup
 - `NativeTabGroupSyncService` currently focuses on pruning native tab groups that were previously associated with containers that no longer exist. The mapping store (`NativeTabGroupMappingStore`) keeps track of container → native group IDs so removals can be applied exactly once.
 - Non-managed containers (default and private store) are excluded from the cleanup, preventing us from touching user-created native groups that do not correspond to contextual identities.
+- The sync pass also recreates missing native tab groups and aligns their titles with the corresponding container names. Native-side renames now call back into `browser.contextualIdentities.update()` so the displayed container label tracks the group immediately.
+- Mapping now scopes to individual windows: if a container has no tabs in a window we delete the mapped native group there, while windows with active tabs get their own native instance so multiple windows can host the same container in parallel.
+- Pinned tabs are excluded from the accounting because Firefox does not associate them with tab groups; pin/unpin events trigger reconciliation so windows that only have pinned tabs drop out of the native-mirroring flow automatically.
 
 ## Follow-ups
 - Reconfirm the Firefox version once Mozilla publishes the stable release notes and adjust the gate if needed.
-- Expand the reconciliation logic so that it also recreates missing native groups, updates titles when container names change, and synchronizes ordering.
+- Expand the reconciliation logic so future updates can synchronize ordering (using `browser.tabGroups.onMoved`) and propagate container-initiated renames in real time.
