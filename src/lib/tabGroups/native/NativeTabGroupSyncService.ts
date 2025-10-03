@@ -120,9 +120,6 @@ export class NativeTabGroupSyncService {
       if (!tab.cookieStoreId || tab.windowId === undefined) {
         continue;
       }
-      if (tab.windowType && tab.windowType !== 'normal') {
-        continue;
-      }
       if (tab.pinned) {
         continue;
       }
