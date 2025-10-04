@@ -55,6 +55,7 @@ import './background-closed-tabs';
 import './background-sync';
 import './background-omnibox';
 import './background-created-tab';
+import './background-messaging-healthcheck';
 // import './background-update-checker';
 import '../api/ApiDefinitions';
 
