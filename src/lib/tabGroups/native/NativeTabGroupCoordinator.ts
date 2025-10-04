@@ -189,18 +189,19 @@ export class NativeTabGroupCoordinator {
     if (!await this.isEnabled()) {
       return;
     }
-    let targetIndex = 0;
-    for (const containerId of orderedContainerIds) {
+    const processedGroupIds = new Set<number>();
+    for (let i = orderedContainerIds.length - 1; i >= 0; --i) {
+      const containerId = orderedContainerIds[i] as string;
       const entry = await this.getMappingEntry(windowId, containerId);
-      if (!entry) {
+      if (!entry || processedGroupIds.has(entry.nativeGroupId)) {
         continue;
       }
       try {
-        await this.nativeService.move(entry.nativeGroupId, { windowId, index: targetIndex });
-        targetIndex += 1;
+        await this.nativeService.move(entry.nativeGroupId, { windowId, index: 0 });
       } catch (error) {
-        consoleService.output('NativeTabGroupCoordinator', 'warn', `Failed to move native group ${entry.nativeGroupId} to index ${targetIndex}`, error);
+        consoleService.output('NativeTabGroupCoordinator', 'warn', `Failed to move native group ${entry.nativeGroupId} for window ${windowId}`, error);
       }
+      processedGroupIds.add(entry.nativeGroupId);
     }
   }
 
