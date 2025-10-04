@@ -79,18 +79,25 @@ export class NativeTabGroupCoordinator {
     if (!identity) {
       return undefined;
     }
-    const existingGroup = await this.getGroupForWindow(windowId, containerId);
-    if (existingGroup) {
+    let targetGroup = await this.getGroupForWindow(windowId, containerId);
+    if (targetGroup) {
       if (uniqueTabIds.length > 0) {
         try {
-          await browser.tabs.group({ groupId: existingGroup.id, tabIds: uniqueTabIds });
+          await browser.tabs.group({ groupId: targetGroup.id, tabIds: uniqueTabIds });
         } catch (error) {
-          consoleService.output('NativeTabGroupCoordinator', 'warn', `Failed to attach tabs to group ${existingGroup.id}`, error);
+          if (this.isNoGroupError(error)) {
+            await this.mappingStore.delete(containerId, windowId);
+            targetGroup = undefined;
+          } else {
+            consoleService.output('NativeTabGroupCoordinator', 'warn', `Failed to attach tabs to group ${targetGroup.id}`, error);
+          }
         }
       }
-      await this.syncNativeGroupFromContainer(existingGroup.id, containerId, identity);
-      await this.reorderWindowNativeGroups(windowId);
-      return existingGroup;
+      if (targetGroup) {
+        await this.syncNativeGroupFromContainer(targetGroup.id, containerId, identity);
+        await this.reorderWindowNativeGroups(windowId);
+        return targetGroup;
+      }
     }
 
     if (uniqueTabIds.length === 0) {
@@ -384,6 +391,17 @@ export class NativeTabGroupCoordinator {
       icon: 'fingerprint',
       color: 'toolbar',
     });
+  }
+
+  private isNoGroupError(error: unknown): boolean {
+    if (!error) {
+      return false;
+    }
+    const message = typeof error === 'string' ? error : (error as { message?: string }).message;
+    if (!message) {
+      return false;
+    }
+    return message.includes('No group with id') || message.includes('no group with id');
   }
 }
 
