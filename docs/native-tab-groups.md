@@ -20,6 +20,7 @@
 - Container show/hide now collapses or expands the corresponding native group (instead of hiding tabs) while still focusing the correct fallback tab.
 - Tab creation, movement, and user-initiated tab opens all funnel through the native coordinator so tabs land in the correct native group (creating it if needed) even for manual Firefox actions.
 - Container and native colors stay in sync via a shared mapper (grey ↔ toolbar, cyan ↔ turquoise, etc.), so changing colors on either side immediately updates the counterpart.
+- Tabs that are not in a container get their own per-window native group labelled with the localized `noContainer` string, keeping “loose” tabs organised alongside container groups.
 
 ## Follow-ups
 - Reconfirm the Firefox version once Mozilla publishes the stable release notes and adjust the gate if needed.

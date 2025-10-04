@@ -47,6 +47,7 @@ export class NativeTabGroupCoordinator {
 
   private readonly pendingContainerUpdates = new Set<string>();
   private readonly pendingNativeUpdates = new Set<number>();
+  private defaultContainerNamePromise: Promise<string> | undefined;
 
   private constructor() {
     this.nativeService.onGroupUpdated.addListener((group) => {
@@ -88,6 +89,7 @@ export class NativeTabGroupCoordinator {
         }
       }
       await this.syncNativeGroupFromContainer(existingGroup.id, containerId, identity);
+      await this.reorderWindowNativeGroups(windowId);
       return existingGroup;
     }
 
@@ -145,9 +147,20 @@ export class NativeTabGroupCoordinator {
     for (const entry of entries) {
       await this.syncNativeGroupFromContainer(entry.nativeGroupId, containerId, identity);
     }
+    const processedWindows = new Set<number>();
+    for (const entry of entries) {
+      processedWindows.add(entry.windowId);
+    }
+    for (const windowId of processedWindows) {
+      await this.reorderWindowNativeGroups(windowId);
+    }
   }
 
   public async syncContainerFromNativeGroup(group: NativeTabGroup, containerId: string): Promise<void> {
+    if (this.isDefaultContainer(containerId)) {
+      await this.updateMappingLastKnownTitle(group.id, group.title ?? await this.getDefaultContainerName());
+      return;
+    }
     const mappedColor = mapNativeColorToContainer(group.color);
     const params: Partial<{ name: string; color: string; icon: string; }> = {};
     if (group.title) {
@@ -162,6 +175,9 @@ export class NativeTabGroupCoordinator {
     this.pendingContainerUpdates.add(containerId);
     try {
       await this.contextualIdentityFactory.setParams(containerId, params);
+      if (params.name) {
+        await this.updateMappingLastKnownTitle(group.id, params.name);
+      }
     } catch (error) {
       consoleService.output('NativeTabGroupCoordinator', 'warn', `Failed to update container ${containerId} from native group ${group.id}`, error);
     } finally {
@@ -263,15 +279,12 @@ export class NativeTabGroupCoordinator {
     try {
       return await this.contextualIdentityFactory.get(containerId);
     } catch (error) {
+      const fallback = await this.getFallbackIdentity(containerId);
+      if (fallback) {
+        return fallback;
+      }
       consoleService.output('NativeTabGroupCoordinator', 'warn', `Failed to resolve contextual identity ${containerId}`, error);
-      return {
-        cookieStore: new CookieStore(containerId),
-        icon: '',
-        color: 'toolbar',
-        name: containerId,
-        iconUrl: '',
-        colorCode: '',
-      } as unknown as ContextualIdentity;
+      return undefined;
     }
   }
 
@@ -301,25 +314,63 @@ export class NativeTabGroupCoordinator {
     if (containersInWindow.length === 0) {
       return;
     }
+
     const snapshot = await this.tabGroupDirectory.getSnapshot();
     const containerOrder = snapshot.getContainerOrder();
     const orderedSet = new Set<string>();
     const orderedContainers: string[] = [];
+
     for (const containerId of containerOrder) {
       if (containersInWindow.includes(containerId)) {
         orderedContainers.push(containerId);
         orderedSet.add(containerId);
       }
     }
+
     for (const containerId of containersInWindow) {
       if (!orderedSet.has(containerId)) {
         orderedContainers.push(containerId);
       }
     }
+
     if (orderedContainers.length === 0) {
       return;
     }
+
     await this.reorderNativeGroups(windowId, orderedContainers);
+  }
+
+  private isDefaultContainer(containerId: string): boolean {
+    return containerId === CookieStore.DEFAULT.id;
+  }
+
+  private async getDefaultContainerName(): Promise<string> {
+    if (!this.defaultContainerNamePromise) {
+      this.defaultContainerNamePromise = Promise.resolve().then(() => {
+        try {
+          const message = browser.i18n?.getMessage?.('noContainer');
+          if (message && message.trim().length > 0) {
+            return message;
+          }
+        } catch (error) {
+          consoleService.output('NativeTabGroupCoordinator', 'warn', 'Failed to load i18n message for noContainer', error);
+        }
+        return 'No Container';
+      });
+    }
+    return this.defaultContainerNamePromise;
+  }
+
+  private async getFallbackIdentity(containerId: string): Promise<ContextualIdentity | undefined> {
+    if (!this.isDefaultContainer(containerId)) {
+      return undefined;
+    }
+    const name = await this.getDefaultContainerName();
+    return new ContextualIdentity(new CookieStore(containerId), {
+      name,
+      icon: 'fingerprint',
+      color: 'toolbar',
+    });
   }
 }
 

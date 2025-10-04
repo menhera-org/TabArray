@@ -210,6 +210,9 @@ export class NativeTabGroupSyncService {
     if (cookieStore.isPrivate) {
       return false;
     }
+    if (cookieStore.id === CookieStore.DEFAULT.id) {
+      return true;
+    }
     return cookieStore.userContextId !== 0;
   }
 
