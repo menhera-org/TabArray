@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { CookieStore } from 'weeg-containers';
-import { BackgroundService } from 'weeg-utils';
+import { BackgroundService, ExtensionService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
 
 import { TagService } from './tags/TagService';
@@ -42,13 +42,21 @@ type TabOpenActionType = {
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tagService = TagService.getInstance();
 const activeContainerService = ActiveContainerService.getInstance();
-const nativeCoordinator = NativeTabGroupCoordinator.getInstance();
+const extensionService = ExtensionService.getInstance();
+
+const getNativeCoordinator = (): NativeTabGroupCoordinator | undefined => {
+  if (!extensionService.isBackgroundPage()) {
+    return undefined;
+  }
+  return NativeTabGroupCoordinator.getInstance();
+};
 
 const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number, active: boolean) => {
   let targetGroupId: number | undefined;
-  if (await nativeCoordinator.isEnabled()) {
+  const coordinator = getNativeCoordinator();
+  if (coordinator && await coordinator.isEnabled()) {
     try {
-      const existingGroup = await nativeCoordinator.getGroupForWindow(windowId, cookieStoreId);
+      const existingGroup = await coordinator.getGroupForWindow(windowId, cookieStoreId);
       targetGroupId = existingGroup?.id;
     } catch (_error) {
       // ignore
@@ -69,8 +77,8 @@ const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, window
     active ? browser.tabs.update(browserTab.id, {active}) : Promise.resolve(),
     browser.tabs.remove(currentTabId),
   ]);
-  if (await nativeCoordinator.isEnabled() && browserTab.windowId != null) {
-    await nativeCoordinator.ensureTabsGrouped(browserTab.windowId, cookieStoreId, [browserTab.id]);
+  if (coordinator && await coordinator.isEnabled() && browserTab.windowId != null) {
+    await coordinator.ensureTabsGrouped(browserTab.windowId, cookieStoreId, [browserTab.id]);
   }
   return browserTab.id;
 };
@@ -149,9 +157,10 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
       if (browserWindow.id == null) continue;
       activeContainerService.setActiveContainer(browserWindow.id, cookieStoreId);
       let targetGroupId: number | undefined;
-      if (await nativeCoordinator.isEnabled()) {
+      const coordinator = getNativeCoordinator();
+      if (coordinator && await coordinator.isEnabled()) {
         try {
-          const existingGroup = await nativeCoordinator.getGroupForWindow(browserWindow.id, cookieStoreId);
+          const existingGroup = await coordinator.getGroupForWindow(browserWindow.id, cookieStoreId);
           targetGroupId = existingGroup?.id;
         } catch (_error) {
           // ignore
@@ -175,8 +184,8 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
           focused: true,
         });
       }
-      if (await nativeCoordinator.isEnabled() && browserTab.id != null) {
-        await nativeCoordinator.ensureTabsGrouped(browserWindow.id, cookieStoreId, [browserTab.id]);
+      if (coordinator && await coordinator.isEnabled() && browserTab.id != null) {
+        await coordinator.ensureTabsGrouped(browserWindow.id, cookieStoreId, [browserTab.id]);
       }
       return browserTab.id ?? browser.tabs.TAB_ID_NONE;
     }
@@ -194,8 +203,9 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
     if (tagId) {
       await tagService.setTagIdForTab(openedTab, tagId);
     }
-    if (await nativeCoordinator.isEnabled() && openedBrowserTab.id != null && openedBrowserWindow.id != null) {
-      await nativeCoordinator.ensureTabsGrouped(openedBrowserWindow.id, cookieStoreId, [openedBrowserTab.id]);
+    const coordinator = getNativeCoordinator();
+    if (coordinator && await coordinator.isEnabled() && openedBrowserTab.id != null && openedBrowserWindow.id != null) {
+      await coordinator.ensureTabsGrouped(openedBrowserWindow.id, cookieStoreId, [openedBrowserTab.id]);
     }
     const openedTabId = openedBrowserTab.id ?? browser.tabs.TAB_ID_NONE;
     return openedTabId;
@@ -209,15 +219,16 @@ const createTabWithFallback = async (options: browser.Tabs.CreateCreatePropertie
   try {
     return await browser.tabs.create(options);
   } catch (error) {
-    if (!await nativeCoordinator.isEnabled() || !nativeCoordinator.isNoGroupError(error)) {
+    const coordinator = getNativeCoordinator();
+    if (!coordinator || !await coordinator.isEnabled() || !coordinator.isNoGroupError(error)) {
       throw error;
     }
-    await nativeCoordinator.invalidateMapping(windowId, containerId);
+    await coordinator.invalidateMapping(windowId, containerId);
     const retryOptions = { ...options };
     delete (retryOptions as Record<string, unknown>).groupId;
     const tab = await browser.tabs.create(retryOptions);
     if (tab.id != null) {
-      await nativeCoordinator.ensureTabsGrouped(windowId, containerId, [tab.id]);
+      await coordinator.ensureTabsGrouped(windowId, containerId, [tab.id]);
     }
     return tab;
   }

@@ -19,20 +19,13 @@
   @license
 **/
 
-import browser from 'webextension-polyfill';
 
 import { MessagingService } from 'weeg-utils';
-import { ConsoleService } from '../lib/console/ConsoleService';
 
-const consoleService = ConsoleService.getInstance();
 const messagingService = MessagingService.getInstance();
 
 const HEALTHCHECK_TOPIC = 'CTG.messaging.healthcheck';
 
 messagingService.addListener(HEALTHCHECK_TOPIC, async () => {
   return 'ok';
-});
-
-browser.runtime.onMessage.addListener((_message) => {
-  consoleService.output('background-messaging-healthcheck', 'debug', 'runtime onMessage received');
 });

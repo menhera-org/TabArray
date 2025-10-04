@@ -51,7 +51,9 @@ export class ContainerVisibilityService {
   private readonly _indexTabService = IndexTabService.getInstance();
   private readonly _performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
   private readonly _tabQueryService = TabQueryService.getInstance();
-  private readonly _nativeCoordinator = NativeTabGroupCoordinator.getInstance();
+  private getNativeCoordinator(): NativeTabGroupCoordinator | undefined {
+    return NativeTabGroupCoordinator.tryGetInstance();
+  }
 
   private constructor() {
     // nothing.
@@ -107,16 +109,17 @@ export class ContainerVisibilityService {
       console.log('No tabs to hide on window %d for cookie store %s', windowId, cookieStoreId);
       return false;
     }
-    if (await this._nativeCoordinator.isEnabled()) {
+    const nativeCoordinator = this.getNativeCoordinator();
+    if (nativeCoordinator && await nativeCoordinator.isEnabled()) {
       const tabIds = helper.tabsToHide.map((tab) => tab.id);
-      await this._nativeCoordinator.ensureTabsGrouped(windowId, cookieStoreId, tabIds);
+      await nativeCoordinator.ensureTabsGrouped(windowId, cookieStoreId, tabIds);
       if (helper.active) {
         const tabToActivate = helper.tabToActivate;
         if (tabToActivate) {
           await tabToActivate.focus();
         }
       }
-      await this._nativeCoordinator.setCollapsed(windowId, cookieStoreId, true);
+      await nativeCoordinator.setCollapsed(windowId, cookieStoreId, true);
       const duration = Date.now() - startTime;
       this._performanceHistoryService.addEntry('ContainerVisibilityService.hideContainerOnWindow', startTime, duration);
       return true;
@@ -149,9 +152,10 @@ export class ContainerVisibilityService {
       console.log('No tabs to show on window %d for cookie store %s', windowId, cookieStoreId);
       return;
     }
-    if (await this._nativeCoordinator.isEnabled()) {
-      await this._nativeCoordinator.ensureTabsGrouped(windowId, cookieStoreId, tabs.map((tab) => tab.id));
-      await this._nativeCoordinator.setCollapsed(windowId, cookieStoreId, false);
+    const nativeCoordinator = this.getNativeCoordinator();
+    if (nativeCoordinator && await nativeCoordinator.isEnabled()) {
+      await nativeCoordinator.ensureTabsGrouped(windowId, cookieStoreId, tabs.map((tab) => tab.id));
+      await nativeCoordinator.setCollapsed(windowId, cookieStoreId, false);
       const duration = Date.now() - startTime;
       this._performanceHistoryService.addEntry('ContainerVisibilityService.showContainerOnWindow', startTime, duration);
       return;

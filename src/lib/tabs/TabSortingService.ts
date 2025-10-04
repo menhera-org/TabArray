@@ -117,7 +117,8 @@ export class TabSortingService extends BackgroundService<void, void> {
     }
     const enabled = await config['tab.sorting.enabled'].getValue();
     if (!enabled) return;
-    if (await NativeTabGroupCoordinator.getInstance().isEnabled()) {
+    const nativeCoordinator = NativeTabGroupCoordinator.tryGetInstance();
+    if (nativeCoordinator && await nativeCoordinator.isEnabled()) {
       return;
     }
     tabSorting = true;

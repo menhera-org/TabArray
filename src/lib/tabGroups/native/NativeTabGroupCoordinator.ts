@@ -22,6 +22,8 @@
 import browser from 'webextension-polyfill';
 import { ContextualIdentity, CookieStore } from 'weeg-containers';
 
+import { ExtensionService } from 'weeg-utils';
+
 import { ServiceRegistry } from '../../ServiceRegistry';
 import { NativeTabGroupService } from './NativeTabGroupService';
 import { NativeTabGroupMappingStore, NativeTabGroupMappingEntry } from './NativeTabGroupMappingStore';
@@ -31,13 +33,28 @@ import { mapContainerColorToNative, mapNativeColorToContainer } from './NativeTa
 import { ConsoleService } from '../../console/ConsoleService';
 import { TabGroupDirectory } from '../TabGroupDirectory';
 
+const extensionService = ExtensionService.getInstance();
+
 const consoleService = ConsoleService.getInstance();
 
 export class NativeTabGroupCoordinator {
-  private static readonly INSTANCE = new NativeTabGroupCoordinator();
+  private static instance: NativeTabGroupCoordinator | undefined;
 
   public static getInstance(): NativeTabGroupCoordinator {
-    return NativeTabGroupCoordinator.INSTANCE;
+    if (!extensionService.isBackgroundPage()) {
+      throw new Error('NativeTabGroupCoordinator is only available in the background script.');
+    }
+    if (!NativeTabGroupCoordinator.instance) {
+      NativeTabGroupCoordinator.instance = new NativeTabGroupCoordinator();
+    }
+    return NativeTabGroupCoordinator.instance;
+  }
+
+  public static tryGetInstance(): NativeTabGroupCoordinator | undefined {
+    if (!extensionService.isBackgroundPage()) {
+      return undefined;
+    }
+    return NativeTabGroupCoordinator.getInstance();
   }
 
   private readonly nativeService = NativeTabGroupService.getInstance();
@@ -409,4 +426,6 @@ export class NativeTabGroupCoordinator {
   }
 }
 
-ServiceRegistry.getInstance().registerService('NativeTabGroupCoordinator', NativeTabGroupCoordinator.getInstance());
+if (extensionService.isBackgroundPage()) {
+  ServiceRegistry.getInstance().registerService('NativeTabGroupCoordinator', NativeTabGroupCoordinator.getInstance());
+}
