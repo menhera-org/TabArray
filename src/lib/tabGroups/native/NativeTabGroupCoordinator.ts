@@ -393,7 +393,7 @@ export class NativeTabGroupCoordinator {
     });
   }
 
-  private isNoGroupError(error: unknown): boolean {
+  public isNoGroupError(error: unknown): boolean {
     if (!error) {
       return false;
     }
@@ -402,6 +402,10 @@ export class NativeTabGroupCoordinator {
       return false;
     }
     return message.includes('No group with id') || message.includes('no group with id');
+  }
+
+  public async invalidateMapping(windowId: number, containerId: string): Promise<void> {
+    await this.mappingStore.delete(containerId, windowId);
   }
 }
 

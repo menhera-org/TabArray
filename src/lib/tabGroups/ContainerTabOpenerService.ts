@@ -63,7 +63,7 @@ const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, window
   if (typeof targetGroupId === 'number') {
     (createOptions as Record<string, unknown>).groupId = targetGroupId;
   }
-  const browserTab = await browser.tabs.create(createOptions);
+  const browserTab = await createTabWithFallback(createOptions, windowId, cookieStoreId);
   if (!browserTab.id) return browser.tabs.TAB_ID_NONE;
   await Promise.all([
     active ? browser.tabs.update(browserTab.id, {active}) : Promise.resolve(),
@@ -165,7 +165,7 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
       if (typeof targetGroupId === 'number') {
         (createOptions as Record<string, unknown>).groupId = targetGroupId;
       }
-      const browserTab = await browser.tabs.create(createOptions);
+      const browserTab = await createTabWithFallback(createOptions, browserWindow.id, cookieStoreId);
       const tab = new CompatTab(browserTab);
       if (tagId) {
         await tagService.setTagIdForTab(tab, tagId);
@@ -202,6 +202,24 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
   } catch (e) {
     console.warn(e);
     return browser.tabs.TAB_ID_NONE;
+  }
+};
+
+const createTabWithFallback = async (options: browser.Tabs.CreateCreateProperties, windowId: number, containerId: string): Promise<browser.Tabs.Tab> => {
+  try {
+    return await browser.tabs.create(options);
+  } catch (error) {
+    if (!await nativeCoordinator.isEnabled() || !nativeCoordinator.isNoGroupError(error)) {
+      throw error;
+    }
+    await nativeCoordinator.invalidateMapping(windowId, containerId);
+    const retryOptions = { ...options };
+    delete (retryOptions as Record<string, unknown>).groupId;
+    const tab = await browser.tabs.create(retryOptions);
+    if (tab.id != null) {
+      await nativeCoordinator.ensureTabsGrouped(windowId, containerId, [tab.id]);
+    }
+    return tab;
   }
 };
 
