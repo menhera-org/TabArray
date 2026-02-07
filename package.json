@@ -16,7 +16,7 @@
   "devDependencies": {
     "@eslint/js": "^9",
     "@parcel/transformer-typescript-tsc": "^2.12.0",
-    "@types/diff": "^7",
+    "@types/diff": "^8",
     "@types/eslint__js": "^9.14.0",
     "@types/glob": "^9.0.0",
     "@types/markdown-it": "^14.1.2",
