@@ -143,6 +143,8 @@ export class MenulistTabElement extends HTMLElement {
 
     if (tab.active) {
       this.tabButton.classList.add("active");
+      // Scroll to center with a small delay to avoid initial render conflicts
+      setTimeout(() => this.scrollIntoViewIfActive(), 100);
     }
 
     // https://qiita.com/piroor/items/44ccbc2ee918bc88c3ea
@@ -159,6 +161,14 @@ export class MenulistTabElement extends HTMLElement {
       return;
     }
     this.tabMainElement.style.borderColor = displayedContainer.colorCode;
+  }
+
+  private scrollIntoViewIfActive(): void {
+    // Scroll the active tab into view at the center of the sidebar
+    // Using requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
   }
 
   private getShadowElement(id: string): HTMLElement {
