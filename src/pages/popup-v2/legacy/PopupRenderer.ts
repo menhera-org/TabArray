@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
 /* vim: set ts=2 sw=2 et ai : */
 /**
@@ -61,18 +62,6 @@ export class PopupRenderer {
 
   public renderTab(tab: CompatTab, displayedContainer: DisplayedContainer): MenulistTabElement {
     const element = new MenulistTabElement(tab, displayedContainer);
-    element.onTabClicked.addListener(() => {
-      tab.focus();
-    });
-    element.onClose.addListener(() => {
-      tab.close();
-    });
-    element.onPin.addListener(() => {
-      tab.pin();
-    });
-    element.onUnpin.addListener(() => {
-      tab.unpin();
-    });
     return element;
   }
 
@@ -190,38 +179,6 @@ export class PopupRenderer {
 
       const tabElement = this.renderTab(tab, displayedContainer);
       tabElement.draggable = true;
-      tabElement.addEventListener('dragstart', (ev) => {
-        if (!ev.dataTransfer) return;
-        ev.dataTransfer.setData('application/json', JSON.stringify({
-          type: 'tab',
-          id: tab.id,
-          index: tab.index,
-          pinned: tab.pinned,
-          cookieStoreId: tab.cookieStore.id,
-        }));
-        ev.dataTransfer.dropEffect = 'move';
-      });
-      tabElement.addEventListener('dragover', (ev) => {
-        if (!ev.dataTransfer) return;
-        const json = ev.dataTransfer.getData('application/json');
-        if (!json) return;
-        const data = JSON.parse(json);
-        if ('tab' != data.type || data.pinned) return;
-        if (data.cookieStoreId != tab.cookieStore.id) return;
-        ev.preventDefault();
-      });
-      tabElement.addEventListener('drop', (ev) => {
-        if (!ev.dataTransfer) return;
-        const json = ev.dataTransfer.getData('application/json');
-        if (!json) return;
-        const data = JSON.parse(json);
-        if ('tab' != data.type || data.pinned) return;
-        if (data.cookieStoreId != tab.cookieStore.id) return;
-        ev.preventDefault();
-        browser.tabs.move(data.id, { index: tab.index }).catch((e) => {
-          console.error(e);
-        });
-      });
 
       // Collect tab element for batch append
       elementsToAppend.push(tabElement);

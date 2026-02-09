@@ -22,7 +22,6 @@
 import browser from 'webextension-polyfill';
 import { EventSink } from "weeg-events";
 import { DisplayedContainer } from 'weeg-containers';
-import { CompatTab } from 'weeg-tabs';
 
 import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
 import { CompatConsole } from '../lib/console/CompatConsole';
@@ -287,36 +286,7 @@ export class PanelWindowsElement extends HTMLElement {
     actionsElement.appendChild(newTemporaryContainerMenuItem);
   }
 
-  private defineDragHandlersForPinnedTab(pinnedTab: CompatTab, tabElement: MenulistTabElement) {
-    tabElement.draggable = true;
-    tabElement.addEventListener('dragstart', (ev) => {
-      if (!ev.dataTransfer) return;
-      ev.dataTransfer.setData('application/json', JSON.stringify({
-        type: 'tab',
-        id: pinnedTab.id,
-        index: pinnedTab.index,
-        pinned: true,
-      }));
-      ev.dataTransfer.dropEffect = 'move';
-    });
-    tabElement.addEventListener('dragover', (ev) => {
-      if (!ev.dataTransfer) return;
-      const json = ev.dataTransfer.getData('application/json');
-      const data = JSON.parse(json);
-      if ('tab' != data.type || !data.pinned) return;
-      ev.preventDefault();
-    });
-    tabElement.addEventListener('drop', (ev) => {
-      if (!ev.dataTransfer) return;
-      const json = ev.dataTransfer.getData('application/json');
-      const data = JSON.parse(json);
-      if ('tab' != data.type || !data.pinned) return;
-      ev.preventDefault();
-      browser.tabs.move(data.id, { index: pinnedTab.index }).catch((e) => {
-        console.error(e);
-      });
-    });
-  }
+
 
   private renderPinnedTabs(browserState: BrowserStateDao, definedUserContexts: readonly DisplayedContainer[]) {
     const currentWindowState = browserState.windows[this._selectedWindowId] as WindowStateDao;
@@ -333,6 +303,147 @@ export class PanelWindowsElement extends HTMLElement {
     const pinnedTabsElement = this.shadowRoot.querySelector('.pinned-tabs') as HTMLDivElement;
     pinnedTabsElement.textContent = '';
 
+    // Event delegation: Set up drag handlers on parent container once
+    pinnedTabsElement.ondragstart = (ev: DragEvent) => {
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as MenulistTabElement | null;
+      if (!tabElement || !ev.dataTransfer) return;
+
+      const tabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+      if (tabId === -1) return;
+
+      const tab = currentWindowState.tabs[tabId];
+      if (!tab) return;
+
+      ev.dataTransfer.setData('application/json', JSON.stringify({
+        type: 'tab',
+        id: tabId,
+        index: tab.index,
+        pinned: true,
+      }));
+      ev.dataTransfer.dropEffect = 'move';
+    };
+
+    pinnedTabsElement.ondragover = (ev: DragEvent) => {
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as MenulistTabElement | null;
+      if (!tabElement || !ev.dataTransfer) return;
+
+      const json = ev.dataTransfer.getData('application/json');
+      if (!json) return;
+
+      try {
+        const data = JSON.parse(json);
+        if ('tab' !== data.type || !data.pinned) return;
+        ev.preventDefault();
+      } catch (_e) {
+        // Invalid JSON, ignore
+      }
+    };
+
+    pinnedTabsElement.ondrop = (ev: DragEvent) => {
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as MenulistTabElement | null;
+      if (!tabElement || !ev.dataTransfer) return;
+
+      const targetTabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+      if (targetTabId === -1) return;
+
+      const targetTab = currentWindowState.tabs[targetTabId];
+      if (!targetTab) return;
+
+      const json = ev.dataTransfer.getData('application/json');
+      if (!json) return;
+
+      try {
+        const data = JSON.parse(json);
+        if ('tab' !== data.type || !data.pinned) return;
+        ev.preventDefault();
+
+        browser.tabs.move(data.id, { index: targetTab.index }).catch((e) => {
+          console.error(e);
+        });
+      } catch (_e) {
+        // Invalid JSON, ignore
+      }
+    };
+
+    // Click event delegation
+    pinnedTabsElement.onclick = (ev: MouseEvent) => {
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
+      if (!tabElement) return;
+
+      const tabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+      if (tabId === -1) return;
+
+      // Get the actual clicked element from composedPath (for Shadow DOM)
+      const path = ev.composedPath();
+      const shadowTarget = path[0] as HTMLElement;
+      const action = shadowTarget.getAttribute?.('data-action') || shadowTarget.closest('[data-action]')?.getAttribute('data-action');
+
+      if (!action) return;
+
+      switch (action) {
+        case 'tab-click':
+          // Focus the tab
+          browser.tabs.update(tabId, { active: true }).catch((e) => {
+            console.error('Failed to focus tab:', e);
+          });
+          break;
+
+        case 'close':
+          // Close the tab
+          browser.tabs.remove(tabId).catch((e) => {
+            console.error('Failed to close tab:', e);
+          });
+          break;
+
+        case 'pin':
+          // For pinned tabs, this should UNPIN (toggle off)
+          browser.tabs.update(tabId, { pinned: false }).catch((e) => {
+            console.error('Failed to unpin tab:', e);
+          });
+          break;
+
+        case 'set-tag':
+          // Import ModalSetTagElement dynamically
+          import('./modal-set-tag').then(({ ModalSetTagElement }) => {
+            document.body.appendChild(new ModalSetTagElement(tabId));
+          }).catch((e) => {
+            console.error('Failed to load ModalSetTagElement:', e);
+          });
+          break;
+      }
+    };
+
+    // Auxclick event (middle mouse button)
+    pinnedTabsElement.onauxclick = (ev: MouseEvent) => {
+      if (ev.button !== 1) return; // Only handle middle click
+
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
+      if (!tabElement) return;
+
+      const tabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+      if (tabId === -1) return;
+
+      // Middle click closes the tab
+      browser.tabs.remove(tabId).catch((e) => {
+        console.error('Failed to close tab:', e);
+      });
+    };
+
+    // Contextmenu event
+    pinnedTabsElement.oncontextmenu = (ev: MouseEvent) => {
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
+      if (!tabElement) return;
+
+      const tabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+      if (tabId === -1) return;
+
+      // Override context menu for Firefox
+      browser.menus.overrideContext({
+        context: 'tab',
+        tabId: tabId,
+      });
+    };
+
     // Use DocumentFragment for batch DOM updates to reduce layout reflows
     const fragment = document.createDocumentFragment();
 
@@ -343,7 +454,9 @@ export class PanelWindowsElement extends HTMLElement {
         continue;
       }
       const tabElement = this._popupRenderer.renderTab(pinnedTab, userContext);
-      this.defineDragHandlersForPinnedTab(pinnedTab, tabElement);
+
+      // Set draggable attribute
+      tabElement.draggable = true;
 
       // Append to fragment (off-DOM) instead of directly to pinnedTabsElement
       fragment.appendChild(tabElement);
