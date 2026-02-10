@@ -255,7 +255,7 @@ export class PanelWindowsElement extends HTMLElement {
       displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == false);
       newGroupMenuItem.hidden = false;
     }
-    displayedContainers = [... displayedContainers].sort((a, b) => {
+    displayedContainers = [...displayedContainers].sort((a, b) => {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
 
@@ -332,6 +332,10 @@ export class PanelWindowsElement extends HTMLElement {
 
     const pinnedTabsElement = this.shadowRoot.querySelector('.pinned-tabs') as HTMLDivElement;
     pinnedTabsElement.textContent = '';
+
+    // Use DocumentFragment for batch DOM updates to reduce layout reflows
+    const fragment = document.createDocumentFragment();
+
     for (const pinnedTab of pinnedTabs) {
       const userContext = userContextMap.get(pinnedTab.cookieStore.id);
       if (!userContext) {
@@ -340,8 +344,13 @@ export class PanelWindowsElement extends HTMLElement {
       }
       const tabElement = this._popupRenderer.renderTab(pinnedTab, userContext);
       this.defineDragHandlersForPinnedTab(pinnedTab, tabElement);
-      pinnedTabsElement.appendChild(tabElement);
+
+      // Append to fragment (off-DOM) instead of directly to pinnedTabsElement
+      fragment.appendChild(tabElement);
     }
+
+    // Single appendChild - only one layout reflow
+    pinnedTabsElement.appendChild(fragment);
   }
 
   private createMenuItem(className: string, messageName: string, iconUrl: string, eventSink: EventSink<void>): CtgMenuItemElement {
@@ -395,7 +404,7 @@ export class PanelWindowsElement extends HTMLElement {
       displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate != true);
     }
     let tags = Object.values(this._browserState.tags);
-    const allUserContexts = [... displayedContainers];
+    const allUserContexts = [...displayedContainers];
     const searchWords = new Set(searchString.split(/\s+/u).map((searchWord) => searchWord.toLowerCase()));
     let tabs = Object.values(windowStateSnapshot.tabs).map((dao) => TabDao.toCompatTab(dao));
     for (const searchWord of searchWords) {
@@ -432,6 +441,10 @@ export class PanelWindowsElement extends HTMLElement {
       containerElement.containerVisibilityToggleButton.disabled = true;
       searchResultsContainersElement.appendChild(containerElement);
     }
+
+    // Use DocumentFragment for batch DOM updates to reduce layout reflows
+    const tabsFragment = document.createDocumentFragment();
+
     for (const tab of tabs) {
       const userContext = userContextMap.get(tab.cookieStore.id);
       if (!userContext) {
@@ -439,8 +452,13 @@ export class PanelWindowsElement extends HTMLElement {
         continue;
       }
       const tabElement = this._popupRenderer.renderTab(tab, userContext);
-      searchResultsTabsElement.appendChild(tabElement);
+
+      // Append to fragment (off-DOM) instead of directly to searchResultsTabsElement
+      tabsFragment.appendChild(tabElement);
     }
+
+    // Single appendChild - only one layout reflow
+    searchResultsTabsElement.appendChild(tabsFragment);
   }
 
   public focusToSearchBox() {

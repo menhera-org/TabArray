@@ -155,6 +155,9 @@ export class PopupRenderer {
     let tabCount = 0;
     let state = ContainerTabsState.NO_TABS;
     let tagId = 0;
+
+    // Collect elements for batch rendering with DocumentFragment
+    const elementsToAppend: HTMLElement[] = [];
     for (const tab of tabs) {
       if (IndexTab.isIndexTabUrl(tab.url)) {
         continue;
@@ -172,7 +175,6 @@ export class PopupRenderer {
           const tag = tabAttributeMap.getTagForTab(tab.id);
           if (tag) {
             const tagElement = new MenulistTagElement(tag);
-            element.appendChild(tagElement);
             tagElement.onTagButtonClicked.addListener(() => {
               const cookieStoreId = displayedContainer.cookieStore.id;
               const tagId = tag.tagId;
@@ -180,6 +182,8 @@ export class PopupRenderer {
                 console.error(e);
               });
             });
+            // Collect tag element for batch append
+            elementsToAppend.push(tagElement);
           }
         }
       }
@@ -218,8 +222,19 @@ export class PopupRenderer {
           console.error(e);
         });
       });
-      element.appendChild(tabElement);
+
+      // Collect tab element for batch append
+      elementsToAppend.push(tabElement);
       state = ContainerTabsState.VISIBLE_TABS;
+    }
+
+    // Use DocumentFragment for batch DOM updates to reduce layout reflows
+    if (elementsToAppend.length > 0) {
+      const fragment = document.createDocumentFragment();
+      for (const el of elementsToAppend) {
+        fragment.appendChild(el);
+      }
+      element.appendChild(fragment);
     }
     if (state === ContainerTabsState.HIDDEN_TABS) {
       element.containerHidden = true;
