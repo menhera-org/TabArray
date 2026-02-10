@@ -23,7 +23,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/webextension-polyfill": "^0.12.1",
-    "addons-linter": "^8.1",
+    "addons-linter": "^9.7",
     "deterministic-zip-ng": "^2.1.1",
     "eslint": "^9",
     "glob": "^13.0",
