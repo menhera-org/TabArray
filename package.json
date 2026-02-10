@@ -19,7 +19,7 @@
     "@types/diff": "^8",
     "@types/eslint__js": "^9.14.0",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^24",
+    "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/webextension-polyfill": "^0.12.1",
