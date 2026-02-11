@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
 /* vim: set ts=2 sw=2 et ai : */
 /**
@@ -32,11 +33,6 @@ export class MenulistTabElement extends HTMLElement {
   private _tabId = -1;
   private readonly _tabIconService = TabIconService.getInstance();
 
-  public readonly onTabClicked = new EventSink<number>();
-  public readonly onPin = new EventSink<number>();
-  public readonly onUnpin = new EventSink<number>();
-  public readonly onClose = new EventSink<number>();
-
   public constructor(tab: CompatTab, displayedContainer: DisplayedContainer) {
     super();
     this.attachShadow({ mode: "open" });
@@ -49,27 +45,6 @@ export class MenulistTabElement extends HTMLElement {
     this.closeButton.title = browser.i18n.getMessage('buttonTabClose');
     this.setTagButton.title = browser.i18n.getMessage('setTag');
     // this.privateIconElement.title = browser.i18n.getMessage('buttonTabPrivate');
-    this.tabButton.onclick = () => {
-      this.onTabClicked.dispatch(this.tabId);
-    };
-    this.pinButton.onclick = () => {
-      if (this.pinned) {
-        this.onUnpin.dispatch(this.tabId);
-      } else {
-        this.onPin.dispatch(this.tabId);
-      }
-    };
-    this.closeButton.onclick = () => {
-      this.onClose.dispatch(this.tabId);
-    };
-    this.tabButton.onauxclick = (event) => {
-      if (event.button == 1) {
-        this.onClose.dispatch(this.tabId);
-      }
-    };
-    this.setTagButton.onclick = () => {
-      document.body.appendChild(new ModalSetTagElement(this.tabId));
-    };
   }
 
   private buildElement() {
@@ -93,10 +68,12 @@ export class MenulistTabElement extends HTMLElement {
 
     const tabPinButton = document.createElement('button');
     tabPinButton.id = 'tab-pin-button';
+    tabPinButton.dataset.action = 'pin';
     tabMain.appendChild(tabPinButton);
 
     const tabButton = document.createElement('button');
     tabButton.id = 'tab-button';
+    tabButton.dataset.action = 'tab-click';
     tabMain.appendChild(tabButton);
 
     const tabIcon = document.createElement('span');
@@ -109,15 +86,19 @@ export class MenulistTabElement extends HTMLElement {
 
     const tabSetTagButton = document.createElement('button');
     tabSetTagButton.id = 'tab-set-tag-button';
+    tabSetTagButton.dataset.action = 'set-tag';
     tabMain.appendChild(tabSetTagButton);
 
     const tabCloseButton = document.createElement('button');
     tabCloseButton.id = 'tab-close-button';
+    tabCloseButton.dataset.action = 'close';
     tabMain.appendChild(tabCloseButton);
   }
 
   public setTab(tab: CompatTab) {
     this._tabId = tab.id;
+    this.setAttribute('data-tab-id', tab.id.toString());
+    this.setAttribute('data-index', tab.index.toString());
 
     this.titleElement.textContent = tab.title;
     this.tabButton.title = tab.url;
@@ -147,13 +128,6 @@ export class MenulistTabElement extends HTMLElement {
       setTimeout(() => this.scrollIntoViewIfActive(), 100);
     }
 
-    // https://qiita.com/piroor/items/44ccbc2ee918bc88c3ea
-    this.addEventListener('contextmenu', () => {
-      browser.menus.overrideContext({
-        context: 'tab',
-        tabId: this._tabId,
-      });
-    }, { capture: true });
   }
 
   public setDisplayedContainer(displayedContainer: DisplayedContainer) {

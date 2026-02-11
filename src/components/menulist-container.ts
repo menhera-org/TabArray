@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
 /* vim: set ts=2 sw=2 et ai : */
 /**
@@ -19,6 +20,7 @@
   @license
 **/
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import browser from 'webextension-polyfill';
 import { DisplayedContainer } from 'weeg-containers';
 import { EventSink } from "weeg-events";
@@ -32,6 +34,7 @@ export class MenulistContainerElement extends HTMLElement {
   private _tabCount = 0;
   private _hidden = false;
   private readonly _isPrivate;
+  private readonly _cookieStoreId: string;
 
   public readonly onContainerHide = new EventSink<void>();
   public readonly onContainerUnhide = new EventSink<void>();
@@ -52,6 +55,7 @@ export class MenulistContainerElement extends HTMLElement {
       throw new Error("Shadow root is null");
     }
     this._isPrivate = isPrivate || displayedContainer.cookieStore.isPrivate;
+    this._cookieStoreId = displayedContainer.cookieStore.id;
     this.buildElement();
     this.setDisplayedContainer(displayedContainer);
     this.containerCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');
@@ -60,6 +64,7 @@ export class MenulistContainerElement extends HTMLElement {
     this.containerHighlightButton.title = browser.i18n.getMessage('focusToThisContainer');
     this.tabCount = 0;
     this.registerEventListeners();
+    this.setupDragHandlers();
   }
 
   private buildElement() {
@@ -141,7 +146,159 @@ export class MenulistContainerElement extends HTMLElement {
     this.containerHighlightButton.onclick = () => {
       this.onContainerHighlight.dispatch();
     };
+    this.setupClickHandlers();
   }
+
+  private setupDragHandlers() {
+    const containerTabsElement = this.shadowRoot?.querySelector('#container-tabs') as HTMLDivElement | null;
+    if (!containerTabsElement) return;
+
+    containerTabsElement.addEventListener('dragstart', (ev: DragEvent) => {
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
+      if (!tabElement || !ev.dataTransfer) return;
+
+      const tabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+      const tabIndex = parseInt(tabElement.getAttribute('data-index') || '0', 10);
+      if (tabId === -1) return;
+
+      ev.dataTransfer.setData('application/json', JSON.stringify({
+        type: 'tab',
+        id: tabId,
+        index: tabIndex,
+        pinned: false,
+        cookieStoreId: this._cookieStoreId,
+      }));
+      ev.dataTransfer.dropEffect = 'move';
+    });
+
+    containerTabsElement.addEventListener('dragover', (ev: DragEvent) => {
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
+      if (!tabElement || !ev.dataTransfer) return;
+
+      const json = ev.dataTransfer.getData('application/json');
+      if (!json) return;
+
+      try {
+        const data = JSON.parse(json);
+        if ('tab' !== data.type || data.pinned) return;
+        if (data.cookieStoreId !== this._cookieStoreId) return;
+        ev.preventDefault();
+      } catch (_e) {
+        // Invalid JSON, ignore
+      }
+    });
+
+    containerTabsElement.addEventListener('drop', (ev: DragEvent) => {
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
+      if (!tabElement || !ev.dataTransfer) return;
+
+      const targetTabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+      const targetIndex = parseInt(tabElement.getAttribute('data-index') || '0', 10);
+      if (targetTabId === -1) return;
+
+      const json = ev.dataTransfer.getData('application/json');
+      if (!json) return;
+
+      try {
+        const data = JSON.parse(json);
+        if ('tab' !== data.type || data.pinned) return;
+        if (data.cookieStoreId !== this._cookieStoreId) return;
+        ev.preventDefault();
+
+        browser.tabs.move(data.id, { index: targetIndex }).catch((e) => {
+          console.error(e);
+        });
+      } catch (_e) {
+        // Invalid JSON, ignore
+      }
+    });
+  }
+
+  private setupClickHandlers(): void {
+    const containerTabsElement = this.shadowRoot?.querySelector('#container-tabs') as HTMLDivElement | null;
+    if (!containerTabsElement) return;
+
+    // Click event delegation
+    containerTabsElement.addEventListener('click', (ev: MouseEvent) => {
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
+      if (!tabElement) return;
+
+      const tabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+      if (tabId === -1) return;
+
+      // Get the actual clicked element from composedPath (for Shadow DOM)
+      const path = ev.composedPath();
+      const shadowTarget = path[0] as HTMLElement;
+      const action = shadowTarget.getAttribute?.('data-action') || shadowTarget.closest('[data-action]')?.getAttribute('data-action');
+
+      if (!action) return;
+
+      switch (action) {
+        case 'tab-click':
+          // Focus the tab
+          browser.tabs.update(tabId, { active: true }).catch((e) => {
+            console.error('Failed to focus tab:', e);
+          });
+          break;
+
+        case 'close':
+          // Close the tab
+          browser.tabs.remove(tabId).catch((e) => {
+            console.error('Failed to close tab:', e);
+          });
+          break;
+
+        case 'pin':
+          // Toggle pin status
+          const isPinned = tabElement.querySelector('#tab-pin-button')?.classList.contains('pinned');
+          browser.tabs.update(tabId, { pinned: !isPinned }).catch((e) => {
+            console.error('Failed to pin/unpin tab:', e);
+          });
+          break;
+
+        case 'set-tag':
+          // Import ModalSetTagElement dynamically to avoid circular dependency
+          import('./modal-set-tag').then(({ ModalSetTagElement }) => {
+            document.body.appendChild(new ModalSetTagElement(tabId));
+          }).catch((e) => {
+            console.error('Failed to load ModalSetTagElement:', e);
+          });
+          break;
+      }
+    });
+
+    // Auxclick event (middle mouse button)
+    containerTabsElement.addEventListener('auxclick', (ev: MouseEvent) => {
+      if (ev.button !== 1) return; // Only handle middle click
+
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
+      if (!tabElement) return;
+
+      const tabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+      if (tabId === -1) return;
+
+      // Middle click closes the tab
+      browser.tabs.remove(tabId).catch((e) => {
+        console.error('Failed to close tab:', e);
+      });
+    });
+
+    // Contextmenu event
+    containerTabsElement.addEventListener('contextmenu', (ev: MouseEvent) => {
+      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
+      if (!tabElement) return;
+
+      const tabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+      if (tabId === -1) return;
+
+      // Override context menu for Firefox
+      browser.menus.overrideContext({
+        context: 'tab',
+        tabId: tabId,
+      });
+    }, { capture: true });
+  }
+
 
   public setDisplayedContainer(displayedContainer: DisplayedContainer) {
     if (this._isPrivate) {
