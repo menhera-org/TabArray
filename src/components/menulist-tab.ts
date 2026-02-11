@@ -125,7 +125,9 @@ export class MenulistTabElement extends HTMLElement {
     if (tab.active) {
       this.tabButton.classList.add("active");
       // Scroll to center with a small delay to avoid initial render conflicts
-      setTimeout(() => this.scrollIntoViewIfActive(), 100);
+      if (document.body.classList.contains('popup')) {
+        setTimeout(() => this.scrollIntoViewIfActive(), 100);
+      }
     }
 
   }
