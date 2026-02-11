@@ -752,6 +752,10 @@
         "message": "Auto-hide Unused Containers",
         "description": "Label text for auto-hide unused containers option."
     },
+    "optionAutoCenterInSidebar": {
+        "message": "Auto-center active tab in sidebar",
+        "description": "Label text for auto-center active tab in sidebar option."
+    },
     "saveDebuggingInformation": {
         "message": "Save Debugging Information",
         "description": "Save debugging information button."
