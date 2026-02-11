@@ -98,6 +98,7 @@ const paneContainerOverrides = document.querySelector<HTMLElement>('#optionsPane
 const inputTabSortingEnabled = document.querySelector<HTMLInputElement>('#input-enableSorting');
 const inputSyncContainers = document.querySelector<HTMLInputElement>('#input-syncContainers');
 const inputAutoHideContainers = document.querySelector<HTMLInputElement>('#input-autoHideContainers');
+const inputAutoCenterInSidebar = document.querySelector<HTMLInputElement>('#input-autoCenterInSidebar');
 
 const inputFeatureLanguageOverrides = document.querySelector<HTMLInputElement>('#input-featureLanguageOverrides');
 const inputFeatureUaOverrides = document.querySelector<HTMLInputElement>('#input-featureUaOverrides');
@@ -245,4 +246,12 @@ config['tab.autoHide.enabled'].observe((value) => {
 
 inputAutoHideContainers?.addEventListener('change', () => {
   setConfigValue(config['tab.autoHide.enabled'], inputAutoHideContainers.checked);
+});
+
+config['tab.autoCenterInSidebar'].observe((value) => {
+  setInputChecked(inputAutoCenterInSidebar, value);
+});
+
+inputAutoCenterInSidebar?.addEventListener('change', () => {
+  setConfigValue(config['tab.autoCenterInSidebar'], inputAutoCenterInSidebar.checked);
 });

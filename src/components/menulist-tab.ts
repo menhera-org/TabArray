@@ -25,6 +25,7 @@ import { EventSink } from "weeg-events";
 import { CompatTab } from 'weeg-tabs';
 import { DisplayedContainer } from 'weeg-containers';
 
+import { config } from '../config/config';
 import { TabIconService } from '../lib/TabIconService';
 
 import { ModalSetTagElement } from './modal-set-tag';
@@ -125,9 +126,7 @@ export class MenulistTabElement extends HTMLElement {
     if (tab.active) {
       this.tabButton.classList.add("active");
       // Scroll to center with a small delay to avoid initial render conflicts
-      if (document.body.classList.contains('popup')) {
-        setTimeout(() => this.scrollIntoViewIfActive(), 100);
-      }
+      setTimeout(() => this.scrollIntoViewIfActive(), 100);
     }
 
   }
@@ -139,12 +138,16 @@ export class MenulistTabElement extends HTMLElement {
     this.tabMainElement.style.borderColor = displayedContainer.colorCode;
   }
 
-  private scrollIntoViewIfActive(): void {
-    // Scroll the active tab into view at the center of the sidebar
-    // Using requestAnimationFrame to ensure DOM is ready
-    requestAnimationFrame(() => {
-      this.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
+  private async scrollIntoViewIfActive(): Promise<void> {
+    const isPopup = document.body.classList.contains('popup');
+    const autoCenter = await config['tab.autoCenterInSidebar'].getValue();
+    if (isPopup || autoCenter) {
+      // Scroll the active tab into view at the center of the sidebar
+      // Using requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(() => {
+        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
   }
 
   private getShadowElement(id: string): HTMLElement {
