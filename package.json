@@ -24,7 +24,7 @@
     "@types/webextension-polyfill": "^0.12.1",
     "addons-linter": "^9.7",
     "deterministic-zip-ng": "^2.1.1",
-    "eslint": "^9",
+    "eslint": "^10",
     "glob": "^13.0",
     "markdown-it": "^14.1.0",
     "parcel": "^2.12.0",
