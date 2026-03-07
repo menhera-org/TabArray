@@ -6,7 +6,7 @@
       "DOM.Iterable",
       "ES2021"
     ],
-    "module": "node16",
+    "module": "es2022",
     "sourceMap": true,
     "declaration": false,
     "newLine": "lf",
@@ -17,7 +17,7 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    "moduleResolution": "node16",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "allowJs": true,
     "checkJs": false,
