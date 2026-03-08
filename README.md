@@ -98,6 +98,7 @@ enough to unnecessitate Simple Tab Groups.
 
 ## What's next
 
+- **NEW**: Firefox's native tab groups will be integrated.
 - Keyboard shortcuts will be implemented. → The first implementation is available.
 
 ## Available languages
@@ -191,7 +192,7 @@ Something missing you need? Please file a new feature request there.
 
 ## License
 
-Copyright &copy; 2025 Menhera.org contributors.
+Copyright &copy; 2026 Menhera.org contributors.
 
 Licensed under GNU GPL version 3 **or later**.
 
