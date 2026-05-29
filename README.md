@@ -201,3 +201,6 @@ Licensed under GNU GPL version 3 **or later**.
 - Material Icons (Apache-2.0)
 - Icons from mozilla-central (MPL-2.0)
 - SVG Spinners (MIT)
+### add shortcut for create new Temp Container
+- alt+crtl+4
+- alt+crtl+6
