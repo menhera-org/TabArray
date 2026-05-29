@@ -114,6 +114,18 @@
       },
       "description": "__MSG_menuItemSites__"
     },
+    "create_temporary_container": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+4"
+      },
+      "description": "__MSG_commandCreateTemporaryContainer__"
+    },
+    "open_new_tab_same_container": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+6"
+      },
+      "description": "__MSG_commandNewTabSameContainer__"
+    },
     "open_settings_view": {
       "suggested_key": {
         "default": "Ctrl+Alt+5"

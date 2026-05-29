@@ -22,14 +22,31 @@
 import browser from 'webextension-polyfill';
 
 import { ExtensionPageService } from '../lib/ExtensionPageService';
+import { TemporaryContainerService } from '../lib/tabGroups/TemporaryContainerService';
 
 const extensionPageService = ExtensionPageService.getInstance();
+const temporaryContainerService = TemporaryContainerService.getInstance();
 
 browser.commands.onCommand.addListener(async (command) => {
   try {
     switch (command) {
       case 'open_panorama_grid': {
         await extensionPageService.open(ExtensionPageService.PANORAMA);
+        break;
+      }
+
+      case 'create_temporary_container': {
+        await temporaryContainerService.createTemporaryContainer();
+        break;
+      }
+
+      case 'open_new_tab_same_container': {
+        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+        const activeTab = tabs[0];
+        await browser.tabs.create({
+          windowId: activeTab?.windowId ?? browser.windows.WINDOW_ID_CURRENT,
+          cookieStoreId: activeTab?.cookieStoreId,
+        });
         break;
       }
 
