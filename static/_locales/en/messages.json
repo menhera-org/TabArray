@@ -522,6 +522,14 @@
         "message": "New Temporary Container",
         "description": "Button to open a new temporary container."
     },
+    "commandCreateTemporaryContainer": {
+        "message": "Create Temporary Container",
+        "description": "Keyboard shortcut to create a new temporary container."
+    },
+    "commandNewTabSameContainer": {
+        "message": "Open New Tab in Current Container",
+        "description": "Keyboard shortcut to open a new tab in the current tab's container."
+    },
     "focusToThisContainer": {
         "message": "Focus to this container",
         "description": "Button to focus to this container."
