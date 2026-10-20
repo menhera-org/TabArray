@@ -25,12 +25,12 @@ import { CompatConsole } from '../lib/console/CompatConsole';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
-browser.runtime.onMessageExternal.addListener(async (message, sender) => {
+browser.runtime.onMessageExternal.addListener(async (message: unknown, sender: browser.Runtime.MessageSender) => {
   console.log('message:', message, 'sender:', sender);
-  if (!message) {
+  if (!message || typeof message != 'object') {
     throw new Error('message is null');
   }
-  switch (message.type) {
+  switch ((message as { type?: unknown }).type) {
     default: {
       throw new Error('unknown message type');
     }

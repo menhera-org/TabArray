@@ -33,7 +33,7 @@ export class PackageIntegrityService {
     return PackageIntegrityService.INSTANCE;
   }
 
-  private async sha256(message: Uint8Array): Promise<string> {
+  private async sha256(message: Uint8Array<ArrayBuffer>): Promise<string> {
     const hash = await crypto.subtle.digest('SHA-256', message);
     const hashArray = Array.from(new Uint8Array(hash));
     const hashHex = hashArray.map((byte) => byte.toString(16).padStart(2, '0')).join('');

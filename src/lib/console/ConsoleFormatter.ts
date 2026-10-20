@@ -36,7 +36,7 @@ export class ConsoleFormatter {
       const results: unknown[] = [];
       let strBuffer = '';
       for (const token of tokens) {
-        let matches: ?string[];
+        let matches: RegExpMatchArray | null;
         if (token == '%%') {
           strBuffer += '%';
         } else if (token == '%o' || token == '%O') {

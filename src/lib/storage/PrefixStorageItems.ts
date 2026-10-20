@@ -60,7 +60,7 @@ export class PrefixStorageItems<T> {
       for (const origKey in changes) {
         const key = this.extractKey(origKey);
         if (key == null) continue;
-        const value = (changes[origKey] as browser.Storage.StorageChange).newValue;
+        const value = (changes[origKey] as browser.Storage.StorageChange).newValue as T;
         this.onChanged.dispatch([key, value]);
       }
     });
@@ -78,7 +78,7 @@ export class PrefixStorageItems<T> {
   public async get(key: string): Promise<T | undefined> {
     const origKey = this.getOrigKey(key);
     const items = await this.area.get(origKey);
-    return items[origKey];
+    return items[origKey] as T | undefined;
   }
 
   public async delete(key: string): Promise<void> {
@@ -109,7 +109,7 @@ export class PrefixStorageItems<T> {
     for (const origKey in items) {
       const key = this.extractKey(origKey);
       if (key == null) continue;
-      result[key] = items[origKey];
+      result[key] = items[origKey] as T;
     }
     return result;
   }

@@ -56,13 +56,13 @@ export class BrowserBooleanSetting implements ConfigurationOption<boolean> {
   public constructor(setting: browser.Types.Setting) {
     this.setting = setting;
     this.setting.onChange.addListener((details) => {
-      this.onChanged.dispatch(details.value);
+      this.onChanged.dispatch(details.value as boolean);
     });
   }
 
   public async getValue(): Promise<boolean> {
     const details = await this.setting.get({});
-    return details.value;
+    return details.value as boolean;
   }
 
   public async setValue(value: boolean): Promise<void> {
@@ -72,7 +72,7 @@ export class BrowserBooleanSetting implements ConfigurationOption<boolean> {
   public observe(callback: (newValue: boolean) => void): void {
     this.getValue().then(callback);
     this.setting.onChange.addListener((details) => {
-      callback(details.value);
+      callback(details.value as boolean);
     });
   }
 }
@@ -84,13 +84,13 @@ export class CookieBahavorSetting implements ConfigurationOption<string> {
 
   public constructor() {
     this.setting.onChange.addListener((details) => {
-      this.onChanged.dispatch(details.value.behavior);
+      this.onChanged.dispatch((details.value as { behavior: string }).behavior);
     });
   }
 
   public async getValue(): Promise<string> {
     const details = await this.setting.get({});
-    return details.value.behavior;
+    return (details.value as { behavior: string }).behavior;
   }
 
   public async setValue(value: string): Promise<void> {
@@ -100,7 +100,7 @@ export class CookieBahavorSetting implements ConfigurationOption<string> {
   public observe(callback: (newValue: string) => void): void {
     this.getValue().then(callback);
     this.setting.onChange.addListener((details) => {
-      callback(details.value.behavior);
+      callback((details.value as { behavior: string }).behavior);
     });
   }
 }

@@ -37,7 +37,7 @@ executeOnce(async () => {
   const parser = new DirectoryListingParser();
   let directory: PackageDirectory;
   try {
-    directory = parser.parse(listingText);
+    directory = parser.parse(listingText, location.pathname);
   } catch (_e) {
     return;
   }

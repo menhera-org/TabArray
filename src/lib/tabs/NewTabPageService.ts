@@ -39,7 +39,7 @@ export class NewTabPageService {
     browser.browserSettings.newTabPageOverride.onChange.addListener((details) => {
       if (!details) return;
       if (null == details.value) return;
-      const value = this.setFallbackValue(details.value);
+      const value = this.setFallbackValue(details.value as string);
       if (this._cache === value) return;
       this._cache = value;
       this.newTabPageUrlChanged.dispatch(value);
@@ -53,9 +53,9 @@ export class NewTabPageService {
   public async getNewTabPageUrl(): Promise<string> {
     if (this._cache !== undefined) return this._cache;
     const details = await browser.browserSettings.newTabPageOverride.get({});
-    const value = this.setFallbackValue(details.value);
+    const value = this.setFallbackValue(details.value as string | undefined | null);
     this._cache = value;
-    return details.value;
+    return value;
   }
 }
 

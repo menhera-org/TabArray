@@ -21,7 +21,11 @@
     "skipLibCheck": true,
     "allowJs": true,
     "checkJs": false,
-    "jsx": "react"
+    "jsx": "react",
+    "types": [
+      "react",
+      "react-dom"
+    ]
   },
   "include": [
     "src/**/*"
