@@ -31,13 +31,20 @@ import * as i18n from '../../legacy-lib/modules/i18n';
 
 const darkThemeMonitor = new DarkThemeMonitor();
 
-export const Button = ({tooltipText, name, iconUrl, useIconMask, maskColor, onClick}: {
-  tooltipText: string,
-  name: string,
-  iconUrl: string,
-  useIconMask: boolean,
-  onClick?: () => void,
-  maskColor?: string,
+export const Button = ({
+  tooltipText,
+  name,
+  iconUrl,
+  useIconMask,
+  maskColor,
+  onClick,
+}: {
+  tooltipText: string;
+  name: string;
+  iconUrl: string;
+  useIconMask: boolean;
+  onClick?: () => void;
+  maskColor?: string;
 }) => {
   let iconStyle;
   if (!maskColor) {
@@ -52,32 +59,73 @@ export const Button = ({tooltipText, name, iconUrl, useIconMask, maskColor, onCl
   } else {
     iconStyle = { background: `no-repeat center/75% url(${iconUrl})` };
   }
-  return <button className="container-button" title={tooltipText} onClick={() => onClick && onClick()}>
-    <span className="container-button-icon" style={iconStyle}></span>
-    <span className="container-button-label">{name}</span>
-  </button>;
+  return (
+    <button className="container-button" title={tooltipText} onClick={() => onClick && onClick()}>
+      <span className="container-button-icon" style={iconStyle}></span>
+      <span className="container-button-label">{name}</span>
+    </button>
+  );
 };
 
-export const ContainerButton = ({displayedContainer, onClick}: {displayedContainer: DisplayedContainer, onClick?: () => void}) => {
+export const ContainerButton = ({
+  displayedContainer,
+  onClick,
+}: {
+  displayedContainer: DisplayedContainer;
+  onClick?: () => void;
+}) => {
   const tooltipText = i18n.getMessage('defaultContainerName', String(displayedContainer.cookieStore.userContextId));
   const iconUrl = displayedContainer.iconUrl || '/img/material-icons/category.svg';
-  return <Button onClick={onClick} tooltipText={tooltipText} iconUrl={iconUrl} useIconMask={true} maskColor={displayedContainer.colorCode || undefined} name={displayedContainer.name}></Button>
+  return (
+    <Button
+      onClick={onClick}
+      tooltipText={tooltipText}
+      iconUrl={iconUrl}
+      useIconMask={true}
+      maskColor={displayedContainer.colorCode || undefined}
+      name={displayedContainer.name}
+    ></Button>
+  );
 };
 
-export const PrivateBrowsingButton = ({onClick}: {onClick?: () => void}) => {
+export const PrivateBrowsingButton = ({ onClick }: { onClick?: () => void }) => {
   const tooltipText = i18n.getMessage('privateBrowsing');
   const iconUrl = '/img/firefox-icons/private-browsing-icon.svg';
-  return <Button onClick={onClick} tooltipText={tooltipText} name={tooltipText} iconUrl={iconUrl} useIconMask={false}></Button>
+  return (
+    <Button
+      onClick={onClick}
+      tooltipText={tooltipText}
+      name={tooltipText}
+      iconUrl={iconUrl}
+      useIconMask={false}
+    ></Button>
+  );
 };
 
-export const CreateContainerButton = ({onClick}: {onClick?: () => void}) => {
+export const CreateContainerButton = ({ onClick }: { onClick?: () => void }) => {
   const tooltipText = i18n.getMessage('buttonNewContainer');
   const iconUrl = '/img/firefox-icons/plus.svg';
-  return <Button onClick={onClick} tooltipText={tooltipText} name={tooltipText} iconUrl={iconUrl} useIconMask={true}></Button>
+  return (
+    <Button
+      onClick={onClick}
+      tooltipText={tooltipText}
+      name={tooltipText}
+      iconUrl={iconUrl}
+      useIconMask={true}
+    ></Button>
+  );
 };
 
-export const TemporatyContainerButton = ({onClick}: {onClick?: () => void}) => {
+export const TemporatyContainerButton = ({ onClick }: { onClick?: () => void }) => {
   const tooltipText = i18n.getMessage('buttonNewTemporaryContainer');
   const iconUrl = '/img/material-icons/timelapse.svg';
-  return <Button onClick={onClick} tooltipText={tooltipText} name={tooltipText} iconUrl={iconUrl} useIconMask={true}></Button>
+  return (
+    <Button
+      onClick={onClick}
+      tooltipText={tooltipText}
+      name={tooltipText}
+      iconUrl={iconUrl}
+      useIconMask={true}
+    ></Button>
+  );
 };

@@ -19,7 +19,7 @@
   @license
 **/
 
-import { TabDao } from "./TabDao";
+import { TabDao } from './TabDao';
 
 export interface WindowStateDao {
   id: number;

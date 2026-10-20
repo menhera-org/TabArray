@@ -60,13 +60,32 @@ export class PopupCurrentWindowRenderer {
     this.popupRenderer = popupRenderer;
   }
 
-  private renderInactiveContainer(windowState: WindowStateDao, displayedContainer: DisplayedContainer): MenulistContainerElement {
-    const containerElement = this.popupRenderer.renderContainerWithTabs(windowState.id, displayedContainer, [], windowState.isPrivate);
+  private renderInactiveContainer(
+    windowState: WindowStateDao,
+    displayedContainer: DisplayedContainer
+  ): MenulistContainerElement {
+    const containerElement = this.popupRenderer.renderContainerWithTabs(
+      windowState.id,
+      displayedContainer,
+      [],
+      windowState.isPrivate
+    );
     return containerElement;
   }
 
-  private renderOpenContainer(windowState: WindowStateDao, displayedContainer: DisplayedContainer, tabs: CompatTab[], tabAttributeMap: TabAttributeMap): MenulistContainerElement {
-    const containerElement = this.popupRenderer.renderContainerWithTabs(windowState.id, displayedContainer, tabs, windowState.isPrivate, tabAttributeMap);
+  private renderOpenContainer(
+    windowState: WindowStateDao,
+    displayedContainer: DisplayedContainer,
+    tabs: CompatTab[],
+    tabAttributeMap: TabAttributeMap
+  ): MenulistContainerElement {
+    const containerElement = this.popupRenderer.renderContainerWithTabs(
+      windowState.id,
+      displayedContainer,
+      tabs,
+      windowState.isPrivate,
+      tabAttributeMap
+    );
     containerElement.containerHighlightButtonEnabled = true;
     containerElement.onContainerHighlight.addListener(async () => {
       await this.containerVisibilityService.focusContainerOnWindow(windowState.id, displayedContainer.cookieStore.id);
@@ -82,7 +101,11 @@ export class PopupCurrentWindowRenderer {
     modalMenuElement.defineAction('delete', browser.i18n.getMessage('buttonDeleteGroup'), false);
     modalMenuElement.defineAction('move', browser.i18n.getMessage('moveContainer'), false);
     modalMenuElement.defineAction('create-container', browser.i18n.getMessage('buttonNewContainer'), false);
-    modalMenuElement.defineAction('create-temporary-container', browser.i18n.getMessage('buttonNewTemporaryContainer'), false);
+    modalMenuElement.defineAction(
+      'create-temporary-container',
+      browser.i18n.getMessage('buttonNewTemporaryContainer'),
+      false
+    );
     modalMenuElement.defineAction('done', browser.i18n.getMessage('buttonDone'), true);
     document.body.appendChild(modalMenuElement);
     modalMenuElement.onActionClicked.addListener(async (action) => {
@@ -96,9 +119,13 @@ export class PopupCurrentWindowRenderer {
 
         case 'delete': {
           modalMenuElement.remove();
-          const answer = await this.popupRenderer.modalRenderer.confirmAsync(browser.i18n.getMessage('confirmGroupDelete', supergroup.name));
+          const answer = await this.popupRenderer.modalRenderer.confirmAsync(
+            browser.i18n.getMessage('confirmGroupDelete', supergroup.name)
+          );
           if (answer) {
-            await tabGroupDirectory.removeSupergroup(TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId));
+            await tabGroupDirectory.removeSupergroup(
+              TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId)
+            );
           }
           break;
         }
@@ -134,7 +161,14 @@ export class PopupCurrentWindowRenderer {
     });
   }
 
-  private renderSupergroupContainer(element: HTMLElement, tabGroupId: string, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, windowState: WindowStateDao, tabAttributeMap: TabAttributeMap, definedDisplayedContainers: readonly DisplayedContainer[]): number {
+  private renderSupergroupContainer(
+    element: HTMLElement,
+    tabGroupId: string,
+    tabGroupDirectorySnapshot: TabGroupDirectorySnapshot,
+    windowState: WindowStateDao,
+    tabAttributeMap: TabAttributeMap,
+    definedDisplayedContainers: readonly DisplayedContainer[]
+  ): number {
     let tabCount = 0;
     const tabGroupAttributes = new TabGroupAttributes(tabGroupId);
     if (tabGroupAttributes.tabGroupType == 'cookieStore') {
@@ -159,19 +193,40 @@ export class PopupCurrentWindowRenderer {
       element.appendChild(containerElement);
     } else {
       const supergroup = tabGroupDirectorySnapshot.getSupergroup(tabGroupId) as SupergroupType;
-      tabCount += this.renderSupergroup(supergroup, windowState, [... definedDisplayedContainers], tabGroupDirectorySnapshot, element, tabAttributeMap);
+      tabCount += this.renderSupergroup(
+        supergroup,
+        windowState,
+        [...definedDisplayedContainers],
+        tabGroupDirectorySnapshot,
+        element,
+        tabAttributeMap
+      );
     }
     return tabCount;
   }
 
-  private renderSupergroup(supergroup: SupergroupType, windowState: WindowStateDao, definedDisplayedContainers: readonly DisplayedContainer[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, element: HTMLElement, tabAttributeMap: TabAttributeMap): number {
+  private renderSupergroup(
+    supergroup: SupergroupType,
+    windowState: WindowStateDao,
+    definedDisplayedContainers: readonly DisplayedContainer[],
+    tabGroupDirectorySnapshot: TabGroupDirectorySnapshot,
+    element: HTMLElement,
+    tabAttributeMap: TabAttributeMap
+  ): number {
     let tabCount = 0;
     const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
     const supergroupElement = new MenulistSupergroupElement();
     supergroupElement.groupName = supergroup.name;
     element.appendChild(supergroupElement);
     for (const memberTabGroupId of supergroup.members) {
-      tabCount += this.renderSupergroupContainer(supergroupElement, memberTabGroupId, tabGroupDirectorySnapshot, windowState, tabAttributeMap, definedDisplayedContainers);
+      tabCount += this.renderSupergroupContainer(
+        supergroupElement,
+        memberTabGroupId,
+        tabGroupDirectorySnapshot,
+        windowState,
+        tabAttributeMap,
+        definedDisplayedContainers
+      );
     }
     supergroupElement.tabCount = tabCount;
     supergroupElement.onGroupOptionsClick.addListener(() => {
@@ -195,7 +250,11 @@ export class PopupCurrentWindowRenderer {
     return tabCount;
   }
 
-  private getActiveTabGroupIds(windowState: WindowStateDao, definedUserContexts: readonly DisplayedContainer[], tabGroupDirectorySnapshot: TabGroupDirectorySnapshot): Set<string> {
+  private getActiveTabGroupIds(
+    windowState: WindowStateDao,
+    definedUserContexts: readonly DisplayedContainer[],
+    tabGroupDirectorySnapshot: TabGroupDirectorySnapshot
+  ): Set<string> {
     const activeTabGroupIds = new Set<string>();
     const openUserContexts = definedUserContexts.filter((userContext) => {
       return Object.keys(windowState.unpinnedTabIdsByContainer).includes(userContext.cookieStore.id);
@@ -215,7 +274,13 @@ export class PopupCurrentWindowRenderer {
    *
    * @returns the number of tabs.
    */
-  public renderOpenContainers(browserState: BrowserStateDao, windowId: number, definedDisplayedContainers: readonly DisplayedContainer[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot): number {
+  public renderOpenContainers(
+    browserState: BrowserStateDao,
+    windowId: number,
+    definedDisplayedContainers: readonly DisplayedContainer[],
+    element: HTMLElement,
+    tabGroupDirectorySnapshot: TabGroupDirectorySnapshot
+  ): number {
     const windowState = browserState.windows[windowId] as WindowStateDao;
     const openUserContexts = definedDisplayedContainers.filter((userContext) => {
       return windowState.activeContainers.includes(userContext.cookieStore.id);
@@ -233,17 +298,36 @@ export class PopupCurrentWindowRenderer {
         element.appendChild(containerElement);
       }
     } else {
-      const activeTabGroupIds = this.getActiveTabGroupIds(windowState, definedDisplayedContainers, tabGroupDirectorySnapshot);
-      const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupAttributes.getRootSupergroupTabGroupId()) as SupergroupType;
+      const activeTabGroupIds = this.getActiveTabGroupIds(
+        windowState,
+        definedDisplayedContainers,
+        tabGroupDirectorySnapshot
+      );
+      const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(
+        TabGroupAttributes.getRootSupergroupTabGroupId()
+      ) as SupergroupType;
       for (const memberTabGroupId of rootSupergroup.members) {
         if (!activeTabGroupIds.has(memberTabGroupId)) continue;
-        tabCount += this.renderSupergroupContainer(element, memberTabGroupId, tabGroupDirectorySnapshot, windowState, tabAttributeMap, definedDisplayedContainers);
+        tabCount += this.renderSupergroupContainer(
+          element,
+          memberTabGroupId,
+          tabGroupDirectorySnapshot,
+          windowState,
+          tabAttributeMap,
+          definedDisplayedContainers
+        );
       }
     }
     return tabCount;
   }
 
-  public renderInactiveContainers(browserState: BrowserStateDao, windowId: number, definedUserContexts: readonly DisplayedContainer[], element: HTMLElement, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot): void {
+  public renderInactiveContainers(
+    browserState: BrowserStateDao,
+    windowId: number,
+    definedUserContexts: readonly DisplayedContainer[],
+    element: HTMLElement,
+    tabGroupDirectorySnapshot: TabGroupDirectorySnapshot
+  ): void {
     const windowState = browserState.windows[windowId] as WindowStateDao;
     const inactiveUserContexts = definedUserContexts.filter((userContext) => {
       return !windowState.activeContainers.includes(userContext.cookieStore.id);
@@ -258,7 +342,9 @@ export class PopupCurrentWindowRenderer {
       }
     } else {
       const activeTabGroupIds = this.getActiveTabGroupIds(windowState, definedUserContexts, tabGroupDirectorySnapshot);
-      const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupAttributes.getRootSupergroupTabGroupId()) as SupergroupType;
+      const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(
+        TabGroupAttributes.getRootSupergroupTabGroupId()
+      ) as SupergroupType;
       for (const memberTabGroupId of rootSupergroup.members) {
         if (activeTabGroupIds.has(memberTabGroupId)) continue;
         const tabGroupAttributes = new TabGroupAttributes(memberTabGroupId);
@@ -274,10 +360,16 @@ export class PopupCurrentWindowRenderer {
           element.appendChild(containerElement);
         } else {
           const supergroup = tabGroupDirectorySnapshot.getSupergroup(memberTabGroupId) as SupergroupType;
-          this.renderSupergroup(supergroup, windowState, [... definedUserContexts], tabGroupDirectorySnapshot, element, tabAttributeMap);
+          this.renderSupergroup(
+            supergroup,
+            windowState,
+            [...definedUserContexts],
+            tabGroupDirectorySnapshot,
+            element,
+            tabAttributeMap
+          );
         }
       }
-
     }
   }
 }

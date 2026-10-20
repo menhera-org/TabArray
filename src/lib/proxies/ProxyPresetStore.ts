@@ -19,13 +19,13 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-import { EventSink } from "weeg-events";
-import { Asserts } from "weeg-utils";
+import { StorageItem } from 'weeg-storage';
+import { EventSink } from 'weeg-events';
+import { Asserts } from 'weeg-utils';
 
-import { ProxyType } from "./ProxyType";
-import { ProxyPreset, ProxyPresetParams } from "./ProxyPreset";
-import { RandomIdService } from "../RandomIdService";
+import { ProxyType } from './ProxyType';
+import { ProxyPreset, ProxyPresetParams } from './ProxyPreset';
+import { RandomIdService } from '../RandomIdService';
 
 type StorageType = Record<string, ProxyPreset>;
 
@@ -71,16 +71,18 @@ export class ProxyPresetStore {
     const proxyDns = params.proxyDns != null ? !!params.proxyDns : undefined;
     const doNotProxyLocal = params.doNotProxyLocal != null ? !!params.doNotProxyLocal : false;
     const builtPreset: ProxyPreset = {
-      ... preset != null ? preset : {
-        id: randomIdService.getRandomId(),
-      },
+      ...(preset != null
+        ? preset
+        : {
+            id: randomIdService.getRandomId(),
+          }),
       title,
       type,
       host,
       port,
       username,
       password,
-      proxyDns: ProxyType.isSocksType(type) ? proxyDns ?? true : undefined,
+      proxyDns: ProxyType.isSocksType(type) ? (proxyDns ?? true) : undefined,
       doNotProxyLocal,
     };
 

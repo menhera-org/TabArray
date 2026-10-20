@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 import { DisplayedContainer } from 'weeg-containers';
 
 import { TabQueryService } from '../lib/tabs/TabQueryService';

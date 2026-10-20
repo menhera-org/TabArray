@@ -19,16 +19,16 @@
   @license
 **/
 
-import { Asserts } from "weeg-utils";
-import { StorageItem } from "weeg-storage";
-import { Uint32 } from "weeg-types";
-import { ContextualIdentity } from "weeg-containers";
+import { Asserts } from 'weeg-utils';
+import { StorageItem } from 'weeg-storage';
+import { Uint32 } from 'weeg-types';
+import { ContextualIdentity } from 'weeg-containers';
 
-import { ServiceRegistry } from "../ServiceRegistry";
-import { PrefixStorageItems } from "../storage/PrefixStorageItems";
-import { RandomIdService } from "../RandomIdService";
-import { ContextualIdentityService } from "../tabGroups/ContextualIdentityService";
-import { CompatConsole } from "../console/CompatConsole";
+import { ServiceRegistry } from '../ServiceRegistry';
+import { PrefixStorageItems } from '../storage/PrefixStorageItems';
+import { RandomIdService } from '../RandomIdService';
+import { ContextualIdentityService } from '../tabGroups/ContextualIdentityService';
+import { CompatConsole } from '../console/CompatConsole';
 
 type SyncedIdentityMetadata = {
   id: string; // synced identity UUID
@@ -64,8 +64,15 @@ export class ContainerSyncService {
     return this.INSTANCE;
   }
 
-  private readonly _syncedIdentityMapStorage = new StorageItem<SyncedIdentityMapStorageType>('syncedIdentityMap', {}, StorageItem.AREA_LOCAL);
-  private readonly _syncedIdentitiesStorage = new PrefixStorageItems<SyncedIdentityStorageType>('__syncedIdentity__.', PrefixStorageItems.AREA_SYNC);
+  private readonly _syncedIdentityMapStorage = new StorageItem<SyncedIdentityMapStorageType>(
+    'syncedIdentityMap',
+    {},
+    StorageItem.AREA_LOCAL
+  );
+  private readonly _syncedIdentitiesStorage = new PrefixStorageItems<SyncedIdentityStorageType>(
+    '__syncedIdentity__.',
+    PrefixStorageItems.AREA_SYNC
+  );
 
   private constructor() {
     // do nothing
@@ -84,9 +91,15 @@ export class ContainerSyncService {
 
     const promises: Promise<unknown | void>[] = [];
     const syncedUserContextIds = new Set(Object.keys(syncedIdentityMap).map((userContextId) => Uint32(userContextId)));
-    const identitiesMap = new Map(identities.map((identity) => [identity.cookieStore.userContextId, identity] as const));
-    const syncedIdentities = identities.filter((identity) => syncedUserContextIds.has(identity.cookieStore.userContextId));
-    const unsyncedIdentities = identities.filter((identity) => !syncedUserContextIds.has(identity.cookieStore.userContextId));
+    const identitiesMap = new Map(
+      identities.map((identity) => [identity.cookieStore.userContextId, identity] as const)
+    );
+    const syncedIdentities = identities.filter((identity) =>
+      syncedUserContextIds.has(identity.cookieStore.userContextId)
+    );
+    const unsyncedIdentities = identities.filter(
+      (identity) => !syncedUserContextIds.has(identity.cookieStore.userContextId)
+    );
     const syncedIdentityIds = new Set(Object.values(syncedIdentityMap).map((metadata) => metadata.id));
 
     for (const id in syncedIdentitiesData) {
@@ -105,7 +118,12 @@ export class ContainerSyncService {
       const id = metadata.id;
       const data = syncedIdentitiesData[id];
       if (!data) {
-        console.warn('Synced identity missing in sync storage: name=%s, id=%s, userContextId=%d', syncedIdentity.name, id, userContextId);
+        console.warn(
+          'Synced identity missing in sync storage: name=%s, id=%s, userContextId=%d',
+          syncedIdentity.name,
+          id,
+          userContextId
+        );
         delete syncedIdentityMap[userContextId];
         syncedUserContextIds.delete(userContextId);
         syncedIdentityIds.delete(metadata.id);
@@ -114,19 +132,44 @@ export class ContainerSyncService {
 
       if (data.deletedTime != null) {
         promises.push(contextualIdentityFactory.remove(syncedIdentity.cookieStore.id));
-        console.info('Removing identity removed from synced storage: name=%s, id=%s, userContextId=%d', data.name, id, userContextId);
-      } else if (data.name != syncedIdentity.name || data.icon != syncedIdentity.icon || data.color != syncedIdentity.color) {
+        console.info(
+          'Removing identity removed from synced storage: name=%s, id=%s, userContextId=%d',
+          data.name,
+          id,
+          userContextId
+        );
+      } else if (
+        data.name != syncedIdentity.name ||
+        data.icon != syncedIdentity.icon ||
+        data.color != syncedIdentity.color
+      ) {
         if (data.updatedTime < metadata.syncedTime) {
           data.name = syncedIdentity.name;
           data.icon = syncedIdentity.icon;
           data.color = syncedIdentity.color;
           data.updatedTime = Date.now();
           metadata.syncedTime = Date.now();
-          console.info('Updating identity on synced storage: name=%s, id=%s, userContextId=%d', data.name, id, userContextId);
+          console.info(
+            'Updating identity on synced storage: name=%s, id=%s, userContextId=%d',
+            data.name,
+            id,
+            userContextId
+          );
         } else {
           metadata.syncedTime = Date.now();
-          promises.push(contextualIdentityFactory.setParams(syncedIdentity.cookieStore.id, { name: data.name, icon: data.icon, color: data.color }));
-          console.info('Updating identity from synced storage: name=%s, id=%s, userContextId=%d', data.name, id, userContextId);
+          promises.push(
+            contextualIdentityFactory.setParams(syncedIdentity.cookieStore.id, {
+              name: data.name,
+              icon: data.icon,
+              color: data.color,
+            })
+          );
+          console.info(
+            'Updating identity from synced storage: name=%s, id=%s, userContextId=%d',
+            data.name,
+            id,
+            userContextId
+          );
         }
       }
     }
@@ -160,7 +203,12 @@ export class ContainerSyncService {
         };
         syncedUserContextIds.add(userContextId);
         syncedIdentityIds.add(id);
-        console.info('Merged local identity with synced identity: name=%s, id=%s, userContextId=%d', data.name, id, userContextId);
+        console.info(
+          'Merged local identity with synced identity: name=%s, id=%s, userContextId=%d',
+          data.name,
+          id,
+          userContextId
+        );
         continue mergeLoop;
       }
 
@@ -180,7 +228,12 @@ export class ContainerSyncService {
         updatedTime: Date.now(),
         deletedTime: null,
       };
-      console.info('Created a new identity on synced storage: name=%s, id=%s, userContextId=%d', unsyncedIdentity.name, newId, userContextId);
+      console.info(
+        'Created a new identity on synced storage: name=%s, id=%s, userContextId=%d',
+        unsyncedIdentity.name,
+        newId,
+        userContextId
+      );
     }
 
     // import new identities from sync storage
@@ -202,7 +255,12 @@ export class ContainerSyncService {
         continue;
       }
       const identity = await contextualIdentityFactory.create({ name: data.name, icon: data.icon, color: data.color });
-      console.info('Imported identity from sync storage: name=%s, id=%s, cookieStoreId=%s', data.name, id, identity.cookieStore.id);
+      console.info(
+        'Imported identity from sync storage: name=%s, id=%s, cookieStoreId=%s',
+        data.name,
+        id,
+        identity.cookieStore.id
+      );
       const userContextId = identity.cookieStore.userContextId;
       syncedIdentityMap[userContextId] = {
         id: id,

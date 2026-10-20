@@ -19,8 +19,8 @@
   @license
 **/
 
-import { FragmentBuilder } from "./FragmentBuilder";
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
+import { FragmentBuilder } from './FragmentBuilder';
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
 
 export abstract class SimpleFragmentBuilder implements FragmentBuilder {
   protected static readonly suppressBottomNavigation: boolean = false;
@@ -59,6 +59,6 @@ export abstract class SimpleFragmentBuilder implements FragmentBuilder {
   public abstract build(): CtgFragmentElement;
 
   public renderTopBar(): void {
-    throw new Error("Method not to be implemented.");
+    throw new Error('Method not to be implemented.');
   }
 }

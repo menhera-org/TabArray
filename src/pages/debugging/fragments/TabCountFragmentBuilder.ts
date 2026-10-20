@@ -21,12 +21,12 @@
 
 // this is not translated.
 
-import { WindowTabCountService, WindowTabCountHistory } from "../../../lib/windows/WindowTabCountService";
+import { WindowTabCountService, WindowTabCountHistory } from '../../../lib/windows/WindowTabCountService';
 
-import { AbstractFragmentBuilder } from "../../popup-v2/fragments/AbstractFragmentBuilder";
+import { AbstractFragmentBuilder } from '../../popup-v2/fragments/AbstractFragmentBuilder';
 
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
 
 export type ChartData = {
   time: number;
@@ -40,13 +40,12 @@ export type ChartType = {
 const windowTabCountService = WindowTabCountService.getInstance<WindowTabCountService>();
 
 export class TabCountFragmentBuilder extends AbstractFragmentBuilder {
-
   public getFragmentId(): string {
     return 'fragment-tab-count';
   }
 
   public getLabelText(): string {
-    return "Tab Count";
+    return 'Tab Count';
   }
 
   public getIconUrl(): string {
@@ -99,10 +98,13 @@ export class TabCountFragmentBuilder extends AbstractFragmentBuilder {
   public render(tabCountHistory: WindowTabCountHistory): void {
     const iframe = this.getFragment().querySelector('#time-chart') as HTMLIFrameElement;
     const data = this.buildChartData(tabCountHistory);
-    iframe.contentWindow?.postMessage({
-      type: 'update-chart',
-      value: data,
-    }, '*');
+    iframe.contentWindow?.postMessage(
+      {
+        type: 'update-chart',
+        value: data,
+      },
+      '*'
+    );
   }
 
   public renderTopBar(topBarElement: CtgTopBarElement): void {

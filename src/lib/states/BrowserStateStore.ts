@@ -19,20 +19,20 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { EventSink } from "weeg-events";
-import { Asserts } from "weeg-utils";
-import { ContextualIdentity } from "weeg-containers";
-import { RegistrableDomainService } from "weeg-domains";
+import browser from 'webextension-polyfill';
+import { EventSink } from 'weeg-events';
+import { Asserts } from 'weeg-utils';
+import { ContextualIdentity } from 'weeg-containers';
+import { RegistrableDomainService } from 'weeg-domains';
 
-import { BrowserStateDao } from "./BrowserStateDao";
-import { BrowserStateService, BrowserStateConstructParams } from "./BrowserStateService";
-import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
-import { ContextualIdentityService } from "../tabGroups/ContextualIdentityService";
-import { TagService } from "../tabGroups/tags/TagService";
-import { TabGroupAttributes } from "../tabGroups/TabGroupAttributes";
-import { TabGroupDirectorySnapshot } from "../tabGroups/TabGroupDirectorySnapshot";
-import { CompatConsole } from "../console/CompatConsole";
+import { BrowserStateDao } from './BrowserStateDao';
+import { BrowserStateService, BrowserStateConstructParams } from './BrowserStateService';
+import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
+import { ContextualIdentityService } from '../tabGroups/ContextualIdentityService';
+import { TagService } from '../tabGroups/tags/TagService';
+import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
+import { TabGroupDirectorySnapshot } from '../tabGroups/TabGroupDirectorySnapshot';
+import { CompatConsole } from '../console/CompatConsole';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const browserStateService = BrowserStateService.getInstance();
@@ -95,11 +95,14 @@ export class BrowserStateStore {
     tagDirectory.onChanged.addListener(this.updateTagDirectorySnapshot.bind(this));
     tagService.onChanged.addListener(() => {
       if (null == this._params) return;
-      this._params.tabAttributeMap.update().then(() => {
-        this.update();
-      }).catch((e) => {
-        console.error(e);
-      });
+      this._params.tabAttributeMap
+        .update()
+        .then(() => {
+          this.update();
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     });
   }
 
@@ -151,14 +154,21 @@ export class BrowserStateStore {
       };
       this._params.browserWindows.push(browserWindow);
     }
-    this._params.tabAttributeMap.addTabId(browserTab.id).then(() => {
-      this.update();
-    }).catch((e) => {
-      console.error(e);
-    });
+    this._params.tabAttributeMap
+      .addTabId(browserTab.id)
+      .then(() => {
+        this.update();
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 
-  public async updateBrowserTab(tabId: number, changeInfo: browser.Tabs.OnUpdatedChangeInfoType, browserTab: browser.Tabs.Tab): Promise<void> {
+  public async updateBrowserTab(
+    tabId: number,
+    changeInfo: browser.Tabs.OnUpdatedChangeInfoType,
+    browserTab: browser.Tabs.Tab
+  ): Promise<void> {
     if (null == this._params) return;
     if (null == browserTab.id || null == browserTab.windowId) return;
     const windowId = browserTab.windowId;
@@ -188,7 +198,7 @@ export class BrowserStateStore {
       if (browserWindow.id !== windowId || browserWindow.tabs == null) continue;
       for (let i = 0; i < browserWindow.tabs.length; ++i) {
         const tab = browserWindow.tabs[i] as browser.Tabs.Tab;
-        if (activeInfo.previousTabId != null && tab.id === activeInfo.previousTabId || tab.id !== activeInfo.tabId) {
+        if ((activeInfo.previousTabId != null && tab.id === activeInfo.previousTabId) || tab.id !== activeInfo.tabId) {
           tab.active = false;
           continue;
         }

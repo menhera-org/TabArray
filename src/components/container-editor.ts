@@ -148,11 +148,14 @@ export class ContainerEditorElement extends HTMLElement {
       const whetherToCopyCookies = cookieCopyCheckbox.checked;
       if (whetherToCopyCookies) {
         const sourceCookieStoreId = cookieCopySelect.value;
-        this._cookieCopyService.copyAllCookiesToContainer(sourceCookieStoreId, cookieStoreId).then(() => {
-          this.onContainerCreated.dispatch(cookieStoreId);
-        }).catch((e) => {
-          console.error(e);
-        });
+        this._cookieCopyService
+          .copyAllCookiesToContainer(sourceCookieStoreId, cookieStoreId)
+          .then(() => {
+            this.onContainerCreated.dispatch(cookieStoreId);
+          })
+          .catch((e) => {
+            console.error(e);
+          });
       } else {
         this.onContainerCreated.dispatch(cookieStoreId);
       }
@@ -172,11 +175,7 @@ export class ContainerEditorElement extends HTMLElement {
           });
           containerCreated(contextualIdentity.cookieStore.id);
         } else {
-          const cookieStoreId = await this._containerCreatorService.create(
-            name,
-            color,
-            icon,
-          ) as string;
+          const cookieStoreId = (await this._containerCreatorService.create(name, color, icon)) as string;
           containerCreated(cookieStoreId);
         }
       } else if (this._mode === 'edit') {
@@ -187,7 +186,7 @@ export class ContainerEditorElement extends HTMLElement {
           this._contextualIdentity.cookieStore.id,
           name,
           color,
-          icon,
+          icon
         );
         this.onContainerUpdated.dispatch(cookieStoreId);
       }

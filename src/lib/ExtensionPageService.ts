@@ -19,14 +19,32 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
+import browser from 'webextension-polyfill';
 
-import { ServiceRegistry } from "./ServiceRegistry";
-import { PageLoaderService } from "./PageLoaderService";
+import { ServiceRegistry } from './ServiceRegistry';
+import { PageLoaderService } from './PageLoaderService';
 
-import { PANORAMA_PAGE, ADDON_PAGE, PRIVACY_POLICY_PAGE, GITHUB_PAGE, COOKIES_PAGE, CONFIRM_PAGE, DEBUGGING_PAGE } from '../defs';
+import {
+  PANORAMA_PAGE,
+  ADDON_PAGE,
+  PRIVACY_POLICY_PAGE,
+  GITHUB_PAGE,
+  COOKIES_PAGE,
+  CONFIRM_PAGE,
+  DEBUGGING_PAGE,
+} from '../defs';
 
-export type ExtensionPage = 'sidebar' | 'browserAction' | 'pageAction' | 'options' | 'panorama' | 'cookies' | 'debugging' | 'amo' | 'privacyPolicy' | 'github';
+export type ExtensionPage =
+  | 'sidebar'
+  | 'browserAction'
+  | 'pageAction'
+  | 'options'
+  | 'panorama'
+  | 'cookies'
+  | 'debugging'
+  | 'amo'
+  | 'privacyPolicy'
+  | 'github';
 
 export class ExtensionPageService {
   public static readonly SIDEBAR: ExtensionPage = 'sidebar';

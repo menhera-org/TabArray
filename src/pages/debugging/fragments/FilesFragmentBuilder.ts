@@ -21,25 +21,24 @@
 
 // this is not translated.
 
-import { DirectoryListingService } from "../../../lib/package/DirectoryListingService";
-import { PackageIntegrityService } from "../../../lib/package/PackageIntegrityService";
+import { DirectoryListingService } from '../../../lib/package/DirectoryListingService';
+import { PackageIntegrityService } from '../../../lib/package/PackageIntegrityService';
 
-import { AbstractFragmentBuilder } from "../../popup-v2/fragments/AbstractFragmentBuilder";
+import { AbstractFragmentBuilder } from '../../popup-v2/fragments/AbstractFragmentBuilder';
 
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
 
 const directoryListingService = DirectoryListingService.getInstance();
 const packageIntegrityService = PackageIntegrityService.getInstance();
 
 export class FilesFragmentBuilder extends AbstractFragmentBuilder {
-
   public getFragmentId(): string {
     return 'fragment-files';
   }
 
   public getLabelText(): string {
-    return "Files";
+    return 'Files';
   }
 
   public getIconUrl(): string {
@@ -51,25 +50,25 @@ export class FilesFragmentBuilder extends AbstractFragmentBuilder {
     fragment.id = this.getFragmentId();
 
     const files = document.createElement('div');
-    files.id = "files";
+    files.id = 'files';
     fragment.appendChild(files);
 
     const filesHeader = document.createElement('div');
-    filesHeader.id = "files-header";
+    filesHeader.id = 'files-header';
     files.appendChild(filesHeader);
 
     const filesHeaderPath = document.createElement('div');
-    filesHeaderPath.id = "files-header-path";
+    filesHeaderPath.id = 'files-header-path';
     filesHeader.appendChild(filesHeaderPath);
     filesHeaderPath.textContent = 'Path';
 
     const filesHeaderRecordedIntegrity = document.createElement('div');
-    filesHeaderRecordedIntegrity.id = "files-header-recorded-integrity";
+    filesHeaderRecordedIntegrity.id = 'files-header-recorded-integrity';
     filesHeader.appendChild(filesHeaderRecordedIntegrity);
     filesHeaderRecordedIntegrity.textContent = 'Recorded Integrity';
 
     const filesHeaderCurrentIntegrity = document.createElement('div');
-    filesHeaderCurrentIntegrity.id = "files-header-current-integrity";
+    filesHeaderCurrentIntegrity.id = 'files-header-current-integrity';
     filesHeader.appendChild(filesHeaderCurrentIntegrity);
     filesHeaderCurrentIntegrity.textContent = 'Current Integrity';
 
@@ -86,44 +85,46 @@ export class FilesFragmentBuilder extends AbstractFragmentBuilder {
       directoryListingService.getFilePaths(),
       packageIntegrityService.getRecordedIntegrityListing(),
       packageIntegrityService.getIntegrityListing(),
-    ]).then(([filePaths, recordedIntegrityListing, integrityListing]) => {
-      for (const path of filePaths) {
-        const recordedIntegrity = recordedIntegrityListing[path] ?? '';
-        const currentIntegrity = integrityListing[path] ?? '';
-        const encodedPath = directoryListingService.encodePath(path);
+    ])
+      .then(([filePaths, recordedIntegrityListing, integrityListing]) => {
+        for (const path of filePaths) {
+          const recordedIntegrity = recordedIntegrityListing[path] ?? '';
+          const currentIntegrity = integrityListing[path] ?? '';
+          const encodedPath = directoryListingService.encodePath(path);
 
-        const fileElement = document.createElement('div');
-        fileElement.classList.add('file');
-        files.appendChild(fileElement);
+          const fileElement = document.createElement('div');
+          fileElement.classList.add('file');
+          files.appendChild(fileElement);
 
-        const filePathElement = document.createElement('div');
-        filePathElement.classList.add('file-path');
-        fileElement.appendChild(filePathElement);
+          const filePathElement = document.createElement('div');
+          filePathElement.classList.add('file-path');
+          fileElement.appendChild(filePathElement);
 
-        const filePathLink = document.createElement('a');
-        filePathLink.classList.add('file-path-link');
-        filePathLink.textContent = path;
-        filePathLink.href = new URL(encodedPath, location.href).href;
-        filePathLink.target = '_blank';
-        filePathElement.appendChild(filePathLink);
+          const filePathLink = document.createElement('a');
+          filePathLink.classList.add('file-path-link');
+          filePathLink.textContent = path;
+          filePathLink.href = new URL(encodedPath, location.href).href;
+          filePathLink.target = '_blank';
+          filePathElement.appendChild(filePathLink);
 
-        const recordedIntegrityElement = document.createElement('div');
-        recordedIntegrityElement.classList.add('file-recorded-integrity');
-        recordedIntegrityElement.textContent = recordedIntegrity;
-        fileElement.appendChild(recordedIntegrityElement);
+          const recordedIntegrityElement = document.createElement('div');
+          recordedIntegrityElement.classList.add('file-recorded-integrity');
+          recordedIntegrityElement.textContent = recordedIntegrity;
+          fileElement.appendChild(recordedIntegrityElement);
 
-        const currentIntegrityElement = document.createElement('div');
-        currentIntegrityElement.classList.add('file-current-integrity');
-        currentIntegrityElement.textContent = currentIntegrity;
-        fileElement.appendChild(currentIntegrityElement);
+          const currentIntegrityElement = document.createElement('div');
+          currentIntegrityElement.classList.add('file-current-integrity');
+          currentIntegrityElement.textContent = currentIntegrity;
+          fileElement.appendChild(currentIntegrityElement);
 
-        if (recordedIntegrity !== currentIntegrity) {
-          fileElement.classList.add('file-integrity-changed');
+          if (recordedIntegrity !== currentIntegrity) {
+            fileElement.classList.add('file-integrity-changed');
+          }
         }
-      }
-    }).catch((e) => {
-      console.error(e);
-    });
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 
   public renderTopBar(topBarElement: CtgTopBarElement): void {

@@ -19,8 +19,8 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
-import { AbstractFragmentBuilder } from "../../pages/popup-v2/fragments/AbstractFragmentBuilder";
+import { EventSink } from 'weeg-events';
+import { AbstractFragmentBuilder } from '../../pages/popup-v2/fragments/AbstractFragmentBuilder';
 
 export class CtgFragmentElement extends HTMLElement {
   public readonly onActivated = new EventSink<void>();

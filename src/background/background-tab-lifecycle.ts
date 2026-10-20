@@ -95,12 +95,15 @@ browser.tabs.onCreated.addListener((browserTab) => {
   if (null != browserTab.openerTabId && null != browserTab.id && browserTab.openerTabId > 0) {
     const tabId = browserTab.id;
     const openerTabId = browserTab.openerTabId;
-    tagService.getTagForTabId(openerTabId).then((tag) => {
-      if (!tag) return;
-      return tagService.setTagIdForTabId(tabId, tag.tagId);
-    }).catch((e) => {
-      console.error(e);
-    });
+    tagService
+      .getTagForTabId(openerTabId)
+      .then((tag) => {
+        if (!tag) return;
+        return tagService.setTagIdForTabId(tabId, tag.tagId);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 });
 

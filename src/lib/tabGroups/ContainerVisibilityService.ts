@@ -72,7 +72,7 @@ export class ContainerVisibilityService {
    */
   public async focusContainerOnWindow(windowId: number, cookieStoreId: string): Promise<void> {
     const cookieStore = new CookieStore(cookieStoreId);
-    const {isPrivate, userContextId} = cookieStore;
+    const { isPrivate, userContextId } = cookieStore;
     if (isPrivate) {
       console.assert(userContextId === 0, 'Private windows should only have userContextId 0');
     }

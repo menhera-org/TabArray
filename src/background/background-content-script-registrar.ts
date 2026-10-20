@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 
 import { CookieStoreService } from '../lib/tabGroups/CookieStoreService';
 
-import { LanguageSettings } from "../lib/overrides/LanguageSettings";
+import { LanguageSettings } from '../lib/overrides/LanguageSettings';
 import { config } from '../config/config';
 
 const languageSettings = LanguageSettings.getInstance();
@@ -80,12 +80,14 @@ const update = async () => {
 
       const cookieStoreId = key;
       const contentScript = await browser.contentScripts.register({
-        js: [{
-          code: `
+        js: [
+          {
+            code: `
             globalThis.gLanguageStore = globalThis.gLanguageStore ?? {};
             gLanguageStore.languages = ${JSON.stringify(languages)};
           `,
-        }],
+          },
+        ],
         matches: ['<all_urls>'],
         allFrames: true,
         matchAboutBlank: true,

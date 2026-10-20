@@ -37,38 +37,44 @@ const containerTabOpenerService = ContainerTabOpenerService.getInstance<Containe
 const openTabsService = OpenTabsService.getInstance();
 const tabStateStore = TabStateStore.getInstance();
 
-browser.tabs.onUpdated.addListener((_tabId, _changeInfo, browserTab) => {
-  try {
-    const tabState = TabState.createFromBrowserTab(browserTab);
-    if (tabState.url == 'about:blank' && tabState.isLoading) return;
-    if (tabState.isLoading == false) {
-      tabPreviewService.updateTabPreview(tabState.id).catch((e) => {
-        console.warn(e);
-      });
-    }
-
-    const url = new URL(tabState.url);
-
-    // handle "open container" page
-    if (url.origin == location.origin && url.protocol == location.protocol && url.pathname == OPEN_CONTAINER_PAGE) {
-      const cookieStoreId = url.searchParams.get('cookieStoreId') || CookieStore.DEFAULT.id;
-      containerTabOpenerService.openNewTabInContainer(cookieStoreId, true, tabState.windowId).then(() => {
-        return browser.tabs.remove(tabState.id);
-      }).catch((e) => {
-        console.error(e);
-      });
-      return;
-    }
-
-    injectExtensionContentScript(browserTab);
-    openTabsService.hasTab(tabState.id).then((hasTab) => {
-      if (!hasTab) {
-        tabStateStore.onBeforeTabCreated.dispatch(tabState);
+browser.tabs.onUpdated.addListener(
+  (_tabId, _changeInfo, browserTab) => {
+    try {
+      const tabState = TabState.createFromBrowserTab(browserTab);
+      if (tabState.url == 'about:blank' && tabState.isLoading) return;
+      if (tabState.isLoading == false) {
+        tabPreviewService.updateTabPreview(tabState.id).catch((e) => {
+          console.warn(e);
+        });
       }
-    });
-  } catch (e) {
-    console.error(e);
+
+      const url = new URL(tabState.url);
+
+      // handle "open container" page
+      if (url.origin == location.origin && url.protocol == location.protocol && url.pathname == OPEN_CONTAINER_PAGE) {
+        const cookieStoreId = url.searchParams.get('cookieStoreId') || CookieStore.DEFAULT.id;
+        containerTabOpenerService
+          .openNewTabInContainer(cookieStoreId, true, tabState.windowId)
+          .then(() => {
+            return browser.tabs.remove(tabState.id);
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+        return;
+      }
+
+      injectExtensionContentScript(browserTab);
+      openTabsService.hasTab(tabState.id).then((hasTab) => {
+        if (!hasTab) {
+          tabStateStore.onBeforeTabCreated.dispatch(tabState);
+        }
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  },
+  {
+    properties: ['status', 'url'],
   }
-}, {
-  properties: ['status', 'url'],
-});
+);

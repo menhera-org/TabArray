@@ -60,7 +60,13 @@ export class TabGroupOverridesElement extends TabGroupListingElement {
     return input;
   }
 
-  private setUserAgentOptions(tabGroupId: string, select: HTMLSelectElement, input: HTMLInputElement, preset: UserAgentPreset, userAgent?: string) {
+  private setUserAgentOptions(
+    tabGroupId: string,
+    select: HTMLSelectElement,
+    input: HTMLInputElement,
+    preset: UserAgentPreset,
+    userAgent?: string
+  ) {
     select.value = preset;
     if (preset === 'custom') {
       input.readOnly = false;
@@ -123,7 +129,7 @@ export class TabGroupOverridesElement extends TabGroupListingElement {
       this.handleUserAgentChange(tabGroupId, select, input);
     });
     this._userAgentSettings.onChanged.addListener(() => {
-      this._userAgentSettings.getUserAgentParams(tabGroupId).then(({preset, userAgent}) => {
+      this._userAgentSettings.getUserAgentParams(tabGroupId).then(({ preset, userAgent }) => {
         this.setUserAgentOptions(tabGroupId, select, input, preset, userAgent);
       });
     });

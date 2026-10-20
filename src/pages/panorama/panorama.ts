@@ -34,13 +34,13 @@ import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { CompatConsole } from '../../lib/console/CompatConsole';
 import { PerformanceHistoryService } from '../../lib/history/PerformanceHistoryService';
 
-import { PanoramaStateStore } from "./PanoramaStateStore";
+import { PanoramaStateStore } from './PanoramaStateStore';
 
-import { IndexTab } from "../../legacy-lib/modules/IndexTab";
+import { IndexTab } from '../../legacy-lib/modules/IndexTab';
 import * as i18n from '../../legacy-lib/modules/i18n';
 
-import { PanoramaTabElement } from "../../components/panorama-tab";
-import { PanoramaContainerElement } from "../../components/panorama-container";
+import { PanoramaTabElement } from '../../components/panorama-tab';
+import { PanoramaContainerElement } from '../../components/panorama-container';
 import { ContainerEditorElement } from '../../components/container-editor';
 import { ModalConfirmElement } from '../../components/modal-confirm';
 import { ModalFrameElement } from '../../components/modal-frame';
@@ -63,7 +63,9 @@ document.documentElement.lang = i18n.getEffectiveLocale();
 const newContainerButtonElement = document.getElementById('button-new-container') as HTMLButtonElement;
 newContainerButtonElement.title = i18n.getMessage('buttonNewContainer');
 
-const newTemporaryContainerButtonElement = document.getElementById('button-new-temporary-container') as HTMLButtonElement;
+const newTemporaryContainerButtonElement = document.getElementById(
+  'button-new-temporary-container'
+) as HTMLButtonElement;
 newTemporaryContainerButtonElement.title = i18n.getMessage('buttonNewTemporaryContainer');
 
 const settingsButtonElement = document.getElementById('button-settings') as HTMLButtonElement;
@@ -94,11 +96,14 @@ newContainerButtonElement.addEventListener('click', () => {
 });
 
 newTemporaryContainerButtonElement.addEventListener('click', () => {
-  temporaryContainerService.createTemporaryContainer().then(() => {
-    window.close();
-  }).catch((e) => {
-    console.error(e);
-  });
+  temporaryContainerService
+    .createTemporaryContainer()
+    .then(() => {
+      window.close();
+    })
+    .catch((e) => {
+      console.error(e);
+    });
 });
 
 const renderTab = (tab: CompatTab) => {
@@ -124,12 +129,16 @@ const renderTab = (tab: CompatTab) => {
   }
 
   // https://qiita.com/piroor/items/44ccbc2ee918bc88c3ea
-  tabElement.addEventListener('contextmenu', () => {
-    browser.menus.overrideContext({
-      context: 'tab',
-      tabId: tab.id,
-    });
-  }, { capture: true });
+  tabElement.addEventListener(
+    'contextmenu',
+    () => {
+      browser.menus.overrideContext({
+        context: 'tab',
+        tabId: tab.id,
+      });
+    },
+    { capture: true }
+  );
 
   tabElement.addEventListener('button-tab-click', async () => {
     await tab.focus();
@@ -142,9 +151,12 @@ const renderTab = (tab: CompatTab) => {
 
   tabElement.addEventListener('dragstart', (ev) => {
     if (!ev.dataTransfer) return;
-    ev.dataTransfer.setData('application/json', JSON.stringify({
-      id: tab.id,
-    }));
+    ev.dataTransfer.setData(
+      'application/json',
+      JSON.stringify({
+        id: tab.id,
+      })
+    );
     const img = new Image();
     img.src = previewUrl;
     // ev.dataTransfer?.setDragImage(img, 16, 16);
@@ -160,20 +172,27 @@ const renderContainer = async (displayedContainer: DisplayedContainer, isPrivate
   const cookieStore = displayedContainer.cookieStore;
   const containerElement = new PanoramaContainerElement(displayedContainer);
   containerElement.targetId = cookieStore.id;
-  const tabs = (await tabQueryService.queryTabs({
-    tabGroupId: cookieStore.id,
-  })).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
+  const tabs = (
+    await tabQueryService.queryTabs({
+      tabGroupId: cookieStore.id,
+    })
+  ).filter((tab) => !IndexTab.isIndexTabUrl(tab.url));
   containerElement.tabCount = tabs.length;
-  containerElement.containerTabsElement.append(...tabs.map((tab) => {
-    const tabElement = renderTab(tab);
-    return tabElement;
-  }));
+  containerElement.containerTabsElement.append(
+    ...tabs.map((tab) => {
+      const tabElement = renderTab(tab);
+      return tabElement;
+    })
+  );
   containerElement.onNewTabButtonClick.addListener(() => {
-    containerTabOpenerService.openNewTabInContainer(cookieStore.id, true, windowId).then(() => {
-      window.close();
-    }).catch((e) => {
-      console.error(e);
-    });
+    containerTabOpenerService
+      .openNewTabInContainer(cookieStore.id, true, windowId)
+      .then(() => {
+        window.close();
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   });
   if (0 != cookieStore.userContextId) {
     containerElement.onContainerEditButtonClick.addListener(async () => {
@@ -200,7 +219,9 @@ const renderContainer = async (displayedContainer: DisplayedContainer, isPrivate
     containerElement.onContainerDeleteButtonClick.addListener(async () => {
       const contextualIdentity = await contextualIdentityFactory.get(cookieStore.id);
       if (!contextualIdentity) return;
-      const confirmElement = new ModalConfirmElement(browser.i18n.getMessage('confirmContainerDelete', contextualIdentity.name));
+      const confirmElement = new ModalConfirmElement(
+        browser.i18n.getMessage('confirmContainerDelete', contextualIdentity.name)
+      );
       confirmElement.onOk.addListener(async () => {
         await contextualIdentityFactory.remove(cookieStore.id);
       });
@@ -231,7 +252,7 @@ const renderContainer = async (displayedContainer: DisplayedContainer, isPrivate
     } catch (_e) {
       // ignore
     }
-  })
+  });
   return containerElement;
 };
 
@@ -249,7 +270,9 @@ const render = async () => {
     throw new Error('browserWindow.id is null');
   }
   const windowId = browserWindow.id;
-  const containerElements = await Promise.all(displayedContainers.map((displayedContainer) => renderContainer(displayedContainer, isPrivate, windowId)));
+  const containerElements = await Promise.all(
+    displayedContainers.map((displayedContainer) => renderContainer(displayedContainer, isPrivate, windowId))
+  );
   const nonemptyContainerElements = containerElements.filter((containerElement) => containerElement.tabCount > 0);
   const emptyContainerElements = containerElements.filter((containerElement) => containerElement.tabCount === 0);
   const containersContainer = document.querySelector<HTMLDivElement>('#containers');
@@ -257,7 +280,7 @@ const render = async () => {
     throw new Error('containersContainer is null');
   }
   containersContainer.textContent = '';
-  containersContainer.append(... nonemptyContainerElements, ... emptyContainerElements);
+  containersContainer.append(...nonemptyContainerElements, ...emptyContainerElements);
   const endTime = Date.now();
   const duration = endTime - startTime;
   performanceHistoryService.addEntry('panorama.render', startTime, duration);

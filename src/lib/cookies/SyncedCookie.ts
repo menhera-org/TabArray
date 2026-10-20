@@ -19,6 +19,6 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
+import browser from 'webextension-polyfill';
 
-export type SyncedCookie = Omit<browser.Cookies.Cookie, "storeId">;
+export type SyncedCookie = Omit<browser.Cookies.Cookie, 'storeId'>;

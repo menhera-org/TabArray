@@ -19,7 +19,7 @@
   @license
 **/
 
-import { CookieStore } from "weeg-containers";
+import { CookieStore } from 'weeg-containers';
 
 export enum TabGroupType {
   SUPERGROUP = 'supergroup',
@@ -54,7 +54,7 @@ export interface CookieStoreTabGroupAttributes extends CommonTabGroupAttributes 
 export type TabGroupAttributes = SupergroupTabGroupAttributes | CookieStoreTabGroupAttributes;
 
 export interface TabGroupAttributesConstructor {
-  new(tabGroupId: string): TabGroupAttributes;
+  new (tabGroupId: string): TabGroupAttributes;
 
   /**
    * Numeric supergroupId of the root supergroup.

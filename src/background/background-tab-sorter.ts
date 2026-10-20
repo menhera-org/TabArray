@@ -41,7 +41,7 @@ openTabsService.onTabCreated.addListener(() => {
   });
 });
 
-browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
+browser.tabs.onMoved.addListener(async (tabId /*movedInfo*/) => {
   try {
     const browserTab = await browser.tabs.get(tabId);
     if (browserTab.pinned) {
@@ -53,15 +53,16 @@ browser.tabs.onMoved.addListener(async (tabId, /*movedInfo*/) => {
   }
 });
 
-browser.tabs.onUpdated.addListener((/*tabId, changeInfo, browserTab*/) => {
-  tabSortingService.sortTabs().catch((e) => {
-    console.error(e);
-  });
-}, {
-  properties: [
-    'pinned',
-  ],
-});
+browser.tabs.onUpdated.addListener(
+  (/*tabId, changeInfo, browserTab*/) => {
+    tabSortingService.sortTabs().catch((e) => {
+      console.error(e);
+    });
+  },
+  {
+    properties: ['pinned'],
+  }
+);
 
 startupService.onStartup.addListener(() => {
   tabSortingService.sortTabs().catch((e) => {

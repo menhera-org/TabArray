@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
 export class MenulistSupergroupElement extends HTMLElement {
   private _tabCount = 0;
@@ -34,7 +34,7 @@ export class MenulistSupergroupElement extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
-      throw new Error("Shadow root is null");
+      throw new Error('Shadow root is null');
     }
     this.buildElement();
     this.groupCloseButton.title = browser.i18n.getMessage('tooltipContainerCloseAll');

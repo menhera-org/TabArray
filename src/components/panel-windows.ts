@@ -20,13 +20,13 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 import { DisplayedContainer } from 'weeg-containers';
 
-import { TemporaryContainerService } from "../lib/tabGroups/TemporaryContainerService";
+import { TemporaryContainerService } from '../lib/tabGroups/TemporaryContainerService';
 import { CompatConsole } from '../lib/console/CompatConsole';
 import { TabGroupDirectorySnapshot } from '../lib/tabGroups/TabGroupDirectorySnapshot';
-import { ContainerVisibilityService } from "../lib/tabGroups/ContainerVisibilityService";
+import { ContainerVisibilityService } from '../lib/tabGroups/ContainerVisibilityService';
 import { DomFactory } from '../lib/DomFactory';
 import { BrowserStateDao } from '../lib/states/BrowserStateDao';
 import { WindowStateDao } from '../lib/states/WindowStateDao';
@@ -35,14 +35,14 @@ import { TabDao } from '../lib/states/TabDao';
 
 import { config } from '../config/config';
 
-import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
+import { CtgMenuItemElement } from './ctg/ctg-menu-item';
 import { SupergroupEditorElement } from './supergroup-editor';
 import { TagEditorElement } from './tag-editor';
 import { MenulistTabElement } from './menulist-tab';
 
 import * as containers from '../legacy-lib/modules/containers';
 
-import { PopupRendererService } from "../pages/popup-v2/PopupRendererService";
+import { PopupRendererService } from '../pages/popup-v2/PopupRendererService';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -92,7 +92,9 @@ export class PanelWindowsElement extends HTMLElement {
     const mainElement = DomFactory.createElement('div', this.shadowRoot, { classNames: ['main'] });
     DomFactory.createElement('div', mainElement, { classNames: ['pinned-tabs'] });
     DomFactory.createElement('div', mainElement, { classNames: ['active-containers'] });
-    const detailsElement = DomFactory.createElement<HTMLDetailsElement>('details', mainElement, { classNames: ['inactive-containers-details'] });
+    const detailsElement = DomFactory.createElement<HTMLDetailsElement>('details', mainElement, {
+      classNames: ['inactive-containers-details'],
+    });
     detailsElement.open = !(config['menu.hideEmptyContainers'].tryGetValueSync() ?? false);
 
     config['menu.hideEmptyContainers'].getValue().then((hideEmptyContainers) => {
@@ -109,7 +111,9 @@ export class PanelWindowsElement extends HTMLElement {
       }
     });
 
-    const summaryElement = DomFactory.createElement('summary', detailsElement, { classNames: ['inactive-containers-summary'] });
+    const summaryElement = DomFactory.createElement('summary', detailsElement, {
+      classNames: ['inactive-containers-summary'],
+    });
     summaryElement.textContent = browser.i18n.getMessage('currentWindowMoreContainers');
     DomFactory.createElement('div', detailsElement, { classNames: ['inactive-containers'] });
     DomFactory.createElement('div', mainElement, { classNames: ['actions'] });
@@ -124,27 +128,62 @@ export class PanelWindowsElement extends HTMLElement {
   }
 
   private defineWindowMenuItems(element: HTMLElement): void {
-    const collapseContainersMenuItem = this.createMenuItem('collapse-containers', 'tooltipCollapseContainers', '/img/material-icons/unfold_less.svg', this.onCollapseContainersButtonClicked);
+    const collapseContainersMenuItem = this.createMenuItem(
+      'collapse-containers',
+      'tooltipCollapseContainers',
+      '/img/material-icons/unfold_less.svg',
+      this.onCollapseContainersButtonClicked
+    );
     element.appendChild(collapseContainersMenuItem);
 
-    const expandContainersMenuItem = this.createMenuItem('expand-containers', 'tooltipExpandContainers', '/img/material-icons/unfold_more.svg', this.onExpandContainersButtonClicked);
+    const expandContainersMenuItem = this.createMenuItem(
+      'expand-containers',
+      'tooltipExpandContainers',
+      '/img/material-icons/unfold_more.svg',
+      this.onExpandContainersButtonClicked
+    );
     element.appendChild(expandContainersMenuItem);
 
-    const windowCloseMenuItem = this.createMenuItem('window-close', 'tooltipCloseWindow', '/img/firefox-icons/close.svg', this.onWindowCloseButtonClicked);
+    const windowCloseMenuItem = this.createMenuItem(
+      'window-close',
+      'tooltipCloseWindow',
+      '/img/firefox-icons/close.svg',
+      this.onWindowCloseButtonClicked
+    );
     element.appendChild(windowCloseMenuItem);
   }
 
   private defineContainerMenuItems(element: HTMLElement): void {
-    const newTagMenuItem = this.createMenuItem('new-tag', 'buttonNewTag', '/img/material-icons/new_label.svg', this.onCreateTagButtonClicked);
+    const newTagMenuItem = this.createMenuItem(
+      'new-tag',
+      'buttonNewTag',
+      '/img/material-icons/new_label.svg',
+      this.onCreateTagButtonClicked
+    );
     element.appendChild(newTagMenuItem);
 
-    const newGroupMenuItem = this.createMenuItem('new-group', 'buttonNewGroup', '/img/firefox-icons/folder-add.svg', this.onCreateGroupButtonClicked);
+    const newGroupMenuItem = this.createMenuItem(
+      'new-group',
+      'buttonNewGroup',
+      '/img/firefox-icons/folder-add.svg',
+      this.onCreateGroupButtonClicked
+    );
     element.appendChild(newGroupMenuItem);
 
-    const newContainerMenuItem = this.createMenuItem('new-container', 'buttonNewContainer', '/img/firefox-icons/plus.svg', this.onCreateContainerButtonClicked);
+    const newContainerMenuItem = this.createMenuItem(
+      'new-container',
+      'buttonNewContainer',
+      '/img/firefox-icons/plus.svg',
+      this.onCreateContainerButtonClicked
+    );
     element.appendChild(newContainerMenuItem);
 
-    const newTemporaryContainerMenuItem = this.createMenuItem('new-temporary-container', 'buttonNewTemporaryContainer', '/img/material-icons/timelapse.svg', this.onCreateTemporaryContainerButtonClicked);
+    const newTemporaryContainerMenuItem = this.createMenuItem(
+      'new-temporary-container',
+      'buttonNewTemporaryContainer',
+      '/img/material-icons/timelapse.svg',
+      this.onCreateTemporaryContainerButtonClicked
+    );
     element.appendChild(newTemporaryContainerMenuItem);
   }
 
@@ -168,12 +207,15 @@ export class PanelWindowsElement extends HTMLElement {
     });
 
     this.onCreateContainerButtonClicked.addListener(() => {
-      this._popupRenderer.modalRenderer.showNewContainerPanelAsync().then((result) => {
-        if (!result) return;
-        console.log('Created new container', result);
-      }).catch((e) => {
-        console.error(e);
-      });
+      this._popupRenderer.modalRenderer
+        .showNewContainerPanelAsync()
+        .then((result) => {
+          if (!result) return;
+          console.log('Created new container', result);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     });
 
     this.onCreateTemporaryContainerButtonClicked.addListener(() => {
@@ -246,12 +288,18 @@ export class PanelWindowsElement extends HTMLElement {
     const newGroupMenuItem = this.shadowRoot.querySelector('.new-group') as CtgMenuItemElement;
 
     const tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(browserState.supergroups);
-    let displayedContainers = browserState.displayedContainers.map((dao) => DisplayedContainerDao.toDisplayedContainer(dao));
+    let displayedContainers = browserState.displayedContainers.map((dao) =>
+      DisplayedContainerDao.toDisplayedContainer(dao)
+    );
     if (currentWindowState.isPrivate) {
-      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
+      displayedContainers = displayedContainers.filter(
+        (displayedContainer) => displayedContainer.cookieStore.isPrivate == true
+      );
       newGroupMenuItem.hidden = true;
     } else {
-      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == false);
+      displayedContainers = displayedContainers.filter(
+        (displayedContainer) => displayedContainer.cookieStore.isPrivate == false
+      );
       newGroupMenuItem.hidden = false;
     }
     displayedContainers = [...displayedContainers].sort((a, b) => {
@@ -262,11 +310,23 @@ export class PanelWindowsElement extends HTMLElement {
 
     const activeContainersElement = this.shadowRoot.querySelector('.active-containers') as HTMLDivElement;
     activeContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderOpenContainers(browserState, currentWindowState.id, displayedContainers, activeContainersElement, tabGroupDirectorySnapshot);
+    this._popupRenderer.currentWindowRenderer.renderOpenContainers(
+      browserState,
+      currentWindowState.id,
+      displayedContainers,
+      activeContainersElement,
+      tabGroupDirectorySnapshot
+    );
 
     const inactiveContainersElement = this.shadowRoot.querySelector('.inactive-containers') as HTMLDivElement;
     inactiveContainersElement.textContent = '';
-    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(browserState, currentWindowState.id, displayedContainers, inactiveContainersElement, tabGroupDirectorySnapshot);
+    this._popupRenderer.currentWindowRenderer.renderInactiveContainers(
+      browserState,
+      currentWindowState.id,
+      displayedContainers,
+      inactiveContainersElement,
+      tabGroupDirectorySnapshot
+    );
 
     this.renderActions();
   }
@@ -277,16 +337,24 @@ export class PanelWindowsElement extends HTMLElement {
     const actionsElement = this.shadowRoot.querySelector('.actions') as HTMLDivElement;
     actionsElement.textContent = '';
 
-    const newContainerMenuItem = this.createMenuItem('action-new-container', 'buttonNewContainer', '/img/firefox-icons/plus.svg', this.onCreateContainerButtonClicked);
+    const newContainerMenuItem = this.createMenuItem(
+      'action-new-container',
+      'buttonNewContainer',
+      '/img/firefox-icons/plus.svg',
+      this.onCreateContainerButtonClicked
+    );
     newContainerMenuItem.displayStyle = 'normal';
     actionsElement.appendChild(newContainerMenuItem);
 
-    const newTemporaryContainerMenuItem = this.createMenuItem('action-new-temporary-container', 'buttonNewTemporaryContainer', '/img/material-icons/timelapse.svg', this.onCreateTemporaryContainerButtonClicked);
+    const newTemporaryContainerMenuItem = this.createMenuItem(
+      'action-new-temporary-container',
+      'buttonNewTemporaryContainer',
+      '/img/material-icons/timelapse.svg',
+      this.onCreateTemporaryContainerButtonClicked
+    );
     newTemporaryContainerMenuItem.displayStyle = 'normal';
     actionsElement.appendChild(newTemporaryContainerMenuItem);
   }
-
-
 
   private renderPinnedTabs(browserState: BrowserStateDao, definedUserContexts: readonly DisplayedContainer[]) {
     const currentWindowState = browserState.windows[this._selectedWindowId] as WindowStateDao;
@@ -314,12 +382,15 @@ export class PanelWindowsElement extends HTMLElement {
       const tab = currentWindowState.tabs[tabId];
       if (!tab) return;
 
-      ev.dataTransfer.setData('application/json', JSON.stringify({
-        type: 'tab',
-        id: tabId,
-        index: tab.index,
-        pinned: true,
-      }));
+      ev.dataTransfer.setData(
+        'application/json',
+        JSON.stringify({
+          type: 'tab',
+          id: tabId,
+          index: tab.index,
+          pinned: true,
+        })
+      );
       ev.dataTransfer.dropEffect = 'move';
     };
 
@@ -376,7 +447,9 @@ export class PanelWindowsElement extends HTMLElement {
       // Get the actual clicked element from composedPath (for Shadow DOM)
       const path = ev.composedPath();
       const shadowTarget = path[0] as HTMLElement;
-      const action = shadowTarget.getAttribute?.('data-action') || shadowTarget.closest('[data-action]')?.getAttribute('data-action');
+      const action =
+        shadowTarget.getAttribute?.('data-action') ||
+        shadowTarget.closest('[data-action]')?.getAttribute('data-action');
 
       if (!action) return;
 
@@ -404,11 +477,13 @@ export class PanelWindowsElement extends HTMLElement {
 
         case 'set-tag':
           // Import ModalSetTagElement dynamically
-          import('./modal-set-tag').then(({ ModalSetTagElement }) => {
-            document.body.appendChild(new ModalSetTagElement(tabId));
-          }).catch((e) => {
-            console.error('Failed to load ModalSetTagElement:', e);
-          });
+          import('./modal-set-tag')
+            .then(({ ModalSetTagElement }) => {
+              document.body.appendChild(new ModalSetTagElement(tabId));
+            })
+            .catch((e) => {
+              console.error('Failed to load ModalSetTagElement:', e);
+            });
           break;
       }
     };
@@ -466,7 +541,12 @@ export class PanelWindowsElement extends HTMLElement {
     pinnedTabsElement.appendChild(fragment);
   }
 
-  private createMenuItem(className: string, messageName: string, iconUrl: string, eventSink: EventSink<void>): CtgMenuItemElement {
+  private createMenuItem(
+    className: string,
+    messageName: string,
+    iconUrl: string,
+    eventSink: EventSink<void>
+  ): CtgMenuItemElement {
     const menuItem = new CtgMenuItemElement();
     menuItem.displayStyle = 'icon';
     menuItem.iconSrc = iconUrl;
@@ -492,7 +572,9 @@ export class PanelWindowsElement extends HTMLElement {
     if (!this.shadowRoot) return;
     const mainElement = this.shadowRoot.querySelector('.main') as HTMLDivElement;
     const searchResultsElement = this.shadowRoot.querySelector('.search-results') as HTMLDivElement;
-    const searchResultsContainersElement = this.shadowRoot.querySelector('.search-results-containers') as HTMLDivElement;
+    const searchResultsContainersElement = this.shadowRoot.querySelector(
+      '.search-results-containers'
+    ) as HTMLDivElement;
     const searchResultsTabsElement = this.shadowRoot.querySelector('.search-results-tabs') as HTMLDivElement;
     if (this._isSearching) {
       mainElement.hidden = true;
@@ -510,11 +592,17 @@ export class PanelWindowsElement extends HTMLElement {
     const tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(this._browserState.supergroups);
     const windowStateSnapshot = this._browserState.windows[this._selectedWindowId] as WindowStateDao;
     const isPrivate = windowStateSnapshot.isPrivate;
-    let displayedContainers = [... this._browserState.displayedContainers].map((dao) => DisplayedContainerDao.toDisplayedContainer(dao));
+    let displayedContainers = [...this._browserState.displayedContainers].map((dao) =>
+      DisplayedContainerDao.toDisplayedContainer(dao)
+    );
     if (isPrivate) {
-      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate == true);
+      displayedContainers = displayedContainers.filter(
+        (displayedContainer) => displayedContainer.cookieStore.isPrivate == true
+      );
     } else {
-      displayedContainers = displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.isPrivate != true);
+      displayedContainers = displayedContainers.filter(
+        (displayedContainer) => displayedContainer.cookieStore.isPrivate != true
+      );
     }
     let tags = Object.values(this._browserState.tags);
     const allUserContexts = [...displayedContainers];
@@ -531,9 +619,11 @@ export class PanelWindowsElement extends HTMLElement {
     const tagIds = tags.map((tag) => tag.tagId);
     for (const searchWord of searchWords) {
       tabs = tabs.filter((tab) => {
-        return tab.title.toLowerCase().includes(searchWord)
-          || tab.url.toLowerCase().includes(searchWord)
-          || tagIds.includes(this._browserState?.tagIdsForTabs[tab.id] ?? 0);
+        return (
+          tab.title.toLowerCase().includes(searchWord) ||
+          tab.url.toLowerCase().includes(searchWord) ||
+          tagIds.includes(this._browserState?.tagIdsForTabs[tab.id] ?? 0)
+        );
       });
     }
 
@@ -549,7 +639,12 @@ export class PanelWindowsElement extends HTMLElement {
 
     for (const userContext of displayedContainers) {
       const tabIds = windowStateSnapshot.unpinnedTabIdsByContainer[userContext.cookieStore.userContextId] || [];
-      const containerElement = this._popupRenderer.renderContainerWithTabs(windowStateSnapshot.id, userContext, [], windowStateSnapshot.isPrivate);
+      const containerElement = this._popupRenderer.renderContainerWithTabs(
+        windowStateSnapshot.id,
+        userContext,
+        [],
+        windowStateSnapshot.isPrivate
+      );
       containerElement.tabCount = tabIds.length;
       containerElement.containerVisibilityToggleButton.disabled = true;
       searchResultsContainersElement.appendChild(containerElement);
@@ -581,7 +676,7 @@ export class PanelWindowsElement extends HTMLElement {
   }
 
   public getFocusableElements(): HTMLElement[] {
-    return [... this.shadowRoot?.querySelectorAll('#search, menulist-container, menulist-tab') ?? []] as HTMLElement[];
+    return [...(this.shadowRoot?.querySelectorAll('#search, menulist-container, menulist-tab') ?? [])] as HTMLElement[];
   }
 
   public get activeElement(): HTMLElement | null {

@@ -19,19 +19,19 @@
   @license
 **/
 
-import { ContextualIdentity, ContextualIdentityParams, CookieStore } from "weeg-containers";
+import { ContextualIdentity, ContextualIdentityParams, CookieStore } from 'weeg-containers';
 
-import { ServiceRegistry } from "../ServiceRegistry";
-import { ContextualIdentityService } from "./ContextualIdentityService";
-import { TabGroupDirectory } from "./TabGroupDirectory";
-import { ContainerVisibilityService } from "./ContainerVisibilityService";
-import { TemporaryContainerService } from "./TemporaryContainerService";
-import { TabService } from "../tabs/TabService";
-import { TabQueryService } from "../tabs/TabQueryService";
-import { TabGroupService } from "./TabGroupService";
-import { LanguageSettings } from "../overrides/LanguageSettings";
-import { UserAgentSettings } from "../overrides/UserAgentSettings";
-import { ProxySettings } from "../proxies/ProxySettings";
+import { ServiceRegistry } from '../ServiceRegistry';
+import { ContextualIdentityService } from './ContextualIdentityService';
+import { TabGroupDirectory } from './TabGroupDirectory';
+import { ContainerVisibilityService } from './ContainerVisibilityService';
+import { TemporaryContainerService } from './TemporaryContainerService';
+import { TabService } from '../tabs/TabService';
+import { TabQueryService } from '../tabs/TabQueryService';
+import { TabGroupService } from './TabGroupService';
+import { LanguageSettings } from '../overrides/LanguageSettings';
+import { UserAgentSettings } from '../overrides/UserAgentSettings';
+import { ProxySettings } from '../proxies/ProxySettings';
 
 const tabGroupDirectory = TabGroupDirectory.getInstance();
 const containerVisibilityService = ContainerVisibilityService.getInstance();
@@ -55,17 +55,21 @@ export class SupergroupService {
     // nothing.
   }
 
-  private async setVisibilityForSupergrouponWindow(tabGroupId: string, windowId: number, visible: boolean): Promise<void> {
+  private async setVisibilityForSupergrouponWindow(
+    tabGroupId: string,
+    windowId: number,
+    visible: boolean
+  ): Promise<void> {
     const childContainers = await tabGroupDirectory.getChildContainers(tabGroupId);
     const promises: Promise<void>[] = [];
     for (const childContainer of childContainers) {
       const cookieStore = new CookieStore(childContainer);
       promises.push(
-        (visible ?
-          containerVisibilityService.showContainerOnWindow(windowId, cookieStore.id)
+        (visible
+          ? containerVisibilityService.showContainerOnWindow(windowId, cookieStore.id)
           : containerVisibilityService.hideContainerOnWindow(windowId, cookieStore.id)
         ).catch(() => {
-        // ignore (errors for private windows)
+          // ignore (errors for private windows)
         }) as Promise<unknown> as Promise<void>
       );
     }
@@ -118,7 +122,10 @@ export class SupergroupService {
     }
   }
 
-  public async createChildContainer(parentTabGroupId: string, params: ContextualIdentityParams): Promise<ContextualIdentity> {
+  public async createChildContainer(
+    parentTabGroupId: string,
+    params: ContextualIdentityParams
+  ): Promise<ContextualIdentity> {
     const contextualIdentity = await contextualIdentityService.getFactory().create(params);
     await tabGroupDirectory.moveTabGroupToSupergroup(contextualIdentity.cookieStore.id, parentTabGroupId);
     await this.copySettingsToChildTabGroup(parentTabGroupId, contextualIdentity.cookieStore.id);

@@ -19,13 +19,13 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-import { EventSink } from "weeg-events";
-import { ContextualIdentity } from "weeg-containers";
+import { StorageItem } from 'weeg-storage';
+import { EventSink } from 'weeg-events';
+import { ContextualIdentity } from 'weeg-containers';
 
-import { ContextualIdentityService } from "../../lib/tabGroups/ContextualIdentityService";
-import { ExternalServiceProvider } from "../../lib/ExternalServiceProvider";
-import { CookieProvider } from "./CookieProvider";
+import { ContextualIdentityService } from '../../lib/tabGroups/ContextualIdentityService';
+import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
+import { CookieProvider } from './CookieProvider';
 
 export type OriginStorageStatistics = {
   origin: string;
@@ -49,7 +49,11 @@ export type StorageType = {
  */
 export class ContentStorageStatistics {
   private static readonly _STORAGE_KEY = 'content.storage.statistics.firstPartyIsolated';
-  private readonly _storageItem = new StorageItem<StorageType>(ContentStorageStatistics._STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
+  private readonly _storageItem = new StorageItem<StorageType>(
+    ContentStorageStatistics._STORAGE_KEY,
+    {},
+    StorageItem.AREA_LOCAL
+  );
   private readonly _serviceProvider = ExternalServiceProvider.getInstance();
   private readonly _registrableDomainService = this._serviceProvider.registrableDomainService;
   private readonly _hostnameService = this._serviceProvider.hostnameService;
@@ -94,7 +98,11 @@ export class ContentStorageStatistics {
     return origins;
   }
 
-  public async getOriginStatistics(cookieStoreId: string, firstPartyDomain: string, origin: string): Promise<OriginStorageStatistics | undefined> {
+  public async getOriginStatistics(
+    cookieStoreId: string,
+    firstPartyDomain: string,
+    origin: string
+  ): Promise<OriginStorageStatistics | undefined> {
     const storage = await this._storageItem.getValue();
     const cookieStoreStorage = storage[cookieStoreId];
     if (!cookieStoreStorage) return undefined;
@@ -103,7 +111,12 @@ export class ContentStorageStatistics {
     return firstPartyStorage[origin];
   }
 
-  public async setOriginStatistics(cookieStoreId: string, firstPartyDomain: string, origin: string, statistics: OriginStorageStatistics): Promise<void> {
+  public async setOriginStatistics(
+    cookieStoreId: string,
+    firstPartyDomain: string,
+    origin: string,
+    statistics: OriginStorageStatistics
+  ): Promise<void> {
     // TODO: if statistics model is extended, this should be updated to only remove the origin if it has no data.
     if (statistics.hasLocalStorage === false) {
       await this.removeOriginStatistics(cookieStoreId, firstPartyDomain, origin);
@@ -150,10 +163,7 @@ export class ContentStorageStatistics {
   public async getFirstPartyDomainList(cookieStoreId: string): Promise<string[]> {
     const storageFirstPartyDomains = await this.getStorageFirstPartyDomainList(cookieStoreId);
     const cookieFirstPartyDomains = await this.cookieProvider.getFirstPartyDomainsForCookieStoreId(cookieStoreId);
-    return this._hostnameService.sortDomains(new Set([
-      ... storageFirstPartyDomains,
-      ... cookieFirstPartyDomains,
-    ]));
+    return this._hostnameService.sortDomains(new Set([...storageFirstPartyDomains, ...cookieFirstPartyDomains]));
   }
 
   /**
@@ -162,15 +172,17 @@ export class ContentStorageStatistics {
   public async getDomainList(cookieStoreId: string, firstPartyDomain: string): Promise<string[]> {
     const origins = await this.getStorageOriginList(cookieStoreId, firstPartyDomain);
     const storageDomains = origins.map((origin) => new URL(origin).hostname);
-    const cookieDomains = await this.cookieProvider.getCookieDomainsForFirstPartyDomain(cookieStoreId, firstPartyDomain);
-    return this._hostnameService.sortDomains(new Set([
-      ... storageDomains,
-      ... cookieDomains,
-    ]));
+    const cookieDomains = await this.cookieProvider.getCookieDomainsForFirstPartyDomain(
+      cookieStoreId,
+      firstPartyDomain
+    );
+    return this._hostnameService.sortDomains(new Set([...storageDomains, ...cookieDomains]));
   }
 
   public async getRegistrableDomainList(cookieStoreId: string, firstPartyDomain: string): Promise<string[]> {
     const domains = await this.getDomainList(cookieStoreId, firstPartyDomain);
-    return await this._registrableDomainService.getUniqueRegistrableDomains(domains.map((domain) => `http://${domain}`));
+    return await this._registrableDomainService.getUniqueRegistrableDomains(
+      domains.map((domain) => `http://${domain}`)
+    );
   }
 }

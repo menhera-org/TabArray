@@ -19,7 +19,6 @@
   @license
 **/
 
-
 import path from 'node:path';
 import { defineConfig } from 'vite';
 
@@ -50,9 +49,7 @@ export default defineConfig({
   // byte-identical to upstream for AMO review, so never import them.
   publicDir: path.resolve(import.meta.dirname, 'static'),
   base: '/',
-  plugins: [
-    { ...injectFilename(), enforce: 'pre' },
-  ],
+  plugins: [{ ...injectFilename(), enforce: 'pre' }],
   css: {
     transformer: 'lightningcss',
   },

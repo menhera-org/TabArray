@@ -19,13 +19,13 @@
   @license
 **/
 
-import { CompatTab } from "weeg-tabs";
-import { EventSink } from "weeg-events";
+import { CompatTab } from 'weeg-tabs';
+import { EventSink } from 'weeg-events';
 
-import { TabGroupDirectory } from "./TabGroupDirectory";
-import { TagDirectory } from "./tags/TagDirectory";
-import { TabAttributeMap } from "./tags/TabAttributeMap";
-import { IndexTab } from "../../legacy-lib/modules/IndexTab";
+import { TabGroupDirectory } from './TabGroupDirectory';
+import { TagDirectory } from './tags/TagDirectory';
+import { TabAttributeMap } from './tags/TabAttributeMap';
+import { IndexTab } from '../../legacy-lib/modules/IndexTab';
 
 export class TabSortingProvider {
   private static readonly tabGroupDirectory = TabGroupDirectory.getInstance();

@@ -20,19 +20,19 @@
 **/
 
 const ICONS = [
-  "fingerprint",
-  "briefcase",
-  "dollar",
-  "cart",
-  "circle",
-  "gift",
-  "vacation",
-  "food",
-  "fruit",
-  "pet",
-  "tree",
-  "chill",
-  "fence",
+  'fingerprint',
+  'briefcase',
+  'dollar',
+  'cart',
+  'circle',
+  'gift',
+  'vacation',
+  'food',
+  'fruit',
+  'pet',
+  'tree',
+  'chill',
+  'fence',
 ];
 
 export class IconPickerElement extends HTMLElement {
@@ -40,7 +40,7 @@ export class IconPickerElement extends HTMLElement {
 
   constructor() {
     super();
-    this.attachShadow({mode: 'open'});
+    this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
       throw new Error('shadowRoot is null');
     }

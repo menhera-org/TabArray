@@ -19,7 +19,7 @@
   @license
 **/
 
-import { Uint32 } from "weeg-types";
+import { Uint32 } from 'weeg-types';
 
 /**
  * This is more strict than Mozilla's version comparison algorithm.

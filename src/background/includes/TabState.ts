@@ -19,7 +19,7 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
+import browser from 'webextension-polyfill';
 
 export interface TabState {
   id: number;

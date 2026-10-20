@@ -19,10 +19,10 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { BackgroundService } from "weeg-utils";
+import browser from 'webextension-polyfill';
+import { BackgroundService } from 'weeg-utils';
 
-import { ServiceRegistry } from "./ServiceRegistry";
+import { ServiceRegistry } from './ServiceRegistry';
 
 /**
  * This class loads a page if not already open.

@@ -19,10 +19,10 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { CompatTab } from "weeg-tabs";
+import browser from 'webextension-polyfill';
+import { CompatTab } from 'weeg-tabs';
 
-import { ServiceRegistry } from "../ServiceRegistry";
+import { ServiceRegistry } from '../ServiceRegistry';
 
 export class TabConverterService {
   private static readonly INSTANCE = new TabConverterService();

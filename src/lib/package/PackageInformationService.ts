@@ -19,13 +19,13 @@
   @license
 **/
 
-import { BackgroundService } from "weeg-utils";
+import { BackgroundService } from 'weeg-utils';
 
-import { BuildJson, PackageInformation } from "./PackageInformation";
-import { PackageIntegrityService } from "./PackageIntegrityService";
-import { BuildMetadataService } from "./BuildMetadataService";
-import { InstallationHistoryService } from "../history/InstallationHistoryService";
-import { ServiceRegistry } from "../ServiceRegistry";
+import { BuildJson, PackageInformation } from './PackageInformation';
+import { PackageIntegrityService } from './PackageIntegrityService';
+import { BuildMetadataService } from './BuildMetadataService';
+import { InstallationHistoryService } from '../history/InstallationHistoryService';
+import { ServiceRegistry } from '../ServiceRegistry';
 
 const packageIntegrityService = PackageIntegrityService.getInstance();
 const buildMetadataService = BuildMetadataService.getInstance();
@@ -95,4 +95,7 @@ export class PackageInformationService extends BackgroundService<void, PackageIn
   }
 }
 
-ServiceRegistry.getInstance().registerService('PackageInformationService', PackageInformationService.getInstance<PackageInformationService>());
+ServiceRegistry.getInstance().registerService(
+  'PackageInformationService',
+  PackageInformationService.getInstance<PackageInformationService>()
+);

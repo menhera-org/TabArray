@@ -30,17 +30,16 @@ import { TabService } from '../../../lib/tabs/TabService';
 import { TabAttributeMap } from '../../../lib/tabGroups/tags/TabAttributeMap';
 import { CompatConsole } from '../../../lib/console/CompatConsole';
 
-import { MenulistTabElement } from "../../../components/menulist-tab";
-import { MenulistContainerElement } from "../../../components/menulist-container";
+import { MenulistTabElement } from '../../../components/menulist-tab';
+import { MenulistContainerElement } from '../../../components/menulist-container';
 import { MenulistTagElement } from '../../../components/menulist-tag';
 
-
 import * as containers from '../../../legacy-lib/modules/containers';
-import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
+import { IndexTab } from '../../../legacy-lib/modules/IndexTab';
 import { ContainerVisibilityService } from '../../../lib/tabGroups/ContainerVisibilityService';
 
 import { PopupModalRenderer } from './PopupModalRenderer';
-import { PopupCurrentWindowRenderer } from "./PopupCurrentWindowRenderer";
+import { PopupCurrentWindowRenderer } from './PopupCurrentWindowRenderer';
 
 enum ContainerTabsState {
   NO_TABS,
@@ -75,40 +74,62 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderPartialContainerElement(displayedContainer: DisplayedContainer, isPrivate = false): MenulistContainerElement {
+  public renderPartialContainerElement(
+    displayedContainer: DisplayedContainer,
+    isPrivate = false
+  ): MenulistContainerElement {
     const element = this.createContainerElement(displayedContainer, isPrivate);
     element.containerVisibilityToggleButton.disabled = true;
     element.partialContainerView = true;
     return element;
   }
 
-  private defineContainerCloseListenerForWindow(element: MenulistContainerElement, windowId: number, displayedContainer: DisplayedContainer): void {
+  private defineContainerCloseListenerForWindow(
+    element: MenulistContainerElement,
+    windowId: number,
+    displayedContainer: DisplayedContainer
+  ): void {
     element.onContainerClose.addListener(() => {
-      console.log('Closing all unpinned tabs of window %d in cookie store %s', windowId, displayedContainer.cookieStore.id);
+      console.log(
+        'Closing all unpinned tabs of window %d in cookie store %s',
+        windowId,
+        displayedContainer.cookieStore.id
+      );
       containers.closeAllTabsOnWindow(displayedContainer.cookieStore.id, windowId).catch((e) => {
         console.error(e);
       });
     });
   }
 
-  public renderContainerForFirstPartyDomain(domain: string, displayedContainer: DisplayedContainer, isPrivateBrowsing = false): MenulistContainerElement {
+  public renderContainerForFirstPartyDomain(
+    domain: string,
+    displayedContainer: DisplayedContainer,
+    isPrivateBrowsing = false
+  ): MenulistContainerElement {
     const element = this.renderPartialContainerElement(displayedContainer, isPrivateBrowsing);
     const cookieStoreId = isPrivateBrowsing ? CookieStore.PRIVATE.id : displayedContainer.cookieStore.id;
     element.onContainerClose.addListener(() => {
-      this._tabQueryService.queryTabs({
-        tabGroupId: cookieStoreId,
-        registrableDomain: domain,
-      }).then((tabs) => {
-        return this._tabService.closeTabs(tabs);
-      }).catch((e) => {
-        console.error(e);
-      });
+      this._tabQueryService
+        .queryTabs({
+          tabGroupId: cookieStoreId,
+          registrableDomain: domain,
+        })
+        .then((tabs) => {
+          return this._tabService.closeTabs(tabs);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     });
     // console.debug('element.containerVisibilityToggleButton.disabled', element.containerVisibilityToggleButton.disabled);
     return element;
   }
 
-  private renderContainer(windowId: number, displayedContainer: DisplayedContainer, isPrivate = false): MenulistContainerElement {
+  private renderContainer(
+    windowId: number,
+    displayedContainer: DisplayedContainer,
+    isPrivate = false
+  ): MenulistContainerElement {
     const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : displayedContainer.cookieStore.id;
     const element = this.createContainerElement(displayedContainer, isPrivate);
     this.defineContainerCloseListenerForWindow(element, windowId, displayedContainer);
@@ -128,7 +149,13 @@ export class PopupRenderer {
     return element;
   }
 
-  public renderContainerWithTabs(windowId: number, displayedContainer: DisplayedContainer, tabs: CompatTab[], isPrivate = false, tabAttributeMap?: TabAttributeMap): MenulistContainerElement {
+  public renderContainerWithTabs(
+    windowId: number,
+    displayedContainer: DisplayedContainer,
+    tabs: CompatTab[],
+    isPrivate = false,
+    tabAttributeMap?: TabAttributeMap
+  ): MenulistContainerElement {
     if (isPrivate && !displayedContainer.cookieStore.isPrivate) {
       throw new Error('Cannot render container with tabs for private window with non-private container');
     }
@@ -214,9 +241,11 @@ export class PopupRenderer {
       if ('tab' != data.type || data.pinned) return;
       if (data.cookieStoreId == displayedContainer.cookieStore.id) return;
       ev.preventDefault();
-      this._containerTabOpenerService.reopenTabInContainer(data.id, displayedContainer.cookieStore.id, false).catch((e) => {
-        console.error(e);
-      });
+      this._containerTabOpenerService
+        .reopenTabInContainer(data.id, displayedContainer.cookieStore.id, false)
+        .catch((e) => {
+          console.error(e);
+        });
     });
     return element;
   }

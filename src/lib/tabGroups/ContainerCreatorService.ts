@@ -38,13 +38,13 @@ const contextualIdentityFactory = contextualIdentityService.getFactory();
 
 const containerCreate = async (name: string, color: string, icon: string): Promise<string> => {
   console.debug('container_create: name=%s, color=%s, icon=%s', name, color, icon);
-  const contextualIdentity = await contextualIdentityFactory.create({name, color, icon});
+  const contextualIdentity = await contextualIdentityFactory.create({ name, color, icon });
   return contextualIdentity.cookieStore.id;
 };
 
 const containerUpdate = async (name: string, color: string, icon: string, cookieStoreId: string): Promise<string> => {
   console.debug('container_update: name=%s, color=%s, icon=%s, cookieStoreId=%s', name, color, icon, cookieStoreId);
-  await contextualIdentityFactory.setParams(cookieStoreId, {name, color, icon});
+  await contextualIdentityFactory.setParams(cookieStoreId, { name, color, icon });
   return cookieStoreId;
 };
 
@@ -65,12 +65,15 @@ export class ContainerCreatorService extends BackgroundService<MessageType, stri
   }
 
   public create(name: string, color: string, icon: string): Promise<string> {
-    return this.call({name, color, icon});
+    return this.call({ name, color, icon });
   }
 
   public update(cookieStoreId: string, name: string, color: string, icon: string): Promise<string> {
-    return this.call({cookieStoreId, name, color, icon});
+    return this.call({ cookieStoreId, name, color, icon });
   }
 }
 
-ServiceRegistry.getInstance().registerService('ContainerCreatorService', ContainerCreatorService.getInstance<ContainerCreatorService>());
+ServiceRegistry.getInstance().registerService(
+  'ContainerCreatorService',
+  ContainerCreatorService.getInstance<ContainerCreatorService>()
+);

@@ -19,7 +19,7 @@
   @license
 **/
 
-import { CONTENT_EXTENSION_DIRECTORY_LISTING } from "../../defs";
+import { CONTENT_EXTENSION_DIRECTORY_LISTING } from '../../defs';
 
 export type ExtensionContentScriptDefinition = {
   matchPattern: RegExp;

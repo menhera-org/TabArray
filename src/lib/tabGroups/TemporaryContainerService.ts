@@ -40,7 +40,11 @@ export class TemporaryContainerService {
   private readonly _tabGroupService = TabGroupService.getInstance();
   private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
   private readonly _contextualIdentityFactory = this._contextualIdentityService.getFactory();
-  private readonly _temporaryContainerStorage = new StorageItem<string[]>('temporaryContainers', [], StorageItem.AREA_LOCAL);
+  private readonly _temporaryContainerStorage = new StorageItem<string[]>(
+    'temporaryContainers',
+    [],
+    StorageItem.AREA_LOCAL
+  );
 
   private constructor() {
     // noop.

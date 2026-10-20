@@ -19,44 +19,43 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { PromiseUtils } from "weeg-utils";
+import browser from 'webextension-polyfill';
+import { PromiseUtils } from 'weeg-utils';
 
 import { ConfigurationOption } from '../../lib/config/ConfigurationOption';
-import { ExternalServiceProvider } from "../../lib/ExternalServiceProvider";
-import { FpiService } from "../../lib/config/FpiService";
-import { CompatConsole } from "../../lib/console/CompatConsole";
-import { BrowserStateStore } from "../../lib/states/BrowserStateStore";
-import { SpinnerService } from "../../lib/SpinnerService";
+import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
+import { FpiService } from '../../lib/config/FpiService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
+import { BrowserStateStore } from '../../lib/states/BrowserStateStore';
+import { SpinnerService } from '../../lib/SpinnerService';
 
-import "../../components/ctg/ctg-vertical-layout";
-import "../../components/ctg/ctg-drawer";
-import "../../components/ctg/ctg-top-bar";
-import "../../components/ctg/ctg-frame-layout";
-import "../../components/ctg/ctg-fragment";
-import "../../components/ctg/ctg-menu-item";
-import "../../components/ctg/ctg-bottom-navigation";
-import { CtgDrawerElement } from "../../components/ctg/ctg-drawer";
-import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
-import { CtgFrameLayoutElement } from "../../components/ctg/ctg-frame-layout";
-import { CtgBottomNavigationElement } from "../../components/ctg/ctg-bottom-navigation";
-import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
+import '../../components/ctg/ctg-vertical-layout';
+import '../../components/ctg/ctg-drawer';
+import '../../components/ctg/ctg-top-bar';
+import '../../components/ctg/ctg-frame-layout';
+import '../../components/ctg/ctg-fragment';
+import '../../components/ctg/ctg-menu-item';
+import '../../components/ctg/ctg-bottom-navigation';
+import { CtgDrawerElement } from '../../components/ctg/ctg-drawer';
+import { CtgTopBarElement } from '../../components/ctg/ctg-top-bar';
+import { CtgFrameLayoutElement } from '../../components/ctg/ctg-frame-layout';
+import { CtgBottomNavigationElement } from '../../components/ctg/ctg-bottom-navigation';
+import { CtgFragmentElement } from '../../components/ctg/ctg-fragment';
 
-import { GlobalMenuItems } from "./GlobalMenuItems";
+import { GlobalMenuItems } from './GlobalMenuItems';
 
-import { WindowsFragmentBuilder } from "./fragments/WindowsFragmentBuilder";
-import { ContainersFragmentBuilder } from "./fragments/ContainersFragmentBuilder";
-import { SitesFragmentBuilder } from "./fragments/SitesFragmentBuilder";
-import { HelpFragmentBuilder } from "./fragments/HelpFragmentBuilder";
-import { ContainerDetailsFragmentBuilder } from "./fragments/ContainerDetailsFragmentBuilder";
-import { SiteDetailsFragmentBuilder } from "./fragments/SiteDetailsFragmentBuilder";
-
+import { WindowsFragmentBuilder } from './fragments/WindowsFragmentBuilder';
+import { ContainersFragmentBuilder } from './fragments/ContainersFragmentBuilder';
+import { SitesFragmentBuilder } from './fragments/SitesFragmentBuilder';
+import { HelpFragmentBuilder } from './fragments/HelpFragmentBuilder';
+import { ContainerDetailsFragmentBuilder } from './fragments/ContainerDetailsFragmentBuilder';
+import { SiteDetailsFragmentBuilder } from './fragments/SiteDetailsFragmentBuilder';
 
 import { config, privacyConfig } from '../../config/config';
 
-import { PopupRendererService } from "./PopupRendererService";
-import { PopupFocusHandlers } from "./PopupFocusHandlers";
-import { PopupCommandHandler } from "./PopupCommandHandler";
+import { PopupRendererService } from './PopupRendererService';
+import { PopupFocusHandlers } from './PopupFocusHandlers';
+import { PopupCommandHandler } from './PopupCommandHandler';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -99,11 +98,26 @@ const popupCommandHandler = new PopupCommandHandler(frameLayout);
 
 const fragments: CtgFragmentElement[] = [];
 const windowsBuilder = new WindowsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
-const containersBuilder = new ContainersFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
+const containersBuilder = new ContainersFragmentBuilder(
+  frameLayout,
+  topBarElement,
+  bottomNavigationElement,
+  globalMenuItems
+);
 const sitesBuilder = new SitesFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
 
-const containerDetailsBuilder = new ContainerDetailsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
-const siteDetailsBuilder = new SiteDetailsFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
+const containerDetailsBuilder = new ContainerDetailsFragmentBuilder(
+  frameLayout,
+  topBarElement,
+  bottomNavigationElement,
+  globalMenuItems
+);
+const siteDetailsBuilder = new SiteDetailsFragmentBuilder(
+  frameLayout,
+  topBarElement,
+  bottomNavigationElement,
+  globalMenuItems
+);
 
 const helpBuilder = new HelpFragmentBuilder();
 drawerElement.appendChild(helpBuilder.getFragment());
@@ -150,7 +164,7 @@ sitesBuilder.onSiteClicked.addListener((domain) => {
 
 // Help view
 
-const setConfigValue = <T,>(option: ConfigurationOption<T>, value: T) => {
+const setConfigValue = <T>(option: ConfigurationOption<T>, value: T) => {
   option.setValue(value).catch((e) => {
     console.error(e);
   });
@@ -231,7 +245,11 @@ helpBuilder.onGetStartedClicked.addListener(() => {
   drawerElement.hide();
 });
 
-popupRenderer.modalRenderer.pushKeyHandlers(popupFocusHandlers.okHandler, popupFocusHandlers.cancelHandler, popupFocusHandlers.keyHandler);
+popupRenderer.modalRenderer.pushKeyHandlers(
+  popupFocusHandlers.okHandler,
+  popupFocusHandlers.cancelHandler,
+  popupFocusHandlers.keyHandler
+);
 
 popupCommandHandler.start();
 popupCommandHandler.getCommands().then((commands) => {

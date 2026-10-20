@@ -19,11 +19,11 @@
   @license
 **/
 
-import { ContainerSyncService } from "../lib/sync/ContainerSyncService";
+import { ContainerSyncService } from '../lib/sync/ContainerSyncService';
 
-import { config } from "../config/config";
+import { config } from '../config/config';
 
-import { everyMinuteAlarm } from "./includes/alarms";
+import { everyMinuteAlarm } from './includes/alarms';
 
 const containerSyncService = ContainerSyncService.getInstance();
 
@@ -33,4 +33,4 @@ everyMinuteAlarm.onAlarm.addListener(async () => {
   containerSyncService.sync().catch((e) => {
     console.error(e);
   });
-})
+});

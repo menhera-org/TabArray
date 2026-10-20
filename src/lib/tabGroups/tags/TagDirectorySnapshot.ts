@@ -19,7 +19,7 @@
   @license
 **/
 
-import { TagType, TagStorageType } from "./TagType";
+import { TagType, TagStorageType } from './TagType';
 
 export class TagDirectorySnapshot {
   private readonly _value: TagStorageType;

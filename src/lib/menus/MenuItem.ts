@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 import { CompatTab } from 'weeg-tabs';
 
 export type OnClickData = browser.Menus.OnClickData & {

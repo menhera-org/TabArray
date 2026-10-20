@@ -19,7 +19,7 @@
   @license
 **/
 
-import { ServiceRegistry } from "./ServiceRegistry";
+import { ServiceRegistry } from './ServiceRegistry';
 
 export class TabIconService {
   private static readonly MASKED_ICONS = new Map([

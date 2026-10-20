@@ -21,7 +21,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 import { CompatTab } from 'weeg-tabs';
 import { DisplayedContainer } from 'weeg-containers';
 
@@ -36,9 +36,9 @@ export class MenulistTabElement extends HTMLElement {
 
   public constructor(tab: CompatTab, displayedContainer: DisplayedContainer) {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
-      throw new Error("Shadow root is null");
+      throw new Error('Shadow root is null');
     }
     this.buildElement();
     this.setTab(tab);
@@ -106,29 +106,28 @@ export class MenulistTabElement extends HTMLElement {
     this.iconUrl = tab.favIconUrl;
 
     if (tab.pinned) {
-      this.pinButton.classList.add("pinned");
+      this.pinButton.classList.add('pinned');
       this.pinButton.title = browser.i18n.getMessage('tooltipTabUnpinButton');
     } else {
-      this.pinButton.classList.remove("pinned");
+      this.pinButton.classList.remove('pinned');
       this.pinButton.title = browser.i18n.getMessage('tooltipTabPinButton');
     }
 
     if (tab.isPrivate) {
-      this.privateIconElement.style.visibility = "visible";
+      this.privateIconElement.style.visibility = 'visible';
     } else {
-      this.privateIconElement.style.visibility = "hidden";
+      this.privateIconElement.style.visibility = 'hidden';
     }
 
     if (tab.discarded) {
-      this.tabButton.classList.add("discarded");
+      this.tabButton.classList.add('discarded');
     }
 
     if (tab.active) {
-      this.tabButton.classList.add("active");
+      this.tabButton.classList.add('active');
       // Scroll to center with a small delay to avoid initial render conflicts
       setTimeout(() => this.scrollIntoViewIfActive(), 100);
     }
-
   }
 
   public setDisplayedContainer(displayedContainer: DisplayedContainer) {
@@ -164,38 +163,38 @@ export class MenulistTabElement extends HTMLElement {
   }
 
   private get pinButton(): HTMLButtonElement {
-    return this.getButton("tab-pin-button");
+    return this.getButton('tab-pin-button');
   }
 
   private get tabButton(): HTMLButtonElement {
-    return this.getButton("tab-button");
+    return this.getButton('tab-button');
   }
 
   private get closeButton(): HTMLButtonElement {
-    return this.getButton("tab-close-button");
+    return this.getButton('tab-close-button');
   }
 
   private get setTagButton(): HTMLButtonElement {
-    return this.getButton("tab-set-tag-button");
+    return this.getButton('tab-set-tag-button');
   }
 
   private get iconElement(): HTMLSpanElement {
-    const icon = this.getShadowElement("tab-icon");
+    const icon = this.getShadowElement('tab-icon');
     return icon as HTMLSpanElement;
   }
 
   private get privateIconElement(): HTMLImageElement {
-    const icon = this.getShadowElement("tab-private-icon");
+    const icon = this.getShadowElement('tab-private-icon');
     return icon as HTMLImageElement;
   }
 
   private get titleElement(): HTMLSpanElement {
-    const title = this.getShadowElement("tab-title");
+    const title = this.getShadowElement('tab-title');
     return title as HTMLSpanElement;
   }
 
   private get tabMainElement(): HTMLDivElement {
-    const element = this.getShadowElement("tab-main");
+    const element = this.getShadowElement('tab-main');
     return element as HTMLDivElement;
   }
 
@@ -218,7 +217,7 @@ export class MenulistTabElement extends HTMLElement {
   }
 
   public get tabTitle(): string {
-    return this.titleElement.textContent || "";
+    return this.titleElement.textContent || '';
   }
 
   public get tabUrl(): string {
@@ -230,7 +229,7 @@ export class MenulistTabElement extends HTMLElement {
   }
 
   public get pinned(): boolean {
-    return this.pinButton.classList.contains("pinned");
+    return this.pinButton.classList.contains('pinned');
   }
 
   public override focus(): void {

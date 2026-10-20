@@ -37,7 +37,10 @@ export const config = {
   'feature.containerProxy': new StorageConfigurationOption<boolean>('feature.containerProxy', false),
   'feature.syncContainers': new StorageConfigurationOption<boolean>('feature.syncContainers', false, 'local'),
   'newtab.keepContainer': new StorageConfigurationOption<boolean>('newtab.keepContainer', true),
-  'tab.external.containerOption': new StorageConfigurationOption<ExternalContainerOption>('tab.external.containerOption', 'choose'),
+  'tab.external.containerOption': new StorageConfigurationOption<ExternalContainerOption>(
+    'tab.external.containerOption',
+    'choose'
+  ),
   'appearance.popupSize': new StorageConfigurationOption<PopupSize>('appearance.popupSize', 'standard'),
   'tab.groups.indexOption': new StorageConfigurationOption<GroupIndexOption>('tab.groups.indexOption', 'never'),
   'tab.autoDiscard.minAge': new StorageConfigurationOption<number>('tab.autoDiscard.minAge', -1),
@@ -46,7 +49,6 @@ export const config = {
   'tab.autoCenterInSidebar': new StorageConfigurationOption<boolean>('tab.autoCenterInSidebar', false),
   'menu.hideEmptyContainers': new StorageConfigurationOption<boolean>('menu.hideEmptyContainers', false),
 };
-
 
 export class BrowserBooleanSetting implements ConfigurationOption<boolean> {
   private readonly setting: browser.Types.Setting;

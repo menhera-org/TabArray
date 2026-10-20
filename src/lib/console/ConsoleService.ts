@@ -19,19 +19,13 @@
   @license
 **/
 
-import { ConsoleFormatter } from "./ConsoleFormatter";
-import { ConsoleHistoryService, ConsoleEntry } from "./ConsoleHistoryService";
+import { ConsoleFormatter } from './ConsoleFormatter';
+import { ConsoleHistoryService, ConsoleEntry } from './ConsoleHistoryService';
 
 /**
  * Console output types.
  */
-export type OutputType =
-  'debug'
-  | 'log'
-  | 'info'
-  | 'warn'
-  | 'error'
-;
+export type OutputType = 'debug' | 'log' | 'info' | 'warn' | 'error';
 
 const consoleHistoryService = ConsoleHistoryService.getInstance<ConsoleHistoryService>();
 
@@ -50,7 +44,11 @@ export class ConsoleService {
   }
 
   public getContext(): string {
-    const filename = location.pathname.split('/').filter(a => a.trim()).pop() ?? 'unknown';
+    const filename =
+      location.pathname
+        .split('/')
+        .filter((a) => a.trim())
+        .pop() ?? 'unknown';
     return filename.split('.')[0] as string;
   }
 
@@ -70,23 +68,25 @@ export class ConsoleService {
     this._uncomittedEntries.length = 0;
   }
 
-  public output(tag: string, outputType: OutputType, ... args: unknown[]): void {
+  public output(tag: string, outputType: OutputType, ...args: unknown[]): void {
     const context = this.getContext();
     const contextTag = context + '/' + tag;
     if (args[0] !== undefined && typeof args[0] == 'string') {
       const remaining = args.slice(1);
-      console[outputType](`%c[${contextTag}]%c ${args[0]}`, 'color: #844587', '', ... remaining);
+      console[outputType](`%c[${contextTag}]%c ${args[0]}`, 'color: #844587', '', ...remaining);
     } else {
-      console[outputType](`%c[${contextTag}]%c`, 'color: #844587', '', ... args);
+      console[outputType](`%c[${contextTag}]%c`, 'color: #844587', '', ...args);
     }
-    const formattedArgs = ConsoleFormatter.format(... args);
-    const stringifiedArgs = formattedArgs.map(a => {
-      try {
-        return String(a);
-      } catch (_e) {
-        return '(unknown)';
-      }
-    }).join(' ');
+    const formattedArgs = ConsoleFormatter.format(...args);
+    const stringifiedArgs = formattedArgs
+      .map((a) => {
+        try {
+          return String(a);
+        } catch (_e) {
+          return '(unknown)';
+        }
+      })
+      .join(' ');
     const entry: ConsoleEntry = {
       unixTime: Date.now(),
       context,

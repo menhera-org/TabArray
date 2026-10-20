@@ -21,7 +21,6 @@
 
 import browser from 'webextension-polyfill';
 
-
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
 const setTextContent = (query: string, message: string) => {

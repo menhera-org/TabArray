@@ -22,10 +22,10 @@
 import browser from 'webextension-polyfill';
 import { EventSink } from 'weeg-events';
 
-import { ProxyPreset, ProxyPresetParams } from "../lib/proxies/ProxyPreset";
-import { ProxyType } from "../lib/proxies/ProxyType";
+import { ProxyPreset, ProxyPresetParams } from '../lib/proxies/ProxyPreset';
+import { ProxyType } from '../lib/proxies/ProxyType';
 import { ProxySettings } from '../lib/proxies/ProxySettings';
-import { DomFactory } from "../lib/DomFactory";
+import { DomFactory } from '../lib/DomFactory';
 
 const proxySettings = ProxySettings.getInstance();
 
@@ -90,15 +90,22 @@ export class ProxyEditorElement extends HTMLElement {
     const doNotProxyLocalLabel = DomFactory.createElement<HTMLLabelElement>('label', doNotProxyLocalParagraph);
     doNotProxyLocalLabel.htmlFor = 'proxy-do-not-proxy-local';
 
-    const proxyDnsParagraph = DomFactory.createElement<HTMLParagraphElement>('p', this.shadowRoot, { id: 'p-proxy-dns' });
+    const proxyDnsParagraph = DomFactory.createElement<HTMLParagraphElement>('p', this.shadowRoot, {
+      id: 'p-proxy-dns',
+    });
     DomFactory.createElement<HTMLInputElement>('input', proxyDnsParagraph, { id: 'proxy-dns' });
     this.inputProxyDns.type = 'checkbox';
     const proxyDnsLabel = DomFactory.createElement<HTMLLabelElement>('label', proxyDnsParagraph);
     proxyDnsLabel.htmlFor = 'proxy-dns';
 
-    const actionsParagraph = DomFactory.createElement<HTMLParagraphElement>('p', this.shadowRoot, { id: 'modal-actions' });
+    const actionsParagraph = DomFactory.createElement<HTMLParagraphElement>('p', this.shadowRoot, {
+      id: 'modal-actions',
+    });
     DomFactory.createElement<HTMLButtonElement>('button', actionsParagraph, { id: 'button-delete' });
-    DomFactory.createElement<HTMLButtonElement>('button', actionsParagraph, { classNames: ['button-default'], id: 'button-ok' });
+    DomFactory.createElement<HTMLButtonElement>('button', actionsParagraph, {
+      classNames: ['button-default'],
+      id: 'button-ok',
+    });
 
     this.setLocalizationMessages();
     this.defineEventListeners();
@@ -111,7 +118,9 @@ export class ProxyEditorElement extends HTMLElement {
     this.shadowRoot?.querySelector('label[for="proxy-port"]')?.append(browser.i18n.getMessage('proxyPort'));
     this.shadowRoot?.querySelector('label[for="proxy-username"]')?.append(browser.i18n.getMessage('proxyUsername'));
     this.shadowRoot?.querySelector('label[for="proxy-password"]')?.append(browser.i18n.getMessage('proxyPassword'));
-    this.shadowRoot?.querySelector('label[for="proxy-do-not-proxy-local"]')?.append(browser.i18n.getMessage('proxyExemptLocalAddresses'));
+    this.shadowRoot
+      ?.querySelector('label[for="proxy-do-not-proxy-local"]')
+      ?.append(browser.i18n.getMessage('proxyExemptLocalAddresses'));
     this.shadowRoot?.querySelector('label[for="proxy-dns"]')?.append(browser.i18n.getMessage('proxyDnsRequests'));
     this.buttonDelete.append(browser.i18n.getMessage('buttonDeleteProxy'));
     this.buttonOk.append(browser.i18n.getMessage('buttonOk'));
@@ -186,12 +195,15 @@ export class ProxyEditorElement extends HTMLElement {
         console.error(e);
       });
     } else {
-      proxySettings.presetStore.addProxyPreset(presetParams).then((preset) => {
-        this._proxyPresetId = preset.id;
-        this.onProxyPresetIdUpdated.dispatch(preset.id);
-      }).catch((e) => {
-        console.error(e);
-      });
+      proxySettings.presetStore
+        .addProxyPreset(presetParams)
+        .then((preset) => {
+          this._proxyPresetId = preset.id;
+          this.onProxyPresetIdUpdated.dispatch(preset.id);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     }
   }
 

@@ -19,7 +19,7 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
 export interface ConfigurationOption<T> {
   readonly onChanged: EventSink<T>;

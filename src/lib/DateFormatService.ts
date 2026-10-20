@@ -38,7 +38,11 @@ export class DateFormatService {
     const date = aDate || new Date();
     const effectiveLocale = i18n.getEffectiveLocale();
     const fallbackLocale = 'en-US';
-    const dateTimeFormat = new Intl.DateTimeFormat([effectiveLocale, fallbackLocale], { dateStyle: 'medium', timeStyle: 'medium', hour12: false });
+    const dateTimeFormat = new Intl.DateTimeFormat([effectiveLocale, fallbackLocale], {
+      dateStyle: 'medium',
+      timeStyle: 'medium',
+      hour12: false,
+    });
     return dateTimeFormat.format(date);
   }
 }

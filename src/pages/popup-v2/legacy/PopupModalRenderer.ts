@@ -83,7 +83,11 @@ export class PopupModalRenderer {
     document.addEventListener('keydown', keyHandler, true);
   }
 
-  public pushKeyHandlers(okHandler: (event?: Event) => void, cancelHandler: (event?: Event) => void, keyHandler?: (event: KeyboardEvent) => boolean) {
+  public pushKeyHandlers(
+    okHandler: (event?: Event) => void,
+    cancelHandler: (event?: Event) => void,
+    keyHandler?: (event: KeyboardEvent) => boolean
+  ) {
     this._keyHandlersStack.push({ okHandler, cancelHandler, keyHandler });
   }
 
@@ -93,7 +97,9 @@ export class PopupModalRenderer {
 
   private defineKeyHandlerForModal(buttonElement: HTMLButtonElement) {
     return (ev: KeyboardEvent) => {
-      const buttonArray = [... buttonElement.parentElement?.getElementsByTagName('button') ?? []].filter((button) => !button.disabled);
+      const buttonArray = [...(buttonElement.parentElement?.getElementsByTagName('button') ?? [])].filter(
+        (button) => !button.disabled
+      );
       const activeElement = this._utils.getActiveElement();
       const index = activeElement instanceof HTMLButtonElement ? buttonArray.indexOf(activeElement) : -1;
       if (ev.key == 'ArrowUp' || ev.key == 'ArrowLeft') {
@@ -109,7 +115,13 @@ export class PopupModalRenderer {
     };
   }
 
-  private async showModal(message: string, MessageElement: HTMLElement, okButton: HTMLButtonElement, cancelButton: HTMLButtonElement, hash: string): Promise<boolean> {
+  private async showModal(
+    message: string,
+    MessageElement: HTMLElement,
+    okButton: HTMLButtonElement,
+    cancelButton: HTMLButtonElement,
+    hash: string
+  ): Promise<boolean> {
     const previousHash = location.hash;
     const activeElement = this._utils.getActiveElement();
     location.hash = hash;
@@ -171,11 +183,14 @@ export class PopupModalRenderer {
         res(null);
       });
       editorElement.onContainerCreated.addListener((cookieStoreId) => {
-        this._contextualIdentityFactory.get(cookieStoreId).then((contextualIdentity) => {
-          res(contextualIdentity);
-        }).catch(() => {
-          res(null);
-        });
+        this._contextualIdentityFactory
+          .get(cookieStoreId)
+          .then((contextualIdentity) => {
+            res(contextualIdentity);
+          })
+          .catch(() => {
+            res(null);
+          });
       });
     });
   }
@@ -189,11 +204,14 @@ export class PopupModalRenderer {
           res(contextualIdentity);
         });
         editorElement.onContainerUpdated.addListener((cookieStoreId) => {
-          this._contextualIdentityFactory.get(cookieStoreId).then((contextualIdentity) => {
-            res(contextualIdentity);
-          }).catch(() => {
-            res(contextualIdentity);
-          });
+          this._contextualIdentityFactory
+            .get(cookieStoreId)
+            .then((contextualIdentity) => {
+              res(contextualIdentity);
+            })
+            .catch(() => {
+              res(contextualIdentity);
+            });
         });
       });
     } catch (_e) {
@@ -203,14 +221,19 @@ export class PopupModalRenderer {
 
   public showContainerClearCookieModal(displayedContainer: DisplayedContainer, isPrivate = false): void {
     const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : displayedContainer.cookieStore.id;
-    const confirmTitle = isPrivate ? browser.i18n.getMessage('confirmPrivateBrowsingClearCookie') : browser.i18n.getMessage('confirmContainerClearCookie', displayedContainer.name);
+    const confirmTitle = isPrivate
+      ? browser.i18n.getMessage('confirmPrivateBrowsingClearCookie')
+      : browser.i18n.getMessage('confirmContainerClearCookie', displayedContainer.name);
     this.confirmAsync(confirmTitle).then((result) => {
       if (!result) return;
-      this._tabGroupService.removeBrowsingDataForTabGroupId(cookieStoreId).then(() => {
-        console.log('Removed browsing data for cookie store', cookieStoreId);
-      }).catch((e) => {
-        console.error(e);
-      });
+      this._tabGroupService
+        .removeBrowsingDataForTabGroupId(cookieStoreId)
+        .then(() => {
+          console.log('Removed browsing data for cookie store', cookieStoreId);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     });
   }
 
@@ -229,11 +252,17 @@ export class PopupModalRenderer {
     });
   }
 
-  public async showContainerOptionsPanelAsync(displayedContainer: DisplayedContainer, isPrivate = false): Promise<void> {
+  public async showContainerOptionsPanelAsync(
+    displayedContainer: DisplayedContainer,
+    isPrivate = false
+  ): Promise<void> {
     isPrivate = isPrivate || displayedContainer.cookieStore.isPrivate;
     const cookieStoreId = isPrivate ? CookieStore.PRIVATE.id : displayedContainer.cookieStore.id;
     let contextualIdentity: ContextualIdentity | DisplayedContainer;
-    const message = browser.i18n.getMessage('containerOptions', isPrivate ? browser.i18n.getMessage('privateBrowsing') : displayedContainer.name);
+    const message = browser.i18n.getMessage(
+      'containerOptions',
+      isPrivate ? browser.i18n.getMessage('privateBrowsing') : displayedContainer.name
+    );
 
     const modalMenuElement = new ModalMenuElement(message);
     document.body.appendChild(modalMenuElement);

@@ -30,7 +30,6 @@ import { ProxyEditorElement } from './proxy-editor';
 const proxySettings = ProxySettings.getInstance();
 
 export class ProxyManagerElement extends HTMLElement {
-
   public constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -46,7 +45,9 @@ export class ProxyManagerElement extends HTMLElement {
     DomFactory.createElement<HTMLButtonElement>('button', deckProxies, { id: 'button-new-proxy' });
     DomFactory.createElement<HTMLDivElement>('div', deckProxies, { id: 'deck-proxies-inner' });
 
-    const deckProxyEditor = DomFactory.createElement<HTMLDivElement>('div', this.shadowRoot, { id: 'deck-proxy-editor' });
+    const deckProxyEditor = DomFactory.createElement<HTMLDivElement>('div', this.shadowRoot, {
+      id: 'deck-proxy-editor',
+    });
     const proxyEditor = deckProxyEditor.appendChild(new ProxyEditorElement());
     proxyEditor.id = 'proxy-editor';
 
@@ -79,7 +80,9 @@ export class ProxyManagerElement extends HTMLElement {
       for (const preset of presets) {
         const presetId = preset.id;
         const name = ProxyPreset.getName(preset);
-        const button = DomFactory.createElement<HTMLButtonElement>('button', this.deckProxiesInner, { id: `button-proxy-${presetId}` });
+        const button = DomFactory.createElement<HTMLButtonElement>('button', this.deckProxiesInner, {
+          id: `button-proxy-${presetId}`,
+        });
         button.textContent = name;
         button.dataset.presetId = presetId;
         button.addEventListener('click', () => {

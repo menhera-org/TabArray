@@ -21,23 +21,22 @@
 
 // this is not translated.
 
-import { PerformanceHistoryService } from "../../../lib/history/PerformanceHistoryService";
+import { PerformanceHistoryService } from '../../../lib/history/PerformanceHistoryService';
 
-import { AbstractFragmentBuilder } from "../../popup-v2/fragments/AbstractFragmentBuilder";
+import { AbstractFragmentBuilder } from '../../popup-v2/fragments/AbstractFragmentBuilder';
 
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
 
 const performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
 
 export class PerformanceFragmentBuilder extends AbstractFragmentBuilder {
-
   public getFragmentId(): string {
     return 'fragment-performance';
   }
 
   public getLabelText(): string {
-    return "Performance";
+    return 'Performance';
   }
 
   public getIconUrl(): string {
@@ -48,30 +47,30 @@ export class PerformanceFragmentBuilder extends AbstractFragmentBuilder {
     const fragment = document.createElement('ctg-fragment') as CtgFragmentElement;
     fragment.id = this.getFragmentId();
     const table = document.createElement('table');
-    table.id = "performance-table";
+    table.id = 'performance-table';
     fragment.appendChild(table);
     const thead = document.createElement('thead');
     table.appendChild(thead);
     const theadTr = document.createElement('tr');
     thead.appendChild(theadTr);
     const theadTh1 = document.createElement('th');
-    theadTh1.textContent = "Operation Name";
+    theadTh1.textContent = 'Operation Name';
     theadTr.appendChild(theadTh1);
     const theadTh2 = document.createElement('th');
-    theadTh2.textContent = "Average Time";
+    theadTh2.textContent = 'Average Time';
     theadTr.appendChild(theadTh2);
     const theadTh3 = document.createElement('th');
-    theadTh3.textContent = "Standard Deviation";
+    theadTh3.textContent = 'Standard Deviation';
     theadTr.appendChild(theadTh3);
     const theadTh4 = document.createElement('th');
-    theadTh4.textContent = "Max Time";
+    theadTh4.textContent = 'Max Time';
     theadTr.appendChild(theadTh4);
     const theadTh5 = document.createElement('th');
-    theadTh5.textContent = "Min Time";
+    theadTh5.textContent = 'Min Time';
     theadTr.appendChild(theadTh5);
 
     const tbody = document.createElement('tbody');
-    tbody.id = "performance-tbody";
+    tbody.id = 'performance-tbody';
     table.appendChild(tbody);
 
     Promise.resolve().then(() => {
@@ -97,7 +96,7 @@ export class PerformanceFragmentBuilder extends AbstractFragmentBuilder {
       }
       for (const [operationName, durations] of durationsByOperationName) {
         const avg = durations.reduce((a, b) => a + b, 0) / durations.length;
-        const std = Math.sqrt(durations.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / durations.length);
+        const std = Math.sqrt(durations.map((x) => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / durations.length);
         const max = Math.max(...durations);
         const min = Math.min(...durations);
 

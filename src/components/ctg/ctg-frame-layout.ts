@@ -19,7 +19,7 @@
   @license
 **/
 
-import { CtgFragmentElement } from "./ctg-fragment";
+import { CtgFragmentElement } from './ctg-fragment';
 
 export class CtgFrameLayoutElement extends HTMLElement {
   public constructor() {

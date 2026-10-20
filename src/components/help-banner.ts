@@ -19,18 +19,18 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { PromiseUtils } from "weeg-utils";
+import browser from 'webextension-polyfill';
+import { PromiseUtils } from 'weeg-utils';
 
-import { ExtensionPageService } from "../lib/ExtensionPageService";
-import { DateFormatService } from "../lib/DateFormatService";
-import { CompatConsole } from "../lib/console/CompatConsole";
-import { ExtensionVersion } from "../lib/ExtensionVersion";
-import { PackageInformationService } from "../lib/package/PackageInformationService";
+import { ExtensionPageService } from '../lib/ExtensionPageService';
+import { DateFormatService } from '../lib/DateFormatService';
+import { CompatConsole } from '../lib/console/CompatConsole';
+import { ExtensionVersion } from '../lib/ExtensionVersion';
+import { PackageInformationService } from '../lib/package/PackageInformationService';
 
-import { CtgMenuItemElement } from "./ctg/ctg-menu-item";
+import { CtgMenuItemElement } from './ctg/ctg-menu-item';
 
-import { GITHUB_TREE_LINK_BASE } from "../defs";
+import { GITHUB_TREE_LINK_BASE } from '../defs';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const extensionPageService = ExtensionPageService.getInstance();
@@ -38,7 +38,6 @@ const dateFormatService = DateFormatService.getInstance();
 const packageInformationService = PackageInformationService.getInstance<PackageInformationService>();
 
 export class HelpBannerElement extends HTMLElement {
-
   public constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -73,7 +72,8 @@ export class HelpBannerElement extends HTMLElement {
     const versionObj = ExtensionVersion.fromString(version);
     const patchVersion = versionObj.versionParts[3] ?? 0;
     const isDevelopmentVersion = patchVersion < 200;
-    helpBannerVersion.textContent = version + (isDevelopmentVersion ? ' ' + browser.i18n.getMessage('extensionDevBuild') : '');
+    helpBannerVersion.textContent =
+      version + (isDevelopmentVersion ? ' ' + browser.i18n.getMessage('extensionDevBuild') : '');
     helpBanner.appendChild(helpBannerVersion);
 
     const helpBannerBuild = document.createElement('p');
@@ -99,59 +99,61 @@ export class HelpBannerElement extends HTMLElement {
     helpBannerIntegrityHash.value = '(unknown hash)'; // untranslated
     helpBannerIntegrity.appendChild(helpBannerIntegrityHash);
 
-    Promise.all([
-      browser.runtime.getBrowserInfo(),
-      browser.runtime.getPlatformInfo(),
-    ]).then(([browserInfo, platformInfo]) => {
-      helpBannerPlatformVersion.textContent = `${browserInfo.name} ${browserInfo.version} (${platformInfo.os})`;
-    }).catch((e) => {
-      console.error(e);
-    });
+    Promise.all([browser.runtime.getBrowserInfo(), browser.runtime.getPlatformInfo()])
+      .then(([browserInfo, platformInfo]) => {
+        helpBannerPlatformVersion.textContent = `${browserInfo.name} ${browserInfo.version} (${platformInfo.os})`;
+      })
+      .catch((e) => {
+        console.error(e);
+      });
 
-    PromiseUtils.sleep(500).then(() => packageInformationService.getPackageInformation()).then((info) => {
-      const {recordedHash, computedHash: hash, isOfficial, buildInfo, isSigned: signed} = info;
-      helpBannerIntegrityHash.value = hash;
-      if (recordedHash != hash) {
-        helpBannerIntegrityStatus.textContent = browser.i18n.getMessage('packageIntegrityMismatch');
-      } else {
-        if (isOfficial) {
-          helpBannerVersion.classList.add('official');
-        }
-      }
-      {
-        helpBannerBuild.textContent = browser.i18n.getMessage('extensionBuild');
-        const info = buildInfo;
-        helpBannerBuild.append(' ');
-        if (info.commit) {
-          const commit = String(info.commit);
-          const link = GITHUB_TREE_LINK_BASE + commit;
-          const shortCommit = commit.slice(0, 7);
-          const commitLink = document.createElement('a');
-          commitLink.href = link;
-          commitLink.textContent = shortCommit;
-          commitLink.target = '_blank';
-          helpBannerBuild.appendChild(commitLink);
+    PromiseUtils.sleep(500)
+      .then(() => packageInformationService.getPackageInformation())
+      .then((info) => {
+        const { recordedHash, computedHash: hash, isOfficial, buildInfo, isSigned: signed } = info;
+        helpBannerIntegrityHash.value = hash;
+        if (recordedHash != hash) {
+          helpBannerIntegrityStatus.textContent = browser.i18n.getMessage('packageIntegrityMismatch');
         } else {
-          helpBannerBuild.append(browser.i18n.getMessage('extensionBuildUnknown'));
+          if (isOfficial) {
+            helpBannerVersion.classList.add('official');
+          }
         }
-        if (info.untracked) {
-          helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionUntracked'));
+        {
+          helpBannerBuild.textContent = browser.i18n.getMessage('extensionBuild');
+          const info = buildInfo;
+          helpBannerBuild.append(' ');
+          if (info.commit) {
+            const commit = String(info.commit);
+            const link = GITHUB_TREE_LINK_BASE + commit;
+            const shortCommit = commit.slice(0, 7);
+            const commitLink = document.createElement('a');
+            commitLink.href = link;
+            commitLink.textContent = shortCommit;
+            commitLink.target = '_blank';
+            helpBannerBuild.appendChild(commitLink);
+          } else {
+            helpBannerBuild.append(browser.i18n.getMessage('extensionBuildUnknown'));
+          }
+          if (info.untracked) {
+            helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionUntracked'));
+          }
+          if (signed) {
+            helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionSigned'));
+          } else {
+            helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionUnsigned'));
+          }
+          helpBannerBuild.appendChild(document.createElement('br'));
+          const date = new Date(info.buildDate);
+          const dateString = dateFormatService.localeFormat(date);
+          helpBannerBuild.append(`(${dateString})`);
         }
-        if (signed) {
-          helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionSigned'));
-        } else {
-          helpBannerBuild.append(' ' + browser.i18n.getMessage('extensionUnsigned'));
-        }
-        helpBannerBuild.appendChild(document.createElement('br'));
-        const date = new Date(info.buildDate);
-        const dateString = dateFormatService.localeFormat(date);
-        helpBannerBuild.append(`(${dateString})`);
-      }
-    }).catch((e) => {
-      console.error(e);
-      const message = String(e.message ?? e);
-      helpBannerBuild.textContent = message;
-    });
+      })
+      .catch((e) => {
+        console.error(e);
+        const message = String(e.message ?? e);
+        helpBannerBuild.textContent = message;
+      });
 
     const helpBannerDescription = document.createElement('p');
     helpBannerDescription.textContent = manifest.description ?? '';

@@ -19,9 +19,9 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
+import { StorageItem } from 'weeg-storage';
 
-import { ServiceRegistry } from "../ServiceRegistry";
+import { ServiceRegistry } from '../ServiceRegistry';
 
 /**
  * Track IDs of non-private windows.
@@ -35,7 +35,11 @@ export class PrivateWindowService {
     return PrivateWindowService.INSTANCE;
   }
 
-  private readonly _storage = new StorageItem<number[]>(PrivateWindowService.NONPRIVATE_WINDOW_STORAGE_KEY, [], StorageItem.AREA_LOCAL);
+  private readonly _storage = new StorageItem<number[]>(
+    PrivateWindowService.NONPRIVATE_WINDOW_STORAGE_KEY,
+    [],
+    StorageItem.AREA_LOCAL
+  );
 
   private constructor() {
     // Nothing to do.

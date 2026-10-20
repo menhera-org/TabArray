@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 
 import { ServiceRegistry } from '../ServiceRegistry';
 
-import { POPUP_PAGE } from "../../defs";
+import { POPUP_PAGE } from '../../defs';
 
 export class BrowserActionService {
   public static readonly DARK_THEME_BACKGROUND_COLOR = '#cccccc';
@@ -40,29 +40,37 @@ export class BrowserActionService {
   }
 
   public setBadgeTextForWindow(windowId: number, tabCount: number) {
-    browser.browserAction.setBadgeText({
-      text: tabCount.toString(),
-      windowId,
-    }).catch((e) => {
-      console.error(e);
-    });
+    browser.browserAction
+      .setBadgeText({
+        text: tabCount.toString(),
+        windowId,
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 
   public setBadgeTheme(isDarkTheme: boolean) {
-    const backgroundColor = isDarkTheme ? BrowserActionService.DARK_THEME_BACKGROUND_COLOR : BrowserActionService.LIGHT_THEME_BACKGROUND_COLOR;
-    browser.browserAction.setBadgeBackgroundColor({
-      color: backgroundColor,
-    }).catch((e) => {
-      console.error(e);
-    });
+    const backgroundColor = isDarkTheme
+      ? BrowserActionService.DARK_THEME_BACKGROUND_COLOR
+      : BrowserActionService.LIGHT_THEME_BACKGROUND_COLOR;
+    browser.browserAction
+      .setBadgeBackgroundColor({
+        color: backgroundColor,
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 
   public setPopupSize(large: boolean) {
-    browser.browserAction.setPopup({
-      popup: POPUP_PAGE + (large ? '?popup=1&large=1' : '?popup=1'),
-    }).catch((e) => {
-      console.error(e);
-    });
+    browser.browserAction
+      .setPopup({
+        popup: POPUP_PAGE + (large ? '?popup=1&large=1' : '?popup=1'),
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 }
 

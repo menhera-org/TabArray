@@ -19,24 +19,23 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { CookieStore, DisplayedContainer } from "weeg-containers";
+import browser from 'webextension-polyfill';
+import { CookieStore, DisplayedContainer } from 'weeg-containers';
 
-import { ContainerTabOpenerService } from "../../../lib/tabGroups/ContainerTabOpenerService";
-import { BrowserStateDao } from "../../../lib/states/BrowserStateDao";
-import { DisplayedContainerDao } from "../../../lib/states/DisplayedContainerDao";
-import { TabDao } from "../../../lib/states/TabDao";
+import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOpenerService';
+import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
+import { DisplayedContainerDao } from '../../../lib/states/DisplayedContainerDao';
+import { TabDao } from '../../../lib/states/TabDao';
 
-import { IndexTab } from "../../../legacy-lib/modules/IndexTab";
+import { IndexTab } from '../../../legacy-lib/modules/IndexTab';
 
-import { MenulistWindowElement } from "../../../components/menulist-window";
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
-import { CtgMenuItemElement } from "../../../components/ctg/ctg-menu-item";
+import { MenulistWindowElement } from '../../../components/menulist-window';
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
+import { CtgMenuItemElement } from '../../../components/ctg/ctg-menu-item';
 
-import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
-import { PopupRendererService } from "../PopupRendererService";
-
+import { AbstractFragmentBuilder } from './AbstractFragmentBuilder';
+import { PopupRendererService } from '../PopupRendererService';
 
 export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
@@ -108,7 +107,9 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
     }
     const browserState = this._browserState;
     let selectedDisplayedContainer: DisplayedContainer | null = null;
-    for (const displayedContainer of browserState.displayedContainers.map((dao) => DisplayedContainerDao.toDisplayedContainer(dao))) {
+    for (const displayedContainer of browserState.displayedContainers.map((dao) =>
+      DisplayedContainerDao.toDisplayedContainer(dao)
+    )) {
       if (displayedContainer.cookieStore.id === this._cookieStoreId) {
         selectedDisplayedContainer = displayedContainer;
         break;
@@ -139,9 +140,10 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
       }
       if (windowId != tab.windowId) {
         const windowElement = new MenulistWindowElement();
-        windowElement.windowName = this._browserState.currentWindowId == tab.windowId
-          ? browser.i18n.getMessage('currentWindow', tab.windowId.toString())
-          : browser.i18n.getMessage('windowLabel', tab.windowId.toString());
+        windowElement.windowName =
+          this._browserState.currentWindowId == tab.windowId
+            ? browser.i18n.getMessage('currentWindow', tab.windowId.toString())
+            : browser.i18n.getMessage('windowLabel', tab.windowId.toString());
         fragment.appendChild(windowElement);
       }
       windowId = tab.windowId;
@@ -158,6 +160,6 @@ export class ContainerDetailsFragmentBuilder extends AbstractFragmentBuilder {
   }
 
   public override getFocusableElements(): HTMLElement[] {
-    return [... this.getFragment().querySelectorAll('menulist-tab')] as HTMLElement[];
+    return [...this.getFragment().querySelectorAll('menulist-tab')] as HTMLElement[];
   }
 }

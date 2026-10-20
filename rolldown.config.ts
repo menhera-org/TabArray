@@ -19,7 +19,6 @@
   @license
 **/
 
-
 import { defineConfig } from 'rolldown';
 
 import { injectFilename } from './build-plugins/inject-filename.ts';
@@ -28,23 +27,22 @@ import { BUILD_TARGET } from './build-plugins/target.ts';
 // Content scripts are injected as classic scripts, so each one is bundled
 // into a single self-contained IIFE at a fixed path (see manifest.json and
 // CONTENT_EXTENSION_DIRECTORY_LISTING in src/defs.ts).
-const CONTENT_SCRIPTS = [
-  'content/overrides/content',
-  'content/ext/directory-listing/directory-listing',
-];
+const CONTENT_SCRIPTS = ['content/overrides/content', 'content/ext/directory-listing/directory-listing'];
 
-export default defineConfig(CONTENT_SCRIPTS.map((name) => ({
-  input: `src/${name}.ts`,
-  platform: 'browser',
-  tsconfig: 'tsconfig.json',
-  plugins: [injectFilename()],
-  transform: {
-    target: BUILD_TARGET,
-  },
-  output: {
-    file: `dist/${name}.js`,
-    format: 'iife',
-    sourcemap: true,
-    minify: true,
-  },
-})));
+export default defineConfig(
+  CONTENT_SCRIPTS.map((name) => ({
+    input: `src/${name}.ts`,
+    platform: 'browser',
+    tsconfig: 'tsconfig.json',
+    plugins: [injectFilename()],
+    transform: {
+      target: BUILD_TARGET,
+    },
+    output: {
+      file: `dist/${name}.js`,
+      format: 'iife',
+      sourcemap: true,
+      minify: true,
+    },
+  }))
+);

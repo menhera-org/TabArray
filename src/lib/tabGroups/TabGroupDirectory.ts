@@ -19,14 +19,14 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-import { CookieStore } from "weeg-containers";
-import { EventSink } from "weeg-events";
-import { Uint32 } from "weeg-types";
+import { StorageItem } from 'weeg-storage';
+import { CookieStore } from 'weeg-containers';
+import { EventSink } from 'weeg-events';
+import { Uint32 } from 'weeg-types';
 
-import { TabGroupAttributes, TabGroupType } from "./TabGroupAttributes";
-import { TabGroupDirectorySnapshot } from "./TabGroupDirectorySnapshot";
-import { ContextualIdentityService } from "./ContextualIdentityService";
+import { TabGroupAttributes, TabGroupType } from './TabGroupAttributes';
+import { TabGroupDirectorySnapshot } from './TabGroupDirectorySnapshot';
+import { ContextualIdentityService } from './ContextualIdentityService';
 
 // this is not applicable to private windows.
 
@@ -54,8 +54,16 @@ export class TabGroupDirectory {
 
   public readonly onChanged = new EventSink<void>();
 
-  private readonly storage = new StorageItem<SupergroupStorageType>(TabGroupDirectory.STORAGE_KEY, {}, StorageItem.AREA_LOCAL);
-  private readonly legacyStorage = new StorageItem<Uint32.Uint32[]>(TabGroupDirectory.LEGACY_STORAGE_KEY, [], StorageItem.AREA_LOCAL);
+  private readonly storage = new StorageItem<SupergroupStorageType>(
+    TabGroupDirectory.STORAGE_KEY,
+    {},
+    StorageItem.AREA_LOCAL
+  );
+  private readonly legacyStorage = new StorageItem<Uint32.Uint32[]>(
+    TabGroupDirectory.LEGACY_STORAGE_KEY,
+    [],
+    StorageItem.AREA_LOCAL
+  );
 
   private storageCache: SupergroupStorageType | undefined;
   private legacyStorageCache: Uint32.Uint32[] | undefined;
@@ -89,11 +97,10 @@ export class TabGroupDirectory {
    */
   private async getDefinedUserContextIds(): Promise<Uint32.Uint32[]> {
     const contextualIdentities = await this.contextualIdentityFactory.getAll();
-    const userContextIds = contextualIdentities.map((contextualIdentity) => contextualIdentity.cookieStore.userContextId);
-    return [
-      0 as Uint32.Uint32,
-      ... userContextIds,
-    ];
+    const userContextIds = contextualIdentities.map(
+      (contextualIdentity) => contextualIdentity.cookieStore.userContextId
+    );
+    return [0 as Uint32.Uint32, ...userContextIds];
   }
 
   private async getLegacyUserContextOrderSorted(): Promise<Uint32.Uint32[]> {
@@ -128,7 +135,9 @@ export class TabGroupDirectory {
   public async getValue(): Promise<SupergroupStorageType> {
     const value = await this.getRawValue();
     const userContextIds = await this.getLegacyUserContextOrderSorted();
-    const cookieStoreIds = userContextIds.map((userContextId) => CookieStore.fromParams({ userContextId, privateBrowsingId: 0 as Uint32.Uint32 }).id);
+    const cookieStoreIds = userContextIds.map(
+      (userContextId) => CookieStore.fromParams({ userContextId, privateBrowsingId: 0 as Uint32.Uint32 }).id
+    );
     const rootSupergroupId = TabGroupAttributes.getRootSupergroupTabGroupId();
     if (!(rootSupergroupId in value)) {
       value[rootSupergroupId] = {
@@ -216,7 +225,7 @@ export class TabGroupDirectory {
     if (includePrivateCookieStore) {
       tabGroupIds.push(CookieStore.PRIVATE.id);
     }
-    tabGroupIds.push(... snapshot.getTabGroupOrder());
+    tabGroupIds.push(...snapshot.getTabGroupOrder());
     return tabGroupIds;
   }
 
@@ -259,14 +268,17 @@ export class TabGroupDirectory {
     const supergroup = value[tabGroupId] as SupergroupType;
     if (!supergroup) return;
     if (supergroup.supergroupId == 0) return;
-    const parentTabGroupId = await this.getParentTabGroupId(tabGroupId) ?? TabGroupAttributes.getRootSupergroupTabGroupId();
+    const parentTabGroupId =
+      (await this.getParentTabGroupId(tabGroupId)) ?? TabGroupAttributes.getRootSupergroupTabGroupId();
     const parentSupergroup = value[parentTabGroupId] as SupergroupType;
     for (const memberTabGroupId of supergroup.members) {
       parentSupergroup.members.push(memberTabGroupId);
     }
     for (const definedTabGroupId in value) {
       const definedSupergroup = value[definedTabGroupId] as SupergroupType;
-      definedSupergroup.members = definedSupergroup.members.filter((memberTabGroupId) => memberTabGroupId !== tabGroupId);
+      definedSupergroup.members = definedSupergroup.members.filter(
+        (memberTabGroupId) => memberTabGroupId !== tabGroupId
+      );
     }
     delete value[tabGroupId];
     await this.setValue(value);
@@ -278,10 +290,13 @@ export class TabGroupDirectory {
     if (snapshot.hasChildTabGroupId(tabGroupId, parentTabGroupId)) return;
     const parentSupergroup = value[parentTabGroupId] as SupergroupType;
     if (!parentSupergroup) return;
-    const currentParentTabGroupId = snapshot.getParentTabGroupId(tabGroupId) ?? TabGroupAttributes.getRootSupergroupTabGroupId();
+    const currentParentTabGroupId =
+      snapshot.getParentTabGroupId(tabGroupId) ?? TabGroupAttributes.getRootSupergroupTabGroupId();
     if (currentParentTabGroupId == parentTabGroupId) return;
     const currentParentSupergroup = value[currentParentTabGroupId] as SupergroupType;
-    currentParentSupergroup.members = currentParentSupergroup.members.filter((memberTabGroupId) => memberTabGroupId !== tabGroupId);
+    currentParentSupergroup.members = currentParentSupergroup.members.filter(
+      (memberTabGroupId) => memberTabGroupId !== tabGroupId
+    );
     parentSupergroup.members.push(tabGroupId);
     await this.setValue(value);
   }

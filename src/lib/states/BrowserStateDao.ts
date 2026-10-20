@@ -19,11 +19,11 @@
   @license
 **/
 
-import { TabDao } from "./TabDao";
-import { TagType } from "../tabGroups/tags/TagDirectory";
-import { DisplayedContainerDao } from "./DisplayedContainerDao";
-import { SupergroupStorageType } from "../tabGroups/TabGroupDirectory";
-import { WindowStateDao } from "./WindowStateDao";
+import { TabDao } from './TabDao';
+import { TagType } from '../tabGroups/tags/TagDirectory';
+import { DisplayedContainerDao } from './DisplayedContainerDao';
+import { SupergroupStorageType } from '../tabGroups/TabGroupDirectory';
+import { WindowStateDao } from './WindowStateDao';
 
 export interface BrowserStateDao {
   currentWindowId: number;

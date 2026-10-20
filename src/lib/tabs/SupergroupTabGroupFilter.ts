@@ -20,10 +20,10 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { CompatTab, TabGroupFilter } from "weeg-tabs";
+import { CompatTab, TabGroupFilter } from 'weeg-tabs';
 
 import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
-import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
+import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
 
 const tabGroupDirectory = TabGroupDirectory.getInstance();
 
@@ -44,10 +44,9 @@ export class SupergroupTabGroupFilter implements TabGroupFilter {
 
   public async getTabs(): Promise<CompatTab[]> {
     const cookieStoreIds = await this.getChildCookieStoreIds();
-    const tabs = (cookieStoreIds.length > 0
-      ? await browser.tabs.query({ cookieStoreId: cookieStoreIds })
-      : []
-    ).map((tab) => new CompatTab(tab));
+    const tabs = (cookieStoreIds.length > 0 ? await browser.tabs.query({ cookieStoreId: cookieStoreIds }) : []).map(
+      (tab) => new CompatTab(tab)
+    );
     return tabs;
   }
 

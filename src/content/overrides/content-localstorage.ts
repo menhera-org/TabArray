@@ -22,16 +22,18 @@
 import browser from 'webextension-polyfill';
 
 const notifyStorageData = () => {
-  browser.runtime.sendMessage({
-    type: 'content-localstorage-statistics',
-    payload: {
-      origin: window.location.origin,
-      url: window.location.href,
-      localStorageLength: window.localStorage.length,
-    },
-  }).catch(() => {
-    // ignore.
-  });
+  browser.runtime
+    .sendMessage({
+      type: 'content-localstorage-statistics',
+      payload: {
+        origin: window.location.origin,
+        url: window.location.href,
+        localStorageLength: window.localStorage.length,
+      },
+    })
+    .catch(() => {
+      // ignore.
+    });
 };
 
 window.addEventListener('storage', notifyStorageData);

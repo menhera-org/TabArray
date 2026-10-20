@@ -19,10 +19,12 @@
   @license
 **/
 
-import { ConfigurationOption } from "./ConfigurationOption";
+import { ConfigurationOption } from './ConfigurationOption';
 
 export class ConfigurationSerializer {
-  public static async serializeConfiguration(configuration: Record<string, ConfigurationOption<unknown>>): Promise<Record<string, unknown>> {
+  public static async serializeConfiguration(
+    configuration: Record<string, ConfigurationOption<unknown>>
+  ): Promise<Record<string, unknown>> {
     const serializedConfiguration: Record<string, unknown> = {};
     for (const [key, option] of Object.entries(configuration)) {
       serializedConfiguration[key] = await option.getValue();

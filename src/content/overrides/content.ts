@@ -30,12 +30,14 @@ declare global {
   var gLanguageStore: LanguageStore;
 }
 
-browser.runtime.sendMessage({
-  type: 'content-script-loaded',
-  url: window.location.href,
-}).catch(() => {
-  // ignore.
-});
+browser.runtime
+  .sendMessage({
+    type: 'content-script-loaded',
+    url: window.location.href,
+  })
+  .catch(() => {
+    // ignore.
+  });
 
 let languages: string | null = null;
 if (globalThis.gLanguageStore) {
@@ -55,7 +57,11 @@ const navigatorPrototypeWrapped = navigatorPrototype.wrappedJSObject;
 
 let languageSetupDone = false;
 const setUpLanguageOverrides = () => {
-  console.debug('Original language values: languages=%s, language=%s', window.navigator.languages, window.navigator.language);
+  console.debug(
+    'Original language values: languages=%s, language=%s',
+    window.navigator.languages,
+    window.navigator.language
+  );
   // this is configurable, so deletable
   delete navigatorPrototypeWrapped.languages;
 
@@ -95,10 +101,12 @@ gLanguageStore.onLanguagesChanged.addListener(() => {
   if (!languageSetupDone && gLanguageStore.language !== '') {
     setUpLanguageOverrides();
   }
-  window.dispatchEvent(new Event('languagechange', {
-    bubbles: false,
-    cancelable: false,
-  }));
+  window.dispatchEvent(
+    new Event('languagechange', {
+      bubbles: false,
+      cancelable: false,
+    })
+  );
 });
 
 const getUaDataPlatform = () => {
@@ -110,7 +118,6 @@ const getUaDataPlatform = () => {
   }
   return 'Linux';
 };
-
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototypeWrapped: any) => {
@@ -154,11 +161,17 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
           configurable: false,
           writable: true,
           enumerable: true,
-          value: cloneInto({
-            app: {},
-            csi: {},
-            loadTimes: () => { /* nothing */ },
-          }, window, { cloneFunctions: true }),
+          value: cloneInto(
+            {
+              app: {},
+              csi: {},
+              loadTimes: () => {
+                /* nothing */
+              },
+            },
+            window,
+            { cloneFunctions: true }
+          ),
         });
       } catch (_e) {
         // ignore
@@ -174,71 +187,87 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
         if (!uaDataEnabled) {
           return undefined;
         }
-        return cloneInto({
-          brands: brands,
+        return cloneInto(
+          {
+            brands: brands,
 
-          mobile: false,
+            mobile: false,
 
-          platform: getUaDataPlatform(),
+            platform: getUaDataPlatform(),
 
-          toJSON() {
-            return cloneInto({
-              brands: this.brands,
-              mobile: this.mobile,
-              platform: this.platform,
-            }, window);
+            toJSON() {
+              return cloneInto(
+                {
+                  brands: this.brands,
+                  mobile: this.mobile,
+                  platform: this.platform,
+                },
+                window
+              );
+            },
+
+            getHighEntropyValues() {
+              return window.Promise.resolve(
+                cloneInto(
+                  {
+                    brands: highEntropyBrands,
+                    mobile: this.mobile,
+                    platform: this.platform,
+                    platformVersion: '',
+                    architecture: '',
+                    bitness: '',
+                    model: '',
+                    uaFullVersion: '',
+                    fullVersionList: [],
+                  },
+                  window
+                )
+              );
+            },
           },
-
-          getHighEntropyValues() {
-            return window.Promise.resolve(cloneInto({
-              brands: highEntropyBrands,
-              mobile: this.mobile,
-              platform: this.platform,
-              platformVersion: '',
-              architecture: '',
-              bitness: '',
-              model: '',
-              uaFullVersion: '',
-              fullVersionList: [],
-            }, window));
-          },
-        }, window, {
-          cloneFunctions: true,
-        });
+          window,
+          {
+            cloneFunctions: true,
+          }
+        );
       }, window),
     });
 
     if (!isMozilla) {
       const blockPattern = /^(?:resource|chrome):\/\//;
 
-      window.document.addEventListener('load', (ev) => {
-        const target = ev.target;
-        if (!(target instanceof window.Element)) return;
-        const addedNode = target as Element;
-        const blockEvent = (resourceUrl: string) => {
-          console.debug('Blocked load event for %s', resourceUrl);
-          ev.stopImmediatePropagation();
-          ev.preventDefault();
-          addedNode.dispatchEvent(new window.Event('error'));
-        };
-        const tagName = addedNode.tagName.toLowerCase();
-        if (tagName == 'link') {
-          const link = addedNode as HTMLLinkElement;
-          if (link.href.match(blockPattern)) {
-            blockEvent(link.href);
+      window.document.addEventListener(
+        'load',
+        (ev) => {
+          const target = ev.target;
+          if (!(target instanceof window.Element)) return;
+          const addedNode = target as Element;
+          const blockEvent = (resourceUrl: string) => {
+            console.debug('Blocked load event for %s', resourceUrl);
+            ev.stopImmediatePropagation();
+            ev.preventDefault();
+            addedNode.dispatchEvent(new window.Event('error'));
+          };
+          const tagName = addedNode.tagName.toLowerCase();
+          if (tagName == 'link') {
+            const link = addedNode as HTMLLinkElement;
+            if (link.href.match(blockPattern)) {
+              blockEvent(link.href);
+            }
+          } else if (tagName == 'img') {
+            const img = addedNode as HTMLImageElement;
+            if (img.src.match(blockPattern)) {
+              blockEvent(img.src);
+            }
+          } else if (tagName == 'script') {
+            const script = addedNode as HTMLScriptElement;
+            if (script.src.match(blockPattern)) {
+              blockEvent(script.src);
+            }
           }
-        } else if (tagName == 'img') {
-          const img = addedNode as HTMLImageElement;
-          if (img.src.match(blockPattern)) {
-            blockEvent(img.src);
-          }
-        } else if (tagName == 'script') {
-          const script = addedNode as HTMLScriptElement;
-          if (script.src.match(blockPattern)) {
-            blockEvent(script.src);
-          }
-        }
-      }, { capture: true, passive: false });
+        },
+        { capture: true, passive: false }
+      );
     }
   } catch (e) {
     console.error(String(e));
@@ -258,10 +287,12 @@ gLanguageStore.onLanguagesChanged.addListener(() => {
     if (!languageSetupDone && gLanguageStore.language !== '') {
       setUpLanguageOverrides();
     }
-    window.dispatchEvent(new Event('languagechange', {
-      bubbles: false,
-      cancelable: false,
-    }));
+    window.dispatchEvent(
+      new Event('languagechange', {
+        bubbles: false,
+        cancelable: false,
+      })
+    );
   } catch (e) {
     console.error(e);
   }
@@ -282,9 +313,12 @@ const iframeMutationObserver = new MutationObserver(() => {
     const origin = iframe.contentWindow.origin;
     if (origin == window.origin) {
       visitedIframes.add(iframe);
-      setupUaOverrides(iframe.contentWindow as Window & typeof globalThis, Object.getPrototypeOf(iframe.contentWindow.navigator).wrappedJSObject);
+      setupUaOverrides(
+        iframe.contentWindow as Window & typeof globalThis,
+        Object.getPrototypeOf(iframe.contentWindow.navigator).wrappedJSObject
+      );
     }
   }
 });
 
-iframeMutationObserver.observe(document, {attributes: false, childList: true, characterData: false, subtree:true});
+iframeMutationObserver.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });

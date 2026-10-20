@@ -19,22 +19,22 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { SetMap } from "weeg-types";
-import { CompatTab } from "weeg-tabs";
-import { DisplayedContainer } from "weeg-containers";
+import browser from 'webextension-polyfill';
+import { SetMap } from 'weeg-types';
+import { CompatTab } from 'weeg-tabs';
+import { DisplayedContainer } from 'weeg-containers';
 
-import { BrowserStateDao } from "../../../lib/states/BrowserStateDao";
-import { DisplayedContainerDao } from "../../../lib/states/DisplayedContainerDao";
-import { TabGroupDirectorySnapshot } from "../../../lib/tabGroups/TabGroupDirectorySnapshot";
-import { TabDao } from "../../../lib/states/TabDao";
-import { IndexTabService } from "../../../lib/tabs/IndexTabService";
+import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
+import { DisplayedContainerDao } from '../../../lib/states/DisplayedContainerDao';
+import { TabGroupDirectorySnapshot } from '../../../lib/tabGroups/TabGroupDirectorySnapshot';
+import { TabDao } from '../../../lib/states/TabDao';
+import { IndexTabService } from '../../../lib/tabs/IndexTabService';
 
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
 
-import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
-import { PopupRendererService } from "../PopupRendererService";
+import { AbstractFragmentBuilder } from './AbstractFragmentBuilder';
+import { PopupRendererService } from '../PopupRendererService';
 
 export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   protected static override readonly suppressBottomNavigation = true;
@@ -96,14 +96,18 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
     }
     const browserState = this._browserState;
     const tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(browserState.supergroups);
-    const displayedContainers = browserState.displayedContainers.map((dao) => DisplayedContainerDao.toDisplayedContainer(dao));
-    this._definedDisplayedContainers = [... displayedContainers].sort((a, b) => {
+    const displayedContainers = browserState.displayedContainers.map((dao) =>
+      DisplayedContainerDao.toDisplayedContainer(dao)
+    );
+    this._definedDisplayedContainers = [...displayedContainers].sort((a, b) => {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
     const tabIds = browserState.tabIdsBySite[this._domain] ?? [];
-    const tabs = this._indexTabService.filterOutIndexTabs(tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao)));
+    const tabs = this._indexTabService.filterOutIndexTabs(
+      tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao))
+    );
     this._tabCount = tabs.length;
-    this._tabs = [... tabs];
+    this._tabs = [...tabs];
   }
 
   public renderSite(): void {
@@ -122,7 +126,7 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
     const fragment = this.getFragment();
     fragment.textContent = '';
     for (const cookieStoreId of tabsByUserContextId.keys()) {
-      const tabs = [... tabsByUserContextId.get(cookieStoreId) ?? []];
+      const tabs = [...(tabsByUserContextId.get(cookieStoreId) ?? [])];
       tabs.sort((a, b) => {
         if (a.windowId == b.windowId) {
           return a.index - b.index;
@@ -133,7 +137,11 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
       if (!userContext) {
         continue;
       }
-      const userContextElement = this._popupRenderer.renderContainerForFirstPartyDomain(this._domain, userContext, userContext.cookieStore.isPrivate);
+      const userContextElement = this._popupRenderer.renderContainerForFirstPartyDomain(
+        this._domain,
+        userContext,
+        userContext.cookieStore.isPrivate
+      );
       fragment.appendChild(userContextElement);
       let tabCount = 0;
       for (const tab of tabs) {
@@ -153,6 +161,6 @@ export class SiteDetailsFragmentBuilder extends AbstractFragmentBuilder {
   }
 
   public override getFocusableElements(): HTMLElement[] {
-    return [... this.getFragment().querySelectorAll('menulist-container, menulist-tab')] as HTMLElement[];
+    return [...this.getFragment().querySelectorAll('menulist-container, menulist-tab')] as HTMLElement[];
   }
 }

@@ -19,6 +19,5 @@
   @license
 **/
 
-
 /** Minimum supported Firefox (keep in sync with manifest.json strict_min_version). */
 export const BUILD_TARGET = 'firefox102';

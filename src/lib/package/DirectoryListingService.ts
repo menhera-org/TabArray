@@ -19,9 +19,9 @@
   @license
 **/
 
-import { ServiceRegistry } from "../ServiceRegistry";
-import { PackageDirectory } from "./PackageDirectory";
-import { DirectoryListingParser } from "./DirectoryListingParser";
+import { ServiceRegistry } from '../ServiceRegistry';
+import { PackageDirectory } from './PackageDirectory';
+import { DirectoryListingParser } from './DirectoryListingParser';
 
 export class DirectoryListingService {
   private static readonly INSTANCE = new DirectoryListingService();
@@ -58,7 +58,7 @@ export class DirectoryListingService {
       if (entry.type == 'file') {
         paths.push(this.decodePath(entry.fullPath));
       } else if (entry.type == 'directory') {
-        paths.push(... await this.getFilePathsInternal(this.decodePath(entry.fullPath)));
+        paths.push(...(await this.getFilePathsInternal(this.decodePath(entry.fullPath))));
       }
     }
     return paths;
@@ -77,9 +77,15 @@ export class DirectoryListingService {
         throw new Error(`Invalid path: ${path}`);
       }
     });
-    return [... paths].sort((a, b) => {
-      const aParts = a.split('/').slice(1).filter(part => part != '');
-      const bParts = b.split('/').slice(1).filter(part => part != '');
+    return [...paths].sort((a, b) => {
+      const aParts = a
+        .split('/')
+        .slice(1)
+        .filter((part) => part != '');
+      const bParts = b
+        .split('/')
+        .slice(1)
+        .filter((part) => part != '');
       const minLength = Math.min(aParts.length, bParts.length);
       for (let i = 0; i < minLength; i++) {
         const aPart = aParts[i] as string;
@@ -95,11 +101,17 @@ export class DirectoryListingService {
   }
 
   public encodePath(path: string): string {
-    return path.split('/').map(part => encodeURIComponent(part)).join('/');
+    return path
+      .split('/')
+      .map((part) => encodeURIComponent(part))
+      .join('/');
   }
 
   public decodePath(path: string): string {
-    return path.split('/').map(part => decodeURIComponent(part)).join('/');
+    return path
+      .split('/')
+      .map((part) => decodeURIComponent(part))
+      .join('/');
   }
 }
 

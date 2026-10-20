@@ -44,7 +44,7 @@ const fpiService = FpiService.getInstance();
 
 document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
-const setConfigValue = <T,>(option: ConfigurationOption<T>, value: T) => {
+const setConfigValue = <T>(option: ConfigurationOption<T>, value: T) => {
   option.setValue(value).catch((e) => {
     console.error(e);
   });
@@ -93,7 +93,9 @@ window.addEventListener('hashchange', () => {
 });
 
 const paneContainers = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="containers"]');
-const paneContainerOverrides = document.querySelector<HTMLElement>('#optionsPanes > div[data-pane-name="container-overrides"]');
+const paneContainerOverrides = document.querySelector<HTMLElement>(
+  '#optionsPanes > div[data-pane-name="container-overrides"]'
+);
 
 const inputTabSortingEnabled = document.querySelector<HTMLInputElement>('#input-enableSorting');
 const inputSyncContainers = document.querySelector<HTMLInputElement>('#input-syncContainers');
@@ -108,7 +110,9 @@ const inputNewTabKeepContainer = document.querySelector<HTMLInputElement>('#inpu
 const inputFirstPartyIsolate = document.querySelector<HTMLInputElement>('#input-firstPartyIsolate');
 const inputResistFingerprinting = document.querySelector<HTMLInputElement>('#input-resistFingerprinting');
 
-const selectExternalTabContainerOption = document.querySelector<HTMLSelectElement>('#select-externalTabContainerOption');
+const selectExternalTabContainerOption = document.querySelector<HTMLSelectElement>(
+  '#select-externalTabContainerOption'
+);
 const selectGroupIndexOption = document.querySelector<HTMLSelectElement>('#select-groupIndexOption');
 const selectPopupSize = document.querySelector<HTMLSelectElement>('#select-popupSize');
 
@@ -184,7 +188,10 @@ config['tab.external.containerOption'].observe((value) => {
 });
 
 selectExternalTabContainerOption?.addEventListener('change', () => {
-  setConfigValue(config['tab.external.containerOption'], selectExternalTabContainerOption.value as ExternalContainerOption);
+  setConfigValue(
+    config['tab.external.containerOption'],
+    selectExternalTabContainerOption.value as ExternalContainerOption
+  );
 });
 
 // tab.groups.indexOption setting

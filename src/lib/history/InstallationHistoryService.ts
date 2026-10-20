@@ -19,14 +19,14 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { StorageItem } from "weeg-storage";
-import { EventSink } from "weeg-events";
-import { Asserts } from "weeg-utils";
+import browser from 'webextension-polyfill';
+import { StorageItem } from 'weeg-storage';
+import { EventSink } from 'weeg-events';
+import { Asserts } from 'weeg-utils';
 
-import { ServiceRegistry } from "../ServiceRegistry";
-import { StartupService } from "../StartupService";
-import { PackageIntegrityService } from "../package/PackageIntegrityService";
+import { ServiceRegistry } from '../ServiceRegistry';
+import { StartupService } from '../StartupService';
+import { PackageIntegrityService } from '../package/PackageIntegrityService';
 
 export type InstallationInfo = {
   installationDate: string;
@@ -57,12 +57,14 @@ export class InstallationHistoryService {
   private constructor() {
     Asserts.assertTopLevelInBackgroundScript();
     startupService.onStartup.addListener(() => {
-      this.getCurrentInstallation().then((installation) => {
-        return this.appendValue(installation);
-      }).catch((e) => {
-        console.error(e);
-      });
-    })
+      this.getCurrentInstallation()
+        .then((installation) => {
+          return this.appendValue(installation);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    });
 
     this._storage.onChanged.addListener((value) => {
       this.onChanged.dispatch(value);
@@ -116,7 +118,7 @@ export class InstallationHistoryService {
     const browserName = browserInfo.name;
     const browserVersion = browserInfo.version;
     const browserPlatformOs = platformInfo.os;
-    const { commit, untracked, buildDate } = buildInfo as { commit: string; untracked: boolean; buildDate: string; };
+    const { commit, untracked, buildDate } = buildInfo as { commit: string; untracked: boolean; buildDate: string };
     return {
       installationDate: new Date().toISOString(),
       commit,
@@ -133,7 +135,8 @@ export class InstallationHistoryService {
 
   public installationEquals(a: InstallationInfo, b: InstallationInfo): boolean {
     // ignore installationDate
-    return a.commit === b.commit &&
+    return (
+      a.commit === b.commit &&
       a.untracked === b.untracked &&
       a.signed === b.signed &&
       a.buildDate === b.buildDate &&
@@ -141,7 +144,8 @@ export class InstallationHistoryService {
       a.computedIntegrity === b.computedIntegrity &&
       a.browserName === b.browserName &&
       a.browserVersion === b.browserVersion &&
-      a.browserPlatformOs === b.browserPlatformOs;
+      a.browserPlatformOs === b.browserPlatformOs
+    );
   }
 }
 

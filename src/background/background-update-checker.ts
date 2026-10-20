@@ -21,18 +21,18 @@
 
 import browser from 'webextension-polyfill';
 
-import { Alarm } from "weeg-utils";
+import { Alarm } from 'weeg-utils';
 
-import { NotificationChannel } from "../lib/notifications/NotificationChannel";
-import { ExtensionPageService } from "../lib/ExtensionPageService";
-import { ExtensionListingService } from "../lib/ExtensionListingService";
+import { NotificationChannel } from '../lib/notifications/NotificationChannel';
+import { ExtensionPageService } from '../lib/ExtensionPageService';
+import { ExtensionListingService } from '../lib/ExtensionListingService';
 
-import { NotificationChannelId } from "../defs";
+import { NotificationChannelId } from '../defs';
 
 const extensionPageService = ExtensionPageService.getInstance();
 const extensionListingService = ExtensionListingService.getInstance();
 
-const alarm = new Alarm("background-update-checker", {
+const alarm = new Alarm('background-update-checker', {
   periodInMinutes: 15,
 });
 
@@ -49,7 +49,7 @@ alarm.onAlarm.addListener(async () => {
   const availableVersion = await extensionListingService.checkForAvailableVersion();
   if (availableVersion == null) return;
 
-  const message = browser.i18n.getMessage("newVersionAvailable", availableVersion);
+  const message = browser.i18n.getMessage('newVersionAvailable', availableVersion);
   notificationChannel.createBasic(message).catch((e) => {
     console.error(e);
   });

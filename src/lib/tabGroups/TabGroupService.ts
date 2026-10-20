@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 import { StorageItem } from 'weeg-storage';
 
 import { ServiceRegistry } from '../ServiceRegistry';
-import { TabGroupDirectory } from "./TabGroupDirectory";
+import { TabGroupDirectory } from './TabGroupDirectory';
 import { TabGroupOptionDirectory } from './TabGroupOptionDirectory';
 import { TabGroupAttributes } from './TabGroupAttributes';
 import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorageStatistics';
@@ -47,7 +47,11 @@ export class TabGroupService {
   public readonly optionDirectory = new TabGroupOptionDirectory();
   public readonly contentStorageStatistics = new ContentStorageStatistics();
 
-  private readonly _removingBrowsingDataCookieStoreIds = new StorageItem<string[]>('TabGroupService.removingBrowsingDataCookieStoreIds', [], StorageItem.AREA_LOCAL);
+  private readonly _removingBrowsingDataCookieStoreIds = new StorageItem<string[]>(
+    'TabGroupService.removingBrowsingDataCookieStoreIds',
+    [],
+    StorageItem.AREA_LOCAL
+  );
 
   private _removingBrowsingDataCookieStoreIdsCache: string[] | undefined;
 
@@ -63,8 +67,8 @@ export class TabGroupService {
       this.directory.getSnapshot(),
     ]);
     return [
-      ... cookieStores.map((cookieStore) => cookieStore.id),
-      ... tabGroupDirectorySnapshot.getSupergroupTabGroupIds(),
+      ...cookieStores.map((cookieStore) => cookieStore.id),
+      ...tabGroupDirectorySnapshot.getSupergroupTabGroupIds(),
     ];
   }
 
@@ -92,7 +96,7 @@ export class TabGroupService {
         tabGroupId = tabGroupDirectorySnapshot.getParentTabGroupId(tabGroupId);
       }
     }
-    return [... tabGroupIds];
+    return [...tabGroupIds];
   }
 
   /**
@@ -103,18 +107,24 @@ export class TabGroupService {
   }
 
   private async removeBrowsingDataForCookieStoreIdInternal(cookieStoreId: string): Promise<void> {
-    await browser.browsingData.remove({
-      cookieStoreId,
-    }, {
-      cookies: true,
-      localStorage: true, // not supported on old Firefox
-      indexedDB: true,
-    });
+    await browser.browsingData.remove(
+      {
+        cookieStoreId,
+      },
+      {
+        cookies: true,
+        localStorage: true, // not supported on old Firefox
+        indexedDB: true,
+      }
+    );
     await this.contentStorageStatistics.removeCookieStore(cookieStoreId);
   }
 
   private async removeBrowsingDataForCookieStoreId(cookieStoreId: string): Promise<void> {
-    if (null != this._removingBrowsingDataCookieStoreIdsCache && this._removingBrowsingDataCookieStoreIdsCache.includes(cookieStoreId)) {
+    if (
+      null != this._removingBrowsingDataCookieStoreIdsCache &&
+      this._removingBrowsingDataCookieStoreIdsCache.includes(cookieStoreId)
+    ) {
       return;
     }
     const removingCookieStoreIds = await this._removingBrowsingDataCookieStoreIds.getValue();

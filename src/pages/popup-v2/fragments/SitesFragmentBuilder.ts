@@ -19,21 +19,21 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { EventSink } from "weeg-events";
-import { HostnameService } from "weeg-domains";
+import browser from 'webextension-polyfill';
+import { EventSink } from 'weeg-events';
+import { HostnameService } from 'weeg-domains';
 
-import { TabQueryService } from "../../../lib/tabs/TabQueryService";
-import { IndexTabService } from "../../../lib/tabs/IndexTabService";
-import { CompatConsole } from "../../../lib/console/CompatConsole";
-import { BrowserStateDao } from "../../../lib/states/BrowserStateDao";
-import { TabDao } from "../../../lib/states/TabDao";
+import { TabQueryService } from '../../../lib/tabs/TabQueryService';
+import { IndexTabService } from '../../../lib/tabs/IndexTabService';
+import { CompatConsole } from '../../../lib/console/CompatConsole';
+import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
+import { TabDao } from '../../../lib/states/TabDao';
 
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
-import { MenulistSiteElement } from "../../../components/menulist-site";
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
+import { MenulistSiteElement } from '../../../components/menulist-site';
 
-import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
+import { AbstractFragmentBuilder } from './AbstractFragmentBuilder';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -78,11 +78,13 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
     }
     const fragment = this.getFragment();
     fragment.textContent = '';
-    const hostnames = this._hostnameService.sortDomains([... keys]);
+    const hostnames = this._hostnameService.sortDomains([...keys]);
     for (const domain of hostnames) {
       const tabIds = browserState.tabIdsBySite[domain] ?? [];
-      const tabs = this._indexTabService.filterOutIndexTabs(tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao)));
-      const lastAccessedTab = tabs.reduce((a, b) => a.lastAccessed > b.lastAccessed ? a : b);
+      const tabs = this._indexTabService.filterOutIndexTabs(
+        tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao))
+      );
+      const lastAccessedTab = tabs.reduce((a, b) => (a.lastAccessed > b.lastAccessed ? a : b));
       const siteElement = new MenulistSiteElement();
       siteElement.domain = domain || '(null)';
       siteElement.tabCount = tabs.length;
@@ -113,6 +115,6 @@ export class SitesFragmentBuilder extends AbstractFragmentBuilder {
   }
 
   public override getFocusableElements(): HTMLElement[] {
-    return [... this.getFragment().querySelectorAll('menulist-site')] as HTMLElement[];
+    return [...this.getFragment().querySelectorAll('menulist-site')] as HTMLElement[];
   }
 }

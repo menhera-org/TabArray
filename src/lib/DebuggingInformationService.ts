@@ -19,18 +19,18 @@
   @license
 **/
 
-import { ExtensionService } from "weeg-utils";
+import { ExtensionService } from 'weeg-utils';
 
-import { DirectoryListingService } from "./package/DirectoryListingService";
-import { PackageIntegrityService } from "./package/PackageIntegrityService";
-import { ConsoleHistoryService } from "./console/ConsoleHistoryService";
-import { PerformanceHistoryService } from "./history/PerformanceHistoryService";
-import { InstallationHistoryService } from "./history/InstallationHistoryService";
-import { WindowTabCountService } from "./windows/WindowTabCountService";
+import { DirectoryListingService } from './package/DirectoryListingService';
+import { PackageIntegrityService } from './package/PackageIntegrityService';
+import { ConsoleHistoryService } from './console/ConsoleHistoryService';
+import { PerformanceHistoryService } from './history/PerformanceHistoryService';
+import { InstallationHistoryService } from './history/InstallationHistoryService';
+import { WindowTabCountService } from './windows/WindowTabCountService';
 
-import { getSerializedConfig } from "../config/config";
+import { getSerializedConfig } from '../config/config';
 
-import { ServiceRegistry } from "./ServiceRegistry";
+import { ServiceRegistry } from './ServiceRegistry';
 
 const extensionService = ExtensionService.getInstance();
 const directoryListingService = DirectoryListingService.getInstance();

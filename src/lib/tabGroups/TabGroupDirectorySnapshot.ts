@@ -19,10 +19,10 @@
   @license
 **/
 
-import { DisplayedContainer } from "weeg-containers";
+import { DisplayedContainer } from 'weeg-containers';
 
-import { SupergroupStorageType, SupergroupType } from "./TabGroupDirectory";
-import { TabGroupAttributes, TabGroupFilter } from "./TabGroupAttributes";
+import { SupergroupStorageType, SupergroupType } from './TabGroupDirectory';
+import { TabGroupAttributes, TabGroupFilter } from './TabGroupAttributes';
 
 export class TabGroupDirectorySnapshot {
   private readonly _value: SupergroupStorageType;
@@ -74,7 +74,13 @@ export class TabGroupDirectorySnapshot {
     return false;
   }
 
-  private forEachInternal(callback: (tabGroupId: string) => unknown | Promise<unknown>, thisArg: object | null | undefined, tabGroupFilter: TabGroupFilter, rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId(), aCache?: Set<string>): void {
+  private forEachInternal(
+    callback: (tabGroupId: string) => unknown | Promise<unknown>,
+    thisArg: object | null | undefined,
+    tabGroupFilter: TabGroupFilter,
+    rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId(),
+    aCache?: Set<string>
+  ): void {
     const cache = aCache ?? new Set();
     if (cache.has(rootTabGroupId)) return;
     cache.add(rootTabGroupId);
@@ -91,45 +97,80 @@ export class TabGroupDirectorySnapshot {
         if (tabGroupFilter.cookieStore) {
           Promise.resolve(boundCallback(memberTabGroupId)).catch((e) => {
             console.error(e);
-          })
+          });
         }
       } else {
         if (tabGroupFilter.supergroup) {
           Promise.resolve(boundCallback(memberTabGroupId)).catch((e) => {
             console.error(e);
-          })
+          });
         }
         this.forEachInternal(callback, thisArg, tabGroupFilter, memberTabGroupId, cache);
       }
     }
   }
 
-  public forEachTabGroup(callback: (tabGroupId: string) => unknown | Promise<unknown>, thisArg: object | null | undefined, rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): void {
-    this.forEachInternal(callback, thisArg, {
-      cookieStore: true,
-      supergroup: true,
-    }, rootTabGroupId);
+  public forEachTabGroup(
+    callback: (tabGroupId: string) => unknown | Promise<unknown>,
+    thisArg: object | null | undefined,
+    rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()
+  ): void {
+    this.forEachInternal(
+      callback,
+      thisArg,
+      {
+        cookieStore: true,
+        supergroup: true,
+      },
+      rootTabGroupId
+    );
   }
 
-  public forEachCookieStore(callback: (tabGroupId: string) => unknown | Promise<unknown>, thisArg: object | null | undefined, rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): void {
-    this.forEachInternal(callback, thisArg, {
-      cookieStore: true,
-      supergroup: false,
-    }, rootTabGroupId);
+  public forEachCookieStore(
+    callback: (tabGroupId: string) => unknown | Promise<unknown>,
+    thisArg: object | null | undefined,
+    rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()
+  ): void {
+    this.forEachInternal(
+      callback,
+      thisArg,
+      {
+        cookieStore: true,
+        supergroup: false,
+      },
+      rootTabGroupId
+    );
   }
 
-  public forEachSupergroup(callback: (tabGroupId: string) => unknown | Promise<unknown>, thisArg: object | null | undefined, rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): void {
-    this.forEachInternal(callback, thisArg, {
-      cookieStore: false,
-      supergroup: true,
-    }, rootTabGroupId);
+  public forEachSupergroup(
+    callback: (tabGroupId: string) => unknown | Promise<unknown>,
+    thisArg: object | null | undefined,
+    rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()
+  ): void {
+    this.forEachInternal(
+      callback,
+      thisArg,
+      {
+        cookieStore: false,
+        supergroup: true,
+      },
+      rootTabGroupId
+    );
   }
 
-  private getTabGroupIdsInternal(tabGroupFilter: TabGroupFilter, rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()): string[] {
+  private getTabGroupIdsInternal(
+    tabGroupFilter: TabGroupFilter,
+    rootTabGroupId = TabGroupAttributes.getRootSupergroupTabGroupId()
+  ): string[] {
     const tabGroupIds: string[] = [];
-    this.forEachInternal((tabGroupId) => {
-      tabGroupIds.push(tabGroupId);
-    }, null, tabGroupFilter, rootTabGroupId);
+    this.forEachInternal(
+      (tabGroupId) => {
+        tabGroupIds.push(tabGroupId);
+      },
+      null,
+      tabGroupFilter,
+      rootTabGroupId
+    );
     return tabGroupIds;
   }
 

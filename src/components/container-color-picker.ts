@@ -19,24 +19,14 @@
   @license
 **/
 
-const COLORS = [
-  "blue",
-  "turquoise",
-  "green",
-  "yellow",
-  "orange",
-  "red",
-  "pink",
-  "purple",
-  "toolbar",
-];
+const COLORS = ['blue', 'turquoise', 'green', 'yellow', 'orange', 'red', 'pink', 'purple', 'toolbar'];
 
 export class ColorPickerElement extends HTMLElement {
   private _radios: HTMLFormElement;
 
   constructor() {
     super();
-    this.attachShadow({mode: 'open'});
+    this.attachShadow({ mode: 'open' });
     const css = document.createElement('link');
     css.rel = 'stylesheet';
     css.href = '/css/components/usercontext.css';

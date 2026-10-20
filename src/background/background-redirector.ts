@@ -40,7 +40,15 @@ const elapsedTimeService = ElapsedTimeService.getInstance();
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   // This is never called for private tabs.
   try {
-    if (details.cookieStoreId == null || details.cookieStoreId != CookieStore.DEFAULT.id || details.tabId == -1 || details.frameId != 0 || details.originUrl || details.incognito) return false;
+    if (
+      details.cookieStoreId == null ||
+      details.cookieStoreId != CookieStore.DEFAULT.id ||
+      details.tabId == -1 ||
+      details.frameId != 0 ||
+      details.originUrl ||
+      details.incognito
+    )
+      return false;
     const cookieStoreId = details.cookieStoreId;
 
     // all of these IO operations are now cached.
@@ -63,28 +71,31 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
       return false;
     }
 
-    const {tabId, url} = details;
+    const { tabId, url } = details;
 
     if ('sticky' == externalTabContainerOption) {
       const browserTab = await browser.tabs.get(tabId);
       const tab = new CompatTab(browserTab);
-      const {windowId} = tab;
+      const { windowId } = tab;
 
       const activeCookieStoreId = await activeContainerService.getActiveContainer(windowId);
       if (cookieStoreId == activeCookieStoreId || activeCookieStoreId == null) {
         console.log('Tab %d in active cookie store %s', tabId, cookieStoreId);
         return false;
       } else {
-        browser.tabs.create({
-          cookieStoreId: activeCookieStoreId,
-          url,
-          windowId,
-        }).then(() => {
-          console.log('Reopened %s in container id %s', url, activeCookieStoreId);
-          return browser.tabs.remove(tabId);
-        }).catch((e) => {
-          console.error(e);
-        });
+        browser.tabs
+          .create({
+            cookieStoreId: activeCookieStoreId,
+            url,
+            windowId,
+          })
+          .then(() => {
+            console.log('Reopened %s in container id %s', url, activeCookieStoreId);
+            return browser.tabs.remove(tabId);
+          })
+          .catch((e) => {
+            console.error(e);
+          });
       }
     }
 

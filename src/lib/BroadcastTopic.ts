@@ -19,7 +19,7 @@
   @license
 **/
 
-import { MessagingService, Asserts } from "weeg-utils";
+import { MessagingService, Asserts } from 'weeg-utils';
 
 export type BroadcastListener<T> = (message: T) => void;
 

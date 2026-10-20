@@ -20,7 +20,13 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { ContextualIdentityFactory, ContextualIdentityParams, CookieStore, DisplayedContainerFactory, DisplayedContainerParams } from "weeg-containers";
+import {
+  ContextualIdentityFactory,
+  ContextualIdentityParams,
+  CookieStore,
+  DisplayedContainerFactory,
+  DisplayedContainerParams,
+} from 'weeg-containers';
 
 import { ServiceRegistry } from '../ServiceRegistry';
 
@@ -35,15 +41,15 @@ export class ContextualIdentityService {
 
   // TODO: allow theming, or consider syncing with Firefox's theme
   private static readonly _COLORS: { [color: string]: string } = {
-    "blue": "#37adff",
-    "green": "#51cd00",
-    "pink": "#ff4bda",
-    "turquoise": "#00c79a",
-    "yellow": "#ffcb00",
-    "red": "#ff613d",
-    "toolbar": "#7c7c7d",
-    "orange": "#ff9f00",
-    "purple": "#af51f5"
+    'blue': '#37adff',
+    'green': '#51cd00',
+    'pink': '#ff4bda',
+    'turquoise': '#00c79a',
+    'yellow': '#ffcb00',
+    'red': '#ff613d',
+    'toolbar': '#7c7c7d',
+    'orange': '#ff9f00',
+    'purple': '#af51f5',
   };
 
   // TODO: move to non-framework code
@@ -75,7 +81,7 @@ export class ContextualIdentityService {
       return {
         name: params.name,
         colorCode: ContextualIdentityService.getColorCode(color),
-        iconUrl: ContextualIdentityService.getIconUrl(icon, color)
+        iconUrl: ContextualIdentityService.getIconUrl(icon, color),
       };
     };
     return new ContextualIdentityFactory(themeCallback);
@@ -109,7 +115,9 @@ export class ContextualIdentityService {
     const cookieStore = new CookieStore(cookieStoreId);
     return {
       name: this.getDefaultName(cookieStore.id),
-      iconUrl: cookieStore.isPrivate ? ContextualIdentityService.PRIVATE_ICON_URL : ContextualIdentityService.DEFAULT_ICON_URL,
+      iconUrl: cookieStore.isPrivate
+        ? ContextualIdentityService.PRIVATE_ICON_URL
+        : ContextualIdentityService.DEFAULT_ICON_URL,
       colorCode: ContextualIdentityService.DEFAULT_COLOR_CODE,
     };
   }

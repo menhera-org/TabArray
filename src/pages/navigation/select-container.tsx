@@ -47,7 +47,12 @@ import { ContainerEditorElement } from '../../components/container-editor';
 
 import { settingsButton, containersElement } from './navigation-elements';
 import { setUrl } from './navigation-i18n';
-import { ContainerButton, CreateContainerButton, TemporatyContainerButton, PrivateBrowsingButton } from './navigation-components';
+import {
+  ContainerButton,
+  CreateContainerButton,
+  TemporatyContainerButton,
+  PrivateBrowsingButton,
+} from './navigation-components';
 
 type EnvType = {
   url: string;
@@ -57,10 +62,11 @@ type EnvType = {
   privateBrowsingSupported: boolean;
 };
 
-type Action = { type: 'container-updated', cookieStoreId: string, displayedContainer: DisplayedContainer }
-  | { type: 'container-removed', cookieStoreId: string }
-  | { type: 'container-added', displayedContainer: DisplayedContainer }
-  | { type: 'set-state', state: EnvType };
+type Action =
+  | { type: 'container-updated'; cookieStoreId: string; displayedContainer: DisplayedContainer }
+  | { type: 'container-removed'; cookieStoreId: string }
+  | { type: 'container-added'; displayedContainer: DisplayedContainer }
+  | { type: 'set-state'; state: EnvType };
 
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 const tabUrlService = TabUrlService.getInstance<TabUrlService>();
@@ -83,7 +89,9 @@ store.registerReducer((state, action) => {
   if (action.type == 'container-added') {
     state.displayedContainers.push(action.displayedContainer);
   } else if (action.type == 'container-removed') {
-    state.displayedContainers = state.displayedContainers.filter((displayedContainer) => displayedContainer.cookieStore.id != action.cookieStoreId);
+    state.displayedContainers = state.displayedContainers.filter(
+      (displayedContainer) => displayedContainer.cookieStore.id != action.cookieStoreId
+    );
   } else if (action.type == 'container-updated') {
     state.displayedContainers = state.displayedContainers.map((displayedContainer) => {
       if (displayedContainer.cookieStore.id == action.cookieStoreId) {
@@ -100,7 +108,11 @@ contextualIdentityFactory.onCreated.addListener((createdContextualIdentity) => {
 });
 
 contextualIdentityFactory.onUpdated.addListener((updatedContextualIdentity) => {
-  store.dispatchAction({ type: 'container-updated', cookieStoreId: updatedContextualIdentity.cookieStore.id, displayedContainer: updatedContextualIdentity });
+  store.dispatchAction({
+    type: 'container-updated',
+    cookieStoreId: updatedContextualIdentity.cookieStore.id,
+    displayedContainer: updatedContextualIdentity,
+  });
 });
 
 contextualIdentityFactory.onRemoved.addListener((removedContextualIdentity) => {
@@ -109,34 +121,51 @@ contextualIdentityFactory.onRemoved.addListener((removedContextualIdentity) => {
 
 const Buttons = (state: EnvType | null) => {
   if (!state) {
-    return <div></div>
+    return <div></div>;
   }
 
   const reopenInContainer = _reopenInContainer.bind(null, state);
 
-  const displayedContainers = [... state.displayedContainers];
+  const displayedContainers = [...state.displayedContainers];
   state.tabGroupDirectorySnapshot.sortDisplayedContainers(displayedContainers);
-  const buttons = displayedContainers.map((displayedContainer) => <ContainerButton displayedContainer={displayedContainer} onClick={() => {
-    reopenInContainer(displayedContainer.cookieStore.id);
-  }} />);
+  const buttons = displayedContainers.map((displayedContainer) => (
+    <ContainerButton
+      displayedContainer={displayedContainer}
+      onClick={() => {
+        reopenInContainer(displayedContainer.cookieStore.id);
+      }}
+    />
+  ));
 
-  buttons.unshift(<TemporatyContainerButton onClick={async () => {
-    const identity = await temporaryContainerService.createTemporaryContainer();
-    reopenInContainer(identity.cookieStore.id);
-  }} />);
+  buttons.unshift(
+    <TemporatyContainerButton
+      onClick={async () => {
+        const identity = await temporaryContainerService.createTemporaryContainer();
+        reopenInContainer(identity.cookieStore.id);
+      }}
+    />
+  );
 
-  buttons.unshift(<CreateContainerButton onClick={() => {
-    const containerEditorElement = new ContainerEditorElement();
-    document.body.append(containerEditorElement);
-  }} />);
+  buttons.unshift(
+    <CreateContainerButton
+      onClick={() => {
+        const containerEditorElement = new ContainerEditorElement();
+        document.body.append(containerEditorElement);
+      }}
+    />
+  );
 
   if (state.privateBrowsingSupported) {
-    buttons.unshift(<PrivateBrowsingButton onClick={() => {
-      reopenInContainer(CookieStore.PRIVATE.id);
-    }} />);
+    buttons.unshift(
+      <PrivateBrowsingButton
+        onClick={() => {
+          reopenInContainer(CookieStore.PRIVATE.id);
+        }}
+      />
+    );
   }
 
-  return <div>{buttons}</div>
+  return <div>{buttons}</div>;
 };
 
 store.registerListener((state) => {
@@ -225,16 +254,18 @@ const handleRedirect = (env: EnvType) => {
   }
 };
 
-envPromise.then(async (env) => {
-  const { url } = env;
-  setUrl(url);
-  handleRedirect(env);
+envPromise
+  .then(async (env) => {
+    const { url } = env;
+    setUrl(url);
+    handleRedirect(env);
 
-  store.dispatchAction({ type: 'set-state', state: env });
+    store.dispatchAction({ type: 'set-state', state: env });
 
-  if (!errored) {
-    restoreScreen();
-  }
-}).catch((e) => {
-  handleError(e);
-});
+    if (!errored) {
+      restoreScreen();
+    }
+  })
+  .catch((e) => {
+    handleError(e);
+  });

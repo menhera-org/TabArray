@@ -19,16 +19,24 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-import { Uint32 } from "weeg-types";
-import { CookieStore } from "weeg-containers";
+import { StorageItem } from 'weeg-storage';
+import { Uint32 } from 'weeg-types';
+import { CookieStore } from 'weeg-containers';
 
 export class TabGroupOptionDirectory {
   private static readonly STORAGE_KEY_AUTOCLEAN_LEGACY = 'cookies.autoclean.enabledUserContexts';
   private static readonly STORAGE_KEY_AUTOCLEAN = 'cookies.autoclean.enabledTabGroupIds';
 
-  private readonly _storageAutocleanLegacy = new StorageItem<Uint32.Uint32[]>(TabGroupOptionDirectory.STORAGE_KEY_AUTOCLEAN_LEGACY, [], StorageItem.AREA_LOCAL);
-  private readonly _storageAutoclean = new StorageItem<string[]>(TabGroupOptionDirectory.STORAGE_KEY_AUTOCLEAN, [], StorageItem.AREA_LOCAL);
+  private readonly _storageAutocleanLegacy = new StorageItem<Uint32.Uint32[]>(
+    TabGroupOptionDirectory.STORAGE_KEY_AUTOCLEAN_LEGACY,
+    [],
+    StorageItem.AREA_LOCAL
+  );
+  private readonly _storageAutoclean = new StorageItem<string[]>(
+    TabGroupOptionDirectory.STORAGE_KEY_AUTOCLEAN,
+    [],
+    StorageItem.AREA_LOCAL
+  );
 
   public async getAutocleanEnabledTabGroupIds(): Promise<string[]> {
     const hasValue = await this._storageAutoclean.hasValue();
@@ -37,7 +45,9 @@ export class TabGroupOptionDirectory {
     }
 
     const legacyValue = await this._storageAutocleanLegacy.getValue();
-    const tabGroupIds = legacyValue.map((userContextId) => CookieStore.fromParams({ userContextId, privateBrowsingId: 0 as Uint32.Uint32}).id);
+    const tabGroupIds = legacyValue.map(
+      (userContextId) => CookieStore.fromParams({ userContextId, privateBrowsingId: 0 as Uint32.Uint32 }).id
+    );
     await this._storageAutoclean.setValue(tabGroupIds);
     return tabGroupIds;
   }

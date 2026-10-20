@@ -19,9 +19,9 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
+import browser from 'webextension-polyfill';
 
-import { EXTENSION_CONTENT_SCRIPTS } from "../../content/ext/list";
+import { EXTENSION_CONTENT_SCRIPTS } from '../../content/ext/list';
 
 export const injectExtensionContentScript = (browserTab: browser.Tabs.Tab) => {
   if (browserTab.url != null && browserTab.url != 'about:blank' && browserTab.id != null) {
@@ -30,15 +30,17 @@ export const injectExtensionContentScript = (browserTab: browser.Tabs.Tab) => {
     if (url.protocol != location.protocol) return;
     for (const definition of EXTENSION_CONTENT_SCRIPTS) {
       if (!definition.matchPattern.test(url.pathname)) continue;
-      browser.scripting.executeScript({
-        files: [definition.source],
-        injectImmediately: true,
-        target: {
-          tabId: browserTab.id,
-        },
-      }).catch((e) => {
-        console.error(e);
-      });
+      browser.scripting
+        .executeScript({
+          files: [definition.source],
+          injectImmediately: true,
+          target: {
+            tabId: browserTab.id,
+          },
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     }
   }
 };

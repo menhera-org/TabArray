@@ -19,43 +19,46 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
+import browser from 'webextension-polyfill';
 
-import { ActiveContainerService } from "../../lib/states/ActiveContainerService";
-import { OpenTabsService } from "../../lib/states/OpenTabsService";
-import { CompatConsole } from "../../lib/console/CompatConsole";
+import { ActiveContainerService } from '../../lib/states/ActiveContainerService';
+import { OpenTabsService } from '../../lib/states/OpenTabsService';
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const activeContainerService = ActiveContainerService.getInstance();
 const openTabsService = OpenTabsService.getInstance();
 
 export const doBatchOperationOnInitialWindows = (browserWindows: browser.Windows.Window[]) => {
-  activeContainerService.beginBatchOperation().then((batchOperation) => {
-    const windowIds = browserWindows.map((browserWindow) => browserWindow.id as number);
-    for (const windowId of batchOperation.getWindowIds()) {
-      if (!windowIds.includes(windowId)) {
-        batchOperation.removeWindow(windowId);
+  activeContainerService
+    .beginBatchOperation()
+    .then((batchOperation) => {
+      const windowIds = browserWindows.map((browserWindow) => browserWindow.id as number);
+      for (const windowId of batchOperation.getWindowIds()) {
+        if (!windowIds.includes(windowId)) {
+          batchOperation.removeWindow(windowId);
+        }
       }
-    }
-    const openBrowserTabs: browser.Tabs.Tab[] = [];
-    for (const browserWindow of browserWindows) {
-      if (!browserWindow.tabs || null == browserWindow.id) continue;
-      openBrowserTabs.push(...browserWindow.tabs);
-      const windowId = browserWindow.id;
-      for (const browserTab of browserWindow.tabs) {
-        if (!browserTab.active) continue;
-        if (!browserTab.cookieStoreId) continue;
-        const cookieStoreId = browserTab.cookieStoreId;
-        batchOperation.setActiveContainer(windowId, cookieStoreId);
-        break;
+      const openBrowserTabs: browser.Tabs.Tab[] = [];
+      for (const browserWindow of browserWindows) {
+        if (!browserWindow.tabs || null == browserWindow.id) continue;
+        openBrowserTabs.push(...browserWindow.tabs);
+        const windowId = browserWindow.id;
+        for (const browserTab of browserWindow.tabs) {
+          if (!browserTab.active) continue;
+          if (!browserTab.cookieStoreId) continue;
+          const cookieStoreId = browserTab.cookieStoreId;
+          batchOperation.setActiveContainer(windowId, cookieStoreId);
+          break;
+        }
       }
-    }
-    const tabIds = openBrowserTabs.map((browserTab) => browserTab.id as number);
-    return Promise.all([
-      openTabsService.setValue(tabIds),
-      activeContainerService.commitBatchOperation(batchOperation),
-    ]);
-  }).catch((e) => {
-    console.error(e);
-  });
+      const tabIds = openBrowserTabs.map((browserTab) => browserTab.id as number);
+      return Promise.all([
+        openTabsService.setValue(tabIds),
+        activeContainerService.commitBatchOperation(batchOperation),
+      ]);
+    })
+    .catch((e) => {
+      console.error(e);
+    });
 };

@@ -49,7 +49,7 @@ export class TabPreviewService {
     return await browser.tabs.captureTab(tabId, {
       format: 'jpeg',
       quality: 50,
-      scale: .25,
+      scale: 0.25,
     });
   }
 

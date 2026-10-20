@@ -21,25 +21,24 @@
 
 // this is not translated.
 
-import { ConsoleHistoryService } from "../../../lib/console/ConsoleHistoryService";
-import { InstallationHistoryService } from "../../../lib/history/InstallationHistoryService";
+import { ConsoleHistoryService } from '../../../lib/console/ConsoleHistoryService';
+import { InstallationHistoryService } from '../../../lib/history/InstallationHistoryService';
 
-import { AbstractFragmentBuilder } from "../../popup-v2/fragments/AbstractFragmentBuilder";
+import { AbstractFragmentBuilder } from '../../popup-v2/fragments/AbstractFragmentBuilder';
 
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
 
 const consoleHistoryService = ConsoleHistoryService.getInstance<ConsoleHistoryService>();
 const installationHistoryService = InstallationHistoryService.getInstance();
 
 export class InstallationHistoryFragmentBuilder extends AbstractFragmentBuilder {
-
   public getFragmentId(): string {
     return 'fragment-hisotry';
   }
 
   public getLabelText(): string {
-    return "History";
+    return 'History';
   }
 
   public getIconUrl(): string {
@@ -55,30 +54,30 @@ export class InstallationHistoryFragmentBuilder extends AbstractFragmentBuilder 
     const fragment = document.createElement('ctg-fragment') as CtgFragmentElement;
     fragment.id = this.getFragmentId();
     const table = document.createElement('table');
-    table.id = "installation-table";
+    table.id = 'installation-table';
     fragment.appendChild(table);
     const thead = document.createElement('thead');
     table.appendChild(thead);
     const theadTr = document.createElement('tr');
     thead.appendChild(theadTr);
     const theadTh1 = document.createElement('th');
-    theadTh1.textContent = "Time";
+    theadTh1.textContent = 'Time';
     theadTr.appendChild(theadTh1);
     const theadTh2 = document.createElement('th');
-    theadTh2.textContent = "Commit";
+    theadTh2.textContent = 'Commit';
     theadTr.appendChild(theadTh2);
     const theadTh3 = document.createElement('th');
-    theadTh3.textContent = "Build date";
+    theadTh3.textContent = 'Build date';
     theadTr.appendChild(theadTh3);
     const theadTh4 = document.createElement('th');
-    theadTh4.textContent = "Integrity";
+    theadTh4.textContent = 'Integrity';
     theadTr.appendChild(theadTh4);
     const theadTh5 = document.createElement('th');
-    theadTh5.textContent = "Browser";
+    theadTh5.textContent = 'Browser';
     theadTr.appendChild(theadTh5);
 
     const tbody = document.createElement('tbody');
-    tbody.id = "installation-tbody";
+    tbody.id = 'installation-tbody';
     table.appendChild(tbody);
 
     Promise.resolve().then(() => {
@@ -99,7 +98,8 @@ export class InstallationHistoryFragmentBuilder extends AbstractFragmentBuilder 
   public render(): void {
     const tbody = this.getFragment().querySelector('#installation-tbody') as HTMLTableSectionElement;
     installationHistoryService.getValue().then((entries) => {
-      const scrollBottom = this.frameLayoutElement.scrollHeight - this.frameLayoutElement.scrollTop - this.frameLayoutElement.clientHeight;
+      const scrollBottom =
+        this.frameLayoutElement.scrollHeight - this.frameLayoutElement.scrollTop - this.frameLayoutElement.clientHeight;
       const isAtBottom = scrollBottom < 1;
       tbody.textContent = '';
       for (const entry of entries) {

@@ -20,10 +20,7 @@
 **/
 
 export class SanityCheckService {
-  public static readonly FILES_TO_CHECK: readonly string[] = [
-    '/manifest.json',
-    '/css/theme.css',
-  ];
+  public static readonly FILES_TO_CHECK: readonly string[] = ['/manifest.json', '/css/theme.css'];
 
   private static readonly INSTANCE = new SanityCheckService();
 

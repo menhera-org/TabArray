@@ -19,8 +19,8 @@
   @license
 **/
 
-import { ChromiumReleaseService } from "./ChromiumReleaseService";
-import { AbstractPerContainerSettings } from "./AbstractPerContainerSettings";
+import { ChromiumReleaseService } from './ChromiumReleaseService';
+import { AbstractPerContainerSettings } from './AbstractPerContainerSettings';
 
 export type UserAgentPreset = 'default' | 'chrome' | 'googlebot' | 'custom';
 

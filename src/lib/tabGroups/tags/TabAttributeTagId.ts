@@ -19,6 +19,6 @@
   @license
 **/
 
-import { ExtensibleAttribute } from "weeg-utils";
+import { ExtensibleAttribute } from 'weeg-utils';
 
 export const TabAttributeTagId = new ExtensibleAttribute<number>('tagId');

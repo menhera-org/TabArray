@@ -19,31 +19,31 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
+import browser from 'webextension-polyfill';
 
-import { CompatConsole } from "../../lib/console/CompatConsole";
+import { CompatConsole } from '../../lib/console/CompatConsole';
 
-import "../../components/ctg/ctg-vertical-layout";
-import "../../components/ctg/ctg-drawer";
-import "../../components/ctg/ctg-top-bar";
-import "../../components/ctg/ctg-frame-layout";
-import "../../components/ctg/ctg-fragment";
-import "../../components/ctg/ctg-menu-item";
-import "../../components/ctg/ctg-bottom-navigation";
-import { CtgDrawerElement } from "../../components/ctg/ctg-drawer";
-import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
-import { CtgFrameLayoutElement } from "../../components/ctg/ctg-frame-layout";
-import { CtgBottomNavigationElement } from "../../components/ctg/ctg-bottom-navigation";
-import { CtgFragmentElement } from "../../components/ctg/ctg-fragment";
-import { HelpBannerElement } from "../../components/help-banner";
+import '../../components/ctg/ctg-vertical-layout';
+import '../../components/ctg/ctg-drawer';
+import '../../components/ctg/ctg-top-bar';
+import '../../components/ctg/ctg-frame-layout';
+import '../../components/ctg/ctg-fragment';
+import '../../components/ctg/ctg-menu-item';
+import '../../components/ctg/ctg-bottom-navigation';
+import { CtgDrawerElement } from '../../components/ctg/ctg-drawer';
+import { CtgTopBarElement } from '../../components/ctg/ctg-top-bar';
+import { CtgFrameLayoutElement } from '../../components/ctg/ctg-frame-layout';
+import { CtgBottomNavigationElement } from '../../components/ctg/ctg-bottom-navigation';
+import { CtgFragmentElement } from '../../components/ctg/ctg-fragment';
+import { HelpBannerElement } from '../../components/help-banner';
 
-import { GlobalMenuItems } from "../popup-v2/GlobalMenuItems";
+import { GlobalMenuItems } from '../popup-v2/GlobalMenuItems';
 
-import { LogFragmentBuilder } from "./fragments/LogFragmentBuilder";
-import { PerformanceFragmentBuilder } from "./fragments/PerforamanceFragmentBuilder";
-import { FilesFragmentBuilder } from "./fragments/FilesFragmentBuilder";
-import { InstallationHistoryFragmentBuilder } from "./fragments/InstallationHistoryFragmentBuilder";
-import { TabCountFragmentBuilder } from "./fragments/TabCountFragmentBuilder";
+import { LogFragmentBuilder } from './fragments/LogFragmentBuilder';
+import { PerformanceFragmentBuilder } from './fragments/PerforamanceFragmentBuilder';
+import { FilesFragmentBuilder } from './fragments/FilesFragmentBuilder';
+import { InstallationHistoryFragmentBuilder } from './fragments/InstallationHistoryFragmentBuilder';
+import { TabCountFragmentBuilder } from './fragments/TabCountFragmentBuilder';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -67,10 +67,25 @@ const bottomNavigationElement = document.querySelector('#bottom-navigation') as 
 
 const fragments: CtgFragmentElement[] = [];
 const logBuilder = new LogFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
-const performanceBuilder = new PerformanceFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
+const performanceBuilder = new PerformanceFragmentBuilder(
+  frameLayout,
+  topBarElement,
+  bottomNavigationElement,
+  globalMenuItems
+);
 const filesBuilder = new FilesFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
-const installationHistoryBuilder = new InstallationHistoryFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
-const tabCountBuilder = new TabCountFragmentBuilder(frameLayout, topBarElement, bottomNavigationElement, globalMenuItems);
+const installationHistoryBuilder = new InstallationHistoryFragmentBuilder(
+  frameLayout,
+  topBarElement,
+  bottomNavigationElement,
+  globalMenuItems
+);
+const tabCountBuilder = new TabCountFragmentBuilder(
+  frameLayout,
+  topBarElement,
+  bottomNavigationElement,
+  globalMenuItems
+);
 
 fragments.push(logBuilder.getFragment());
 fragments.push(performanceBuilder.getFragment());

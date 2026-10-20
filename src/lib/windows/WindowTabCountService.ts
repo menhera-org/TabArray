@@ -19,11 +19,11 @@
   @license
 **/
 
-import { BackgroundService } from "weeg-utils";
-import { Asserts } from "weeg-utils";
+import { BackgroundService } from 'weeg-utils';
+import { Asserts } from 'weeg-utils';
 
-import { CachedStorageItem } from "../storage/CachedStorageItem";
-import { ServiceRegistry } from "../ServiceRegistry";
+import { CachedStorageItem } from '../storage/CachedStorageItem';
+import { ServiceRegistry } from '../ServiceRegistry';
 
 export type TabCountByWindow = {
   [windowId: number]: number; // tab count
@@ -129,7 +129,11 @@ export namespace WindowTabCountHistory {
 }
 
 export class WindowTabCountService extends BackgroundService<void, WindowTabCountHistory> {
-  private readonly _storage = new CachedStorageItem<WindowTabCountHistory>("windowTabCountHistory", {}, CachedStorageItem.AREA_LOCAL);
+  private readonly _storage = new CachedStorageItem<WindowTabCountHistory>(
+    'windowTabCountHistory',
+    {},
+    CachedStorageItem.AREA_LOCAL
+  );
 
   public readonly onChanged = this._storage.onChanged;
 
@@ -200,4 +204,7 @@ export class WindowTabCountService extends BackgroundService<void, WindowTabCoun
   }
 }
 
-ServiceRegistry.getInstance().registerService('WindowTabCountService', WindowTabCountService.getInstance<WindowTabCountService>());
+ServiceRegistry.getInstance().registerService(
+  'WindowTabCountService',
+  WindowTabCountService.getInstance<WindowTabCountService>()
+);
