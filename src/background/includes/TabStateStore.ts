@@ -19,11 +19,11 @@
   @license
 **/
 
-import { Asserts } from "weeg-utils";
-import { EventSink } from "weeg-events";
+import { Asserts } from 'weeg-utils';
+import { EventSink } from 'weeg-events';
 
-import { TabState, ContainerOnWindow } from "./TabState";
-import { OpenTabsService } from "../../lib/states/OpenTabsService";
+import { TabState, ContainerOnWindow } from './TabState';
+import { OpenTabsService } from '../../lib/states/OpenTabsService';
 
 const openTabsService = OpenTabsService.getInstance();
 

@@ -17,6 +17,8 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
+    "useDefineForClassFields": false,
+    "isolatedModules": true,
     "moduleResolution": "bundler",
     "skipLibCheck": true,
     "allowJs": true,

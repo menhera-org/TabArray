@@ -19,13 +19,13 @@
   @license
 **/
 
-import { ExtensibleAttribute, ExtensibleAttributeSet } from "weeg-utils";
-import { DummyTab, TabAttributeProvider } from "weeg-tabs";
+import { ExtensibleAttribute, ExtensibleAttributeSet } from 'weeg-utils';
+import { DummyTab, TabAttributeProvider } from 'weeg-tabs';
 
-import { TagDirectory, TagType } from "./TagDirectory";
-import { TagDirectorySnapshot } from "./TagDirectorySnapshot";
-import { BrowserStateDao } from "../../states/BrowserStateDao";
-import { TabAttributeTagId } from "./TabAttributeTagId";
+import { TagDirectory, TagType } from './TagDirectory';
+import { TagDirectorySnapshot } from './TagDirectorySnapshot';
+import { BrowserStateDao } from '../../states/BrowserStateDao';
+import { TabAttributeTagId } from './TabAttributeTagId';
 
 /**
  * Snapshot of attributes for given tabs.

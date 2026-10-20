@@ -53,7 +53,7 @@ initialWindowsService.getInitialWindows().then((browserWindows) => {
   const tabs: CompatTab[] = [];
   for (const browserWindow of browserWindows) {
     if (!browserWindow.tabs) continue;
-    tabs.push(... browserWindow.tabs.map((browserTab) => new CompatTab(browserTab)));
+    tabs.push(...browserWindow.tabs.map((browserTab) => new CompatTab(browserTab)));
   }
   openTabs.setInitialTabs(tabs);
 });
@@ -67,20 +67,26 @@ browser.tabs.onRemoved.addListener(async (tabId) => {
 });
 
 openTabs.onContainerClosed.addListener((cookieStoreId) => {
-  temporatyContainerService.isTemporaryContainer(cookieStoreId).then(async (isTemporaryContainer) => {
-    if (isTemporaryContainer) {
-      await temporatyContainerService.removeTemporaryContainer(cookieStoreId);
-    }
-  }).catch((e) => {
-    console.error(e);
-  });
+  temporatyContainerService
+    .isTemporaryContainer(cookieStoreId)
+    .then(async (isTemporaryContainer) => {
+      if (isTemporaryContainer) {
+        await temporatyContainerService.removeTemporaryContainer(cookieStoreId);
+      }
+    })
+    .catch((e) => {
+      console.error(e);
+    });
 
-  tabGroupService.optionDirectory.getAutocleanEnabledTabGroupIds().then(async (tabGroupIds) => {
-    if (tabGroupIds.includes(cookieStoreId)) {
-      console.info('Removing browsing data for tab group', cookieStoreId);
-      await tabGroupService.removeBrowsingDataForTabGroupId(cookieStoreId);
-    }
-  }).catch((e) => {
-    console.error(e);
-  })
+  tabGroupService.optionDirectory
+    .getAutocleanEnabledTabGroupIds()
+    .then(async (tabGroupIds) => {
+      if (tabGroupIds.includes(cookieStoreId)) {
+        console.info('Removing browsing data for tab group', cookieStoreId);
+        await tabGroupService.removeBrowsingDataForTabGroupId(cookieStoreId);
+      }
+    })
+    .catch((e) => {
+      console.error(e);
+    });
 });

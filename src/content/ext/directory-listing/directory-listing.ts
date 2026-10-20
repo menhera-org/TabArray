@@ -26,8 +26,8 @@
 // WebExtensions API is not available in this context.
 import { executeOnce } from '../once-guard';
 
-import { PackageDirectory } from "../../../lib/package/PackageDirectory";
-import { DirectoryListingParser } from "../../../lib/package/DirectoryListingParser";
+import { PackageDirectory } from '../../../lib/package/PackageDirectory';
+import { DirectoryListingParser } from '../../../lib/package/DirectoryListingParser';
 
 executeOnce(async () => {
   const pre = document.querySelector('pre');
@@ -81,7 +81,8 @@ executeOnce(async () => {
     link.style.textDecoration = 'none';
     const icon = document.createElement('span');
     icon.style.backgroundColor = 'var(--text-color)';
-    const iconUrl = entry.type === 'directory' ? '/img/firefox-icons/folder.svg' : '/img/firefox-icons/page-vertical.svg';
+    const iconUrl =
+      entry.type === 'directory' ? '/img/firefox-icons/folder.svg' : '/img/firefox-icons/page-vertical.svg';
     icon.style.mask = `url(${iconUrl}) no-repeat center / contain`;
     icon.style.display = 'inline-block';
     icon.style.width = '1em';

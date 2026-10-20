@@ -19,10 +19,10 @@
   @license
 **/
 
-import { RegistrableDomainService, HostnameService, UrlService } from "weeg-domains";
-import { MessagingService, ExtensionService } from "weeg-utils";
+import { RegistrableDomainService, HostnameService, UrlService } from 'weeg-domains';
+import { MessagingService, ExtensionService } from 'weeg-utils';
 
-import { ServiceRegistry } from "./ServiceRegistry";
+import { ServiceRegistry } from './ServiceRegistry';
 
 export class ExternalServiceProvider {
   private static readonly INSTANCE = new ExternalServiceProvider();

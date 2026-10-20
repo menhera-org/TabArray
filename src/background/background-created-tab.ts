@@ -19,21 +19,21 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
+import browser from 'webextension-polyfill';
 import { CookieStore } from 'weeg-containers';
 
 import { NewTabPageService } from '../lib/tabs/NewTabPageService';
 import { ActiveContainerService } from '../lib/states/ActiveContainerService';
-import { ContainerTabOpenerService } from "../lib/tabGroups/ContainerTabOpenerService";
-import { IndexTabService } from "../lib/tabs/IndexTabService";
-import { ExtensionPageService } from "../lib/ExtensionPageService";
-import { ContainerHistoryService } from "../lib/history/ContainerHistoryService";
+import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
+import { IndexTabService } from '../lib/tabs/IndexTabService';
+import { ExtensionPageService } from '../lib/ExtensionPageService';
+import { ContainerHistoryService } from '../lib/history/ContainerHistoryService';
 
-import { hideAll } from "../legacy-lib/modules/containers";
+import { hideAll } from '../legacy-lib/modules/containers';
 
 import { config } from '../config/config';
 
-import { TabState } from "./includes/TabState";
+import { TabState } from './includes/TabState';
 import { TabStateStore } from './includes/TabStateStore';
 
 const tabStateStore = TabStateStore.getInstance();
@@ -45,7 +45,11 @@ const extensionPageService = ExtensionPageService.getInstance();
 const containerHistoryService = ContainerHistoryService.getInstance<ContainerHistoryService>();
 
 const setActiveContainerIfActive = (tabState: TabState) => {
-  if (!extensionPageService.isConfirmPage(tabState.url) && tabState.active && tabState.cookieStoreId != CookieStore.PRIVATE.id) {
+  if (
+    !extensionPageService.isConfirmPage(tabState.url) &&
+    tabState.active &&
+    tabState.cookieStoreId != CookieStore.PRIVATE.id
+  ) {
     activeContainerService.setActiveContainer(tabState.windowId, tabState.cookieStoreId).catch((e) => {
       console.error(e);
     });
@@ -61,13 +65,18 @@ tabStateStore.onBeforeTabCreated.addListener(async (tabState) => {
       newTabPageService.getNewTabPageUrl(),
       activeContainerService.getActiveContainer(windowId),
     ]);
-    if (configNewTabInContainerEnabled && newTabPageUrl == tabState.url && activeCookieStoreId != CookieStore.DEFAULT.id && null != activeCookieStoreId) {
+    if (
+      configNewTabInContainerEnabled &&
+      newTabPageUrl == tabState.url &&
+      activeCookieStoreId != CookieStore.DEFAULT.id &&
+      null != activeCookieStoreId
+    ) {
       await browser.tabs.remove(tabState.id);
       await containerTabOpenerService.openNewTabInContainer(activeCookieStoreId, true, windowId);
       return;
     }
   }
-  if (undefined !== await indexTabService.getIndexTabUserContextId(tabState.id)) {
+  if (undefined !== (await indexTabService.getIndexTabUserContextId(tabState.id))) {
     return;
   }
 
@@ -79,13 +88,16 @@ tabStateStore.onTabActivated.addListener((tabState) => {
   setActiveContainerIfActive(tabState);
 });
 
-activeContainerService.onContainerActivated.addListener(({windowId, cookieStoreId}) => {
+activeContainerService.onContainerActivated.addListener(({ windowId, cookieStoreId }) => {
   containerHistoryService.addHistoryEntry(cookieStoreId);
-  config['tab.autoHide.enabled'].getValue().then((autoHideEnabled) => {
-    if (autoHideEnabled) {
-      return hideAll(windowId);
-    }
-  }).catch((e) => {
-    console.error(e);
-  });
+  config['tab.autoHide.enabled']
+    .getValue()
+    .then((autoHideEnabled) => {
+      if (autoHideEnabled) {
+        return hideAll(windowId);
+      }
+    })
+    .catch((e) => {
+      console.error(e);
+    });
 });

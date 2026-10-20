@@ -54,7 +54,7 @@ export class WindowContainerHidingHelper {
         }
         continue;
       }
-      if (tab.pinned ||!userContextMatches) {
+      if (tab.pinned || !userContextMatches) {
         this._tabsToShow.push(tab);
       } else {
         this._tabsToHide.push(tab);

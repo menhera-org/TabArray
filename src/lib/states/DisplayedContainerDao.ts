@@ -19,7 +19,7 @@
   @license
 **/
 
-import { DisplayedContainer, CookieStore } from "weeg-containers";
+import { DisplayedContainer, CookieStore } from 'weeg-containers';
 
 export interface DisplayedContainerDao {
   cookieStoreId: string;

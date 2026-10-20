@@ -19,10 +19,10 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { EventSink } from "weeg-events";
+import browser from 'webextension-polyfill';
+import { EventSink } from 'weeg-events';
 
-import { ServiceRegistry } from "../ServiceRegistry";
+import { ServiceRegistry } from '../ServiceRegistry';
 
 export class NewTabPageService {
   private static readonly INSTANCE = new NewTabPageService();
@@ -47,7 +47,7 @@ export class NewTabPageService {
   }
 
   private setFallbackValue(value: string | undefined | null): string {
-    return value || "about:newtab";
+    return value || 'about:newtab';
   }
 
   public async getNewTabPageUrl(): Promise<string> {

@@ -21,8 +21,8 @@
 
 import { DeterministicJSON } from '@menhera/deterministic-json';
 
-import { ServiceRegistry } from "../ServiceRegistry";
-import { DirectoryListingService } from "./DirectoryListingService";
+import { ServiceRegistry } from '../ServiceRegistry';
+import { DirectoryListingService } from './DirectoryListingService';
 
 const directoryListingService = DirectoryListingService.getInstance();
 

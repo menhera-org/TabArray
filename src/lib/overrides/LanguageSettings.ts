@@ -19,7 +19,7 @@
   @license
 **/
 
-import { AbstractPerContainerSettings } from "./AbstractPerContainerSettings";
+import { AbstractPerContainerSettings } from './AbstractPerContainerSettings';
 
 /**
  * Per-container languages.
@@ -55,9 +55,10 @@ export class LanguageSettings extends AbstractPerContainerSettings<string> {
   }
 
   public override async getValueForTabGroup(cookieStoreId: string): Promise<string> {
-    const languages = await super.getValueForTabGroup(cookieStoreId) ?? '';
+    const languages = (await super.getValueForTabGroup(cookieStoreId)) ?? '';
     if ('' === languages) return '';
-    const parts = languages.split(',')
+    const parts = languages
+      .split(',')
       .map((language) => language.trim())
       .filter((language) => language.length > 0 && language.match(/^[a-z]{2,3}(?:-[a-z]{2})?$/i));
 
@@ -72,7 +73,7 @@ export class LanguageSettings extends AbstractPerContainerSettings<string> {
     if ('' === languages) return '';
     const inputParts = languages.split(',');
     const outputParts = [];
-    const digits = (inputParts.length > 10) ? 2 : 1;
+    const digits = inputParts.length > 10 ? 2 : 1;
     let index = 0;
     for (const part of inputParts) {
       if (index == 0) {

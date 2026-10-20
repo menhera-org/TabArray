@@ -28,8 +28,8 @@ import { MenuItem } from './MenuItem';
 export class PopupTabContextMenuItem extends MenuItem {
   public constructor(createProperties: browser.Menus.CreateCreatePropertiesType) {
     super({
-      ... createProperties,
-      contexts:  ['tab'],
+      ...createProperties,
+      contexts: ['tab'],
       viewTypes: ['sidebar', 'popup', 'tab'],
       documentUrlPatterns: [`moz-extension://${location.host}/*`],
     });

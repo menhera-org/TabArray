@@ -19,12 +19,12 @@
   @license
 **/
 
-import { Asserts } from "weeg-utils";
-import { EventSink } from "weeg-events";
+import { Asserts } from 'weeg-utils';
+import { EventSink } from 'weeg-events';
 
-import { CachedStorageItem } from "../storage/CachedStorageItem";
+import { CachedStorageItem } from '../storage/CachedStorageItem';
 
-import { ServiceRegistry } from "../ServiceRegistry";
+import { ServiceRegistry } from '../ServiceRegistry';
 
 export type OpenTabsStorageType = number[];
 
@@ -32,7 +32,7 @@ export type OpenTabsStorageType = number[];
 Asserts.assertBackgroundScript();
 
 export class OpenTabsService {
-  private static readonly STORAGE_KEY = "openTabs";
+  private static readonly STORAGE_KEY = 'openTabs';
 
   private static readonly INSTANCE = new OpenTabsService();
 
@@ -40,7 +40,11 @@ export class OpenTabsService {
     return OpenTabsService.INSTANCE;
   }
 
-  private readonly _storage = new CachedStorageItem<OpenTabsStorageType>(OpenTabsService.STORAGE_KEY, [], CachedStorageItem.AREA_LOCAL);
+  private readonly _storage = new CachedStorageItem<OpenTabsStorageType>(
+    OpenTabsService.STORAGE_KEY,
+    [],
+    CachedStorageItem.AREA_LOCAL
+  );
 
   public readonly onTabCreated = new EventSink<number>();
   public readonly onTabRemoved = new EventSink<number>();

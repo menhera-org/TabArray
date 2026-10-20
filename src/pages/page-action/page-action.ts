@@ -53,7 +53,9 @@ const setTextContent = (query: string, message: string) => {
 
 setTextContent('#headingReopen', 'headingReopen');
 
-const currentBrowserTabPromise = browser.tabs.query({active: true, currentWindow: true}).then((browserTabs) => browserTabs[0]);
+const currentBrowserTabPromise = browser.tabs
+  .query({ active: true, currentWindow: true })
+  .then((browserTabs) => browserTabs[0]);
 
 const getContainerInfos = async (): Promise<ContainerInfo[]> => {
   const currentBrowserTab = await currentBrowserTabPromise;
@@ -63,27 +65,29 @@ const getContainerInfos = async (): Promise<ContainerInfo[]> => {
   tabGroupDirectorySnapshot.sortDisplayedContainers(contextualIdentities);
   const defaultContainer = CookieStore.DEFAULT;
   const privateBrowsingContainer = CookieStore.PRIVATE;
-  const privateBrowsingContainerInfos = await extensionService.isAllowedInPrivateBrowsing() ? [
-    {
-      cookieStoreId: privateBrowsingContainer.id,
-      name: browser.i18n.getMessage('privateBrowsing'),
-      iconUrl: '/img/firefox-icons/private-browsing-icon.svg',
-    },
-  ] : [];
+  const privateBrowsingContainerInfos = (await extensionService.isAllowedInPrivateBrowsing())
+    ? [
+        {
+          cookieStoreId: privateBrowsingContainer.id,
+          name: browser.i18n.getMessage('privateBrowsing'),
+          iconUrl: '/img/firefox-icons/private-browsing-icon.svg',
+        },
+      ]
+    : [];
   const containerInfos: ContainerInfo[] = [
     {
       cookieStoreId: defaultContainer.id,
       name: browser.i18n.getMessage('noContainer'),
       iconUrl: '',
     },
-    ... contextualIdentities.map((contextualIdentity) => {
+    ...contextualIdentities.map((contextualIdentity) => {
       return {
         cookieStoreId: contextualIdentity.cookieStore.id,
         name: contextualIdentity.name,
         iconUrl: contextualIdentity.iconUrl,
       };
     }),
-    ... privateBrowsingContainerInfos,
+    ...privateBrowsingContainerInfos,
   ];
   return containerInfos.filter((containerInfo) => containerInfo.cookieStoreId !== currentCookieStoreId);
 };

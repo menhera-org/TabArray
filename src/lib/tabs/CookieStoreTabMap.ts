@@ -19,8 +19,8 @@
   @license
 **/
 
-import { CompatTab } from "weeg-tabs";
-import { SetMap } from "weeg-types";
+import { CompatTab } from 'weeg-tabs';
+import { SetMap } from 'weeg-types';
 
 export class CookieStoreTabMap {
   private readonly _map = new SetMap<string, CompatTab>();
@@ -32,10 +32,10 @@ export class CookieStoreTabMap {
   }
 
   public getCookieStoreIds(): string[] {
-    return [... this._map.keys()];
+    return [...this._map.keys()];
   }
 
   public getTabsByCookieStoreId(cookieStoreId: string): CompatTab[] {
-    return [... this._map.get(cookieStoreId) ?? []];
+    return [...(this._map.get(cookieStoreId) ?? [])];
   }
 }

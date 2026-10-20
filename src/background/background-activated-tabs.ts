@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { CompatTab } from "weeg-tabs";
+import { CompatTab } from 'weeg-tabs';
 
 import { ContainerVisibilityService } from '../lib/tabGroups/ContainerVisibilityService';
 import { TabQueryService } from '../lib/tabs/TabQueryService';
@@ -49,7 +49,7 @@ const activateTab = async (windowId: number, index: number) => {
   }
 };
 
-browser.tabs.onActivated.addListener(async ({tabId, windowId}) => {
+browser.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
   try {
     const browserTab = await browser.tabs.get(tabId);
     if (browserTab.cookieStoreId == null || browserTab.id == null) return;

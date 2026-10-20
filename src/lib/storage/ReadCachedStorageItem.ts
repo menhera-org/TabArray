@@ -19,11 +19,11 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
+import { StorageItem } from 'weeg-storage';
 
 export type CachedStorageUpdateCallback<T> = (value: T) => T;
 
-export type ReadCachedStorageArea = "local" | "sync" | "managed";
+export type ReadCachedStorageArea = 'local' | 'sync' | 'managed';
 
 /**
  * This is used to improve performance. It is safe to use in multiple contexts.

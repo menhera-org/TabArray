@@ -19,11 +19,11 @@
   @license
 **/
 
-import { CookieStore } from "weeg-containers";
-import { ExtensionService } from "weeg-utils";
+import { CookieStore } from 'weeg-containers';
+import { ExtensionService } from 'weeg-utils';
 
-import { ContextualIdentityService } from "./ContextualIdentityService";
-import { ServiceRegistry } from "../ServiceRegistry";
+import { ContextualIdentityService } from './ContextualIdentityService';
+import { ServiceRegistry } from '../ServiceRegistry';
 
 export class CookieStoreService {
   private static readonly INSTANCE = new CookieStoreService();
@@ -46,9 +46,9 @@ export class CookieStoreService {
       this._extensionService.isAllowedInPrivateBrowsing(),
     ]);
     return [
-      ... allowedInPrivateBrowsing ? [CookieStore.PRIVATE] : [],
+      ...(allowedInPrivateBrowsing ? [CookieStore.PRIVATE] : []),
       CookieStore.DEFAULT,
-      ... contextualIdentities.map((contextualIdentity) => contextualIdentity.cookieStore),
+      ...contextualIdentities.map((contextualIdentity) => contextualIdentity.cookieStore),
     ];
   }
 }

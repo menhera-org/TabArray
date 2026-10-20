@@ -25,8 +25,8 @@ import { CookieStore } from 'weeg-containers';
 import { StorageItem } from 'weeg-storage';
 import { Uint32 } from 'weeg-types';
 
-import { DisplayedContainerService } from "../tabGroups/DisplayedContainerService";
-import { TabQueryService } from "./TabQueryService";
+import { DisplayedContainerService } from '../tabGroups/DisplayedContainerService';
+import { TabQueryService } from './TabQueryService';
 import { ServiceRegistry } from '../ServiceRegistry';
 
 import { IndexTab } from '../../legacy-lib/modules/IndexTab';
@@ -62,7 +62,7 @@ export class IndexTabService {
     await indexTabStorage.setValue(value);
   }
 
-  public async removeIndexTabUserContextId (tabId: number) {
+  public async removeIndexTabUserContextId(tabId: number) {
     const value = await indexTabStorage.getValue();
     delete value[tabId];
     await indexTabStorage.setValue(value);
@@ -83,7 +83,12 @@ export class IndexTabService {
   public async createIndexTab(windowId: number, cookieStoreId: string): Promise<CompatTab> {
     const userContextId = new CookieStore(cookieStoreId).userContextId;
     const displayedContainer = await this._displayedContainerService.getDisplayedContainer(cookieStoreId);
-    const url = IndexTab.getUrl(displayedContainer.name, '', displayedContainer.colorCode, displayedContainer.iconUrl).url;
+    const url = IndexTab.getUrl(
+      displayedContainer.name,
+      '',
+      displayedContainer.colorCode,
+      displayedContainer.iconUrl
+    ).url;
     const tabs = await this._tabQueryService.queryTabs({
       windowId,
       tabGroupId: cookieStoreId,

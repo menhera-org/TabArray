@@ -19,7 +19,7 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 import { TabIconService } from '../lib/TabIconService';
 
 export class MenulistSiteElement extends HTMLElement {
@@ -30,9 +30,9 @@ export class MenulistSiteElement extends HTMLElement {
 
   public constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
-      throw new Error("Shadow root is null");
+      throw new Error('Shadow root is null');
     }
     this.buildElement();
   }

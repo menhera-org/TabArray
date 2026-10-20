@@ -23,7 +23,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import browser from 'webextension-polyfill';
 import { DisplayedContainer } from 'weeg-containers';
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
 import { CompatConsole } from '../lib/console/CompatConsole';
 
@@ -52,7 +52,7 @@ export class MenulistContainerElement extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
-      throw new Error("Shadow root is null");
+      throw new Error('Shadow root is null');
     }
     this._isPrivate = isPrivate || displayedContainer.cookieStore.isPrivate;
     this._cookieStoreId = displayedContainer.cookieStore.id;
@@ -161,13 +161,16 @@ export class MenulistContainerElement extends HTMLElement {
       const tabIndex = parseInt(tabElement.getAttribute('data-index') || '0', 10);
       if (tabId === -1) return;
 
-      ev.dataTransfer.setData('application/json', JSON.stringify({
-        type: 'tab',
-        id: tabId,
-        index: tabIndex,
-        pinned: false,
-        cookieStoreId: this._cookieStoreId,
-      }));
+      ev.dataTransfer.setData(
+        'application/json',
+        JSON.stringify({
+          type: 'tab',
+          id: tabId,
+          index: tabIndex,
+          pinned: false,
+          cookieStoreId: this._cookieStoreId,
+        })
+      );
       ev.dataTransfer.dropEffect = 'move';
     });
 
@@ -229,7 +232,9 @@ export class MenulistContainerElement extends HTMLElement {
       // Get the actual clicked element from composedPath (for Shadow DOM)
       const path = ev.composedPath();
       const shadowTarget = path[0] as HTMLElement;
-      const action = shadowTarget.getAttribute?.('data-action') || shadowTarget.closest('[data-action]')?.getAttribute('data-action');
+      const action =
+        shadowTarget.getAttribute?.('data-action') ||
+        shadowTarget.closest('[data-action]')?.getAttribute('data-action');
 
       if (!action) return;
 
@@ -258,11 +263,13 @@ export class MenulistContainerElement extends HTMLElement {
 
         case 'set-tag':
           // Import ModalSetTagElement dynamically to avoid circular dependency
-          import('./modal-set-tag').then(({ ModalSetTagElement }) => {
-            document.body.appendChild(new ModalSetTagElement(tabId));
-          }).catch((e) => {
-            console.error('Failed to load ModalSetTagElement:', e);
-          });
+          import('./modal-set-tag')
+            .then(({ ModalSetTagElement }) => {
+              document.body.appendChild(new ModalSetTagElement(tabId));
+            })
+            .catch((e) => {
+              console.error('Failed to load ModalSetTagElement:', e);
+            });
           break;
       }
     });
@@ -284,32 +291,42 @@ export class MenulistContainerElement extends HTMLElement {
     });
 
     // Contextmenu event
-    containerTabsElement.addEventListener('contextmenu', (ev: MouseEvent) => {
-      const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
-      if (!tabElement) return;
+    containerTabsElement.addEventListener(
+      'contextmenu',
+      (ev: MouseEvent) => {
+        const tabElement = (ev.target as HTMLElement).closest('menulist-tab') as HTMLElement | null;
+        if (!tabElement) return;
 
-      const tabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
-      if (tabId === -1) return;
+        const tabId = parseInt(tabElement.getAttribute('data-tab-id') || '-1', 10);
+        if (tabId === -1) return;
 
-      // Override context menu for Firefox
-      browser.menus.overrideContext({
-        context: 'tab',
-        tabId: tabId,
-      });
-    }, { capture: true });
+        // Override context menu for Firefox
+        browser.menus.overrideContext({
+          context: 'tab',
+          tabId: tabId,
+        });
+      },
+      { capture: true }
+    );
   }
-
 
   public setDisplayedContainer(displayedContainer: DisplayedContainer) {
     if (this._isPrivate) {
-      console.assert(displayedContainer.cookieStore.userContextId == 0, "Private window should have default container only");
+      console.assert(
+        displayedContainer.cookieStore.userContextId == 0,
+        'Private window should have default container only'
+      );
       this.containerNameInnerElement.textContent = browser.i18n.getMessage('privateBrowsing');
       this.containerButton.title = browser.i18n.getMessage('privateBrowsing');
-      this.containerIconElement.style.background = 'url(/img/firefox-icons/private-browsing-icon.svg) center center / contain no-repeat';
+      this.containerIconElement.style.background =
+        'url(/img/firefox-icons/private-browsing-icon.svg) center center / contain no-repeat';
       this.containerIconElement.style.backgroundColor = 'transparent';
     } else {
       this.containerNameInnerElement.textContent = displayedContainer.name;
-      this.containerButton.title = browser.i18n.getMessage('defaultContainerName', String(displayedContainer.cookieStore.userContextId));
+      this.containerButton.title = browser.i18n.getMessage(
+        'defaultContainerName',
+        String(displayedContainer.cookieStore.userContextId)
+      );
       this.containerIconElement.style.backgroundColor = displayedContainer.colorCode;
       const iconUrl = displayedContainer.iconUrl;
       if (!iconUrl.includes(')')) {

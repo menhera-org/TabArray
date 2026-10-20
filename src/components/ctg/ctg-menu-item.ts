@@ -105,11 +105,13 @@ export class CtgMenuItemElement extends HTMLElement {
   }
 
   public broadcastClickEvent() {
-    document.body.dispatchEvent(new CustomEvent('ctg-menu-item-click', {
-      detail: {
-        element: this,
-      },
-    }));
+    document.body.dispatchEvent(
+      new CustomEvent('ctg-menu-item-click', {
+        detail: {
+          element: this,
+        },
+      })
+    );
   }
 
   public connectedCallback() {

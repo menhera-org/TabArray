@@ -19,7 +19,7 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
+import { StorageItem } from 'weeg-storage';
 
 export type CachedStorageUpdateCallback<T> = (value: T) => T;
 

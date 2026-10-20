@@ -19,8 +19,8 @@
   @license
 **/
 
-import { ThemeService } from "../../../legacy-lib/themes/ThemeService";
-import { Theme } from "../../../legacy-lib/themes/Theme";
+import { ThemeService } from '../../../legacy-lib/themes/ThemeService';
+import { Theme } from '../../../legacy-lib/themes/Theme';
 
 const themeService = ThemeService.getInstance();
 

@@ -19,11 +19,11 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
-import { StorageItem } from "weeg-storage";
-import { Asserts } from "weeg-utils";
+import { EventSink } from 'weeg-events';
+import { StorageItem } from 'weeg-storage';
+import { Asserts } from 'weeg-utils';
 
-import { PerContainerSettings } from "./PerContainerSettings";
+import { PerContainerSettings } from './PerContainerSettings';
 
 /**
  * Per-container proxy presets.

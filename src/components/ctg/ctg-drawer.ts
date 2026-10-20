@@ -19,7 +19,7 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
 export class CtgDrawerElement extends HTMLElement {
   public readonly onShown = new EventSink<void>();

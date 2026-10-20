@@ -19,7 +19,7 @@
   @license
 **/
 
-import { ConsoleService } from "./ConsoleService";
+import { ConsoleService } from './ConsoleService';
 
 const consoleService = ConsoleService.getInstance();
 
@@ -35,28 +35,28 @@ export class CompatConsole {
   }
 
   public debug(...args: unknown[]): void {
-    consoleService.output(this.tag, 'debug', ... args);
+    consoleService.output(this.tag, 'debug', ...args);
   }
 
   public log(...args: unknown[]): void {
-    consoleService.output(this.tag, 'log', ... args);
+    consoleService.output(this.tag, 'log', ...args);
   }
 
   public info(...args: unknown[]): void {
-    consoleService.output(this.tag, 'info', ... args);
+    consoleService.output(this.tag, 'info', ...args);
   }
 
   public warn(...args: unknown[]): void {
-    consoleService.output(this.tag, 'warn', ... args);
+    consoleService.output(this.tag, 'warn', ...args);
   }
 
   public error(...args: unknown[]): void {
-    consoleService.output(this.tag, 'error', ... args);
+    consoleService.output(this.tag, 'error', ...args);
   }
 
   public assert(assert: unknown, ...args: unknown[]): void {
     if (!assert) {
-      consoleService.output(this.tag, 'error', 'Assertion failed:', ... args);
+      consoleService.output(this.tag, 'error', 'Assertion failed:', ...args);
     }
   }
 }

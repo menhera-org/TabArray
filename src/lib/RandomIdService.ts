@@ -19,7 +19,7 @@
   @license
 **/
 
-import { ServiceRegistry } from "./ServiceRegistry";
+import { ServiceRegistry } from './ServiceRegistry';
 
 /**
  * Creates a random string ID.

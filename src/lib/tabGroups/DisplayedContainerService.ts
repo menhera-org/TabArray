@@ -19,11 +19,11 @@
   @license
 **/
 
-import { ExtensionService } from "weeg-utils";
-import { DisplayedContainer, CookieStore } from "weeg-containers";
+import { ExtensionService } from 'weeg-utils';
+import { DisplayedContainer, CookieStore } from 'weeg-containers';
 
-import { ContextualIdentityService } from "./ContextualIdentityService";
-import { ServiceRegistry } from "../ServiceRegistry";
+import { ContextualIdentityService } from './ContextualIdentityService';
+import { ServiceRegistry } from '../ServiceRegistry';
 
 export class DisplayedContainerService {
   private static readonly INSTANCE = new DisplayedContainerService();
@@ -55,24 +55,25 @@ export class DisplayedContainerService {
       this._contextualIdentityFactory.getAll(),
       this._extensionService.isAllowedInPrivateBrowsing(),
     ]);
-    const privateContainers = allowedInPrivateBrowsing ? [this._displayedContainerFactory.createFromCookieStore(CookieStore.PRIVATE)] : [];
+    const privateContainers = allowedInPrivateBrowsing
+      ? [this._displayedContainerFactory.createFromCookieStore(CookieStore.PRIVATE)]
+      : [];
     return [
-      ... privateContainers,
+      ...privateContainers,
       this._displayedContainerFactory.createFromCookieStore(CookieStore.DEFAULT),
-      ... contextualIdentities,
+      ...contextualIdentities,
     ];
   }
 
   public async getDisplayedContainersByPrivateBrowsing(isPrivate: boolean): Promise<DisplayedContainer[]> {
     if (isPrivate) {
       const allowedInPrivateBrowsing = await this._extensionService.isAllowedInPrivateBrowsing();
-      return allowedInPrivateBrowsing ? [this._displayedContainerFactory.createFromCookieStore(CookieStore.PRIVATE)] : [];
+      return allowedInPrivateBrowsing
+        ? [this._displayedContainerFactory.createFromCookieStore(CookieStore.PRIVATE)]
+        : [];
     }
     const contextualIdentities = await this._contextualIdentityFactory.getAll();
-    return [
-      this._displayedContainerFactory.createFromCookieStore(CookieStore.DEFAULT),
-      ... contextualIdentities,
-    ];
+    return [this._displayedContainerFactory.createFromCookieStore(CookieStore.DEFAULT), ...contextualIdentities];
   }
 }
 

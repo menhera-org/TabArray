@@ -44,15 +44,18 @@ export class InitialWindowsService {
 
   private constructor() {
     // Do nothing
-    const {promise, resolve} = PromiseUtils.createPromise<browser.Windows.Window[]>();
+    const { promise, resolve } = PromiseUtils.createPromise<browser.Windows.Window[]>();
     this._initialWindowsPromise = promise;
     this._startupService.onStartup.addListener(() => {
-      browser.windows.getAll({
-        populate: true,
-        windowTypes: ['normal'],
-      }).then(resolve).catch((e) => {
-        console.error(e);
-      });
+      browser.windows
+        .getAll({
+          populate: true,
+          windowTypes: ['normal'],
+        })
+        .then(resolve)
+        .catch((e) => {
+          console.error(e);
+        });
     });
   }
 

@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { Asserts, ExtensionService } from "weeg-utils";
+import { Asserts, ExtensionService } from 'weeg-utils';
 import { EventSink } from 'weeg-events';
 
 import { ServiceRegistry } from './ServiceRegistry';

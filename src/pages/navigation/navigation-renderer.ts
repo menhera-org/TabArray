@@ -23,7 +23,14 @@ import { DisplayedContainer } from 'weeg-containers';
 
 import * as i18n from '../../legacy-lib/modules/i18n';
 
-const renderButton = (tooltipText: string, name: string, iconUrl: string, useIconMask: boolean, maskColor = '#000000', aContainerElement: HTMLButtonElement | null = null) => {
+const renderButton = (
+  tooltipText: string,
+  name: string,
+  iconUrl: string,
+  useIconMask: boolean,
+  maskColor = '#000000',
+  aContainerElement: HTMLButtonElement | null = null
+) => {
   const containerElement = aContainerElement ?? document.createElement('button');
   containerElement.classList.add('container-button');
   containerElement.textContent = '';
@@ -46,10 +53,20 @@ const renderButton = (tooltipText: string, name: string, iconUrl: string, useIco
   return containerElement;
 };
 
-export const renderContainer = (displayedContainer: DisplayedContainer, aContainerElement: HTMLButtonElement | null = null) => {
+export const renderContainer = (
+  displayedContainer: DisplayedContainer,
+  aContainerElement: HTMLButtonElement | null = null
+) => {
   const tooltipText = i18n.getMessage('defaultContainerName', String(displayedContainer.cookieStore.userContextId));
   const iconUrl = displayedContainer.iconUrl || '/img/material-icons/category.svg';
-  const containerElement = renderButton(tooltipText, displayedContainer.name, iconUrl, true, displayedContainer.colorCode || '#000', aContainerElement);
+  const containerElement = renderButton(
+    tooltipText,
+    displayedContainer.name,
+    iconUrl,
+    true,
+    displayedContainer.colorCode || '#000',
+    aContainerElement
+  );
   return containerElement;
 };
 

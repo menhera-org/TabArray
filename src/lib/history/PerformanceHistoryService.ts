@@ -19,11 +19,11 @@
   @license
 **/
 
-import { BackgroundService } from "weeg-utils";
+import { BackgroundService } from 'weeg-utils';
 
-import { CachedStorageItem } from "../storage/CachedStorageItem";
-import { ServiceRegistry } from "../ServiceRegistry";
-import { StartupService } from "../StartupService";
+import { CachedStorageItem } from '../storage/CachedStorageItem';
+import { ServiceRegistry } from '../ServiceRegistry';
+import { StartupService } from '../StartupService';
 
 export type PerformanceRecord = {
   operationName: string;
@@ -34,7 +34,11 @@ export type PerformanceRecord = {
 const startupService = StartupService.getInstance();
 
 export class PerformanceHistoryService extends BackgroundService<PerformanceRecord, void> {
-  private readonly storage = new CachedStorageItem<PerformanceRecord[]>("performanceHistory", [], CachedStorageItem.AREA_LOCAL);
+  private readonly storage = new CachedStorageItem<PerformanceRecord[]>(
+    'performanceHistory',
+    [],
+    CachedStorageItem.AREA_LOCAL
+  );
 
   public readonly onChanged = this.storage.onChanged;
 
@@ -82,4 +86,7 @@ export class PerformanceHistoryService extends BackgroundService<PerformanceReco
   }
 }
 
-ServiceRegistry.getInstance().registerService('PerformanceHistoryService', PerformanceHistoryService.getInstance<PerformanceHistoryService>());
+ServiceRegistry.getInstance().registerService(
+  'PerformanceHistoryService',
+  PerformanceHistoryService.getInstance<PerformanceHistoryService>()
+);

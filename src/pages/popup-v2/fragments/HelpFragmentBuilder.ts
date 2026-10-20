@@ -19,11 +19,11 @@
   @license
 **/
 
-import { SimpleFragmentBuilder } from "./SimpleFragmentBuilder";
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import browser from "webextension-polyfill";
-import { HelpBannerElement } from "../../../components/help-banner";
-import { EventSink } from "weeg-events";
+import { SimpleFragmentBuilder } from './SimpleFragmentBuilder';
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import browser from 'webextension-polyfill';
+import { HelpBannerElement } from '../../../components/help-banner';
+import { EventSink } from 'weeg-events';
 
 export class HelpFragmentBuilder extends SimpleFragmentBuilder {
   public readonly onFpiCheckedChanged = new EventSink<boolean>();

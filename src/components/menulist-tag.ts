@@ -40,7 +40,7 @@ export class MenulistTagElement extends HTMLElement {
     this.tag = tag;
     this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
-      throw new Error("Shadow root is null");
+      throw new Error('Shadow root is null');
     }
     this.buildElement();
     this.tagEditButton.title = browser.i18n.getMessage('buttonEditTag');

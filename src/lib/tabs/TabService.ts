@@ -36,7 +36,7 @@ export class TabService {
   }
 
   public getTabIds(tabs: Iterable<CompatTab>): number[] {
-    return [... new Set([... tabs].map((tab) => tab.id))];
+    return [...new Set([...tabs].map((tab) => tab.id))];
   }
 
   public async closeTabs(tabs: Iterable<CompatTab>): Promise<void> {

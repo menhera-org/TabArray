@@ -19,7 +19,7 @@
   @license
 **/
 
-import { MessagingService } from "weeg-utils";
+import { MessagingService } from 'weeg-utils';
 
 const messagingService = MessagingService.getInstance();
 

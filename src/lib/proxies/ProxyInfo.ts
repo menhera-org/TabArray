@@ -19,8 +19,8 @@
   @license
 **/
 
-import { ProxyPreset } from "./ProxyPreset";
-import { ProxyType } from "./ProxyType";
+import { ProxyPreset } from './ProxyPreset';
+import { ProxyType } from './ProxyType';
 
 const DEFAULT_FAILOVER_TIMEOUT = 10;
 

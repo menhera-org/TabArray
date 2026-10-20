@@ -19,8 +19,7 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-
+import { StorageItem } from 'weeg-storage';
 
 export class SetStorage<T> {
   private readonly _storage: StorageItem<T[]>;
@@ -73,7 +72,10 @@ export class SetStorage<T> {
     return values.map((a) => [a, a] as [T, T]).values();
   }
 
-  public async forEach(callbackfn: (value: T, value2: T, set: SetStorage<T>) => void, thisArg?: unknown): Promise<void> {
+  public async forEach(
+    callbackfn: (value: T, value2: T, set: SetStorage<T>) => void,
+    thisArg?: unknown
+  ): Promise<void> {
     const values = await this._storage.getValue();
     if (thisArg) {
       callbackfn = callbackfn.bind(thisArg);

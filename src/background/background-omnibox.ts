@@ -19,16 +19,16 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { CookieStore, DisplayedContainer } from "weeg-containers";
+import browser from 'webextension-polyfill';
+import { CookieStore, DisplayedContainer } from 'weeg-containers';
 
-import { CompatConsole } from "../lib/console/CompatConsole";
-import { DisplayedContainerService } from "../lib/tabGroups/DisplayedContainerService";
-import { ContainerHistoryService } from "../lib/history/ContainerHistoryService";
-import { ExtensionPageService } from "../lib/ExtensionPageService";
-import { ContainerTabOpenerService } from "../lib/tabGroups/ContainerTabOpenerService";
+import { CompatConsole } from '../lib/console/CompatConsole';
+import { DisplayedContainerService } from '../lib/tabGroups/DisplayedContainerService';
+import { ContainerHistoryService } from '../lib/history/ContainerHistoryService';
+import { ExtensionPageService } from '../lib/ExtensionPageService';
+import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerService';
 
-import { OPEN_CONTAINER_PAGE, PANORAMA_PAGE } from "../defs";
+import { OPEN_CONTAINER_PAGE, PANORAMA_PAGE } from '../defs';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -37,12 +37,12 @@ const containerHistoryService = ContainerHistoryService.getInstance<ContainerHis
 const extensionPageService = ExtensionPageService.getInstance();
 const containerTabOpenerService = ContainerTabOpenerService.getInstance<ContainerTabOpenerService>();
 
-const DEFAULT_SUGGESTION = browser.i18n.getMessage("searchPlaceholder");
+const DEFAULT_SUGGESTION = browser.i18n.getMessage('searchPlaceholder');
 
 const makeSugesstion = (container: DisplayedContainer): browser.Omnibox.SuggestResult => {
   const cookieStoreId = container.cookieStore.id;
   const url = new URL(OPEN_CONTAINER_PAGE, location.href);
-  url.searchParams.set("cookieStoreId", cookieStoreId);
+  url.searchParams.set('cookieStoreId', cookieStoreId);
   return {
     content: url.href,
     deletable: false,
@@ -52,7 +52,7 @@ const makeSugesstion = (container: DisplayedContainer): browser.Omnibox.SuggestR
 
 const getPanoramaGridSuggestion = (): browser.Omnibox.SuggestResult => {
   const url = new URL(PANORAMA_PAGE, location.href);
-  const description = browser.i18n.getMessage("panoramaGrid");
+  const description = browser.i18n.getMessage('panoramaGrid');
   return {
     content: url.href,
     deletable: false,
@@ -111,7 +111,7 @@ browser.omnibox.onInputEntered.addListener((text) => {
     extensionPageService.openInBackground(ExtensionPageService.PANORAMA);
     return;
   }
-  const cookieStoreId = url.searchParams.get("cookieStoreId") || CookieStore.DEFAULT.id;
+  const cookieStoreId = url.searchParams.get('cookieStoreId') || CookieStore.DEFAULT.id;
   containerTabOpenerService.openNewTabInContainer(cookieStoreId, true).catch((e) => {
     console.error(e);
   });

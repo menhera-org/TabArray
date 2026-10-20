@@ -19,23 +19,23 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
+import browser from 'webextension-polyfill';
 import { DisplayedContainer } from 'weeg-containers';
-import { ExtensionService } from "weeg-utils";
-import { RegistrableDomainService } from "weeg-domains";
-import { CompatTab } from "weeg-tabs";
+import { ExtensionService } from 'weeg-utils';
+import { RegistrableDomainService } from 'weeg-domains';
+import { CompatTab } from 'weeg-tabs';
 
-import { BrowserStateDao } from "./BrowserStateDao";
-import { WindowStateDao } from "./WindowStateDao";
-import { TabDao } from "./TabDao";
-import { DisplayedContainerDao } from "./DisplayedContainerDao";
+import { BrowserStateDao } from './BrowserStateDao';
+import { WindowStateDao } from './WindowStateDao';
+import { TabDao } from './TabDao';
+import { DisplayedContainerDao } from './DisplayedContainerDao';
 
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
 import { TabAttributeMap } from '../tabGroups/tags/TabAttributeMap';
-import { TabGroupDirectory } from "../tabGroups/TabGroupDirectory";
-import { DisplayedContainerService } from "../tabGroups/DisplayedContainerService";
-import { PerformanceHistoryService } from "../history/PerformanceHistoryService";
-import { SpinnerService } from "../SpinnerService";
+import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
+import { DisplayedContainerService } from '../tabGroups/DisplayedContainerService';
+import { PerformanceHistoryService } from '../history/PerformanceHistoryService';
+import { SpinnerService } from '../SpinnerService';
 
 export type BrowserStateConstructParams = {
   browserWindows: browser.Windows.Window[];
@@ -69,7 +69,13 @@ export class BrowserStateService {
     const startTime = Date.now();
     spinnerService.beginTransaction('browser-state-get');
     try {
-      const [browserWindows, currentBrowserWindow, displayedContainers, enabledInPrivateBrowsing, tabGroupDirectorySnapshot] = await Promise.all([
+      const [
+        browserWindows,
+        currentBrowserWindow,
+        displayedContainers,
+        enabledInPrivateBrowsing,
+        tabGroupDirectorySnapshot,
+      ] = await Promise.all([
         browser.windows.getAll({
           populate: true,
           windowTypes: ['normal'],
@@ -126,7 +132,7 @@ export class BrowserStateService {
   }
 
   public getBrowserState(params: BrowserStateConstructParams): BrowserStateDao {
-    const displayedContainers = [... params.displayedContainers];
+    const displayedContainers = [...params.displayedContainers];
     params.tabGroupDirectorySnapshot.sortDisplayedContainers(displayedContainers);
     const value: BrowserStateDao = {
       currentWindowId: browser.windows.WINDOW_ID_NONE,
@@ -213,7 +219,7 @@ export class BrowserStateService {
   }
 
   public sortTabIds(tabIds: number[], tabs: { [tabId: number]: TabDao }): number[] {
-    tabIds = [... tabIds];
+    tabIds = [...tabIds];
     tabIds.sort((a, b) => {
       const tabA = tabs[a] as TabDao;
       const tabB = tabs[b] as TabDao;
@@ -231,7 +237,7 @@ export class BrowserStateService {
       const windowState = browserState.windows[windowId] as WindowStateDao;
       windowState.activeTabIds = this.sortTabIds(windowState.activeTabIds, windowState.tabs);
       windowState.pinnedTabIds = this.sortTabIds(windowState.pinnedTabIds, windowState.tabs);
-      for (const cookieStoreId in {... windowState.unpinnedTabIdsByContainer}) {
+      for (const cookieStoreId in { ...windowState.unpinnedTabIdsByContainer }) {
         const unpinnedTabs = windowState.unpinnedTabIdsByContainer[cookieStoreId] as number[];
         windowState.unpinnedTabIdsByContainer[cookieStoreId] = this.sortTabIds(unpinnedTabs, windowState.tabs);
       }

@@ -38,7 +38,7 @@ export class Srgb {
     return [
       3.2406 * x + -1.5372 * y + -0.4986 * z,
       -0.9689 * x + 1.8758 * y + 0.0415 * z,
-      0.0557 * x -0.2040 * y + 1.0570 * z,
+      0.0557 * x - 0.204 * y + 1.057 * z,
     ];
   }
 
@@ -51,7 +51,7 @@ export class Srgb {
   }
 
   private static applyGamma(value: number): number {
-    return value > 0.0031308 ? 1.055 * value ** (1/2.4) - 0.055 : 12.92 * value;
+    return value > 0.0031308 ? 1.055 * value ** (1 / 2.4) - 0.055 : 12.92 * value;
   }
 
   private static expandGamma(value: number): number {
@@ -65,8 +65,8 @@ export class Srgb {
   public static fromXyz(xyz: Xyz, strict = false): Srgb {
     const [x, y, z] = xyz.toArray();
     let linearRgb = Srgb.xyzToLinearRgb(x, y, z);
-    const min = Math.min(... linearRgb);
-    const max = Math.max(... linearRgb);
+    const min = Math.min(...linearRgb);
+    const max = Math.max(...linearRgb);
     if (max > 1) {
       if (strict) {
         throw new Error('Color value overflow');
@@ -99,11 +99,7 @@ export class Srgb {
   }
 
   public to8bit(): [number, number, number] {
-    return [
-      Srgb.colorValueTo8bit(this.r),
-      Srgb.colorValueTo8bit(this.g),
-      Srgb.colorValueTo8bit(this.b),
-    ];
+    return [Srgb.colorValueTo8bit(this.r), Srgb.colorValueTo8bit(this.g), Srgb.colorValueTo8bit(this.b)];
   }
 
   public toXyz(): Xyz {

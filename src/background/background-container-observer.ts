@@ -30,7 +30,7 @@ const tabQueryService = TabQueryService.getInstance();
 const tabService = TabService.getInstance();
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
-browser.contextualIdentities.onRemoved.addListener(async ({contextualIdentity: browserContextualIdentity}) => {
+browser.contextualIdentities.onRemoved.addListener(async ({ contextualIdentity: browserContextualIdentity }) => {
   try {
     const contextualIdentity = ContextualIdentity.fromWebExtensionsContextualIdentity(browserContextualIdentity);
     const cookieStoreId = contextualIdentity.cookieStore.id;

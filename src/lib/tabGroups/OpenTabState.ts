@@ -19,10 +19,10 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-import { Asserts } from "weeg-utils";
-import { EventSink } from "weeg-events";
-import { CompatTab } from "weeg-tabs";
+import { StorageItem } from 'weeg-storage';
+import { Asserts } from 'weeg-utils';
+import { EventSink } from 'weeg-events';
+import { CompatTab } from 'weeg-tabs';
 
 type StorageType = {
   [cookieStoreId: string]: number[]; // tabIds

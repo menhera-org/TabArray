@@ -143,9 +143,11 @@ export class StorageConfigurationOption<T> implements ConfigurationOption<T> {
 
   public observe(observer: (value: T) => void, reportInitialValue = true) {
     if (reportInitialValue) {
-      this.getValue().then(observer).catch((e) => {
-        console.error(e);
-      });
+      this.getValue()
+        .then(observer)
+        .catch((e) => {
+          console.error(e);
+        });
     }
 
     this.observeManaged(observer);

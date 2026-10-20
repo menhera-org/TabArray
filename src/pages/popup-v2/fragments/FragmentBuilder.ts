@@ -19,8 +19,8 @@
   @license
 **/
 
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
 
 export interface FragmentBuilder {
   /**

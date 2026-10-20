@@ -51,11 +51,13 @@ export class PopupUtils {
   }
 
   private handlePopupClose(promise: Promise<unknown>) {
-    promise.then(() => {
-      window.close();
-    }).catch((e) => {
-      console.error(e);
-    });
+    promise
+      .then(() => {
+        window.close();
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 
   public queryElementNonNull<T extends Element>(query: string): T {
@@ -67,9 +69,11 @@ export class PopupUtils {
   }
 
   public openNewWindow(isPrivate: boolean) {
-    this.handlePopupClose(browser.windows.create({
-      incognito: isPrivate,
-      focused: true,
-    }));
+    this.handlePopupClose(
+      browser.windows.create({
+        incognito: isPrivate,
+        focused: true,
+      })
+    );
   }
 }

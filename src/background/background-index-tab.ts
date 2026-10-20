@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { Uint32 } from "weeg-types";
+import { Uint32 } from 'weeg-types';
 import { CompatTab } from 'weeg-tabs';
 import { CookieStore } from 'weeg-containers';
 
@@ -52,7 +52,12 @@ const handleClosedIndexTab = async (tabId: number, windowId: number) => {
       userContextId: indexTabUserContextId,
       privateBrowsingId: 0 as Uint32,
     });
-    console.log('index tab %d closed on window %d, close all tabs of that container %s', tabId, windowId, cookieStore.id);
+    console.log(
+      'index tab %d closed on window %d, close all tabs of that container %s',
+      tabId,
+      windowId,
+      cookieStore.id
+    );
     await containers.closeAllTabsOnWindow(cookieStore.id, windowId);
   }
 };
@@ -67,7 +72,7 @@ const removeIndexTabForCookieStore = async (cookieStoreId: string) => {
   }
 };
 
-browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) => {
+browser.tabs.onRemoved.addListener(async (tabId, { windowId, isWindowClosing }) => {
   if (isWindowClosing) {
     await indexTabService.removeIndexTabUserContextId(tabId);
     return;
@@ -80,7 +85,7 @@ browser.tabs.onRemoved.addListener(async (tabId, {windowId, isWindowClosing}) =>
     const tabs = (await browser.tabs.query({ windowId })).map((browserTab) => new CompatTab(browserTab));
     const cookieStoreTabMap = new CookieStoreTabMap(tabs);
     for (const cookieStoreId of cookieStoreTabMap.getCookieStoreIds()) {
-      const tabs = [... cookieStoreTabMap.getTabsByCookieStoreId(cookieStoreId)];
+      const tabs = [...cookieStoreTabMap.getTabsByCookieStoreId(cookieStoreId)];
 
       // if the only remaining tab is an index tab, close it
       if (tabs[0] && tabs.length == 1 && IndexTab.isIndexTabUrl(tabs[0].url)) {
@@ -108,7 +113,7 @@ const resetIndexTabs = async (browserWindows: browser.Windows.Window[]) => {
     const cookieStoreTabMap = new CookieStoreTabMap(tabs);
     const cookieStoreIds = cookieStoreTabMap.getCookieStoreIds();
     for (const cookieStoreId of cookieStoreIds) {
-      const tabs = [... cookieStoreTabMap.getTabsByCookieStoreId(cookieStoreId)];
+      const tabs = [...cookieStoreTabMap.getTabsByCookieStoreId(cookieStoreId)];
       let hasIndexTab = false;
       let hidden = false;
       for (const tab of tabs) {
@@ -140,9 +145,12 @@ const resetIndexTabs = async (browserWindows: browser.Windows.Window[]) => {
   }
 };
 
-initialWindowsService.getInitialWindows().then(resetIndexTabs).catch((e) => {
-  console.error(e);
-});
+initialWindowsService
+  .getInitialWindows()
+  .then(resetIndexTabs)
+  .catch((e) => {
+    console.error(e);
+  });
 
 browser.tabs.onCreated.addListener(async (browserTab) => {
   const indexTabOption = await config['tab.groups.indexOption'].getValue();
@@ -165,95 +173,105 @@ browser.tabs.onCreated.addListener(async (browserTab) => {
 });
 
 // prevent index tabs from being pinned
-browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
-  if (browserTab.incognito) return;
-  const tab = new CompatTab(browserTab);
-  tabQueryService.queryTabs({ tabGroupId: tab.cookieStore.id }).then(async (tabs) => {
-    const indexTabOption = await config['tab.groups.indexOption'].getValue();
-    const indexTabIds: number[] = [];
-    let nonIndexTabFound = false;
-    for (const tab of tabs) {
-      if (IndexTab.isIndexTabUrl(tab.url)) {
-        indexTabIds.push(tab.id);
-      } else if (!tab.pinned) {
-        nonIndexTabFound = true;
-      }
-    }
-    if (!nonIndexTabFound && indexTabIds.length > 0) {
-      // no unpinned tabs left, so remove the index tab(s) for that container
-      for (const indexTabId of indexTabIds) {
-        await indexTabService.unregisterIndexTab(indexTabId);
-        await browser.tabs.remove(indexTabId);
-      }
-    } else if (nonIndexTabFound && indexTabIds.length < 1 && indexTabOption == 'always') {
-      // unpinned tab found, so create an index tab for that container
-      await indexTabService.createIndexTab(tab.windowId, tab.cookieStore.id);
-    }
-  }).catch((e) => {
-    console.error(e);
-  });
-
-  if (!IndexTab.isIndexTabUrl(tab.url)) {
-    return;
-  }
-  if (!tab.pinned) {
-    return;
-  }
-  browser.tabs.update(tabId, {
-    pinned: false,
-  }).catch((e) => {
-    console.error(e);
-  });
-}, {
-  properties: [
-    'pinned',
-  ],
-});
-
-browser.tabs.onUpdated.addListener(async (tabId, _changeInfo, browserTab) => {
-  if (browserTab.incognito) return;
-  browserTab.id = tabId;
-  const tab = new CompatTab(browserTab);
-  const cookieStoreId = tab.cookieStore.id;
-  const userContextId = tab.cookieStore.userContextId;
-  if (!IndexTab.isIndexTabUrl(tab.url)) {
-    if ((await indexTabService.getIndexTabUserContextId(tab.id)) == userContextId) {
-      await indexTabService.removeIndexTabUserContextId(tab.id);
-    } else {
-      return;
-    }
-  } else {
-    await indexTabService.setIndexTabUserContextId(tab.id, userContextId);
-    return;
-  }
-
-  const indexTabOption = await config['tab.groups.indexOption'].getValue();
-  if (indexTabOption != 'always') return;
-  tabQueryService.queryTabs({
-    tabGroupId: tab.cookieStore.id,
-    windowId: tab.windowId,
-  }).then(async (tabs) => {
-    let hasIndexTab = false;
-    for (const tab of tabs) {
-      if ((await indexTabService.getIndexTabUserContextId(tab.id)) == userContextId) {
-        hasIndexTab = true;
-        break;
-      }
-    }
-
-    if (!hasIndexTab) {
-      indexTabService.createIndexTab(tab.windowId, cookieStoreId).catch((e) => {
+browser.tabs.onUpdated.addListener(
+  async (tabId, _changeInfo, browserTab) => {
+    if (browserTab.incognito) return;
+    const tab = new CompatTab(browserTab);
+    tabQueryService
+      .queryTabs({ tabGroupId: tab.cookieStore.id })
+      .then(async (tabs) => {
+        const indexTabOption = await config['tab.groups.indexOption'].getValue();
+        const indexTabIds: number[] = [];
+        let nonIndexTabFound = false;
+        for (const tab of tabs) {
+          if (IndexTab.isIndexTabUrl(tab.url)) {
+            indexTabIds.push(tab.id);
+          } else if (!tab.pinned) {
+            nonIndexTabFound = true;
+          }
+        }
+        if (!nonIndexTabFound && indexTabIds.length > 0) {
+          // no unpinned tabs left, so remove the index tab(s) for that container
+          for (const indexTabId of indexTabIds) {
+            await indexTabService.unregisterIndexTab(indexTabId);
+            await browser.tabs.remove(indexTabId);
+          }
+        } else if (nonIndexTabFound && indexTabIds.length < 1 && indexTabOption == 'always') {
+          // unpinned tab found, so create an index tab for that container
+          await indexTabService.createIndexTab(tab.windowId, tab.cookieStore.id);
+        }
+      })
+      .catch((e) => {
         console.error(e);
       });
+
+    if (!IndexTab.isIndexTabUrl(tab.url)) {
+      return;
     }
-  }).catch((e) => {
-    console.error(e);
-  });
-}, {
-  properties: [
-    'url',
-  ],
-});
+    if (!tab.pinned) {
+      return;
+    }
+    browser.tabs
+      .update(tabId, {
+        pinned: false,
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  },
+  {
+    properties: ['pinned'],
+  }
+);
+
+browser.tabs.onUpdated.addListener(
+  async (tabId, _changeInfo, browserTab) => {
+    if (browserTab.incognito) return;
+    browserTab.id = tabId;
+    const tab = new CompatTab(browserTab);
+    const cookieStoreId = tab.cookieStore.id;
+    const userContextId = tab.cookieStore.userContextId;
+    if (!IndexTab.isIndexTabUrl(tab.url)) {
+      if ((await indexTabService.getIndexTabUserContextId(tab.id)) == userContextId) {
+        await indexTabService.removeIndexTabUserContextId(tab.id);
+      } else {
+        return;
+      }
+    } else {
+      await indexTabService.setIndexTabUserContextId(tab.id, userContextId);
+      return;
+    }
+
+    const indexTabOption = await config['tab.groups.indexOption'].getValue();
+    if (indexTabOption != 'always') return;
+    tabQueryService
+      .queryTabs({
+        tabGroupId: tab.cookieStore.id,
+        windowId: tab.windowId,
+      })
+      .then(async (tabs) => {
+        let hasIndexTab = false;
+        for (const tab of tabs) {
+          if ((await indexTabService.getIndexTabUserContextId(tab.id)) == userContextId) {
+            hasIndexTab = true;
+            break;
+          }
+        }
+
+        if (!hasIndexTab) {
+          indexTabService.createIndexTab(tab.windowId, cookieStoreId).catch((e) => {
+            console.error(e);
+          });
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  },
+  {
+    properties: ['url'],
+  }
+);
 
 config['tab.groups.indexOption'].onChanged.addListener(async (value) => {
   try {

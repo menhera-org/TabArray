@@ -19,14 +19,14 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
 export class DarkThemeMonitor {
-  private _matchedMedia = window.matchMedia("(prefers-color-scheme: dark)");
+  private _matchedMedia = window.matchMedia('(prefers-color-scheme: dark)');
   public readonly onChanged = new EventSink<void>();
 
   public constructor() {
-    this._matchedMedia.addEventListener("change", () => {
+    this._matchedMedia.addEventListener('change', () => {
       this.onChanged.dispatch();
     });
   }

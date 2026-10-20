@@ -19,11 +19,11 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-import { Asserts } from "weeg-utils";
+import { StorageItem } from 'weeg-storage';
+import { Asserts } from 'weeg-utils';
 
-import { StartupService } from "./StartupService";
-import { ServiceRegistry } from "./ServiceRegistry";
+import { StartupService } from './StartupService';
+import { ServiceRegistry } from './ServiceRegistry';
 
 // throws an error if not in background script
 Asserts.assertBackgroundScript();
@@ -38,7 +38,7 @@ export class ElapsedTimeService {
   }
 
   private _cachedValue: number | null = null;
-  private readonly _storage = new StorageItem<number>("startedTime", 0, StorageItem.AREA_LOCAL);
+  private readonly _storage = new StorageItem<number>('startedTime', 0, StorageItem.AREA_LOCAL);
 
   private constructor() {
     startupService.onStartup.addListener(() => {
@@ -51,7 +51,7 @@ export class ElapsedTimeService {
   }
 
   public async getElapsedTime(): Promise<number> {
-    const startedTime = this._cachedValue ?? await this._storage.getValue();
+    const startedTime = this._cachedValue ?? (await this._storage.getValue());
     this._cachedValue = startedTime;
     if (startedTime == 0) {
       return 0;

@@ -48,7 +48,14 @@ alarm.onAlarm.addListener(async () => {
   const tabsToDiscard = tabs.filter((tab) => {
     const url = new URL(tab.url ?? 'about:blank');
     const isHttpScheme = url.protocol.startsWith('http');
-    return isHttpScheme && !tab.discarded && !tab.active && !tab.pinned && null != tab.lastAccessed && tab.lastAccessed + minAge * 1000 < now;
+    return (
+      isHttpScheme &&
+      !tab.discarded &&
+      !tab.active &&
+      !tab.pinned &&
+      null != tab.lastAccessed &&
+      tab.lastAccessed + minAge * 1000 < now
+    );
   });
 
   // Discard the tabs

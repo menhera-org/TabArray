@@ -19,8 +19,8 @@
   @license
 **/
 
-import { CompatTab } from "weeg-tabs";
-import { CookieStore } from "weeg-containers";
+import { CompatTab } from 'weeg-tabs';
+import { CookieStore } from 'weeg-containers';
 
 /**
  * Tab data object. When you pass it to a renderer, you should mark it as `Readonly<TabDao>`.

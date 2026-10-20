@@ -40,7 +40,9 @@ const urlRegistrationService = UrlRegistrationService.getInstance();
 
 export class BeforeRequestHandler {
   private readonly _handler: HandlerType;
-  private readonly _rawListener: (details: browser.WebRequest.OnBeforeRequestDetailsType) => Promise<browser.WebRequest.BlockingResponse>;
+  private readonly _rawListener: (
+    details: browser.WebRequest.OnBeforeRequestDetailsType
+  ) => Promise<browser.WebRequest.BlockingResponse>;
 
   public constructor(handler: HandlerType) {
     this._handler = handler;
@@ -64,15 +66,19 @@ export class BeforeRequestHandler {
     if (browser.webRequest.onBeforeRequest.hasListener(this._rawListener)) {
       return;
     }
-    browser.webRequest.onBeforeRequest.addListener(this._rawListener, {
-      incognito: false,
-      urls: [
-        '*://*/*', // all HTTP/HTTPS requests.
-      ],
-      types: [
-        'main_frame', // top-level windows.
-      ],
-    }, ['blocking']);
+    browser.webRequest.onBeforeRequest.addListener(
+      this._rawListener,
+      {
+        incognito: false,
+        urls: [
+          '*://*/*', // all HTTP/HTTPS requests.
+        ],
+        types: [
+          'main_frame', // top-level windows.
+        ],
+      },
+      ['blocking']
+    );
   }
 
   public stopListening() {

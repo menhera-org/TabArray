@@ -19,7 +19,7 @@
   @license
 **/
 
-import { Srgb } from "./Srgb";
+import { Srgb } from './Srgb';
 
 export class CssColor {
   public readonly srgb: Srgb;
@@ -33,12 +33,7 @@ export class CssColor {
   private static fromRgbString(rgbString: string): CssColor | null {
     const rgbMatches = rgbString.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
     if (rgbMatches && rgbMatches[1] && rgbMatches[2] && rgbMatches[3]) {
-      return new CssColor(
-        Srgb.from8bit(
-          parseInt(rgbMatches[1]), parseInt(rgbMatches[2]), parseInt(rgbMatches[3])
-        ),
-        1
-      );
+      return new CssColor(Srgb.from8bit(parseInt(rgbMatches[1]), parseInt(rgbMatches[2]), parseInt(rgbMatches[3])), 1);
     }
     return null;
   }
@@ -74,9 +69,7 @@ export class CssColor {
     const rgbaMatches = rgbaString.match(/^rgba\((\d+),\s*(\d+),\s*(\d+),\s*(\d*(?:\.\d+)?)\)$/);
     if (rgbaMatches && rgbaMatches[1] && rgbaMatches[2] && rgbaMatches[3] && rgbaMatches[4]) {
       return new CssColor(
-        Srgb.from8bit(
-          parseInt(rgbaMatches[1]), parseInt(rgbaMatches[2]), parseInt(rgbaMatches[3])
-        ),
+        Srgb.from8bit(parseInt(rgbaMatches[1]), parseInt(rgbaMatches[2]), parseInt(rgbaMatches[3])),
         parseFloat(rgbaMatches[4])
       );
     }
@@ -85,7 +78,10 @@ export class CssColor {
 
   public static fromString(cssString: string): CssColor {
     // TODO: Add support for hsl, hsla, and named colors
-    const cssColor = CssColor.fromColorCodeString(cssString) ?? CssColor.fromRgbString(cssString) ?? CssColor.fromRgbaString(cssString);
+    const cssColor =
+      CssColor.fromColorCodeString(cssString) ??
+      CssColor.fromRgbString(cssString) ??
+      CssColor.fromRgbaString(cssString);
     if (cssColor) {
       return cssColor;
     }

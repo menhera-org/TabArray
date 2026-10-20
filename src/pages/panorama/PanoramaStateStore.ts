@@ -19,7 +19,7 @@
   @license
 **/
 
-import { TabPreviewService } from "../../lib/tabs/TabPreviewService";
+import { TabPreviewService } from '../../lib/tabs/TabPreviewService';
 
 const tabPreviewService = TabPreviewService.getInstance();
 
@@ -31,7 +31,7 @@ export class PanoramaStateStore {
   private readonly previewUrls = new Map<number, string>();
 
   public getPreviewUrl(tabId: number): string {
-    return this.previewUrls.get(tabId) ?? "";
+    return this.previewUrls.get(tabId) ?? '';
   }
 
   public async updatePreviewUrl(tabId: number): Promise<void> {

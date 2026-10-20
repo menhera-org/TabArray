@@ -19,18 +19,18 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { TabAttributeProvider, DummyTab, CompatTab } from "weeg-tabs";
-import { ExtensibleAttributeSet } from "weeg-utils";
-import { EventSink } from "weeg-events";
+import browser from 'webextension-polyfill';
+import { TabAttributeProvider, DummyTab, CompatTab } from 'weeg-tabs';
+import { ExtensibleAttributeSet } from 'weeg-utils';
+import { EventSink } from 'weeg-events';
 
-import { ServiceRegistry } from "../../ServiceRegistry";
-import { BroadcastTopic } from "../../BroadcastTopic";
+import { ServiceRegistry } from '../../ServiceRegistry';
+import { BroadcastTopic } from '../../BroadcastTopic';
 
-import { TagDirectory } from "./TagDirectory";
-import { TagType } from "./TagType";
-import { TabAttributeMap } from "./TabAttributeMap";
-import { TabAttributeTagId } from "./TabAttributeTagId";
+import { TagDirectory } from './TagDirectory';
+import { TagType } from './TagType';
+import { TabAttributeMap } from './TabAttributeMap';
+import { TabAttributeTagId } from './TabAttributeTagId';
 
 export class TagService {
   public static readonly ATTR_TAG_ID = TabAttributeTagId;
@@ -59,7 +59,9 @@ export class TagService {
   }
 
   public async getTagForTab(tab: DummyTab): Promise<TagType | undefined> {
-    const attributes = (await this._tabAttributeProvieder.getAttributeSets([tab]))[0] as ExtensibleAttributeSet<DummyTab>;
+    const attributes = (
+      await this._tabAttributeProvieder.getAttributeSets([tab])
+    )[0] as ExtensibleAttributeSet<DummyTab>;
     const tagId = attributes.getAttribute(TagService.ATTR_TAG_ID);
     if (null == tagId) {
       return undefined;
@@ -79,7 +81,9 @@ export class TagService {
         throw new Error(`Tag ${tagId} does not exist.`);
       }
     }
-    const attributes = (await this._tabAttributeProvieder.getAttributeSets([tab]))[0] as ExtensibleAttributeSet<DummyTab>;
+    const attributes = (
+      await this._tabAttributeProvieder.getAttributeSets([tab])
+    )[0] as ExtensibleAttributeSet<DummyTab>;
     attributes.setAttribute(TagService.ATTR_TAG_ID, tagId);
     await this._tabAttributeProvieder.saveAttributeSets([attributes]);
     this.notifyChanged();

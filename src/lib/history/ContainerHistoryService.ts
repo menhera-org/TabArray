@@ -19,13 +19,13 @@
   @license
 **/
 
-import { BackgroundService } from "weeg-utils";
-import { CookieStore } from "weeg-containers";
+import { BackgroundService } from 'weeg-utils';
+import { CookieStore } from 'weeg-containers';
 
-import { CachedStorageItem } from "../storage/CachedStorageItem";
-import { ContextualIdentityService } from "../tabGroups/ContextualIdentityService";
+import { CachedStorageItem } from '../storage/CachedStorageItem';
+import { ContextualIdentityService } from '../tabGroups/ContextualIdentityService';
 
-import { ServiceRegistry } from "../ServiceRegistry";
+import { ServiceRegistry } from '../ServiceRegistry';
 
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
@@ -45,7 +45,7 @@ export class ContainerHistoryService extends BackgroundService<string, void> {
           return cookieStoreIdInHistory !== cookieStoreId;
         });
       });
-    })
+    });
   }
 
   protected override async execute(cookieStoreId: string): Promise<void> {
@@ -70,4 +70,7 @@ export class ContainerHistoryService extends BackgroundService<string, void> {
   }
 }
 
-ServiceRegistry.getInstance().registerService('ContainerHistoryService', ContainerHistoryService.getInstance<ContainerHistoryService>());
+ServiceRegistry.getInstance().registerService(
+  'ContainerHistoryService',
+  ContainerHistoryService.getInstance<ContainerHistoryService>()
+);

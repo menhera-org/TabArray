@@ -19,7 +19,7 @@
   @license
 **/
 
-import { ActiveContainerStorageType } from "./ActiveContainerService";
+import { ActiveContainerStorageType } from './ActiveContainerService';
 
 export class ActiveContainerBatchOperation {
   private readonly _value: ActiveContainerStorageType;

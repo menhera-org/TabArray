@@ -19,7 +19,7 @@
   @license
 **/
 
-import { ExtensionVersionMigrationRegistry } from "../../lib/ExtensionVersionMigrationRegistry";
+import { ExtensionVersionMigrationRegistry } from '../../lib/ExtensionVersionMigrationRegistry';
 
 /**
  * Codes to run on first installation.

@@ -19,7 +19,7 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
 export class CtgBottomNavigationElement extends HTMLElement {
   public readonly onTargetClicked = new EventSink<string>();
@@ -81,7 +81,7 @@ export class CtgBottomNavigationElement extends HTMLElement {
 
   public setTooltipForTarget(id: string, tooltip: string) {
     if (!this.shadowRoot) return;
-    const targets = [... this.shadowRoot.querySelectorAll('.navigation-target')] as HTMLButtonElement[];
+    const targets = [...this.shadowRoot.querySelectorAll('.navigation-target')] as HTMLButtonElement[];
     for (const target of targets) {
       if (!(target instanceof HTMLElement)) continue;
       if (target.dataset.targetId === id) {

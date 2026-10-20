@@ -63,14 +63,14 @@ const getInactiveIds = async (aWindowId: number) => {
     pinned: false,
   });
   const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
-  const cookieStoreIds = new Set([... tabs].map((tab) => tab.cookieStore.id));
+  const cookieStoreIds = new Set([...tabs].map((tab) => tab.cookieStore.id));
   for (const tab of tabs) {
     const cookieStoreId = tab.cookieStore.id;
     if (tab.active) {
       cookieStoreIds.delete(cookieStoreId);
     }
   }
-  return [... cookieStoreIds];
+  return [...cookieStoreIds];
 };
 
 export const hideAll = async (aWindowId: number) => {
@@ -82,7 +82,9 @@ export const hideAll = async (aWindowId: number) => {
   const cookieStoreIds = await getInactiveIds(aWindowId);
   const promises: Promise<void>[] = [];
   for (const cookieStoreId of cookieStoreIds) {
-    promises.push(containerVisibilityService.hideContainerOnWindow(aWindowId, cookieStoreId) as Promise<unknown> as Promise<void>);
+    promises.push(
+      containerVisibilityService.hideContainerOnWindow(aWindowId, cookieStoreId) as Promise<unknown> as Promise<void>
+    );
   }
   await Promise.all(promises);
 };

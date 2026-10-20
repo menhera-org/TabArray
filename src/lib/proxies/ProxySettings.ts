@@ -19,9 +19,9 @@
   @license
 **/
 
-import { AbstractPerContainerSettings } from "../overrides/AbstractPerContainerSettings";
-import { ProxyPreset } from "./ProxyPreset";
-import { ProxyPresetStore } from "./ProxyPresetStore";
+import { AbstractPerContainerSettings } from '../overrides/AbstractPerContainerSettings';
+import { ProxyPreset } from './ProxyPreset';
+import { ProxyPresetStore } from './ProxyPresetStore';
 
 /**
  * Per-container proxy presets.

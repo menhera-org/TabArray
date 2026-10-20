@@ -94,7 +94,7 @@ out
 ts-dist
 scripts
 
-# Parcel output
+# Build output
 dist
 node-dist
 

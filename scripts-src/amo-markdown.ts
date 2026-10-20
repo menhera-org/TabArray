@@ -29,14 +29,15 @@ import markdownit from 'markdown-it';
 const md = markdownit({
   html: true,
   linkify: true,
-  typographer: true
+  typographer: true,
 });
 
 const input = process.argv[2] ?? 'README.md';
 const source = fs.readFileSync(input, 'utf8');
 
 const result = md.render(source);
-const replaced = result.replaceAll('<p>', '\n')
+const replaced = result
+  .replaceAll('<p>', '\n')
   .replaceAll('</p>', '\n')
   .replace(/<h([1-6])>/g, '\n<strong>')
   .replace(/<\/h([1-6])>/g, '</strong>\n')

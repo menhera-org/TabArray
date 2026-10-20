@@ -19,14 +19,14 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
+import browser from 'webextension-polyfill';
 
-import { ExtensionPageService } from "../../lib/ExtensionPageService";
-import { DebuggingInformationService } from "../../lib/DebuggingInformationService";
+import { ExtensionPageService } from '../../lib/ExtensionPageService';
+import { DebuggingInformationService } from '../../lib/DebuggingInformationService';
 
-import { CtgDrawerElement } from "../../components/ctg/ctg-drawer";
-import { CtgTopBarElement } from "../../components/ctg/ctg-top-bar";
-import { CtgMenuItemElement } from "../../components/ctg/ctg-menu-item";
+import { CtgDrawerElement } from '../../components/ctg/ctg-drawer';
+import { CtgTopBarElement } from '../../components/ctg/ctg-top-bar';
+import { CtgMenuItemElement } from '../../components/ctg/ctg-menu-item';
 
 const extensionPageService = ExtensionPageService.getInstance();
 const debuggingInformationService = DebuggingInformationService.getInstance();
@@ -90,7 +90,7 @@ export class GlobalMenuItems {
   }
 
   private defineEventHandlers(topbarElement: CtgTopBarElement) {
-    const panoramaGridMenuItem  = topbarElement.getMenuItem('panorama-grid') as CtgMenuItemElement;
+    const panoramaGridMenuItem = topbarElement.getMenuItem('panorama-grid') as CtgMenuItemElement;
     panoramaGridMenuItem.addEventListener('click', () => {
       extensionPageService.openInBackground(ExtensionPageService.PANORAMA);
     });

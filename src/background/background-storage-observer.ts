@@ -33,7 +33,8 @@ const registrableDomainService = serviceProvider.registrableDomainService;
 messagingService.addListener('content-localstorage-statistics', async (message, sender) => {
   if (!sender.tab) return;
   if (!sender.tab.cookieStoreId) return;
-  if (null == message || typeof message != 'object' || !('origin' in message) || !('localStorageLength' in message)) return;
+  if (null == message || typeof message != 'object' || !('origin' in message) || !('localStorageLength' in message))
+    return;
 
   const { cookieStoreId } = sender.tab;
 
@@ -41,9 +42,7 @@ messagingService.addListener('content-localstorage-statistics', async (message, 
   if (cookieStoreId == CookieStore.PRIVATE.id) return;
 
   // Top frame URL can be about:blank for popups. This is the limitation of the API.
-  const topFrameUrl = sender.frameId == 0
-    ? message.origin as string
-    : (sender.tab.url || 'about:blank');
+  const topFrameUrl = sender.frameId == 0 ? (message.origin as string) : sender.tab.url || 'about:blank';
 
   const firstPartyDomain = (await registrableDomainService.getRegistrableDomains([topFrameUrl]))[0] as string;
 

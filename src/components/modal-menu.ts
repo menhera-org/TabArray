@@ -19,7 +19,7 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
 export class ModalMenuElement extends HTMLElement {
   public readonly onActionClicked = new EventSink<string>();

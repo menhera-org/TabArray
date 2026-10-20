@@ -20,7 +20,7 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
 export class MenulistWindowElement extends HTMLElement {
   private _nameElement: HTMLDivElement;
@@ -45,13 +45,25 @@ export class MenulistWindowElement extends HTMLElement {
     this.windowId = windowId;
     this.classList.add('window-label');
 
-    this._collapseButtonElement = this.createButtonElement('window-collapse-button', 'tooltipCollapseContainers', this.onCollapseButtonClicked);
+    this._collapseButtonElement = this.createButtonElement(
+      'window-collapse-button',
+      'tooltipCollapseContainers',
+      this.onCollapseButtonClicked
+    );
     this.appendChild(this._collapseButtonElement);
 
-    this._expandButtonElement = this.createButtonElement('window-expand-button', 'tooltipExpandContainers', this.onExpandButtonClicked);
+    this._expandButtonElement = this.createButtonElement(
+      'window-expand-button',
+      'tooltipExpandContainers',
+      this.onExpandButtonClicked
+    );
     this.appendChild(this._expandButtonElement);
 
-    this._closeButtonElement = this.createButtonElement('window-close-button', 'tooltipCloseWindow', this.onCloseButtonClicked);
+    this._closeButtonElement = this.createButtonElement(
+      'window-close-button',
+      'tooltipCloseWindow',
+      this.onCloseButtonClicked
+    );
     this.appendChild(this._closeButtonElement);
 
     if (windowId < 0) {

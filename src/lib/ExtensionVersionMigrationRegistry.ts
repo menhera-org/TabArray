@@ -19,8 +19,8 @@
   @license
 **/
 
-import { ExtensionVersion } from "./ExtensionVersion";
-import { CompatConsole } from "./console/CompatConsole";
+import { ExtensionVersion } from './ExtensionVersion';
+import { CompatConsole } from './console/CompatConsole';
 
 export type MigrationOperation = (version: ExtensionVersion) => Promise<void> | void;
 

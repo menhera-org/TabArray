@@ -19,10 +19,10 @@
   @license
 **/
 
-import { Asserts } from "weeg-utils";
-import { EventSink } from "weeg-events";
+import { Asserts } from 'weeg-utils';
+import { EventSink } from 'weeg-events';
 
-import { NotificationService } from "./NotificationService";
+import { NotificationService } from './NotificationService';
 
 const notificationService = NotificationService.getInstance();
 

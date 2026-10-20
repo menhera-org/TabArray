@@ -19,7 +19,7 @@
   @license
 **/
 
-import { PopupRenderer } from "./legacy/PopupRenderer";
+import { PopupRenderer } from './legacy/PopupRenderer';
 
 export class PopupRendererService {
   private static readonly _INSTANCE: PopupRendererService = new PopupRendererService();

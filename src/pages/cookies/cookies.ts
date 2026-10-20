@@ -43,7 +43,14 @@ const headingCookies = document.querySelector('#headingCookies') as HTMLHeadingE
 const cookiesHeadingDomain = document.querySelector('#cookiesHeadingDomain') as HTMLTableCellElement;
 const cookiesHeadingActions = document.querySelector('#cookiesHeadingActions') as HTMLTableCellElement;
 const buttonContainerClearCookie = document.querySelector('#buttonContainerClearCookie') as HTMLButtonElement;
-if (!selectContainers || !cookieDomains || !headingCookies || !cookiesHeadingDomain || !cookiesHeadingActions || !buttonContainerClearCookie) {
+if (
+  !selectContainers ||
+  !cookieDomains ||
+  !headingCookies ||
+  !cookiesHeadingDomain ||
+  !cookiesHeadingActions ||
+  !buttonContainerClearCookie
+) {
   throw new Error('element is not found.');
 }
 
@@ -62,7 +69,7 @@ const render = async () => {
   const tabGroupDirectorySnapshot = await tabGroupDirectory.getSnapshot();
   const displayedContainers = await displayedContainerService.getDisplayedContainers();
   tabGroupDirectorySnapshot.sortDisplayedContainers(displayedContainers);
-  const containers: Map<CookieStore, string> = new Map;
+  const containers: Map<CookieStore, string> = new Map();
   for (const displayedContainer of displayedContainers) {
     containers.set(displayedContainer.cookieStore, displayedContainer.name);
   }
@@ -109,7 +116,9 @@ const renderContainer = async (cookieStore: CookieStore) => {
         await cookieProvider.removeDataForDomain(cookieStore.id, domain);
         await contentStorageStatistics.removeOriginStatistics(cookieStore.id, firstPartyDomain, `http://${domain}`);
         await contentStorageStatistics.removeOriginStatistics(cookieStore.id, firstPartyDomain, `https://${domain}`);
-        console.log(`Removed browsing data for: *://${domain}^userContextId=${cookieStore.userContextId}&privateBrowsingId=${cookieStore.privateBrowsingId}`);
+        console.log(
+          `Removed browsing data for: *://${domain}^userContextId=${cookieStore.userContextId}&privateBrowsingId=${cookieStore.privateBrowsingId}`
+        );
         renderContainer(cookieStore);
       });
       td2.appendChild(button);

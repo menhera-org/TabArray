@@ -19,12 +19,12 @@
   @license
 **/
 
-import { BackgroundService } from "weeg-utils";
+import { BackgroundService } from 'weeg-utils';
 
-import { CachedStorageItem } from "../storage/CachedStorageItem";
-import { ServiceRegistry } from "../ServiceRegistry";
-import { StartupService } from "../StartupService";
-import { OutputType } from "./ConsoleService";
+import { CachedStorageItem } from '../storage/CachedStorageItem';
+import { ServiceRegistry } from '../ServiceRegistry';
+import { StartupService } from '../StartupService';
+import { OutputType } from './ConsoleService';
 
 export type ConsoleEntry = {
   unixTime: number; // milliseconds since epoch
@@ -37,7 +37,7 @@ export type ConsoleEntry = {
 const startupService = StartupService.getInstance();
 
 export class ConsoleHistoryService extends BackgroundService<ConsoleEntry[], void> {
-  private readonly storage = new CachedStorageItem<ConsoleEntry[]>("consoleHistory", [], CachedStorageItem.AREA_LOCAL);
+  private readonly storage = new CachedStorageItem<ConsoleEntry[]>('consoleHistory', [], CachedStorageItem.AREA_LOCAL);
 
   public readonly onChanged = this.storage.onChanged;
 
@@ -55,7 +55,7 @@ export class ConsoleHistoryService extends BackgroundService<ConsoleEntry[], voi
 
   protected override async execute(input: ConsoleEntry[]): Promise<void> {
     this.storage.doUpdateTransaction((entries) => {
-      entries.push(... input);
+      entries.push(...input);
       return entries;
     });
   }
@@ -77,4 +77,7 @@ export class ConsoleHistoryService extends BackgroundService<ConsoleEntry[], voi
   }
 }
 
-ServiceRegistry.getInstance().registerService('ConsoleHistoryService', ConsoleHistoryService.getInstance<ConsoleHistoryService>());
+ServiceRegistry.getInstance().registerService(
+  'ConsoleHistoryService',
+  ConsoleHistoryService.getInstance<ConsoleHistoryService>()
+);

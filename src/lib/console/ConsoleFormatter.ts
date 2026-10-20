@@ -30,7 +30,7 @@ export class ConsoleFormatter {
     }
     const firstArg = args.shift();
     if ('string' != typeof firstArg) {
-      return [firstArg, ... args];
+      return [firstArg, ...args];
     } else {
       const tokens = ConsoleFormatter.tokenize(firstArg);
       const results: unknown[] = [];

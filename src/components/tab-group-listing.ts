@@ -39,7 +39,11 @@ export abstract class TabGroupListingElement extends HTMLElement {
   protected readonly contextualIdentityFactory = this._contextualIdentityService.getFactory();
   protected readonly displayedContainerFactory = this._contextualIdentityService.getDisplayedContainerFactory();
 
-  public constructor(enableSorting = false, stylesheet = '/css/components/tab-group-listing.css', columns: string[] = []) {
+  public constructor(
+    enableSorting = false,
+    stylesheet = '/css/components/tab-group-listing.css',
+    columns: string[] = []
+  ) {
     super();
     this._columns = columns;
     this._sortingEnabled = enableSorting;
@@ -54,14 +58,22 @@ export abstract class TabGroupListingElement extends HTMLElement {
     styleSheet.href = stylesheet;
     this.shadowRoot.appendChild(styleSheet);
 
-    const sorterWrapperElement = DomFactory.createElement<HTMLDivElement>('div', this.shadowRoot, { id: 'sorter-wrapper' });
-    const headerElement = DomFactory.createElement<HTMLDivElement>('div', sorterWrapperElement, { classNames: ['header'] });
+    const sorterWrapperElement = DomFactory.createElement<HTMLDivElement>('div', this.shadowRoot, {
+      id: 'sorter-wrapper',
+    });
+    const headerElement = DomFactory.createElement<HTMLDivElement>('div', sorterWrapperElement, {
+      classNames: ['header'],
+    });
 
-    const headerContainerElement = DomFactory.createElement<HTMLDivElement>('div', headerElement, { classNames: ['header-container'] });
+    const headerContainerElement = DomFactory.createElement<HTMLDivElement>('div', headerElement, {
+      classNames: ['header-container'],
+    });
     headerContainerElement.textContent = browser.i18n.getMessage('menuItemMain');
 
     for (const columnName of columns) {
-      const headerColumnElement = DomFactory.createElement<HTMLDivElement>('div', headerElement, { classNames: ['header-column'] });
+      const headerColumnElement = DomFactory.createElement<HTMLDivElement>('div', headerElement, {
+        classNames: ['header-column'],
+      });
       headerColumnElement.textContent = columnName;
     }
 
@@ -94,7 +106,10 @@ export abstract class TabGroupListingElement extends HTMLElement {
 
   protected abstract createColumnElement(columnId: number, tabGroupId: string): HTMLElement;
 
-  protected renderTabGroup(nestingCount: number, tabGroup: { displayedContainer?: DisplayedContainer, supergroup?: SupergroupType }): HTMLDivElement {
+  protected renderTabGroup(
+    nestingCount: number,
+    tabGroup: { displayedContainer?: DisplayedContainer; supergroup?: SupergroupType }
+  ): HTMLDivElement {
     const element = document.createElement('div');
     element.classList.add('container');
 
@@ -165,7 +180,13 @@ export abstract class TabGroupListingElement extends HTMLElement {
     return element;
   }
 
-  private renderSupergroup(nestingCount: number, supergroup: SupergroupType, displayedContainerMap: Map<string, DisplayedContainer>, tabGroupDirectorySnapshot: TabGroupDirectorySnapshot, element: HTMLElement): void {
+  private renderSupergroup(
+    nestingCount: number,
+    supergroup: SupergroupType,
+    displayedContainerMap: Map<string, DisplayedContainer>,
+    tabGroupDirectorySnapshot: TabGroupDirectorySnapshot,
+    element: HTMLElement
+  ): void {
     for (const tabGroupId of supergroup.members) {
       const attributes = new TabGroupAttributes(tabGroupId);
       if (attributes.tabGroupType == 'cookieStore') {

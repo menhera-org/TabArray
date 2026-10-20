@@ -25,7 +25,11 @@ export type ElementAttributes = {
 };
 
 export class DomFactory {
-  public static createElement<T extends HTMLElement>(tagName: string, parentElement: ParentNode, elementAttributes?: ElementAttributes): T {
+  public static createElement<T extends HTMLElement>(
+    tagName: string,
+    parentElement: ParentNode,
+    elementAttributes?: ElementAttributes
+  ): T {
     const element = document.createElement(tagName);
     if (elementAttributes) {
       if (elementAttributes.id != null) {

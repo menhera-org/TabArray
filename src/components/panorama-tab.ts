@@ -29,7 +29,7 @@ export class PanoramaTabElement extends HTMLElement {
   constructor() {
     super();
     this.draggable = true;
-    this.attachShadow({mode: 'open'});
+    this.attachShadow({ mode: 'open' });
     if (!this.shadowRoot) {
       throw new Error('shadowRoot is null');
     }

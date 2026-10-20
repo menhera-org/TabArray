@@ -42,7 +42,11 @@ const getSecChUa = (userAgent: string) => {
   return brandStrings.join(',');
 };
 
-const setHeader = (details: browser.WebRequest.OnBeforeSendHeadersDetailsType, headerName: string, headerValue: string) => {
+const setHeader = (
+  details: browser.WebRequest.OnBeforeSendHeadersDetailsType,
+  headerName: string,
+  headerValue: string
+) => {
   headerName = headerName.toLowerCase();
   let found = false;
   details.requestHeaders?.forEach((header) => {
@@ -59,43 +63,48 @@ const setHeader = (details: browser.WebRequest.OnBeforeSendHeadersDetailsType, h
   }
 };
 
-browser.webRequest.onBeforeSendHeaders.addListener(async (details) => {
-  if (!details.cookieStoreId) {
-    return {};
-  }
-
-  const cookieStoreId = details.cookieStoreId;
-
-  // all of these IO operations are now cached.
-  const [userAgent, acceptLanguages, featureLanguageOverridesEnabled, featureUserAgentOverridesEnabled] = await Promise.all([
-    userAgentSettings.getUserAgent(cookieStoreId),
-    languageSettings.getAcceptLanguages(cookieStoreId),
-    config['feature.languageOverrides'].getValue(),
-    config['feature.uaOverrides'].getValue(),
-  ]);
-
-  if ('' !== userAgent && featureUserAgentOverridesEnabled) {
-    setHeader(details, 'user-agent', userAgent);
-  }
-
-  if ('' !== acceptLanguages && featureLanguageOverridesEnabled) {
-    setHeader(details, 'accept-language', acceptLanguages);
-  }
-
-  // this feature is only available in secure contexts.
-  if ('' !== userAgent && featureUserAgentOverridesEnabled && details.url?.startsWith('https://')) {
-    const secChUa = getSecChUa(userAgent);
-    if ('' !== secChUa) {
-      setHeader(details, 'sec-ch-ua', secChUa);
-      const secChUaFullVersionList = secChUa.replaceAll(/v="(\d+)"/g, 'v="$1.0.0.0"');
-      setHeader(details, 'sec-ch-ua-full-version-list', secChUaFullVersionList);
+browser.webRequest.onBeforeSendHeaders.addListener(
+  async (details) => {
+    if (!details.cookieStoreId) {
+      return {};
     }
-  }
 
-  return { requestHeaders: details.requestHeaders };
-}, {
-  urls: ['<all_urls>'],
-}, ["blocking", "requestHeaders"]);
+    const cookieStoreId = details.cookieStoreId;
+
+    // all of these IO operations are now cached.
+    const [userAgent, acceptLanguages, featureLanguageOverridesEnabled, featureUserAgentOverridesEnabled] =
+      await Promise.all([
+        userAgentSettings.getUserAgent(cookieStoreId),
+        languageSettings.getAcceptLanguages(cookieStoreId),
+        config['feature.languageOverrides'].getValue(),
+        config['feature.uaOverrides'].getValue(),
+      ]);
+
+    if ('' !== userAgent && featureUserAgentOverridesEnabled) {
+      setHeader(details, 'user-agent', userAgent);
+    }
+
+    if ('' !== acceptLanguages && featureLanguageOverridesEnabled) {
+      setHeader(details, 'accept-language', acceptLanguages);
+    }
+
+    // this feature is only available in secure contexts.
+    if ('' !== userAgent && featureUserAgentOverridesEnabled && details.url?.startsWith('https://')) {
+      const secChUa = getSecChUa(userAgent);
+      if ('' !== secChUa) {
+        setHeader(details, 'sec-ch-ua', secChUa);
+        const secChUaFullVersionList = secChUa.replaceAll(/v="(\d+)"/g, 'v="$1.0.0.0"');
+        setHeader(details, 'sec-ch-ua-full-version-list', secChUaFullVersionList);
+      }
+    }
+
+    return { requestHeaders: details.requestHeaders };
+  },
+  {
+    urls: ['<all_urls>'],
+  },
+  ['blocking', 'requestHeaders']
+);
 
 contextualIdentityFactory.onRemoved.addListener((contextualIdentity) => {
   const cookieStoreId = contextualIdentity.cookieStore.id;

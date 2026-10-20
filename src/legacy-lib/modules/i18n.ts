@@ -21,12 +21,12 @@
 
 import browser from 'webextension-polyfill';
 
-export const getMessage = (messageName: string, ... substitutions: string[]) => {
-    return '' + (browser.i18n.getMessage(messageName, ... substitutions) || '');
+export const getMessage = (messageName: string, ...substitutions: string[]) => {
+  return '' + (browser.i18n.getMessage(messageName, ...substitutions) || '');
 };
 
 export const getEffectiveLocale = () => {
-    return getMessage('effectiveLocale');
+  return getMessage('effectiveLocale');
 };
 
 export const getBrowserLocale = () => {

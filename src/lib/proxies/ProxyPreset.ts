@@ -19,7 +19,7 @@
   @license
 **/
 
-import { ProxyType } from "./ProxyType";
+import { ProxyType } from './ProxyType';
 
 export interface ProxyPreset {
   id: string;

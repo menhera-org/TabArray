@@ -19,17 +19,17 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
+import browser from 'webextension-polyfill';
 
-import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
-import { BrowserStateDao } from "../../../lib/states/BrowserStateDao";
+import { AbstractFragmentBuilder } from './AbstractFragmentBuilder';
+import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
 
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
-import { CtgMenuItemElement } from "../../../components/ctg/ctg-menu-item";
-import { PanelWindowsElement } from "../../../components/panel-windows";
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
+import { CtgMenuItemElement } from '../../../components/ctg/ctg-menu-item';
+import { PanelWindowsElement } from '../../../components/panel-windows';
 
-import { PopupUtils } from "../legacy/PopupUtils";
+import { PopupUtils } from '../legacy/PopupUtils';
 
 export class WindowsFragmentBuilder extends AbstractFragmentBuilder {
   private _windowCount = 0;

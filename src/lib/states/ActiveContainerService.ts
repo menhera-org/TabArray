@@ -19,13 +19,13 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
-import { ServiceRegistry } from "../ServiceRegistry";
-import { ActiveContainerBatchOperation } from "./ActiveContainerBatchOperation";
-import { CompatConsole } from "../console/CompatConsole";
-import { ReadCachedStorageItem } from "../storage/ReadCachedStorageItem";
-import { ContainerOnWindow } from "../../background/includes/TabState";
+import { ServiceRegistry } from '../ServiceRegistry';
+import { ActiveContainerBatchOperation } from './ActiveContainerBatchOperation';
+import { CompatConsole } from '../console/CompatConsole';
+import { ReadCachedStorageItem } from '../storage/ReadCachedStorageItem';
+import { ContainerOnWindow } from '../../background/includes/TabState';
 
 export type ActiveContainerStorageType = {
   [windowId: number]: string; // cookieStoreId
@@ -34,7 +34,7 @@ export type ActiveContainerStorageType = {
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class ActiveContainerService {
-  private static readonly STORAGE_KEY = "activeContainerByWindow";
+  private static readonly STORAGE_KEY = 'activeContainerByWindow';
 
   private static readonly INSTANCE = new ActiveContainerService();
 
@@ -42,7 +42,11 @@ export class ActiveContainerService {
     return ActiveContainerService.INSTANCE;
   }
 
-  private readonly _storage = new ReadCachedStorageItem<ActiveContainerStorageType>(ActiveContainerService.STORAGE_KEY, {}, ReadCachedStorageItem.AREA_LOCAL);
+  private readonly _storage = new ReadCachedStorageItem<ActiveContainerStorageType>(
+    ActiveContainerService.STORAGE_KEY,
+    {},
+    ReadCachedStorageItem.AREA_LOCAL
+  );
 
   public readonly onContainerActivated = new EventSink<ContainerOnWindow>();
 
@@ -72,7 +76,12 @@ export class ActiveContainerService {
   public async setActiveContainer(windowId: number, cookieStoreId: string): Promise<void> {
     const value = await this.getValue();
     if (value[windowId] != cookieStoreId) {
-      console.debug('ActiveContainerService.setActiveContainer: windowId =', windowId, 'cookieStoreId =', cookieStoreId);
+      console.debug(
+        'ActiveContainerService.setActiveContainer: windowId =',
+        windowId,
+        'cookieStoreId =',
+        cookieStoreId
+      );
       value[windowId] = cookieStoreId;
       await this.setValue(value);
       this.onContainerActivated.dispatch({ windowId, cookieStoreId });

@@ -19,10 +19,10 @@
   @license
 **/
 
-import { ServiceRegistry } from "../ServiceRegistry";
-import { CompatConsole } from "../console/CompatConsole";
+import { ServiceRegistry } from '../ServiceRegistry';
+import { CompatConsole } from '../console/CompatConsole';
 
-import { privacyConfig } from "../../config/config";
+import { privacyConfig } from '../../config/config';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 

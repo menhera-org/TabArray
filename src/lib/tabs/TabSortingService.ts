@@ -46,18 +46,18 @@ let tabSorting = false;
 const sortTabsByWindow = async (windowId: number) => {
   let tabCount = 0;
   try {
-    const browserTabs = await browser.tabs.query({windowId: windowId});
+    const browserTabs = await browser.tabs.query({ windowId: windowId });
     const tabs = browserTabs.map((tab) => new CompatTab(tab));
     tabCount = tabs.length;
-    const pinnedTabs = tabs.filter(tab => tab.pinned);
-    let sortedTabs = tabs.filter(tab => !tab.pinned);
+    const pinnedTabs = tabs.filter((tab) => tab.pinned);
+    let sortedTabs = tabs.filter((tab) => !tab.pinned);
 
-    const origTabIdList = sortedTabs.map(tab => tab.id);
+    const origTabIdList = sortedTabs.map((tab) => tab.id);
     sortedTabs = await tabSortingProvider.getTabSortingOrder(sortedTabs);
-    const targetTabIdList = sortedTabs.map(tab => tab.id);
+    const targetTabIdList = sortedTabs.map((tab) => tab.id);
 
     const diffs = diffArrays(origTabIdList, targetTabIdList);
-    let currentIds = [... origTabIdList];
+    let currentIds = [...origTabIdList];
 
     const promises: Promise<unknown>[] = [];
     const pinnedCount = pinnedTabs.length;
@@ -67,7 +67,10 @@ const sortTabsByWindow = async (windowId: number) => {
       const movingIds = diff.value;
       const lastMovingId = movingIds[movingIds.length - 1] as number;
       const nearestFollowingIndex = targetTabIdList.indexOf(lastMovingId) + 1;
-      let newIndex = nearestFollowingIndex < targetTabIdList.length ? currentIds.indexOf(targetTabIdList[nearestFollowingIndex] as number) : -1;
+      let newIndex =
+        nearestFollowingIndex < targetTabIdList.length
+          ? currentIds.indexOf(targetTabIdList[nearestFollowingIndex] as number)
+          : -1;
       if (newIndex < 0) {
         newIndex = origTabIdList.length;
       }
@@ -77,9 +80,9 @@ const sortTabsByWindow = async (windowId: number) => {
       }
       const targetIndex = pinnedCount + newIndex;
 
-      promises.push(browser.tabs.move(movingIds, {index: targetIndex}));
+      promises.push(browser.tabs.move(movingIds, { index: targetIndex }));
 
-      currentIds = currentIds.filter(id => !movingIds.includes(id));
+      currentIds = currentIds.filter((id) => !movingIds.includes(id));
       currentIds.splice(newIndex, 0, ...movingIds);
     }
     try {
@@ -105,8 +108,10 @@ export class TabSortingService extends BackgroundService<void, void> {
   }
 
   private async getWindowIds(): Promise<number[]> {
-    const browserWindows = await browser.windows.getAll({windowTypes: ['normal']});
-    return browserWindows.filter((browserWindow) => browserWindow.id != null).map((browserWindow) => browserWindow.id as number);
+    const browserWindows = await browser.windows.getAll({ windowTypes: ['normal'] });
+    return browserWindows
+      .filter((browserWindow) => browserWindow.id != null)
+      .map((browserWindow) => browserWindow.id as number);
   }
 
   protected override async execute(): Promise<void> {
@@ -131,10 +136,19 @@ export class TabSortingService extends BackgroundService<void, void> {
         } finally {
           const windowEndTime = Date.now();
           const sortingDuration = windowEndTime - windowStartTime;
-          performanceHistoryService.addEntry(`TabSortingService.execute.byWindow.${windowId}`, windowStartTime, sortingDuration);
+          performanceHistoryService.addEntry(
+            `TabSortingService.execute.byWindow.${windowId}`,
+            windowStartTime,
+            sortingDuration
+          );
           if (windowSuccess) {
             if (sortingDuration > 500) {
-              console.info('Tab sorting for window %d took %d ms with %d tabs', windowId, sortingDuration, windowTabCount);
+              console.info(
+                'Tab sorting for window %d took %d ms with %d tabs',
+                windowId,
+                sortingDuration,
+                windowTabCount
+              );
             }
           } else {
             console.error('Tab sorting for window %d failed in %d ms', windowId, sortingDuration);

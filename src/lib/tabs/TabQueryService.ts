@@ -19,10 +19,18 @@
   @license
 **/
 
-import { CompatTab, CompatTabGroup, WindowTabGroupFilter, PinnedTabGroupFilter, DomainTabGroupFilter, TabGroupFilter, StandardTabSorter } from "weeg-tabs";
+import {
+  CompatTab,
+  CompatTabGroup,
+  WindowTabGroupFilter,
+  PinnedTabGroupFilter,
+  DomainTabGroupFilter,
+  TabGroupFilter,
+  StandardTabSorter,
+} from 'weeg-tabs';
 
-import { SupergroupTabGroupFilter } from "./SupergroupTabGroupFilter";
-import { ServiceRegistry } from "../ServiceRegistry";
+import { SupergroupTabGroupFilter } from './SupergroupTabGroupFilter';
+import { ServiceRegistry } from '../ServiceRegistry';
 
 export type TabQuery = {
   windowId?: number;
@@ -58,7 +66,7 @@ export class TabQueryService {
     if (null != query.registrableDomain) {
       filters.push(new DomainTabGroupFilter(query.registrableDomain));
     }
-    const compatTabGroup = new CompatTabGroup(... filters);
+    const compatTabGroup = new CompatTabGroup(...filters);
     const tabs = await compatTabGroup.getTabs();
     return this.tabSorter.sortTabs(tabs);
   }

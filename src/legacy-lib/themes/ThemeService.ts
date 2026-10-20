@@ -25,7 +25,7 @@ import { Theme } from './Theme';
 import { DarkThemeMonitor } from './DarkThemeMonitor';
 import { CssColor } from '../colors/CssColor';
 import { Srgb } from '../colors/Srgb';
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
 export class ThemeService {
   private static readonly INSTANCE = new ThemeService();
@@ -63,15 +63,26 @@ export class ThemeService {
     const isDarkTheme = darkThemeMonitor.isDarkTheme;
 
     const backgroundColor = this.parseThemeColor(browserTheme.colors?.frame || browserTheme.colors?.accentcolor);
-    const textColor = this.parseThemeColor(browserTheme.colors?.tab_text || browserTheme.colors?.bookmark_text || browserTheme.colors?.toolbar_text || browserTheme.colors?.tab_background_text
-      || (isDarkTheme ? '#ffffff' : '#222222'));
-    const secondaryTextColor = this.parseThemeColor(browserTheme.colors?.tab_background_text || browserTheme.colors?.textcolor
-      || (isDarkTheme ? '#999999' : '#888888'));
+    const textColor = this.parseThemeColor(
+      browserTheme.colors?.tab_text ||
+        browserTheme.colors?.bookmark_text ||
+        browserTheme.colors?.toolbar_text ||
+        browserTheme.colors?.tab_background_text ||
+        (isDarkTheme ? '#ffffff' : '#222222')
+    );
+    const secondaryTextColor = this.parseThemeColor(
+      browserTheme.colors?.tab_background_text ||
+        browserTheme.colors?.textcolor ||
+        (isDarkTheme ? '#999999' : '#888888')
+    );
 
     const secondaryMixedColor = CssColor.fromString('#888888').srgb;
     const backgroundMixedColor = CssColor.fromString(backgroundColor).srgb;
 
-    const secondaryBackgroundColor = new CssColor(Srgb.fromXyz(backgroundMixedColor.toXyz().mix(secondaryMixedColor.toXyz(), .5)), 1).toString();
+    const secondaryBackgroundColor = new CssColor(
+      Srgb.fromXyz(backgroundMixedColor.toXyz().mix(secondaryMixedColor.toXyz(), 0.5)),
+      1
+    ).toString();
 
     return {
       backgroundColor,

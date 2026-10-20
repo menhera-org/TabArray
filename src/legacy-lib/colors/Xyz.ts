@@ -34,9 +34,9 @@ export class Xyz {
     return [this.x, this.y, this.z];
   }
 
-  public mix(other: Xyz, weight = .5): Xyz {
+  public mix(other: Xyz, weight = 0.5): Xyz {
     if (weight < 0 || weight > 1 || isNaN(weight)) {
-      throw new Error("Weight must be between 0 and 1");
+      throw new Error('Weight must be between 0 and 1');
     }
     return new Xyz(
       this.x * (1 - weight) + other.x * weight,

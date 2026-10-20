@@ -19,30 +19,30 @@
   @license
 **/
 
-import browser from "webextension-polyfill";
-import { CookieStore, DisplayedContainer } from "weeg-containers";
-import { EventSink } from "weeg-events";
+import browser from 'webextension-polyfill';
+import { CookieStore, DisplayedContainer } from 'weeg-containers';
+import { EventSink } from 'weeg-events';
 
-import { TemporaryContainerService } from "../../../lib/tabGroups/TemporaryContainerService";
-import { SupergroupType } from "../../../lib/tabGroups/TabGroupDirectory";
-import { TabGroupAttributes } from "../../../lib/tabGroups/TabGroupAttributes";
-import { SupergroupService } from "../../../lib/tabGroups/SupergroupService";
-import { TabQueryService } from "../../../lib/tabs/TabQueryService";
-import { TabService } from "../../../lib/tabs/TabService";
-import { IndexTabService } from "../../../lib/tabs/IndexTabService";
-import { CompatConsole } from "../../../lib/console/CompatConsole";
-import { BrowserStateDao } from "../../../lib/states/BrowserStateDao";
-import { TabGroupDirectorySnapshot } from "../../../lib/tabGroups/TabGroupDirectorySnapshot";
-import { DisplayedContainerDao } from "../../../lib/states/DisplayedContainerDao";
-import { TabDao } from "../../../lib/states/TabDao";
+import { TemporaryContainerService } from '../../../lib/tabGroups/TemporaryContainerService';
+import { SupergroupType } from '../../../lib/tabGroups/TabGroupDirectory';
+import { TabGroupAttributes } from '../../../lib/tabGroups/TabGroupAttributes';
+import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
+import { TabQueryService } from '../../../lib/tabs/TabQueryService';
+import { TabService } from '../../../lib/tabs/TabService';
+import { IndexTabService } from '../../../lib/tabs/IndexTabService';
+import { CompatConsole } from '../../../lib/console/CompatConsole';
+import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
+import { TabGroupDirectorySnapshot } from '../../../lib/tabGroups/TabGroupDirectorySnapshot';
+import { DisplayedContainerDao } from '../../../lib/states/DisplayedContainerDao';
+import { TabDao } from '../../../lib/states/TabDao';
 
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
-import { CtgMenuItemElement } from "../../../components/ctg/ctg-menu-item";
-import { MenulistSupergroupElement } from "../../../components/menulist-supergroup";
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
+import { CtgMenuItemElement } from '../../../components/ctg/ctg-menu-item';
+import { MenulistSupergroupElement } from '../../../components/menulist-supergroup';
 
-import { AbstractFragmentBuilder } from "./AbstractFragmentBuilder";
-import { PopupRendererService } from "../PopupRendererService";
+import { AbstractFragmentBuilder } from './AbstractFragmentBuilder';
+import { PopupRendererService } from '../PopupRendererService';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -104,20 +104,26 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     newContainerMenuItem.appendChild(newTemporaryContainerMenuItem);
 
     newNormalContainerMenuItem.addEventListener('click', () => {
-      this._popupRenderer.modalRenderer.showNewContainerPanelAsync().then((result) => {
-        if (!result) return;
-        console.log('Created new container', result);
-      }).catch((e) => {
-        console.error(e);
-      });
+      this._popupRenderer.modalRenderer
+        .showNewContainerPanelAsync()
+        .then((result) => {
+          if (!result) return;
+          console.log('Created new container', result);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     });
 
     newTemporaryContainerMenuItem.addEventListener('click', () => {
-      this._temporaryContainerService.createTemporaryContainer().then((identity) => {
-        console.debug('Created temporary container', identity);
-      }).catch((e) => {
-        console.error(e);
-      });
+      this._temporaryContainerService
+        .createTemporaryContainer()
+        .then((identity) => {
+          console.debug('Created temporary container', identity);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     });
 
     // TODO: add i18n string
@@ -131,7 +137,9 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
       this.renderTopBarWithGlobalItems();
     }
     const tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(browserState.supergroups);
-    const displayedContainers = browserState.displayedContainers.map((dao) => DisplayedContainerDao.toDisplayedContainer(dao));
+    const displayedContainers = browserState.displayedContainers.map((dao) =>
+      DisplayedContainerDao.toDisplayedContainer(dao)
+    );
     const fragment = this.getFragment();
     const activeContainersElement = fragment.querySelector('.active-containers') as HTMLDivElement;
     const inactiveContainersElement = fragment.querySelector('.inactive-containers') as HTMLDivElement;
@@ -139,20 +147,28 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     inactiveContainersElement.textContent = '';
     const privateContainers = displayedContainers.filter((container) => container.cookieStore.isPrivate);
     const normalContainers = displayedContainers.filter((container) => !container.cookieStore.isPrivate);
-    const privateUserContexts = [... privateContainers];
-    const normalUserContexts = [... normalContainers].sort((a, b) => {
+    const privateUserContexts = [...privateContainers];
+    const normalUserContexts = [...normalContainers].sort((a, b) => {
       return tabGroupDirectorySnapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id);
     });
     const userContextMap = new Map<string, DisplayedContainer>();
     for (const normalUserContext of normalUserContexts) {
       userContextMap.set(normalUserContext.cookieStore.id, normalUserContext);
     }
-    const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(TabGroupAttributes.getRootSupergroupTabGroupId()) as SupergroupType;
+    const rootSupergroup = tabGroupDirectorySnapshot.getSupergroup(
+      TabGroupAttributes.getRootSupergroupTabGroupId()
+    ) as SupergroupType;
     this.renderPrivateContainers(browserState, privateUserContexts, activeContainersElement);
     this.renderSupergroup(0, rootSupergroup, browserState, userContextMap, activeContainersElement);
   }
 
-  private renderSupergroup(nestingCount: number, supergroup: SupergroupType, browserState: BrowserStateDao, userContextMap: Map<string, DisplayedContainer>, parentElement: HTMLElement) {
+  private renderSupergroup(
+    nestingCount: number,
+    supergroup: SupergroupType,
+    browserState: BrowserStateDao,
+    userContextMap: Map<string, DisplayedContainer>,
+    parentElement: HTMLElement
+  ) {
     let tabCount = 0;
     const tabGroupDirectorySnapshot = new TabGroupDirectorySnapshot(browserState.supergroups);
     const tabGroupIds = supergroup.members;
@@ -164,7 +180,9 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
         if (!userContext) continue;
         const isPrivate = cookieStore.isPrivate;
         const tabIds = browserState.tabIdsByContainer[userContext.cookieStore.id] ?? [];
-        const tabs = this._indexTabService.filterOutIndexTabs(tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao)));
+        const tabs = this._indexTabService.filterOutIndexTabs(
+          tabIds.map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao))
+        );
         const containerElement = this._popupRenderer.renderPartialContainerElement(userContext, isPrivate);
         containerElement.tabCount = tabs.length;
         tabCount += tabs.length;
@@ -191,7 +209,13 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
         supergroupElement.groupName = supergroup.name;
         parentElement.appendChild(supergroupElement);
 
-        const subTabCount = this.renderSupergroup(nestingCount + 1, supergroup, browserState, userContextMap, supergroupElement);
+        const subTabCount = this.renderSupergroup(
+          nestingCount + 1,
+          supergroup,
+          browserState,
+          userContextMap,
+          supergroupElement
+        );
         supergroupElement.tabCount = subTabCount;
         supergroupElement.groupHideButton.disabled = true;
         supergroupElement.groupUnhideButton.disabled = true;
@@ -205,13 +229,17 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
           this._supergroupService.closeUnpinnedSupergroupTabs(tabGroupId).catch((e) => {
             console.error(e);
           });
-        })
+        });
       }
     }
     return tabCount;
   }
 
-  private renderPrivateContainers(browserState: BrowserStateDao, userContexts: DisplayedContainer[], parentElement: HTMLElement) {
+  private renderPrivateContainers(
+    browserState: BrowserStateDao,
+    userContexts: DisplayedContainer[],
+    parentElement: HTMLElement
+  ) {
     for (const userContext of userContexts) {
       const isPrivate = userContext.cookieStore.isPrivate;
       const tabIds = browserState.tabIdsByContainer[userContext.cookieStore.id] ?? [];
@@ -241,6 +269,6 @@ export class ContainersFragmentBuilder extends AbstractFragmentBuilder {
     const inactiveContainersElement = fragment.querySelector('.inactive-containers') as HTMLDivElement;
     const activeContainers = Array.from(activeContainersElement.querySelectorAll('menulist-container'));
     const inactiveContainers = Array.from(inactiveContainersElement.querySelectorAll('menulist-container'));
-    return [... activeContainers, ... inactiveContainers] as HTMLElement[];
+    return [...activeContainers, ...inactiveContainers] as HTMLElement[];
   }
 }

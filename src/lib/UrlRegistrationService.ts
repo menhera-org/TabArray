@@ -19,11 +19,11 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
+import { StorageItem } from 'weeg-storage';
 
-import { ServiceRegistry } from "./ServiceRegistry";
-import { StartupService } from "./StartupService";
-import { RandomIdService } from "./RandomIdService";
+import { ServiceRegistry } from './ServiceRegistry';
+import { StartupService } from './StartupService';
+import { RandomIdService } from './RandomIdService';
 
 type UrlEntry = {
   url: string; // url
@@ -98,7 +98,9 @@ export class UrlRegistrationService {
 ServiceRegistry.getInstance().registerService('UrlRegistrationService', UrlRegistrationService.getInstance());
 
 startupService.onStartup.addListener(() => {
-  UrlRegistrationService.getInstance().resetStorage().catch((e) => {
-    console.error(e);
-  });
+  UrlRegistrationService.getInstance()
+    .resetStorage()
+    .catch((e) => {
+      console.error(e);
+    });
 });

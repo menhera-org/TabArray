@@ -43,12 +43,12 @@ const proxySettings = ProxySettings.getInstance();
 // not surviving script restarts, but that's fine
 const pendingRequestIds = new Set<string>();
 
-const getProxyStatus = (cookieStoreId: string) => Promise.all([
-  proxySettings.getProxyForTabGroup(cookieStoreId),
-  config['feature.containerProxy'].getValue(),
-]).then(([proxy, proxyEnabled]) => {
-  return { proxy, proxyEnabled};
-});
+const getProxyStatus = (cookieStoreId: string) =>
+  Promise.all([proxySettings.getProxyForTabGroup(cookieStoreId), config['feature.containerProxy'].getValue()]).then(
+    ([proxy, proxyEnabled]) => {
+      return { proxy, proxyEnabled };
+    }
+  );
 
 const handleCompleted = (details: { requestId: string }) => {
   pendingRequestIds.delete(details.requestId);
@@ -100,70 +100,92 @@ proxySettings.presetStore.onChanged.addListener(() => {
   });
 });
 
-void (browser.proxy && browser.webRequest.onCompleted.addListener(handleCompleted, {
-  urls: ['<all_urls>'],
-}));
+void (
+  browser.proxy &&
+  browser.webRequest.onCompleted.addListener(handleCompleted, {
+    urls: ['<all_urls>'],
+  })
+);
 
-void (browser.proxy && browser.webRequest.onErrorOccurred.addListener(handleCompleted, {
-  urls: ['<all_urls>'],
-}));
+void (
+  browser.proxy &&
+  browser.webRequest.onErrorOccurred.addListener(handleCompleted, {
+    urls: ['<all_urls>'],
+  })
+);
 
-void (browser.proxy && browser.webRequest.onAuthRequired.addListener(async (details) => {
-  try {
-    if (!details.isProxy || !details.cookieStoreId) {
-      return {};
-    }
-    if (pendingRequestIds.has(details.requestId)) {
-      return { cancel: true };
-    }
-    const proxyInfo = (details as unknown as { proxyInfo?: ProxyInfo }).proxyInfo;
-    if (!proxyInfo || proxyInfo.type != 'http' && proxyInfo.type != 'https') {
-      return {};
-    }
-    const {proxy, proxyEnabled} = await getProxyStatus(details.cookieStoreId);
-    if (!proxyEnabled || !proxy || !ProxyType.isHttpType(proxy.type) || !compareProxies(proxyInfo, proxy)) {
-      return {};
-    }
-    const username = proxy.username ?? '';
-    const password = proxy.password ?? '';
-    pendingRequestIds.add(details.requestId);
-    return {
-      authCredentials: {
-        username,
-        password,
-      },
-    };
-  } catch (e) {
-    console.error(e);
-    return {};
-  }
-}, {
-  urls: ['<all_urls>'],
-}, ['blocking']));
+void (
+  browser.proxy &&
+  browser.webRequest.onAuthRequired.addListener(
+    async (details) => {
+      try {
+        if (!details.isProxy || !details.cookieStoreId) {
+          return {};
+        }
+        if (pendingRequestIds.has(details.requestId)) {
+          return { cancel: true };
+        }
+        const proxyInfo = (details as unknown as { proxyInfo?: ProxyInfo }).proxyInfo;
+        if (!proxyInfo || (proxyInfo.type != 'http' && proxyInfo.type != 'https')) {
+          return {};
+        }
+        const { proxy, proxyEnabled } = await getProxyStatus(details.cookieStoreId);
+        if (!proxyEnabled || !proxy || !ProxyType.isHttpType(proxy.type) || !compareProxies(proxyInfo, proxy)) {
+          return {};
+        }
+        const username = proxy.username ?? '';
+        const password = proxy.password ?? '';
+        pendingRequestIds.add(details.requestId);
+        return {
+          authCredentials: {
+            username,
+            password,
+          },
+        };
+      } catch (e) {
+        console.error(e);
+        return {};
+      }
+    },
+    {
+      urls: ['<all_urls>'],
+    },
+    ['blocking']
+  )
+);
 
-void (browser.proxy && browser.proxy.onRequest.addListener(async (details) => {
-  try {
-    if (!details.cookieStoreId) {
-      console.warn('Proxy request without cookieStoreId');
-      return [];
+void (
+  browser.proxy &&
+  browser.proxy.onRequest.addListener(
+    async (details) => {
+      try {
+        if (!details.cookieStoreId) {
+          console.warn('Proxy request without cookieStoreId');
+          return [];
+        }
+        const { proxy, proxyEnabled } = await getProxyStatus(details.cookieStoreId);
+        if (!proxyEnabled || !proxy) {
+          return [];
+        }
+        if (proxy.doNotProxyLocal && isUrlLocalhost(details.url)) {
+          return [];
+        }
+        return ProxyInfo.fromProxyPreset(proxy);
+      } catch (e) {
+        console.error(e);
+        console.warn('Falling back to unusable proxy');
+        return ProxyInfo.UNUSABLE_PROXY;
+      }
+    },
+    {
+      urls: ['<all_urls>'],
     }
-    const {proxy, proxyEnabled} = await getProxyStatus(details.cookieStoreId);
-    if (!proxyEnabled || !proxy) {
-      return [];
-    }
-    if (proxy.doNotProxyLocal && isUrlLocalhost(details.url)) {
-      return [];
-    }
-    return ProxyInfo.fromProxyPreset(proxy);
-  } catch (e) {
-    console.error(e);
-    console.warn('Falling back to unusable proxy');
-    return ProxyInfo.UNUSABLE_PROXY;
-  }
-}, {
-  urls: ['<all_urls>'],
-}));
+  )
+);
 
-void (browser.proxy && browser.proxy.onError.addListener((error) => {
-  console.error('proxy.onError:', error);
-}));
+void (
+  browser.proxy &&
+  browser.proxy.onError.addListener((error) => {
+    console.error('proxy.onError:', error);
+  })
+);

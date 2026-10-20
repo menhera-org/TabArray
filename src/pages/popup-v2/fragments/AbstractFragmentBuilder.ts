@@ -19,12 +19,12 @@
   @license
 **/
 
-import { FragmentBuilder } from "./FragmentBuilder";
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
-import { CtgFrameLayoutElement } from "../../../components/ctg/ctg-frame-layout";
-import { CtgBottomNavigationElement } from "../../../components/ctg/ctg-bottom-navigation";
-import { GlobalMenuItems } from "../GlobalMenuItems";
+import { FragmentBuilder } from './FragmentBuilder';
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
+import { CtgFrameLayoutElement } from '../../../components/ctg/ctg-frame-layout';
+import { CtgBottomNavigationElement } from '../../../components/ctg/ctg-bottom-navigation';
+import { GlobalMenuItems } from '../GlobalMenuItems';
 
 export abstract class AbstractFragmentBuilder implements FragmentBuilder {
   protected static readonly suppressBottomNavigation: boolean = false;
@@ -36,7 +36,12 @@ export abstract class AbstractFragmentBuilder implements FragmentBuilder {
   private _bottomNavigationElement: CtgBottomNavigationElement;
   private _globalMenuItems: GlobalMenuItems;
 
-  public constructor(frameLayoutElement: CtgFrameLayoutElement, topBarElement: CtgTopBarElement, bottomNavigationElement: CtgBottomNavigationElement, globalMenuItems: GlobalMenuItems) {
+  public constructor(
+    frameLayoutElement: CtgFrameLayoutElement,
+    topBarElement: CtgTopBarElement,
+    bottomNavigationElement: CtgBottomNavigationElement,
+    globalMenuItems: GlobalMenuItems
+  ) {
     this._frameLayoutElement = frameLayoutElement;
     this._topBarElement = topBarElement;
     this._bottomNavigationElement = bottomNavigationElement;

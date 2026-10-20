@@ -19,7 +19,7 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
+import { EventSink } from 'weeg-events';
 
 export class LanguageStore {
   private readonly _languages: string[] = [];
@@ -27,7 +27,8 @@ export class LanguageStore {
   public readonly onLanguagesChanged = new EventSink<string[]>();
 
   public set languages(languages: string) {
-    const languageParts = languages.split(",")
+    const languageParts = languages
+      .split(',')
       .map((language) => language.trim())
       .filter((language) => language.length > 0 && language.match(/^[a-z]{2,3}(?:-[a-z]{2})?$/i));
 
@@ -36,12 +37,12 @@ export class LanguageStore {
     // }
 
     this._languages.length = 0;
-    this._languages.push(... languageParts);
+    this._languages.push(...languageParts);
     this.onLanguagesChanged.dispatch(this._languages);
   }
 
   public get languages(): string {
-    return this._languages.join(", ");
+    return this._languages.join(', ');
   }
 
   public get languageList(): readonly string[] {

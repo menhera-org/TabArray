@@ -77,7 +77,9 @@ export class PopupCommandHandler {
       if (!command.name || !command.shortcut) continue;
       const name = command.name;
       const originalShortcut = command.shortcut;
-      const shortcut = isMac ? originalShortcut.replace('Ctrl', '⌘').replace('Command', '⌘').replace('Alt', 'Option') : originalShortcut;
+      const shortcut = isMac
+        ? originalShortcut.replace('Ctrl', '⌘').replace('Command', '⌘').replace('Alt', 'Option')
+        : originalShortcut;
       result.set(name, shortcut);
     }
     return result;

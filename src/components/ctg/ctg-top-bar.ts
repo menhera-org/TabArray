@@ -19,8 +19,8 @@
   @license
 **/
 
-import { EventSink } from "weeg-events";
-import { CtgMenuItemElement } from "./ctg-menu-item";
+import { EventSink } from 'weeg-events';
+import { CtgMenuItemElement } from './ctg-menu-item';
 
 export class CtgTopBarElement extends HTMLElement {
   public readonly onDrawerButtonClicked = new EventSink<void>();

@@ -28,7 +28,7 @@ export class CookieProvider {
   private readonly _hostnameService = HostnameService.getInstance();
 
   private getDomainsForCookies(cookies: browser.Cookies.Cookie[]): string[] {
-    const domains: Set<string> = new Set;
+    const domains: Set<string> = new Set();
     for (const cookie of cookies) {
       const domain = cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain;
       domains.add(domain);
@@ -36,7 +36,10 @@ export class CookieProvider {
     return this._hostnameService.sortDomains(domains);
   }
 
-  private async getCookiesForFirstPartyDomain(cookieStoreId: string, firstPartyDomain: string): Promise<browser.Cookies.Cookie[]> {
+  private async getCookiesForFirstPartyDomain(
+    cookieStoreId: string,
+    firstPartyDomain: string
+  ): Promise<browser.Cookies.Cookie[]> {
     const partitionKey = {};
     return await browser.cookies.getAll({
       firstPartyDomain,
@@ -50,9 +53,14 @@ export class CookieProvider {
     return this.getDomainsForCookies(cookies);
   }
 
-  public async getCookieRegistrableDomainsForFirstPartyDomain(cookieStoreId: string, firstPartyDomain: string): Promise<string[]> {
+  public async getCookieRegistrableDomainsForFirstPartyDomain(
+    cookieStoreId: string,
+    firstPartyDomain: string
+  ): Promise<string[]> {
     const domains = await this.getCookieDomainsForFirstPartyDomain(cookieStoreId, firstPartyDomain);
-    return await this._registrableDomainService.getUniqueRegistrableDomains(domains.map((domain) => `http://${domain}`));
+    return await this._registrableDomainService.getUniqueRegistrableDomains(
+      domains.map((domain) => `http://${domain}`)
+    );
   }
 
   public async getFirstPartyDomainsForCookieStoreId(cookieStoreId: string): Promise<string[]> {
@@ -71,16 +79,19 @@ export class CookieProvider {
 
   public async removeDataForDomain(cookieStoreId: string, domain: string): Promise<void> {
     const hostnames = [domain];
-    await browser.browsingData.remove({
-      hostnames,
-      originTypes: {
-        unprotectedWeb: true,
+    await browser.browsingData.remove(
+      {
+        hostnames,
+        originTypes: {
+          unprotectedWeb: true,
+        },
+        cookieStoreId,
       },
-      cookieStoreId,
-    }, {
-      cookies: true,
-      localStorage: true,
-      indexedDB: true,
-    });
+      {
+        cookies: true,
+        localStorage: true,
+        indexedDB: true,
+      }
+    );
   }
 }

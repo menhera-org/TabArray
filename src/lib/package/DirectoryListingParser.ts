@@ -19,7 +19,7 @@
   @license
 **/
 
-import { PackageDirectory, PackageDirectoryEntry, PackageFileType } from "./PackageDirectory";
+import { PackageDirectory, PackageDirectoryEntry, PackageFileType } from './PackageDirectory';
 
 /**
  * Parse Firefox's jar listing text.
@@ -27,11 +27,14 @@ import { PackageDirectory, PackageDirectoryEntry, PackageFileType } from "./Pack
 export class DirectoryListingParser {
   public parse(listing: string, dirPath: string): PackageDirectory {
     const JAR_SCHEME = 'jar:';
-    const lines = listing.split('\n').map(line => line.trim()).filter(line => line != '');
+    const lines = listing
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line != '');
     const packageDirectory: PackageDirectory = {
-      packageLocationUrl: "",
+      packageLocationUrl: '',
       directoryPath: dirPath,
-      entries: []
+      entries: [],
     };
     let jarMetadataFound = false;
     for (const line of lines) {
@@ -76,7 +79,7 @@ export class DirectoryListingParser {
           type,
           filename,
           fullPath,
-          fileSize
+          fileSize,
         };
         packageDirectory.entries.push(entry);
       }

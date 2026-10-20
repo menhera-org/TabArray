@@ -54,7 +54,11 @@ const extensionPageService = ExtensionPageService.getInstance();
 const containerVisibilityService = ContainerVisibilityService.getInstance();
 const temporaryContainerService = TemporaryContainerService.getInstance();
 
-const defineTabMenuHandler = (menuItem: MenuItem, action: 'onClicked' | 'onShown', handler: (tab: CompatTab) => void) => {
+const defineTabMenuHandler = (
+  menuItem: MenuItem,
+  action: 'onClicked' | 'onShown',
+  handler: (tab: CompatTab) => void
+) => {
   menuItem[action].addListener((info) => {
     const { tab } = info;
 
@@ -180,7 +184,7 @@ defineTabMenuHandler(menus[MENU_ID_TAB_HIDE_CONTAINER], 'onClicked', (tab) => {
     return;
   }
 
-  containerVisibilityService.hideContainerOnWindow(tab.windowId, cookieStore.id).catch(e => console.error(e));
+  containerVisibilityService.hideContainerOnWindow(tab.windowId, cookieStore.id).catch((e) => console.error(e));
 });
 
 defineTabMenuHandler(menus[MENU_ID_TAB_FOCUS_CONTAINER], 'onClicked', (tab) => {
@@ -195,7 +199,10 @@ defineTabMenuHandler(menus[MENU_ID_TAB_FOCUS_CONTAINER], 'onClicked', (tab) => {
 
   const windowId = tab.windowId;
 
-  containerVisibilityService.focusContainerOnWindow(windowId, cookieStore.id).then(() => containers.hideAll(windowId)).catch(e => console.error(e));
+  containerVisibilityService
+    .focusContainerOnWindow(windowId, cookieStore.id)
+    .then(() => containers.hideAll(windowId))
+    .catch((e) => console.error(e));
 });
 
 defineTabMenuHandler(menus[MENU_ID_TAB_NEW_TEMPORARY_CONTAINER], 'onClicked', (tab) => {
@@ -208,15 +215,17 @@ defineTabMenuHandler(menus[MENU_ID_TAB_NEW_TEMPORARY_CONTAINER], 'onClicked', (t
     return;
   }
 
-  temporaryContainerService.createTemporaryContainer().catch(e => console.error(e));
+  temporaryContainerService.createTemporaryContainer().catch((e) => console.error(e));
 });
 
 defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_NEW_TAB], 'onClicked', (tab) => {
-  browser.tabs.create({
-    windowId: tab.windowId,
-  }).catch((e) => {
-    console.error(e);
-  });
+  browser.tabs
+    .create({
+      windowId: tab.windowId,
+    })
+    .catch((e) => {
+      console.error(e);
+    });
 });
 
 defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_RELOAD_TAB], 'onClicked', (tab) => {
@@ -234,11 +243,13 @@ defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_MUTE_TAB], 'onShown', (tab) => {
 });
 
 defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_MUTE_TAB], 'onClicked', (tab) => {
-  browser.tabs.update(tab.id, {
-    muted: !tab.muted,
-  }).catch((e) => {
-    console.error(e);
-  });
+  browser.tabs
+    .update(tab.id, {
+      muted: !tab.muted,
+    })
+    .catch((e) => {
+      console.error(e);
+    });
 });
 
 defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_PIN_TAB], 'onShown', (tab) => {
@@ -250,11 +261,13 @@ defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_PIN_TAB], 'onShown', (tab) => {
 });
 
 defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_PIN_TAB], 'onClicked', (tab) => {
-  browser.tabs.update(tab.id, {
-    pinned: !tab.pinned,
-  }).catch((e) => {
-    console.error(e);
-  });
+  browser.tabs
+    .update(tab.id, {
+      pinned: !tab.pinned,
+    })
+    .catch((e) => {
+      console.error(e);
+    });
 });
 
 defineTabMenuHandler(menus[MENU_ID_CONTEXT_TAB_DUPLICATE_TAB], 'onClicked', (tab) => {

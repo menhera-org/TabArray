@@ -21,23 +21,22 @@
 
 // this is not translated.
 
-import { ConsoleHistoryService } from "../../../lib/console/ConsoleHistoryService";
+import { ConsoleHistoryService } from '../../../lib/console/ConsoleHistoryService';
 
-import { AbstractFragmentBuilder } from "../../popup-v2/fragments/AbstractFragmentBuilder";
+import { AbstractFragmentBuilder } from '../../popup-v2/fragments/AbstractFragmentBuilder';
 
-import { CtgFragmentElement } from "../../../components/ctg/ctg-fragment";
-import { CtgTopBarElement } from "../../../components/ctg/ctg-top-bar";
+import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
+import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';
 
 const consoleHistoryService = ConsoleHistoryService.getInstance<ConsoleHistoryService>();
 
 export class LogFragmentBuilder extends AbstractFragmentBuilder {
-
   public getFragmentId(): string {
     return 'fragment-log';
   }
 
   public getLabelText(): string {
-    return "Logs";
+    return 'Logs';
   }
 
   public getIconUrl(): string {
@@ -53,30 +52,30 @@ export class LogFragmentBuilder extends AbstractFragmentBuilder {
     const fragment = document.createElement('ctg-fragment') as CtgFragmentElement;
     fragment.id = this.getFragmentId();
     const table = document.createElement('table');
-    table.id = "logs-table";
+    table.id = 'logs-table';
     fragment.appendChild(table);
     const thead = document.createElement('thead');
     table.appendChild(thead);
     const theadTr = document.createElement('tr');
     thead.appendChild(theadTr);
     const theadTh1 = document.createElement('th');
-    theadTh1.textContent = "Time";
+    theadTh1.textContent = 'Time';
     theadTr.appendChild(theadTh1);
     const theadTh2 = document.createElement('th');
-    theadTh2.textContent = "Context";
+    theadTh2.textContent = 'Context';
     theadTr.appendChild(theadTh2);
     const theadTh3 = document.createElement('th');
-    theadTh3.textContent = "Component";
+    theadTh3.textContent = 'Component';
     theadTr.appendChild(theadTh3);
     const theadTh4 = document.createElement('th');
-    theadTh4.textContent = "Level";
+    theadTh4.textContent = 'Level';
     theadTr.appendChild(theadTh4);
     const theadTh5 = document.createElement('th');
-    theadTh5.textContent = "Message";
+    theadTh5.textContent = 'Message';
     theadTr.appendChild(theadTh5);
 
     const tbody = document.createElement('tbody');
-    tbody.id = "logs-tbody";
+    tbody.id = 'logs-tbody';
     table.appendChild(tbody);
 
     Promise.resolve().then(() => {
@@ -97,7 +96,8 @@ export class LogFragmentBuilder extends AbstractFragmentBuilder {
   public render(): void {
     const tbody = this.getFragment().querySelector('#logs-tbody') as HTMLTableSectionElement;
     consoleHistoryService.getEntries().then((entries) => {
-      const scrollBottom = this.frameLayoutElement.scrollHeight - this.frameLayoutElement.scrollTop - this.frameLayoutElement.clientHeight;
+      const scrollBottom =
+        this.frameLayoutElement.scrollHeight - this.frameLayoutElement.scrollTop - this.frameLayoutElement.clientHeight;
       const isAtBottom = scrollBottom < 1;
       tbody.textContent = '';
       for (const entry of entries) {

@@ -42,7 +42,13 @@ const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tagService = TagService.getInstance();
 const activeContainerService = ActiveContainerService.getInstance();
 
-const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, windowId: number, currentTabId: number, active: boolean) => {
+const openTabAndCloseCurrent = async (
+  url: string,
+  cookieStoreId: string,
+  windowId: number,
+  currentTabId: number,
+  active: boolean
+) => {
   const browserTab = await browser.tabs.create({
     url,
     cookieStoreId,
@@ -51,7 +57,7 @@ const openTabAndCloseCurrent = async (url: string, cookieStoreId: string, window
   });
   if (!browserTab.id) return browser.tabs.TAB_ID_NONE;
   await Promise.all([
-    active ? browser.tabs.update(browserTab.id, {active}) : Promise.resolve(),
+    active ? browser.tabs.update(browserTab.id, { active }) : Promise.resolve(),
     browser.tabs.remove(currentTabId),
   ]);
   return browserTab.id;
@@ -72,10 +78,18 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
     const targetCookieStore = new CookieStore(cookieStoreId);
     if (currentCookieStore.id === targetCookieStore.id) return tabId;
     if (currentCookieStore.isPrivate != targetCookieStore.isPrivate) {
-      const browserWindows = (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => targetCookieStore.isPrivate == browserWindow.incognito);
+      const browserWindows = (await browser.windows.getAll({ windowTypes: ['normal'] })).filter(
+        (browserWindow) => targetCookieStore.isPrivate == browserWindow.incognito
+      );
       for (const browserWindow of browserWindows) {
         if (browserWindow.id == null) continue;
-        const openedTabId = await openTabAndCloseCurrent(targetUrl, targetCookieStore.id, browserWindow.id, tabId, active);
+        const openedTabId = await openTabAndCloseCurrent(
+          targetUrl,
+          targetCookieStore.id,
+          browserWindow.id,
+          tabId,
+          active
+        );
         if (oldTagId != 0) {
           const openedTab = new CompatTab(await browser.tabs.get(openedTabId));
           await tagService.setTagIdForTab(openedTab, oldTagId);
@@ -88,7 +102,7 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
         incognito: targetCookieStore.isPrivate,
         focused: active,
       });
-      const openedBrowserTabs = await browser.tabs.query({windowId: openedBrowserWindow.id});
+      const openedBrowserTabs = await browser.tabs.query({ windowId: openedBrowserWindow.id });
       if (openedBrowserTabs.length === 0) {
         return browser.tabs.TAB_ID_NONE;
       }
@@ -105,7 +119,13 @@ const reopenTabInContainer = async (tabId: number, cookieStoreId: string, active
       }
       return openedTabId;
     } else {
-      const openedTabId = await openTabAndCloseCurrent(targetUrl, targetCookieStore.id, browserTab.windowId, tabId, active);
+      const openedTabId = await openTabAndCloseCurrent(
+        targetUrl,
+        targetCookieStore.id,
+        browserTab.windowId,
+        tabId,
+        active
+      );
       if (oldTagId != 0) {
         const openedTab = new CompatTab(await browser.tabs.get(openedTabId));
         await tagService.setTagIdForTab(openedTab, oldTagId);
@@ -123,10 +143,14 @@ const openNewTabInContainer = async (cookieStoreId: string, active: boolean, win
   try {
     console.debug('open_new_tab_in_container: cookieStoreId=%s', cookieStoreId);
     const cookieStore = new CookieStore(cookieStoreId);
-    const currentBrowserWindow = windowId == null ? await browser.windows.getCurrent() : await browser.windows.get(windowId);
-    const browserWindows = currentBrowserWindow.incognito == cookieStore.isPrivate
-    ? [currentBrowserWindow]
-    : (await browser.windows.getAll({windowTypes: ['normal']})).filter((browserWindow) => cookieStore.isPrivate == browserWindow.incognito);
+    const currentBrowserWindow =
+      windowId == null ? await browser.windows.getCurrent() : await browser.windows.get(windowId);
+    const browserWindows =
+      currentBrowserWindow.incognito == cookieStore.isPrivate
+        ? [currentBrowserWindow]
+        : (await browser.windows.getAll({ windowTypes: ['normal'] })).filter(
+            (browserWindow) => cookieStore.isPrivate == browserWindow.incognito
+          );
     for (const browserWindow of browserWindows) {
       if (browserWindow.id == null) continue;
       activeContainerService.setActiveContainer(browserWindow.id, cookieStoreId);
@@ -184,13 +208,26 @@ export class ContainerTabOpenerService extends BackgroundService<TabOpenActionTy
     return reopenTabInContainer(input.tabId, input.cookieStoreId, input.active, input.url);
   }
 
-  public async reopenTabInContainer(tabId: number, cookieStoreId: string, active: boolean, url?: string): Promise<number> {
+  public async reopenTabInContainer(
+    tabId: number,
+    cookieStoreId: string,
+    active: boolean,
+    url?: string
+  ): Promise<number> {
     return this.call({ tabId, cookieStoreId, active, url });
   }
 
-  public async openNewTabInContainer(cookieStoreId: string, active: boolean, windowId?: number, tagId?: number): Promise<number> {
+  public async openNewTabInContainer(
+    cookieStoreId: string,
+    active: boolean,
+    windowId?: number,
+    tagId?: number
+  ): Promise<number> {
     return this.call({ cookieStoreId, active, windowId, tagId });
   }
 }
 
-ServiceRegistry.getInstance().registerService('ContainerTabOpenerService', ContainerTabOpenerService.getInstance<ContainerTabOpenerService>());
+ServiceRegistry.getInstance().registerService(
+  'ContainerTabOpenerService',
+  ContainerTabOpenerService.getInstance<ContainerTabOpenerService>()
+);

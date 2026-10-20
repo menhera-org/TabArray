@@ -19,13 +19,13 @@
   @license
 **/
 
-import { StorageItem } from "weeg-storage";
-import { EventSink } from "weeg-events";
+import { StorageItem } from 'weeg-storage';
+import { EventSink } from 'weeg-events';
 
-import { TagDirectorySnapshot } from "./TagDirectorySnapshot";
-import { TagType, TagStorageType } from "./TagType";
+import { TagDirectorySnapshot } from './TagDirectorySnapshot';
+import type { TagType, TagStorageType } from './TagType';
 
-export { TagType, TagStorageType };
+export type { TagType, TagStorageType };
 
 export class TagDirectory {
   private static readonly INSTANCE = new TagDirectory();
@@ -36,7 +36,7 @@ export class TagDirectory {
 
   public readonly onChanged = new EventSink<void>();
 
-  private readonly _storage = new StorageItem<TagStorageType>("tagDirectory", {}, StorageItem.AREA_LOCAL);
+  private readonly _storage = new StorageItem<TagStorageType>('tagDirectory', {}, StorageItem.AREA_LOCAL);
   private _storageCache: TagStorageType | undefined;
 
   private constructor() {
@@ -89,7 +89,7 @@ export class TagDirectory {
   public async renameTag(tagId: number, name: string): Promise<TagType> {
     const value = await this.getValue();
     const tag = value[tagId];
-    if (!tag) throw new Error("Tag not found");
+    if (!tag) throw new Error('Tag not found');
     tag.name = name;
     await this.setValue(value);
     return tag;
