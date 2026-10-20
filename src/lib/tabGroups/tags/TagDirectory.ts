@@ -23,9 +23,9 @@ import { StorageItem } from "weeg-storage";
 import { EventSink } from "weeg-events";
 
 import { TagDirectorySnapshot } from "./TagDirectorySnapshot";
-import { TagType, TagStorageType } from "./TagType";
+import type { TagType, TagStorageType } from "./TagType";
 
-export { TagType, TagStorageType };
+export type { TagType, TagStorageType };
 
 export class TagDirectory {
   private static readonly INSTANCE = new TagDirectory();
