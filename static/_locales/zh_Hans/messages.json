@@ -803,5 +803,8 @@
     "copyCookiesTo": {
         "message": "复制cookie到：",
         "description": "Label text for copy cookies to option."
+    },
+    "optionAutoCenterInSidebar": {
+        "message": "在侧边栏自动居中活动选项卡"
     }
 }

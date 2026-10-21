@@ -803,5 +803,8 @@
     "copyCookies": {
         "message": "Copiar las cookies",
         "description": "Copy cookies button or label text."
+    },
+    "optionAutoCenterInSidebar": {
+        "message": "Auto-central lengüeta activa en barra lateral"
     }
 }
