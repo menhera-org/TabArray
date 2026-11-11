@@ -23,7 +23,7 @@
 
 /* eslint-env es2020, node */
 
-import fs from 'fs';
+import fs from 'node:fs';
 
 import markdownit from 'markdown-it';
 const md = markdownit({

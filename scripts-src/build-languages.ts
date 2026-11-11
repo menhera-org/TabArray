@@ -21,7 +21,7 @@
 
 /* eslint-env es2020, node */
 
-import fs from 'fs';
+import fs from 'node:fs';
 
 import * as CODES from './language-codes.json';
 

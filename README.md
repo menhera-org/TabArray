@@ -169,8 +169,10 @@ This project uses reproducible builds. This means built extensions from the same
 
 To use this feature, make sure that:
 
-- You build an extension directly from a Git repository (not Tarballs or Zip archives).
-- You have Git installed.
+- You build an extension either directly from a clean Git checkout (with Git installed), or from a source tarball made by `npm run package-source`.
+- You install dependencies with `npm ci`, so they match `package-lock.json`.
+
+`npm run package-source` writes `builds/<version>/ctg-<version>-<commit time>-<commit>-source.tar.gz` from `HEAD` and refuses to run with uncommitted changes. It works like `cargo package`: the tarball contains `.menhera_vcs_info.json`, which records the commit hash and the commit's date. Builds from the tarball read them from that file instead of Git, so they produce the same extension as a build from that commit. This is the source package to upload to AMO.
 
 Since the hashes are the same, your built extension from the official source should show a green checkmark ("ofiicial build") next to the version in the help view.
 

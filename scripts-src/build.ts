@@ -25,17 +25,18 @@
   Run with `make` and `npm run build`
 */
 
-import * as crypto from 'crypto';
-import * as fs from 'fs';
-import * as child_process from 'child_process';
+import * as crypto from 'node:crypto';
+import * as fs from 'node:fs';
 
 import zip from 'deterministic-zip-ng';
 import { ed25519 } from '@noble/curves/ed25519.js';
 import { glob } from 'glob';
 import { DeterministicJSON } from '@menhera/deterministic-json';
 
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { getBuildVersion, getVcsInfo, runCommand } from './vcs.js';
+
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -46,18 +47,9 @@ const importJson = (path: string): any => {
 
 const manifest = importJson(__dirname + '/../src/manifest.json');
 const releaseJson = importJson(__dirname + '/../src/release.json');
-const packageJson = importJson(__dirname + '/../package.json');
 
-const baseVersion = String(packageJson.version);
 const isDevelopmentVersion = !!releaseJson.isDevelopmentVersion;
-const basePatchVersion = releaseJson.patchVersion >>> 0;
-if (basePatchVersion > 99) {
-  throw new Error(`Invalid patch version: ${basePatchVersion}`);
-}
-
-const patchVersion = isDevelopmentVersion ? 100 + basePatchVersion : 200 + basePatchVersion;
-const version = `${baseVersion}.${patchVersion}`;
-manifest.version = version;
+manifest.version = getBuildVersion();
 
 const distDir = __dirname + '/../dist';
 fs.mkdirSync(distDir, { recursive: true });
@@ -70,21 +62,6 @@ const zipDirectoryContents = async (directory: string, outputPath: string) => {
       } else {
         resolve();
       }
-    });
-  });
-};
-
-const runCommand = async (command: string, args: string[]): Promise<string> => {
-  return new Promise<string>((resolve, reject) => {
-    child_process.execFile(command, args, (error, stdout, stderr) => {
-      const stderrTrimmed = stderr.trim();
-      if (stderrTrimmed) {
-        console.warn(stderrTrimmed);
-      }
-      if (error) {
-        reject(error);
-      }
-      resolve(stdout);
     });
   });
 };
@@ -154,28 +131,11 @@ const getIntegrityHash = async () => {
 };
 
 const startTime = Date.now();
-runCommand('git', ['rev-parse', 'HEAD'])
-  .then(async (stdout) => {
-    const hash = stdout.trim();
-    let untracked = false;
-    try {
-      await runCommand('git', ['diff-index', '--quiet', 'HEAD', '--']);
-    } catch (e) {
-      untracked = true;
-    }
-    let date = new Date();
-    if (!untracked) {
-      try {
-        const timeString = await runCommand('git', ['show', '-s', '--format=%ct', 'HEAD']);
-        const time = parseInt(timeString.trim(), 10);
-        if (isNaN(time)) {
-          throw new Error('Invalid time');
-        }
-        date = new Date(time * 1000);
-      } catch (e) {
-        console.warn(e);
-      }
-    }
+getVcsInfo()
+  .then(async (vcsInfo) => {
+    const hash = vcsInfo.git.sha1;
+    const untracked = !!vcsInfo.git.dirty;
+    const date = untracked ? new Date() : new Date(vcsInfo.git.commit_timestamp * 1000);
     const shortHash = hash.slice(0, 7);
     const time = Math.trunc(date.getTime() / 1000);
     const buildId = untracked ? `${shortHash}_untracked` : shortHash;
