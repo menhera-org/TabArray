@@ -160,6 +160,8 @@ The two digits after 1 or 2 indicate patch level.
 3. In this directory, run `npm install` to install dependencies.
 4. Run `npm run build` to build the extension. Built extension's path is printed on console (usually under the `builds/` directory).
 
+`npm run build-for-amo` is the same build. AMO's automated source rebuild uses this script name.
+
 
 ### Reproducible builds
 

@@ -19,10 +19,6 @@
   @license
 **/
 
-// React is loaded as a global script and used as the JSX factory.
-// eslint-disable-next-line no-var, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-declare var React: any;
-
 import { DisplayedContainer } from 'weeg-containers';
 
 import { DarkThemeMonitor } from '../../legacy-lib/themes/DarkThemeMonitor';

@@ -45,8 +45,7 @@ const SRC_DIR = path.resolve(import.meta.dirname, 'src');
 // by Rolldown (see rolldown.config.ts).
 export default defineConfig({
   root: SRC_DIR,
-  // Copied verbatim. The minified React builds in static/react/ must stay
-  // byte-identical to upstream for AMO review, so never import them.
+  // Copied verbatim.
   publicDir: path.resolve(import.meta.dirname, 'static'),
   base: '/',
   plugins: [{ ...injectFilename(), enforce: 'pre' }],

@@ -23,7 +23,7 @@
     "skipLibCheck": true,
     "allowJs": true,
     "checkJs": false,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "types": [
       "react",
       "react-dom"

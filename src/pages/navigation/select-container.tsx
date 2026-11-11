@@ -19,13 +19,8 @@
   @license
 **/
 
-// eslint-disable-next-line no-var, @typescript-eslint/no-explicit-any
-declare var ReactDOM: any;
-
-// React is loaded as a global script and used as the JSX factory.
-// eslint-disable-next-line no-var, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-declare var React: any;
-
+import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
 import browser from 'webextension-polyfill';
 import { ExtensionService } from 'weeg-utils';
 import { CompatTab } from 'weeg-tabs';
@@ -168,8 +163,10 @@ const Buttons = (state: EnvType | null) => {
   return <div>{buttons}</div>;
 };
 
+const root = createRoot(containersElement);
 store.registerListener((state) => {
-  ReactDOM.render(Buttons(state), containersElement);
+  // Synchronous like the legacy ReactDOM.render, so buttons exist before restoreScreen().
+  flushSync(() => root.render(Buttons(state)));
 });
 
 const blankScreen = () => {
