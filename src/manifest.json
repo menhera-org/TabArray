@@ -36,7 +36,8 @@
     "theme",
     "alarms",
     "scripting",
-    "proxy"
+    "proxy",
+    "publicSuffix"
   ],
   "incognito": "spanning",
   "background": {
