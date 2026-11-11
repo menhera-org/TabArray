@@ -23,7 +23,7 @@
 
 import { ConsoleHistoryService } from '../../../lib/console/ConsoleHistoryService';
 
-import { AbstractFragmentBuilder } from '../../popup-v2/fragments/AbstractFragmentBuilder';
+import { AbstractFragmentBuilder } from './AbstractFragmentBuilder';
 
 import { CtgFragmentElement } from '../../../components/ctg/ctg-fragment';
 import { CtgTopBarElement } from '../../../components/ctg/ctg-top-bar';

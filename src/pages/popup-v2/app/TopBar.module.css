@@ -1,0 +1,91 @@
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+
+/*
+  Container Tab Groups
+  Copyright (C) 2023 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+.topBar {
+  display: block flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 0.25rem;
+  background-color: var(--background-color);
+  box-shadow: 0 0 0.5rem var(--border-color);
+  padding-inline: 0.5rem;
+  z-index: 20;
+}
+
+/* The active screen's heading and menu items sit in the bar's own row. */
+.slot {
+  display: contents;
+}
+
+.drawerButton,
+.backButton {
+  opacity: var(--opaque-opacity);
+}
+
+:is(.drawerButton, .backButton):is(:hover, :active, :focus) {
+  opacity: 1;
+}
+
+.backButton {
+  /* The browser's button font, which sets the em-based size, as in the shadow DOM version. */
+  font: revert;
+  display: block;
+  appearance: none;
+  border: none;
+  outline: none;
+  background-color: var(--text-color);
+  inline-size: 2em;
+  block-size: 2em;
+  min-inline-size: auto;
+  margin: 0;
+  padding: 0;
+  mask: url(/img/firefox-icons/back.svg) center / 75% no-repeat;
+}
+
+.spinner {
+  background-color: var(--text-color);
+  inline-size: 2em;
+  block-size: 2em;
+  mask: url(/img/ring-resize.svg) center / 75% no-repeat;
+  opacity: 1;
+}
+
+.spinner:not(.spinnerDisabled) {
+  transition: opacity 1s ease-out;
+}
+
+.spinner.spinnerDisabled {
+  opacity: 0;
+}
+
+.heading {
+  display: block;
+  min-inline-size: 0;
+  flex: 1;
+  font: inherit;
+  margin: 0;
+  text-align: center;
+  padding-inline: 1em;
+  padding-block: 0.5em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

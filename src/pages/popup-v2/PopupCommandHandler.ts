@@ -20,35 +20,21 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { CtgFrameLayoutElement } from '../../components/ctg/ctg-frame-layout';
+
+/** Keyboard commands that switch the popup to a screen, by screen id. */
+export const SCREEN_COMMANDS: Record<string, string> = {
+  'fragment-windows': 'open_windows_view',
+  'fragment-containers': 'open_containers_view',
+  'fragment-sites': 'open_sites_view',
+};
 
 export class PopupCommandHandler {
-  private readonly _frameLayout: CtgFrameLayoutElement;
   private readonly _commandListener: (command: string) => void;
 
-  public constructor(frameLayout: CtgFrameLayoutElement) {
-    this._frameLayout = frameLayout;
-    this._commandListener = async (command) => {
-      try {
-        switch (command) {
-          case 'open_windows_view': {
-            frameLayout.activateFragment('fragment-windows');
-            break;
-          }
-
-          case 'open_containers_view': {
-            frameLayout.activateFragment('fragment-containers');
-            break;
-          }
-
-          case 'open_sites_view': {
-            frameLayout.activateFragment('fragment-sites');
-            break;
-          }
-        }
-      } catch (e) {
-        console.error(e);
-      }
+  public constructor(showScreen: (screenId: string) => void) {
+    this._commandListener = (command) => {
+      const screenId = Object.keys(SCREEN_COMMANDS).find((id) => SCREEN_COMMANDS[id] == command);
+      if (screenId) showScreen(screenId);
     };
   }
 

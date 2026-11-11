@@ -37,7 +37,7 @@ import { CtgBottomNavigationElement } from '../../components/ctg/ctg-bottom-navi
 import { CtgFragmentElement } from '../../components/ctg/ctg-fragment';
 import { HelpBannerElement } from '../../components/help-banner';
 
-import { GlobalMenuItems } from '../popup-v2/GlobalMenuItems';
+import { GlobalMenuItems } from './GlobalMenuItems';
 
 import { LogFragmentBuilder } from './fragments/LogFragmentBuilder';
 import { PerformanceFragmentBuilder } from './fragments/PerforamanceFragmentBuilder';

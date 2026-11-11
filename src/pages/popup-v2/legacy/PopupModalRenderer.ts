@@ -20,21 +20,21 @@
 **/
 
 import browser from 'webextension-polyfill';
-import { PromiseUtils } from 'weeg-utils';
 import { CookieStore, DisplayedContainer, ContextualIdentity } from 'weeg-containers';
 
 import { ContextualIdentityService } from '../../../lib/tabGroups/ContextualIdentityService';
 import { TabGroupService } from '../../../lib/tabGroups/TabGroupService';
 import { DisplayedContainerService } from '../../../lib/tabGroups/DisplayedContainerService';
 import { CompatConsole } from '../../../lib/console/CompatConsole';
-
-import { PopupRenderer } from './PopupRenderer';
-import { PopupUtils } from './PopupUtils';
+import { SupergroupType, TabGroupDirectory } from '../../../lib/tabGroups/TabGroupDirectory';
+import { TabGroupAttributes } from '../../../lib/tabGroups/TabGroupAttributes';
+import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
 
 import { ModalConfirmElement } from '../../../components/modal-confirm';
 import { ModalMenuElement } from '../../../components/modal-menu';
 import { ContainerEditorElement } from '../../../components/container-editor';
 import { ModalMoveGroupElement } from '../../../components/modal-move-group';
+import { SupergroupEditorElement } from '../../../components/supergroup-editor';
 
 type KeyHandlers = {
   okHandler: (event?: Event) => void;
@@ -45,18 +45,13 @@ type KeyHandlers = {
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 export class PopupModalRenderer {
-  private readonly _popupRenderer: PopupRenderer;
-  private readonly _utils: PopupUtils;
   private readonly _keyHandlersStack: KeyHandlers[] = [];
   private readonly _contextualIdentityService = ContextualIdentityService.getInstance();
   private readonly _contextualIdentityFactory = this._contextualIdentityService.getFactory();
   private readonly _tabGroupService = TabGroupService.getInstance();
   private readonly _displayedContainerService = DisplayedContainerService.getInstance();
 
-  constructor(popupRenderer: PopupRenderer) {
-    this._popupRenderer = popupRenderer;
-    this._utils = new PopupUtils();
-
+  constructor() {
     const catchEvent = (ev: Event) => {
       ev.preventDefault();
       ev.stopImmediatePropagation();
@@ -89,77 +84,6 @@ export class PopupModalRenderer {
     keyHandler?: (event: KeyboardEvent) => boolean
   ) {
     this._keyHandlersStack.push({ okHandler, cancelHandler, keyHandler });
-  }
-
-  public popKeyHandlers() {
-    this._keyHandlersStack.pop();
-  }
-
-  private defineKeyHandlerForModal(buttonElement: HTMLButtonElement) {
-    return (ev: KeyboardEvent) => {
-      const buttonArray = [...(buttonElement.parentElement?.getElementsByTagName('button') ?? [])].filter(
-        (button) => !button.disabled
-      );
-      const activeElement = this._utils.getActiveElement();
-      const index = activeElement instanceof HTMLButtonElement ? buttonArray.indexOf(activeElement) : -1;
-      if (ev.key == 'ArrowUp' || ev.key == 'ArrowLeft') {
-        return this._utils.arrowUpHandler(activeElement, buttonArray);
-      } else if (ev.key == 'ArrowDown' || ev.key == 'ArrowRight') {
-        return this._utils.arrowDownHandler(activeElement, buttonArray);
-      } else if (ev.key == ' ' && activeElement instanceof HTMLButtonElement) {
-        buttonArray[index]?.click();
-        return true;
-      }
-
-      return false;
-    };
-  }
-
-  private async showModal(
-    message: string,
-    MessageElement: HTMLElement,
-    okButton: HTMLButtonElement,
-    cancelButton: HTMLButtonElement,
-    hash: string
-  ): Promise<boolean> {
-    const previousHash = location.hash;
-    const activeElement = this._utils.getActiveElement();
-    location.hash = hash;
-    MessageElement.textContent = message;
-    const promise = PromiseUtils.createPromise<boolean>();
-    const handler = (result: boolean) => {
-      cleanUp();
-      promise.resolve(result);
-    };
-    const cancelHandler = () => handler(false);
-    const okHandler = (ev?: Event) => {
-      const activeElement = this._utils.getActiveElement();
-      if (ev instanceof KeyboardEvent && activeElement) {
-        activeElement.click();
-      } else {
-        handler(true);
-      }
-    };
-    const keyHandler = this.defineKeyHandlerForModal(okButton);
-    const cleanUp = () => {
-      cancelButton.removeEventListener('click', cancelHandler);
-      if (okButton != cancelButton) {
-        okButton.removeEventListener('click', okHandler);
-      }
-      this.popKeyHandlers();
-    };
-    cancelButton.addEventListener('click', cancelHandler);
-    if (okButton != cancelButton) {
-      okButton.addEventListener('click', okHandler);
-    }
-    this.pushKeyHandlers(okHandler, cancelHandler, keyHandler);
-    cancelButton.focus();
-    const result = await promise.promise;
-    location.hash = previousHash;
-    if (activeElement) {
-      activeElement.focus();
-    }
-    return result;
   }
 
   public async confirmAsync(message: string): Promise<boolean> {
@@ -249,6 +173,55 @@ export class PopupModalRenderer {
         console.error(e);
       });
       location.hash = '';
+    });
+  }
+
+  public showSupergroupOptions(supergroup: SupergroupType): void {
+    const title = browser.i18n.getMessage('groupOptions', supergroup.name);
+    const modalMenuElement = new ModalMenuElement(title);
+    modalMenuElement.defineAction('edit', browser.i18n.getMessage('buttonEditGroup'), false);
+    modalMenuElement.defineAction('delete', browser.i18n.getMessage('buttonDeleteGroup'), false);
+    modalMenuElement.defineAction('move', browser.i18n.getMessage('moveContainer'), false);
+    modalMenuElement.defineAction('create-container', browser.i18n.getMessage('buttonNewContainer'), false);
+    modalMenuElement.defineAction(
+      'create-temporary-container',
+      browser.i18n.getMessage('buttonNewTemporaryContainer'),
+      false
+    );
+    modalMenuElement.defineAction('done', browser.i18n.getMessage('buttonDone'), true);
+    document.body.appendChild(modalMenuElement);
+    const tabGroupId = TabGroupAttributes.getTabGroupIdFromSupergroupId(supergroup.supergroupId);
+    modalMenuElement.onActionClicked.addListener(async (action) => {
+      modalMenuElement.remove();
+      switch (action) {
+        case 'edit': {
+          document.body.appendChild(new SupergroupEditorElement(supergroup));
+          break;
+        }
+
+        case 'delete': {
+          const answer = await this.confirmAsync(browser.i18n.getMessage('confirmGroupDelete', supergroup.name));
+          if (answer) {
+            await TabGroupDirectory.getInstance().removeSupergroup(tabGroupId);
+          }
+          break;
+        }
+
+        case 'move': {
+          document.body.appendChild(new ModalMoveGroupElement(tabGroupId));
+          break;
+        }
+
+        case 'create-container': {
+          document.body.appendChild(new ContainerEditorElement(undefined, tabGroupId));
+          break;
+        }
+
+        case 'create-temporary-container': {
+          await SupergroupService.getInstance().createChildTemporaryContainer(tabGroupId);
+          break;
+        }
+      }
     });
   }
 

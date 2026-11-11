@@ -20,20 +20,17 @@
 **/
 
 import { PopupUtils } from './legacy/PopupUtils';
-import { PanelWindowsElement } from '../../components/panel-windows';
-import { CtgFrameLayoutElement } from '../../components/ctg/ctg-frame-layout';
+import { getFocusableElements } from './views/focus';
 
 const utils = new PopupUtils();
 
+/** Arrow keys move between the shown screen's rows; Enter clicks the focused one. */
 export class PopupFocusHandlers {
   public readonly cancelHandler: () => void;
   public readonly okHandler: () => void;
   public readonly keyHandler: (event: KeyboardEvent) => boolean;
 
-  private readonly _frameLayoutElement: CtgFrameLayoutElement;
-
-  public constructor(frameLayoutElement: CtgFrameLayoutElement) {
-    this._frameLayoutElement = frameLayoutElement;
+  public constructor() {
     this.cancelHandler = () => void 0;
     this.okHandler = () => {
       const activeElement = this.getActiveElement();
@@ -44,19 +41,12 @@ export class PopupFocusHandlers {
   }
 
   public getActiveElement(): HTMLElement | null {
-    const activeElement = utils.getActiveElement();
-    if (activeElement instanceof PanelWindowsElement) {
-      return activeElement.activeElement;
-    }
-    return activeElement;
+    return utils.getActiveElement();
   }
 
   public getFocasableElements(): HTMLElement[] {
-    const activeFragment = this._frameLayoutElement.getActiveFragment();
-    if (!activeFragment) return [];
-    const builder = activeFragment.builder;
-    if (!builder) return [];
-    return builder.getFocusableElements();
+    const activeScreen = document.querySelector('[data-screen]:not([hidden])');
+    return activeScreen ? getFocusableElements(activeScreen) : [];
   }
 
   private _arrowUpHandler(): boolean {

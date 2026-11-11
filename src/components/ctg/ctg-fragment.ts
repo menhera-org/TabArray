@@ -20,7 +20,7 @@
 **/
 
 import { EventSink } from 'weeg-events';
-import { AbstractFragmentBuilder } from '../../pages/popup-v2/fragments/AbstractFragmentBuilder';
+import { AbstractFragmentBuilder } from '../../pages/debugging/fragments/AbstractFragmentBuilder';
 
 export class CtgFragmentElement extends HTMLElement {
   public readonly onActivated = new EventSink<void>();

@@ -1,0 +1,69 @@
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+
+/*
+  Container Tab Groups
+  Copyright (C) 2023 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+.bottomNavigation {
+  display: block;
+  background-color: var(--background-color);
+  box-shadow: 0 0 0.5rem var(--border-color);
+}
+
+.targets {
+  display: block flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+  overflow-inline: auto;
+  max-inline-size: 32rem;
+  margin: auto;
+}
+
+/* Two classes, to beat the page's button rules (including button:active). */
+.targets > .target {
+  /* The browser's own button font and size, which the shadow DOM version kept. */
+  font: revert;
+  inline-size: auto;
+  min-inline-size: auto;
+  display: block;
+  text-align: center;
+  appearance: none;
+  border: none;
+  outline: none;
+  background-color: unset;
+  color: inherit;
+  padding-block: 0.5em;
+  padding-inline: 0.5em;
+  border-block-end: solid 0.25rem transparent;
+  opacity: var(--opaque-opacity);
+}
+
+.targets > .target.selected {
+  border-block-end-color: var(--accent-color);
+  opacity: 1;
+}
+
+.icon {
+  display: block;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  background-color: var(--text-color);
+  margin: auto;
+  mask: url(/img/firefox-icons/defaultFavicon.svg) center / 75% no-repeat;
+}

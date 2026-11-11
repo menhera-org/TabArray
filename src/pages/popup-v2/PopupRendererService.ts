@@ -19,8 +19,9 @@
   @license
 **/
 
-import { PopupRenderer } from './legacy/PopupRenderer';
+import { PopupModalRenderer } from './legacy/PopupModalRenderer';
 
+/** Holds the popup's one modal renderer, which also owns its keyboard handling. */
 export class PopupRendererService {
   private static readonly _INSTANCE: PopupRendererService = new PopupRendererService();
 
@@ -28,13 +29,9 @@ export class PopupRendererService {
     return this._INSTANCE;
   }
 
-  private readonly _popupRenderer = new PopupRenderer();
+  public readonly modalRenderer = new PopupModalRenderer();
 
   private constructor() {
     // Do nothing.
-  }
-
-  public get popupRenderer(): PopupRenderer {
-    return this._popupRenderer;
   }
 }

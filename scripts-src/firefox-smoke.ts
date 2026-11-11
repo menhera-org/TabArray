@@ -29,8 +29,12 @@
   Options:
     --out DIR          Output directory (default: builds/smoke)
     --page PATH        Extension page (default: pages/popup-v2/popup-v2.html?popup=1)
-    --fragment ID      Close the help drawer and show this popup screen, e.g. fragment-containers
+    --fragment ID      Close the help drawer and click this popup screen's bottom navigation
+                       button (fragment-windows, fragment-containers or fragment-sites)
     --seed             Create a few containers, each with one tab, before the screenshot
+    --eval JS          Run JS in the page after --fragment, e.g. to click something. It is sent
+                       as part of the WebDriver script, not evaluated by the page, and runs 100 ms
+                       after the screen switch so that the new screen is on the page.
     --size WxH         Window size (default: 400x600)
     --image IMAGE      Docker image with Firefox and geckodriver (default: $FIREFOX_SMOKE_IMAGE
                        or selenium/standalone-firefox:latest)
@@ -51,6 +55,7 @@ const { values } = parseArgs({
     page: { type: 'string', default: 'pages/popup-v2/popup-v2.html?popup=1' },
     fragment: { type: 'string' },
     seed: { type: 'boolean', default: false },
+    eval: { type: 'string' },
     size: { type: 'string', default: '400x600' },
     image: { type: 'string', default: process.env.FIREFOX_SMOKE_IMAGE || 'selenium/standalone-firefox:latest' },
   },
@@ -112,26 +117,36 @@ const main = async () => {
     },
   });
   if (seed) {
+    // Without a network these pages fail to load, but the tabs keep their URLs, so sites still show.
     const specs = [
-      ['Work', 'blue', 'briefcase'],
-      ['Shopping', 'pink', 'cart'],
-      ['Banking', 'green', 'dollar'],
-      ['Misc', 'toolbar', 'fence'],
+      ['Work', 'blue', 'briefcase', 'https://docs.example.com/'],
+      ['Shopping', 'pink', 'cart', 'https://shop.example.org/'],
+      ['Banking', 'green', 'dollar', 'https://bank.example.co.jp/'],
+      ['Misc', 'toolbar', 'fence', 'about:blank'],
     ];
-    for (const [name, color, icon] of specs) {
+    for (const [name, color, icon, url] of specs) {
       const identity = await browser.contextualIdentities.create({ name, color, icon });
-      await browser.tabs.create({ cookieStoreId: identity.cookieStoreId, url: 'about:blank', active: false });
+      await browser.tabs.create({ cookieStoreId: identity.cookieStoreId, url, active: false });
     }
   }
 })().then(() => done(null), (e) => done(String(e)));`,
     args: [!!values.seed],
   });
-  if (values.fragment) {
+  if (values.fragment || values.eval) {
     writeJson('run.json', {
       script:
-        "document.querySelector('#drawer')?.hide();" +
-        "document.querySelector('#frame-layout').activateFragment(arguments[0]);",
-      args: [values.fragment],
+        'const [fragment] = arguments;' +
+        'if (fragment) {' +
+        "  document.querySelector('#drawer:not([hidden]) [data-drawer-close]')?.click();" +
+        '  const target = document.querySelector(`[data-target-id="${fragment}"]`);' +
+        '  if (!target) throw new Error(`No navigation button for ${fragment}`);' +
+        '  target.click();' +
+        '}\n' +
+        // React shows the screen after this task ends; WebDriver waits for the returned promise.
+        'return new Promise((resolve) => setTimeout(resolve, 100)).then(() => {\n' +
+        (values.eval ?? '') +
+        '\n});',
+      args: [values.fragment ?? null],
     });
   }
 
