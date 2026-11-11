@@ -26,9 +26,9 @@ import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
 import { TabQueryService } from '../../../lib/tabs/TabQueryService';
 import { TabService } from '../../../lib/tabs/TabService';
 
-import { ScreenTopBar } from '../app/TopBar';
+import { ScreenTopBar } from '../../../frontend/frame/TopBar';
 import { ContainersView, getContainerTree } from '../views/ContainersView';
-import { MenuItem } from '../views/MenuItem';
+import { MenuItem } from '../../../frontend/frame/MenuItem';
 
 import { CompatConsole } from '../../../lib/console/CompatConsole';
 

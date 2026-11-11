@@ -21,18 +21,9 @@
 
 import browser from 'webextension-polyfill';
 
-import '../../../components/help-banner';
+import { HelpBanner } from '../../../frontend/frame/HelpBanner';
 
 import styles from './HelpView.module.css';
-
-declare module 'react' {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace JSX {
-    interface IntrinsicElements {
-      'help-banner': object;
-    }
-  }
-}
 
 export type HelpSettings = {
   firstPartyIsolate: boolean;
@@ -69,7 +60,7 @@ const Checkbox = ({
 /** The help drawer's content: the banner, a few settings and "get started". */
 export const HelpView = ({ settings, onChange, onGetStarted }: HelpViewProps) => (
   <div className={styles.help}>
-    <help-banner />
+    <HelpBanner />
     <hr />
     <div>
       <p>{browser.i18n.getMessage('fpiDescription')}</p>

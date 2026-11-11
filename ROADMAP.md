@@ -68,9 +68,16 @@ We will also check that Tree Style Tab still works with groups synced, the remai
 
 ## 4. Frontend rewrite
 
-The popup and sidebar (#174) move to React 19, which the build now bundles from npm. The popup switched to event-based updates in 11.8.0, but its views are still custom elements that build their DOM by hand, and every new attribute makes them harder to change. Some of these elements are shared with other pages, such as the container editor, so the rewrite covers them too. Multi-select (#386) and the popup ideas in #8 are planned on top of the new frontend.
+The extension's pages move to React 19, which the build now bundles from npm (#174). Their views were custom elements that built their DOM by hand, and every new attribute made them harder to change. Multi-select (#386) and the popup ideas in #8 are planned on top of the new frontend.
 
 The rewrite keeps the current features and layout. Changes that users can see come from the issues in phase 5.
+
+The popup, the sidebar and the Debugging page are done. The other pages follow in this order:
+
+1. The Options page, with its proxy and container-override editors.
+2. The Panorama page.
+3. The dialogs and editors shared by several pages, such as the container editor and the confirmation dialog. These go last, once no page creates them by hand.
+4. The small pages: Cookies, Page action and the index tab.
 
 ## 5. Settings, features and documentation
 

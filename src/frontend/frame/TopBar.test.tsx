@@ -21,8 +21,8 @@
 
 import { describe, expect, test, vi } from 'vitest';
 
-import { render } from '../../../test/render';
-import { MenuItem } from '../views/MenuItem';
+import { render } from '../../test/render';
+import { MenuItem } from './MenuItem';
 import { ScreenTopBar, TopBar } from './TopBar';
 
 const bar = (root: HTMLElement) => root.firstElementChild as HTMLElement;
@@ -31,7 +31,12 @@ const titles = (element: Element) => [...element.children].map((e) => e.getAttri
 describe('TopBar', () => {
   test('puts the active screen heading and items before the global items', () => {
     const { container: root } = render(
-      <TopBar onBack={null} onHelp={() => {}} spinning={false} isPopup={true}>
+      <TopBar
+        onBack={null}
+        drawerButton={{ icon: '/img/firefox-icons/help.svg', label: 'menuItemHelp', onClick: () => {} }}
+        spinning={false}
+        isPopup={true}
+      >
         <ScreenTopBar active={false} heading="Hidden screen" />
         <ScreenTopBar active={true} heading="Shown screen">
           <MenuItem icon="/a.svg" label="buttonNewWindow" iconOnly />
@@ -49,7 +54,12 @@ describe('TopBar', () => {
 
   test('offers "open popup" outside the popup', () => {
     const { container: root } = render(
-      <TopBar onBack={null} onHelp={() => {}} spinning={false} isPopup={false}>
+      <TopBar
+        onBack={null}
+        drawerButton={{ icon: '/img/firefox-icons/help.svg', label: 'menuItemHelp', onClick: () => {} }}
+        spinning={false}
+        isPopup={false}
+      >
         {null}
       </TopBar>
     );
@@ -64,14 +74,24 @@ describe('TopBar', () => {
       click,
       rerender,
     } = render(
-      <TopBar onBack={null} onHelp={onHelp} spinning={false} isPopup={true}>
+      <TopBar
+        onBack={null}
+        drawerButton={{ icon: '/img/firefox-icons/help.svg', label: 'menuItemHelp', onClick: onHelp }}
+        spinning={false}
+        isPopup={true}
+      >
         {null}
       </TopBar>
     );
     click(root.querySelector('[title="menuItemHelp"]'));
     expect(onHelp).toHaveBeenCalled();
     rerender(
-      <TopBar onBack={onBack} onHelp={onHelp} spinning={true} isPopup={true}>
+      <TopBar
+        onBack={onBack}
+        drawerButton={{ icon: '/img/firefox-icons/help.svg', label: 'menuItemHelp', onClick: onHelp }}
+        spinning={true}
+        isPopup={true}
+      >
         {null}
       </TopBar>
     );

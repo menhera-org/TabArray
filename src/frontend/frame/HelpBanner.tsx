@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,22 +19,17 @@
   @license
 **/
 
-export class CtgVerticalLayoutElement extends HTMLElement {
-  public constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-    if (!this.shadowRoot) {
-      throw new Error('Shadow root is null');
+// Defines the element, which Options and Panorama also use outside React.
+import '../../components/help-banner';
+
+declare module 'react' {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace JSX {
+    interface IntrinsicElements {
+      'help-banner': object;
     }
-
-    const styleSheet = document.createElement('link');
-    styleSheet.rel = 'stylesheet';
-    styleSheet.href = '/css/components/ctg/ctg-vertical-layout.css';
-    this.shadowRoot.appendChild(styleSheet);
-
-    const slot = document.createElement('slot');
-    this.shadowRoot.appendChild(slot);
   }
 }
 
-customElements.define('ctg-vertical-layout', CtgVerticalLayoutElement);
+/** The extension's name, version and build checks, as a <help-banner>. */
+export const HelpBanner = () => <help-banner />;

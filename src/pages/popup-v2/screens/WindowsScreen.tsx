@@ -32,9 +32,9 @@ import * as containers from '../../../legacy-lib/modules/containers';
 import { SupergroupEditorElement } from '../../../components/supergroup-editor';
 import { TagEditorElement } from '../../../components/tag-editor';
 
-import { ScreenTopBar } from '../app/TopBar';
+import { ScreenTopBar } from '../../../frontend/frame/TopBar';
 import { WindowsView, WindowsHandlers } from '../views/WindowsView';
-import { MenuItem } from '../views/MenuItem';
+import { MenuItem } from '../../../frontend/frame/MenuItem';
 import { browserTabActions } from '../views/tabActions';
 import { PopupUtils } from '../legacy/PopupUtils';
 

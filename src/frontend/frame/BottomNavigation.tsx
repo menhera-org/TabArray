@@ -19,16 +19,14 @@
   @license
 **/
 
-import browser from 'webextension-polyfill';
-
-import { cssUrl } from '../views/TabFavicon';
+import { cssUrl } from '../cssUrl';
 
 import styles from './BottomNavigation.module.css';
 
 export type NavigationTarget = {
   id: string;
   icon: string;
-  /** i18n message name. */
+  /** Shown text. */
   label: string;
 };
 
@@ -53,7 +51,7 @@ export const BottomNavigation = ({ targets, selected, tooltips, onSelect }: Bott
           onClick={() => onSelect(target.id)}
         >
           <span className={styles.icon} style={{ maskImage: cssUrl(target.icon) }} />
-          <span>{browser.i18n.getMessage(target.label)}</span>
+          <span>{target.label}</span>
         </button>
       ))}
     </div>

@@ -24,9 +24,9 @@ import browser from 'webextension-polyfill';
 import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOpenerService';
 import { DisplayedContainerDao } from '../../../lib/states/DisplayedContainerDao';
 
-import { ScreenTopBar } from '../app/TopBar';
+import { ScreenTopBar } from '../../../frontend/frame/TopBar';
 import { ContainerDetailsView, getContainerTabsByWindow } from '../views/ContainerDetailsView';
-import { MenuItem } from '../views/MenuItem';
+import { MenuItem } from '../../../frontend/frame/MenuItem';
 import { browserTabActions } from '../views/tabActions';
 
 import { ScreenProps, logError } from './common';

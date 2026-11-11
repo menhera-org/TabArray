@@ -63,18 +63,9 @@ body {
   flex: 1;
 }
 
-ctg-top-bar {
-  z-index: 50;
-}
-
-ctg-vertical-layout, ctg-frame-layout {
-  flex: 1;
-  min-inline-size: 0;
-  min-block-size: 0;
-}
-
-ctg-frame-layout {
-  overflow: auto;
+/* The React root; its content lays out as children of the body. */
+#app {
+  display: contents;
 }
 
 #fragment-tab-count {
@@ -114,7 +105,7 @@ ctg-frame-layout {
   user-select: text;
 }
 
-#logs-tbody > tr[data-log-level="warning"] {
+#logs-tbody > tr[data-log-level="warn"] {
   background-color: var(--warning-background-color);
   color: var(--warning-text-color);
 }

@@ -23,8 +23,8 @@ import browser from 'webextension-polyfill';
 import { type ReactNode } from 'react';
 
 // Defines the element, so that React sets the props below as its properties.
-import '../../../components/ctg/ctg-menu-item';
-import { CtgMenuItemDisplayStyle, CtgMenuItemIconMode } from '../../../components/ctg/ctg-menu-item';
+import '../../components/ctg/ctg-menu-item';
+import { CtgMenuItemDisplayStyle, CtgMenuItemIconMode } from '../../components/ctg/ctg-menu-item';
 
 declare module 'react' {
   // eslint-disable-next-line @typescript-eslint/no-namespace

@@ -35,9 +35,9 @@ import { SitesScreen } from '../screens/SitesScreen';
 import { ContainerDetailsScreen } from '../screens/ContainerDetailsScreen';
 import { SiteDetailsScreen } from '../screens/SiteDetailsScreen';
 
-import { TopBar } from './TopBar';
-import { BottomNavigation, NavigationTarget } from './BottomNavigation';
-import { Drawer } from './Drawer';
+import { TopBar } from '../../../frontend/frame/TopBar';
+import { BottomNavigation, NavigationTarget } from '../../../frontend/frame/BottomNavigation';
+import { Drawer } from '../../../frontend/frame/Drawer';
 import { HelpView } from './HelpView';
 import { ThrottledState } from './throttledState';
 import { useHelp } from './useHelp';
@@ -48,9 +48,13 @@ const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 /** The screens on the bottom navigation, in order. */
 export const NAVIGATION_TARGETS: NavigationTarget[] = [
-  { id: 'fragment-windows', icon: '/img/firefox-icons/window.svg', label: 'menuItemWindows' },
-  { id: 'fragment-containers', icon: '/img/firefox-icons/folder.svg', label: 'menuItemMain' },
-  { id: 'fragment-sites', icon: '/img/firefox-icons/defaultFavicon.svg', label: 'menuItemSites' },
+  { id: 'fragment-windows', icon: '/img/firefox-icons/window.svg', label: browser.i18n.getMessage('menuItemWindows') },
+  { id: 'fragment-containers', icon: '/img/firefox-icons/folder.svg', label: browser.i18n.getMessage('menuItemMain') },
+  {
+    id: 'fragment-sites',
+    icon: '/img/firefox-icons/defaultFavicon.svg',
+    label: browser.i18n.getMessage('menuItemSites'),
+  },
 ];
 
 /** Detail screens, with the screen they belong to and go back to. */
@@ -131,7 +135,7 @@ export const App = ({ state, isPopup }: AppProps) => {
       <div className={styles.layout}>
         <TopBar
           onBack={parentId ? () => setActiveId(parentId) : null}
-          onHelp={help.show}
+          drawerButton={{ icon: '/img/firefox-icons/help.svg', label: 'menuItemHelp', onClick: help.show }}
           spinning={spinning}
           isPopup={isPopup}
         >

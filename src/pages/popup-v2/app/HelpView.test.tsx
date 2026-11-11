@@ -22,7 +22,7 @@
 import { expect, test, vi } from 'vitest';
 
 import { render } from '../../../test/render';
-import { Drawer } from './Drawer';
+import { Drawer } from '../../../frontend/frame/Drawer';
 import { HelpView } from './HelpView';
 
 const settings = { firstPartyIsolate: true, languageOverrides: false, uaOverrides: true, perContainerProxy: false };

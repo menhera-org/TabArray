@@ -24,7 +24,7 @@ import browser from 'webextension-polyfill';
 import { TabQueryService } from '../../../lib/tabs/TabQueryService';
 import { CompatConsole } from '../../../lib/console/CompatConsole';
 
-import { ScreenTopBar } from '../app/TopBar';
+import { ScreenTopBar } from '../../../frontend/frame/TopBar';
 import { SitesView, getSiteSummaries } from '../views/SitesView';
 
 import { ScreenProps, logError } from './common';

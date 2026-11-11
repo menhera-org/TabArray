@@ -1,9 +1,8 @@
 /* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
 /* vim: set ts=2 sw=2 et ai : */
-
-/*
+/**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -17,13 +16,8 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
-/* @import '/css/theme.css'; */
-
-@namespace url(http://www.w3.org/1999/xhtml);
-
-:host {
-  display: block flex;
-  flex-direction: column;
-}
+/** CSS url() with the value quoted, so quotes or parentheses in a URL cannot break out. */
+export const cssUrl = (url: string) => `url(${JSON.stringify(url)})`;

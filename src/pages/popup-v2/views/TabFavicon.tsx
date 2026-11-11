@@ -23,8 +23,9 @@ import { TabIconService } from '../../../lib/TabIconService';
 
 import styles from './TabFavicon.module.css';
 
-/** CSS url() with the value quoted, so quotes or parentheses in a favicon URL cannot break out. */
-export const cssUrl = (url: string) => `url(${JSON.stringify(url)})`;
+import { cssUrl } from '../../../frontend/cssUrl';
+
+export { cssUrl };
 
 /**
  * A tab's favicon. Firefox's own chrome:// icons (and a missing icon) are drawn as

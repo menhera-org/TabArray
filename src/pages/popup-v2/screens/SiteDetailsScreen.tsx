@@ -22,7 +22,7 @@
 import { TabQueryService } from '../../../lib/tabs/TabQueryService';
 import { TabService } from '../../../lib/tabs/TabService';
 
-import { ScreenTopBar } from '../app/TopBar';
+import { ScreenTopBar } from '../../../frontend/frame/TopBar';
 import { SiteDetailsView, getSiteTabs, getSiteTabsByContainer } from '../views/SiteDetailsView';
 import { browserTabActions } from '../views/tabActions';
 

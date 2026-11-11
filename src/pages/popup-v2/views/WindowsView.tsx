@@ -41,7 +41,7 @@ import { ContainerRow } from './ContainerRow';
 import { SupergroupRow } from './SupergroupRow';
 import { TagRow } from './TagRow';
 import { TabRow, TabActions } from './TabRow';
-import { MenuItem } from './MenuItem';
+import { MenuItem } from '../../../frontend/frame/MenuItem';
 import { FOCUSABLE } from './focus';
 
 import styles from './WindowsView.module.css';

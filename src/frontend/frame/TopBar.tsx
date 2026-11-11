@@ -22,25 +22,34 @@
 import { createContext, type ReactNode, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { getGlobalMenuActions } from '../globalMenu';
-import { MenuItem } from '../views/MenuItem';
+import { getGlobalMenuActions } from './globalMenu';
+import { MenuItem } from './MenuItem';
 
 import styles from './TopBar.module.css';
 
 /** Where the active screen puts its heading and menu items. */
 const TopBarSlot = createContext<HTMLElement | null>(null);
 
+/** The button that opens the page's drawer. */
+export type DrawerButton = {
+  icon: string;
+  /** i18n message name of the tooltip. */
+  label?: string;
+  onClick: () => void;
+};
+
 type TopBarProps = {
-  /** A back button instead of the help button. */
+  /** A back button instead of the drawer button. */
   onBack: (() => void) | null;
-  onHelp: () => void;
+  drawerButton: DrawerButton;
   spinning: boolean;
+  /** Which global menu items to show (see globalMenu). */
   isPopup: boolean;
   /** The screens, which fill in the top bar through ScreenTopBar. */
   children: ReactNode;
 };
 
-export const TopBar = ({ onBack, onHelp, spinning, isPopup, children }: TopBarProps) => {
+export const TopBar = ({ onBack, drawerButton, spinning, isPopup, children }: TopBarProps) => {
   const [slot, setSlot] = useState<HTMLElement | null>(null);
   const actions = getGlobalMenuActions(isPopup);
   const menuItem = (action: (typeof actions)[number], iconOnly: boolean) => (
@@ -61,10 +70,10 @@ export const TopBar = ({ onBack, onHelp, spinning, isPopup, children }: TopBarPr
         ) : (
           <MenuItem
             className={styles.drawerButton}
-            icon="/img/firefox-icons/help.svg"
-            label="menuItemHelp"
+            icon={drawerButton.icon}
+            label={drawerButton.label}
             iconOnly
-            onClick={onHelp}
+            onClick={drawerButton.onClick}
           />
         )}
         <div className={`${styles.spinner} ${spinning ? '' : styles.spinnerDisabled}`} />

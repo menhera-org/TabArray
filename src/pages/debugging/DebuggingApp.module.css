@@ -19,13 +19,21 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* @import '/css/theme.css'; */
-
-@namespace url(http://www.w3.org/1999/xhtml);
-
-:host {
+/* Top bar, screens, bottom navigation. */
+.layout {
   display: block flex;
+  flex-direction: column;
+  flex: 1;
   min-inline-size: 0;
   min-block-size: 0;
+}
+
+/* Unlike the popup's, the whole frame scrolls, not each screen. */
+.frame {
+  display: block flex;
   flex-direction: column;
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: 0;
+  overflow: auto;
 }
