@@ -103,7 +103,7 @@ export class TabCountFragmentBuilder extends AbstractFragmentBuilder {
         type: 'update-chart',
         value: data,
       },
-      '*'
+      'https://menhera-org.github.io'
     );
   }
 
