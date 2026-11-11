@@ -306,6 +306,10 @@
         "message": "Close window",
         "description": "Tooltip for a button to close all tabs of a window."
     },
+    "confirmWindowClose": {
+        "message": "Do you want to close this window and all its tabs?",
+        "description": "Confirmation message before closing a browser window from the extension."
+    },
     "buttonNewWindow": {
         "message": "New Window",
         "description": "Button to open a new window."

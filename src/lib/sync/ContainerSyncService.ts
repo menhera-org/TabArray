@@ -55,6 +55,13 @@ const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
 
+// Synced colors use pre-153 names so ESR 140 and Firefox 153+ devices can share them.
+// Compare as this Firefox sees them, so gray and toolbar (or violet and ESR's purple) do not ping-pong.
+const sameColor = (a: string, b: string) =>
+  ContextualIdentityService.toSupportedColor(a) == ContextualIdentityService.toSupportedColor(b);
+const toSyncedColor = (syncedColor: string, localColor: string) =>
+  sameColor(syncedColor, localColor) ? syncedColor : ContextualIdentityService.normalizeColor(localColor);
+
 export class ContainerSyncService {
   public static readonly IDENTITY_DELETE_DELAY = 1000 * 60 * 60 * 24 * 90; // 90 days
 
@@ -141,12 +148,12 @@ export class ContainerSyncService {
       } else if (
         data.name != syncedIdentity.name ||
         data.icon != syncedIdentity.icon ||
-        data.color != syncedIdentity.color
+        !sameColor(data.color, syncedIdentity.color)
       ) {
         if (data.updatedTime < metadata.syncedTime) {
           data.name = syncedIdentity.name;
           data.icon = syncedIdentity.icon;
-          data.color = syncedIdentity.color;
+          data.color = toSyncedColor(data.color, syncedIdentity.color);
           data.updatedTime = Date.now();
           metadata.syncedTime = Date.now();
           console.info(
@@ -161,7 +168,7 @@ export class ContainerSyncService {
             contextualIdentityFactory.setParams(syncedIdentity.cookieStore.id, {
               name: data.name,
               icon: data.icon,
-              color: data.color,
+              color: ContextualIdentityService.toSupportedColor(data.color),
             })
           );
           console.info(
@@ -192,9 +199,9 @@ export class ContainerSyncService {
         if (data.name != unsyncedIdentity.name) {
           continue;
         }
-        if (data.icon != unsyncedIdentity.icon || data.color != unsyncedIdentity.color) {
+        if (data.icon != unsyncedIdentity.icon || !sameColor(data.color, unsyncedIdentity.color)) {
           data.icon = unsyncedIdentity.icon;
-          data.color = unsyncedIdentity.color;
+          data.color = toSyncedColor(data.color, unsyncedIdentity.color);
           data.updatedTime = Date.now();
         }
         syncedIdentityMap[userContextId] = {
@@ -224,7 +231,7 @@ export class ContainerSyncService {
         id: newId,
         name: unsyncedIdentity.name,
         icon: unsyncedIdentity.icon,
-        color: unsyncedIdentity.color,
+        color: ContextualIdentityService.normalizeColor(unsyncedIdentity.color),
         updatedTime: Date.now(),
         deletedTime: null,
       };
@@ -254,7 +261,11 @@ export class ContainerSyncService {
         }
         continue;
       }
-      const identity = await contextualIdentityFactory.create({ name: data.name, icon: data.icon, color: data.color });
+      const identity = await contextualIdentityFactory.create({
+        name: data.name,
+        icon: data.icon,
+        color: ContextualIdentityService.toSupportedColor(data.color),
+      });
       console.info(
         'Imported identity from sync storage: name=%s, id=%s, cookieStoreId=%s',
         data.name,

@@ -51,6 +51,12 @@
   --identity-icon-color: #af51f5;
 }
 
+/* Firefox 153 and later */
+[data-identity-color="violet"] {
+  --identity-tab-color: #764edd;
+  --identity-icon-color: #764edd;
+}
+
 [data-identity-icon="fingerprint"] {
   --identity-icon: url("/img/usercontext.svg#fingerprint");
 }

@@ -19,7 +19,13 @@
   @license
 **/
 
+import { ContextualIdentityService } from '../lib/tabGroups/ContextualIdentityService';
+
+// The pre-153 names, which every supported Firefox accepts.
 const COLORS = ['blue', 'turquoise', 'green', 'yellow', 'orange', 'red', 'pink', 'purple', 'toolbar'];
+if (ContextualIdentityService.VIOLET_SUPPORTED) {
+  COLORS.push('violet');
+}
 
 export class ColorPickerElement extends HTMLElement {
   private _radios: HTMLFormElement;
@@ -65,6 +71,8 @@ export class ColorPickerElement extends HTMLElement {
   }
 
   set value(value: string) {
+    // Firefox 153+ reports gray and cyan (#646).
+    value = ContextualIdentityService.toSupportedColor(value);
     if (!COLORS.includes(value)) {
       throw new Error(`Invalid color: ${value}`);
     }

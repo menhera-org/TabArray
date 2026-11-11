@@ -25,11 +25,11 @@ Bugs that can lose tabs or break the UI come first:
 
 | Issue | Problem | Plan |
 |---|---|---|
-| #508 | The sidebar's close button closes Firefox. | Close the sidebar instead. Users can lose tabs, so this goes first. |
-| #646 | "Edit container" does nothing for containers without an icon, and new icons are not saved. | Handle a missing icon in the editor and fix icon saving. |
-| #645 | A site reloads every 2 seconds while the extension is on. | Find which request handler causes the loop and stop it. |
-| #519 | New tabs open in the last-used container. | Open new tabs with no container unless the user chose otherwise. |
-| #411 | Links from other apps open twice when "last active container" is set. | Reproduce on Windows and Linux, then fix the double reopen. |
+| #508 | The sidebar's close button closes Firefox. | The button closes the selected window, which quits Firefox when it is the last one. Ask for confirmation first. |
+| #646 | "Edit container" does nothing for containers without an icon, and new icons are not saved. | Firefox 153 renamed the container colors toolbar and turquoise to gray and cyan, and added violet. Accept both sets of names, so ESR 140 and the latest release both work, including container sync between them. |
+| #645 | A site reloads every 2 seconds while the extension is on. | The content script added `navigator.userAgentData` to every page, even without a user-agent override. Add it only when the override needs it, then ask the reporter to confirm. |
+| #519 | New tabs open in the last-used container. | Works as intended: the "sticky container" setting, on by default, does this. Explain the setting on the issue. |
+| #411 | Links from other apps open twice when "last active container" is set. | After reopening the link in the container, the original tab was also sent to the container picker. Reopen it once and wait for the old tab to close. |
 
 ## 2. Sign-in and compatibility bugs, memory leak
 
@@ -57,7 +57,7 @@ Firefox 139 added native tab groups and the `tabGroups` API. Since 12.0.0 requir
 The plan is to show each container as a native tab group and keep the two in sync:
 
 - Each container that has tabs in a window gets one native group in that window. Pinned tabs and tabs with no container stay outside groups.
-- The group takes the container's name and nearest color. Native groups have no turquoise or "toolbar" color, so those map to cyan and grey.
+- The group takes the container's name and nearest color. Container colors gray (called "toolbar" before Firefox 153) and cyan ("turquoise") map to grey and cyan. Native groups have no violet, so violet maps to purple.
 - Renaming or recoloring either side updates the other.
 - Collapsing a group in the tab bar matches hiding the container in the extension, and the reverse.
 - Sync is on by default, including for existing users after they update, and can be turned off in settings. The release notes explain how.
@@ -89,6 +89,7 @@ New settings start off by default, so current behavior stays the same. Each adds
 | #282 | Mark a single tab to stay loaded when unused tabs are freed from memory. |
 | #355 | Keep container tabs across restarts, saved by the extension as well as by Firefox's session store. |
 | #209 | Open bookmarks in a container, and save a container's tabs as bookmarks. |
+| | Sync container groups between devices, the way containers already sync. Devices on Firefox ESR 140 and on the latest release must be able to share them. |
 | #8 | The remaining popup ideas: an option to collapse the container list by default, a highlight on the active container, and arrow-key navigation. |
 
 Documentation:

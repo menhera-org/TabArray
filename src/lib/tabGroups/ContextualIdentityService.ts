@@ -50,10 +50,33 @@ export class ContextualIdentityService {
     'toolbar': '#7c7c7d',
     'orange': '#ff9f00',
     'purple': '#af51f5',
+    'violet': '#764edd',
   };
+
+  // Firefox 153 renamed these and migrated stored containers; ESR 140 still uses the old names.
+  private static readonly _COLOR_ALIASES: { [color: string]: string } = {
+    'gray': 'toolbar',
+    'cyan': 'turquoise',
+  };
+
+  /** Firefox 153 added violet together with contextualIdentities.getSupportedColors(). */
+  public static readonly VIOLET_SUPPORTED =
+    !!browser.contextualIdentities && 'getSupportedColors' in browser.contextualIdentities;
+
+  /** Maps Firefox 153+ color names to the pre-153 names our artwork and colors use. */
+  public static normalizeColor(color: string): string {
+    return ContextualIdentityService._COLOR_ALIASES[color] ?? color;
+  }
+
+  /** A color name this Firefox accepts: pre-153 names work everywhere, and violet falls back to purple on ESR. */
+  public static toSupportedColor(color: string): string {
+    color = ContextualIdentityService.normalizeColor(color);
+    return color == 'violet' && !ContextualIdentityService.VIOLET_SUPPORTED ? 'purple' : color;
+  }
 
   // TODO: move to non-framework code
   public static getIconUrl(icon: string, color: string): string {
+    color = ContextualIdentityService.normalizeColor(color);
     if (color == 'toolbar') {
       const isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
       color = isDarkTheme ? 'toolbar-dark' : 'toolbar-light';
@@ -62,7 +85,7 @@ export class ContextualIdentityService {
   }
 
   public static getColorCode(color: string): string {
-    return ContextualIdentityService._COLORS[color] as string;
+    return ContextualIdentityService._COLORS[ContextualIdentityService.normalizeColor(color)] as string;
   }
 
   private static readonly INSTANCE = new ContextualIdentityService();

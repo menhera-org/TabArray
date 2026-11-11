@@ -178,60 +178,61 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
       }
     }
 
-    // this is configurable, so deletable
-    delete navigatorPrototypeWrapped.userAgentData;
-    Reflect.defineProperty(navigatorPrototypeWrapped, 'userAgentData', {
-      configurable: true,
-      enumerable: true,
-      get: exportFunction(() => {
-        if (!uaDataEnabled) {
-          return undefined;
-        }
-        return cloneInto(
-          {
-            brands: brands,
+    // Firefox has no navigator.userAgentData. Adding it without a Chromium UA override makes
+    // `'userAgentData' in navigator` true and breaks browser detection on some sites (#645).
+    if (uaDataEnabled) {
+      // this is configurable, so deletable
+      delete navigatorPrototypeWrapped.userAgentData;
+      Reflect.defineProperty(navigatorPrototypeWrapped, 'userAgentData', {
+        configurable: true,
+        enumerable: true,
+        get: exportFunction(() => {
+          return cloneInto(
+            {
+              brands: brands,
 
-            mobile: false,
+              mobile: false,
 
-            platform: getUaDataPlatform(),
+              platform: getUaDataPlatform(),
 
-            toJSON() {
-              return cloneInto(
-                {
-                  brands: this.brands,
-                  mobile: this.mobile,
-                  platform: this.platform,
-                },
-                window
-              );
-            },
-
-            getHighEntropyValues() {
-              return window.Promise.resolve(
-                cloneInto(
+              toJSON() {
+                return cloneInto(
                   {
-                    brands: highEntropyBrands,
+                    brands: this.brands,
                     mobile: this.mobile,
                     platform: this.platform,
-                    platformVersion: '',
-                    architecture: '',
-                    bitness: '',
-                    model: '',
-                    uaFullVersion: '',
-                    fullVersionList: [],
                   },
                   window
-                )
-              );
+                );
+              },
+
+              getHighEntropyValues() {
+                return window.Promise.resolve(
+                  cloneInto(
+                    {
+                      brands: highEntropyBrands,
+                      mobile: this.mobile,
+                      platform: this.platform,
+                      platformVersion: '',
+                      architecture: '',
+                      bitness: '',
+                      model: '',
+                      uaFullVersion: '',
+                      fullVersionList: [],
+                    },
+                    window
+                  )
+                );
+              },
             },
-          },
-          window,
-          {
-            cloneFunctions: true,
-          }
-        );
-      }, window),
-    });
+            window,
+            {
+              cloneFunctions: true,
+            }
+          );
+        }, window),
+      });
+    }
 
     if (!isMozilla) {
       const blockPattern = /^(?:resource|chrome):\/\//;

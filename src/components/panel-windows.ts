@@ -200,8 +200,14 @@ export class PanelWindowsElement extends HTMLElement {
       });
     });
 
-    this.onWindowCloseButtonClicked.addListener(() => {
-      browser.windows.remove(this._selectedWindowId).catch((e) => {
+    this.onWindowCloseButtonClicked.addListener(async () => {
+      const windowId = this._selectedWindowId;
+      // In the sidebar this button looks like "close sidebar", and closing the last window quits Firefox (#508).
+      const confirmed = await this._popupRenderer.modalRenderer.confirmAsync(
+        browser.i18n.getMessage('confirmWindowClose')
+      );
+      if (!confirmed) return;
+      browser.windows.remove(windowId).catch((e) => {
         console.error(e);
       });
     });

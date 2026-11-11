@@ -83,19 +83,16 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
         console.log('Tab %d in active cookie store %s', tabId, cookieStoreId);
         return false;
       } else {
-        browser.tabs
-          .create({
-            cookieStoreId: activeCookieStoreId,
-            url,
-            windowId,
-          })
-          .then(() => {
-            console.log('Reopened %s in container id %s', url, activeCookieStoreId);
-            return browser.tabs.remove(tabId);
-          })
-          .catch((e) => {
-            console.error(e);
-          });
+        // Finish before the blocked request continues, and do not also redirect to the
+        // confirm page, which left a second tab behind when the removal lost the race (#411).
+        await browser.tabs.create({
+          cookieStoreId: activeCookieStoreId,
+          url,
+          windowId,
+        });
+        console.log('Reopened %s in container id %s', url, activeCookieStoreId);
+        await browser.tabs.remove(tabId);
+        return false;
       }
     }
 
