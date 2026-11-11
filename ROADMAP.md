@@ -60,7 +60,7 @@ The plan is to show each container as a native tab group and keep the two in syn
 - The group takes the container's name and nearest color. Native groups have no turquoise or "toolbar" color, so those map to cyan and grey.
 - Renaming or recoloring either side updates the other.
 - Collapsing a group in the tab bar matches hiding the container in the extension, and the reverse.
-- Sync is turned on and off in settings.
+- Sync is on by default, including for existing users after they update, and can be turned off in settings. The release notes explain how.
 - The extension needs the `tabGroups` permission. Firefox does not prompt for it, so users will not see a new permission request.
 - Firefox for Android has no tab groups, so sync only runs on desktop.
 

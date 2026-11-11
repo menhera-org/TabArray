@@ -54,6 +54,15 @@ manifest.version = getBuildVersion();
 const distDir = __dirname + '/../dist';
 fs.mkdirSync(distDir, { recursive: true });
 
+// Weblate names some locale folders with a hyphen (es-ES), but WebExtensions use underscores (es_ES).
+const localesDir = distDir + '/_locales';
+for (const name of fs.readdirSync(localesDir)) {
+  const webExtensionName = name.replace(/-/g, '_');
+  if (webExtensionName != name) {
+    fs.renameSync(`${localesDir}/${name}`, `${localesDir}/${webExtensionName}`);
+  }
+}
+
 const zipDirectoryContents = async (directory: string, outputPath: string) => {
   return new Promise<void>((resolve, reject) => {
     zip(directory, outputPath, { includes: ['./**/{*,.??*}'], excludes: [], cwd: directory }, (err) => {
