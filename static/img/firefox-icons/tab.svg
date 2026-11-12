@@ -1,17 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 26.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="16px" height="16px" viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:none;stroke:#000000;stroke-width:1.5;stroke-miterlimit:10;}
-	.st1{fill:none;}
-	.st2{fill:none;stroke:#FFFFFF;stroke-width:1.5;stroke-miterlimit:10;}
-	.st3{fill:none;stroke:#000000;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:10;}
-	.st4{fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;}
-</style>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="context-fill" fill-opacity="context-fill-opacity">
 <g>
-	<path class="st3" d="M14,13.25H2c-0.69,0-1.25-0.56-1.25-1.25V4c0-0.69,0.56-1.25,1.25-1.25h12c0.69,0,1.25,0.56,1.25,1.25v8
-		C15.25,12.69,14.69,13.25,14,13.25z"/>
-	<rect class="st1" width="16" height="16"/>
+  <path fill-rule="evenodd" d="M8 2c1.455 0 3.056.059 4.777.213l.746.072.258.04A2.76 2.76 0 0 1 16 5.024v5.95c0 1.4-1.049 2.59-2.454 2.737a53.6 53.6 0 0 1-11.068.003A2.76 2.76 0 0 1 0 10.975v-5.95c0-1.4 1.049-2.59 2.454-2.737A54 54 0 0 1 8 2m0 1.5c-1.945 0-3.75.11-5.39.28A1.246 1.246 0 0 0 1.5 5.025v5.95c0 .639.49 1.18 1.133 1.248a52 52 0 0 0 10.758-.003 1.246 1.246 0 0 0 1.109-1.245v-5.95c0-.638-.49-1.18-1.133-1.248A52 52 0 0 0 8 3.5" clip-rule="evenodd" />
 </g>
 </svg>

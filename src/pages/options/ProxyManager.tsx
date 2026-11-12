@@ -118,7 +118,11 @@ export const ProxyManager = () => {
   return (
     <div className={styles.manager}>
       <div className={styles.list}>
-        <button className={styles.newProxy} title={message('buttonAddNewProxy')} onClick={() => setForm(EMPTY_FORM)} />
+        <button
+          className={`ctg-icon-button ${styles.newProxy}`}
+          title={message('buttonAddNewProxy')}
+          onClick={() => setForm(EMPTY_FORM)}
+        />
         <div className={styles.presets}>
           {presets?.map((preset) => (
             <button
@@ -207,8 +211,10 @@ export const ProxyManager = () => {
             <label htmlFor="proxy-dns">{message('proxyDnsRequests')}</label>
           </p>
           <p className={styles.actions}>
-            <button onClick={remove}>{message('buttonDeleteProxy')}</button>
-            <button className={styles.default} onClick={save}>
+            <button className="ctg-button destructive" onClick={remove}>
+              {message('buttonDeleteProxy')}
+            </button>
+            <button className="ctg-button primary" onClick={save}>
               {message('buttonOk')}
             </button>
           </p>

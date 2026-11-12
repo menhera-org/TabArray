@@ -11,10 +11,6 @@
         "message": "Container Tab Groups: trudfenestro",
         "description": "Title of the popup page for browserAction."
     },
-    "buttonHideInactiveContainers": {
-        "message": "Kolapsi aliajn langetojn",
-        "description": "Button label to hide inactive containers on a window."
-    },
     "buttonNewContainer": {
         "message": "Krei novan ujon…",
         "description": "Button label to create a new container."
@@ -30,10 +26,6 @@
     "newContainerNameLabel": {
         "message": "Nomo",
         "description": "Label for inputting the name of a new container."
-    },
-    "newContainerNamePlaceholder": {
-        "message": "Nomo de la ujo",
-        "description": "Placeholder for the input field of the name of a new container."
     },
     "newContainerDialogTitle": {
         "message": "Krei novan ujon",
@@ -63,10 +55,6 @@
         "message": "Montri la langetojn de tiu ujo",
         "description": "Tooltip for the button to unhide the tabs of a container."
     },
-    "tooltipEditContainerButton": {
-        "message": "Redakti tiu ujon",
-        "description": "Tooltip for the button to edit a container."
-    },
     "currentWindow": {
         "message": "Tiu fenestro (#$ID$)",
         "description": "Title of popup section for the current window.",
@@ -90,23 +78,9 @@
             }
         }
     },
-    "tooltipWindowLabel": {
-        "message": "Ŝanĝi al fenestro #$ID$",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
     "tooltipContainerCloseAll": {
         "message": "Fermi ĉiujn langetojn de tiu ujo",
         "description": "Tooltip for a button to close all tabs of a container."
-    },
-    "tooltipContainerDelete": {
-        "message": "Forigi tiun ujon",
-        "description": "Tooltip for a button to permanently delete a container."
     },
     "confirmContainerDelete": {
         "message": "Ĉu vi volas konstante forigi ĉi tiun ujon: $NAME$?",
@@ -157,16 +131,6 @@
     "buttonAboutAddon": {
         "message": "Pli pri Container Tab Groups kaj la recenzoj…",
         "description": "Menu item to open the extension's addons.mozilla.org page."
-    },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
-            }
-        }
     },
     "buttonSettings": {
         "message": "Agordoj",
@@ -233,10 +197,6 @@
     "promptSelectContainer": {
         "message": "Elektu ujon.",
         "description": "Message asking the user to select a container for a new tab."
-    },
-    "labelSelectContainerExternalTabs": {
-        "message": "Elekti ujon kiam ekstera aplikaĵo malfermas langeton",
-        "description": "Option to enable container selection on externally opened tabs."
     },
     "labelExternalTabSelectContainerOption": {
         "message": "Kiam ekstera aplikaĵo malfermas langeton:",
@@ -310,18 +270,6 @@
         "message": "Nova fenestro",
         "description": "Button to open a new window."
     },
-    "buttonSidebar": {
-        "message": "Malfermi Flankan Strion",
-        "description": "Button to open Sidebar."
-    },
-    "optionsHeadingUserData": {
-        "message": "Via datumo",
-        "description": "Heading text of options page for managing user data."
-    },
-    "buttonClear": {
-        "message": "Viŝi",
-        "description": "Button to clear data."
-    },
     "privateBrowsing": {
         "message": "Privata Retumado",
         "description": "Private Browsing page"
@@ -335,10 +283,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "tooltipContainerClearCookie": {
-        "message": "Viŝi ĉiujn kuketojn en la ujo",
-        "description": "Tooltip for a button to clear all cookies in a container."
     },
     "confirmPrivateBrowsingClearCookie": {
         "message": "Ĉu vi volas viŝi kuketojn por privata retumado?",
@@ -369,10 +313,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "optionsHeadingContainerSortOrder": {
-        "message": "Ordigi ujojn",
-        "description": "Heading text of options page for changing container order."
     },
     "optionsDescriptionContainerSortOrder": {
         "message": "Ĉi tiu agordo ne influas aliajn etendaĵojn.",
@@ -493,10 +433,6 @@
     "featureUaOverrides": {
         "message": "Po-ujo User-Agent transpasoj",
         "description": "Label text for UA overrides feature"
-    },
-    "optionsHeadingContainerOverrides": {
-        "message": "Po-ujo transpasoj",
-        "description": "Heading text of options page for container overrides."
     },
     "optionsLabelUserAgent": {
         "message": "User-Agent",
@@ -706,16 +642,6 @@
         "message": "Aldoni novan prokuron",
         "description": "Add new proxy button."
     },
-    "newVersionAvailable": {
-        "message": "Nova versio havebla: $VERSION$",
-        "description": "New version available message.",
-        "placeholders": {
-            "version": {
-                "content": "$1",
-                "example": "1.0.0"
-            }
-        }
-    },
     "saveDebuggingInformation": {
         "message": "Konservi sencimiga informo",
         "description": "Save debugging information button."
@@ -763,14 +689,6 @@
     "extensionUnsigned": {
         "message": "(sensubskribita)",
         "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
-    },
-    "copyCookies": {
-        "message": "Kopii kuketojn",
-        "description": "Copy cookies button or label text."
-    },
-    "copyCookiesTo": {
-        "message": "Kopii kuketojn al:",
-        "description": "Label text for copy cookies to option."
     },
     "copyCookiesFrom": {
         "message": "Kopii kuketojn el:",

@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,30 +19,278 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-* {
-  --text-color: #222;
-  --background-color: #fff;
-  --border-color: #888;
-  --hover-color: rgba(0, 0, 0, 0.1);
-  --secondary-background-color: #d7d7db;
-  --button-text-color: #0033cc;
-  --in-content-link-color: #0033cc;
-  --accent-color: #5eaf30;
-  --overlay-color: rgba(255, 255, 255, .2);
-  --opaque-opacity: .5;
-}
+/*
+  The look of Firefox's own pages: Firefox's design tokens, then base styles for text and form
+  controls. Both are in cascade layers, so any page or component style overrides them.
+*/
 
-@media (prefers-color-scheme: dark) {
-  * {
-    --dummy-rule: 1;
-    --text-color: #fff;
-    --background-color: #0c0c0d;
-    --border-color: #999;
-    --hover-color: rgba(255, 255, 255, 0.1);
-    --secondary-background-color: #4a4a4f;
-    --button-text-color: #aae2ff;
-    --in-content-link-color: #aae2ff;
-    --overlay-color: rgba(0, 0, 0, .2);
-    --opaque-opacity: .5;
+@layer acorn.tokens, ctg.base;
+
+@import url(./vendor/acorn-tokens.css);
+
+@layer ctg.base {
+  :root {
+    color-scheme: light dark;
+    font: message-box;
+    font-size: var(--font-size-root);
+    color: var(--text-color);
+    background-color: var(--background-color-canvas);
+    accent-color: var(--color-accent-primary);
+
+    /* The extension's own names. */
+    --background-color: var(--background-color-box);
+    --hover-color: var(--button-background-color-hover);
+    --secondary-background-color: var(--background-color-box-info);
+    --overlay-color: var(--background-color-overlay);
+    --opaque-opacity: 0.7;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  h1 {
+    font-size: var(--font-size-xxlarge);
+    font-weight: var(--font-weight-heading);
+  }
+
+  h2 {
+    font-size: var(--font-size-heading-large);
+    font-weight: var(--font-weight-heading);
+  }
+
+  h3 {
+    font-size: var(--font-size-heading-medium);
+    font-weight: var(--font-weight-heading);
+  }
+
+  a {
+    color: var(--link-color);
+
+    &:hover {
+      color: var(--link-color-hover);
+    }
+
+    &:hover:active {
+      color: var(--link-color-active);
+    }
+  }
+
+  :focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  :is(button, input, select, textarea) {
+    font: inherit;
+  }
+
+  /* Firefox's moz-button: .ctg-button, with .primary, .ghost or .destructive. */
+  .ctg-button {
+    appearance: none;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-small);
+    min-block-size: var(--button-min-height);
+    margin: 0;
+    padding: var(--button-padding);
+    border: var(--button-border);
+    border-radius: var(--button-border-radius);
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
+    font-size: var(--button-font-size);
+    font-weight: var(--button-font-weight);
+
+    &:hover {
+      background-color: var(--button-background-color-hover);
+      border-color: var(--button-border-color-hover);
+    }
+
+    &:hover:active:not(:disabled) {
+      background-color: var(--button-background-color-active);
+      border-color: var(--button-border-color-active);
+    }
+
+    &:disabled {
+      opacity: var(--button-opacity-disabled);
+    }
+
+    &.primary {
+      background-color: var(--button-background-color-primary);
+      border-color: var(--button-border-color-primary);
+      color: var(--button-text-color-primary);
+
+      &:hover {
+        background-color: var(--button-background-color-primary-hover);
+      }
+
+      &:hover:active:not(:disabled) {
+        background-color: var(--button-background-color-primary-active);
+      }
+    }
+
+    &.ghost {
+      border-color: var(--button-border-color-ghost);
+    }
+
+    &.destructive {
+      background-color: var(--button-background-color-destructive);
+      border-color: var(--button-border-color-destructive);
+      color: var(--button-text-color-destructive);
+
+      &:hover {
+        background-color: var(--button-background-color-destructive-hover);
+      }
+
+      &:hover:active:not(:disabled) {
+        background-color: var(--button-background-color-destructive-active);
+      }
+    }
+  }
+
+  /*
+    An icon button, as on Firefox's toolbars and sidebar: the icon is --icon, drawn in the text
+    color, with a rounded hover background. --icon-button-size sets the clickable size.
+  */
+  .ctg-icon-button {
+    appearance: none;
+    box-sizing: border-box;
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    inline-size: var(--icon-button-size, var(--button-size-icon-small));
+    block-size: var(--icon-button-size, var(--button-size-icon-small));
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: var(--border-radius-small);
+    background-color: transparent;
+    color: inherit;
+
+    &::before {
+      content: '';
+      inline-size: var(--icon-size);
+      block-size: var(--icon-size);
+      background-color: currentColor;
+      mask: var(--icon) center / contain no-repeat;
+    }
+
+    &:hover {
+      background-color: var(--button-background-color-ghost-hover);
+    }
+
+    &:hover:active {
+      background-color: var(--button-background-color-ghost-active);
+    }
+
+    &:focus-visible {
+      outline-offset: var(--focus-outline-inset);
+    }
+  }
+
+  /* Firefox's moz-select. */
+  select {
+    appearance: none;
+    box-sizing: border-box;
+    min-block-size: var(--button-min-height);
+    max-inline-size: 100%;
+    margin: 0;
+    padding-block: var(--button-padding-block);
+    padding-inline: var(--space-medium) calc(var(--space-medium) + var(--icon-size) + var(--space-xsmall));
+    border: var(--border-width) solid var(--border-color-interactive);
+    border-radius: var(--button-border-radius);
+    /* Firefox's arrow-down icon, in the button text color: extension pages cannot use context-fill. */
+    --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23161423'%3E%3Cpath d='M12.72 4.883a.75.75 0 0 1 1.062 1.06l-4.544 4.545c-.33.33-.77.512-1.236.512H8c-.467 0-.907-.182-1.237-.512L2.22 5.944a.75.75 0 0 1 1.06-1.061l4.544 4.543a.25.25 0 0 0 .354 0z'/%3E%3C/svg%3E");
+    background: var(--button-background-color) var(--select-arrow) no-repeat right var(--space-medium) center /
+      var(--icon-size-xsmall);
+    color: var(--button-text-color);
+    font-weight: var(--button-font-weight);
+
+    /* In dark mode, or under a dark Firefox theme (themeColors.ts). */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-color-scheme='light']) & {
+        --select-arrow: var(--select-arrow-dark);
+      }
+    }
+
+    :root[data-color-scheme='dark'] & {
+      --select-arrow: var(--select-arrow-dark);
+    }
+
+    --select-arrow-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fcfbff'%3E%3Cpath d='M12.72 4.883a.75.75 0 0 1 1.062 1.06l-4.544 4.545c-.33.33-.77.512-1.236.512H8c-.467 0-.907-.182-1.237-.512L2.22 5.944a.75.75 0 0 1 1.06-1.061l4.544 4.543a.25.25 0 0 0 .354 0z'/%3E%3C/svg%3E");
+
+    &:dir(rtl) {
+      background-position-x: left var(--space-medium);
+    }
+
+    &:hover {
+      border-color: var(--border-color-interactive-hover);
+      background-color: var(--button-background-color-hover);
+    }
+
+    &:disabled {
+      opacity: var(--button-opacity-disabled);
+    }
+
+    > option {
+      font-weight: var(--font-weight);
+    }
+  }
+
+  /* Firefox's moz-input-text and moz-input-search. */
+  :is(input:is([type='text'], [type='search'], [type='url'], [type='number'], [type='password'], :not([type])), textarea) {
+    box-sizing: border-box;
+    min-block-size: var(--input-min-height);
+    margin: 0;
+    padding-block: var(--space-xsmall);
+    padding-inline: var(--space-medium);
+    border: var(--input-border);
+    border-radius: var(--input-border-radius);
+    background-color: var(--input-background-color);
+    color: var(--input-text-color);
+
+    &:hover:not(:disabled, :focus) {
+      border-color: var(--border-color-interactive-hover);
+    }
+
+    &:focus-visible {
+      outline-offset: var(--focus-outline-inset);
+    }
+
+    &:disabled {
+      opacity: var(--input-opacity-disabled);
+    }
+  }
+
+  input[type='search'] {
+    border-radius: var(--input-search-border-radius);
+  }
+
+  /* Firefox's moz-checkbox: a checkbox followed by its label. */
+  .ctg-checkbox {
+    display: flex;
+    align-items: center;
+    margin-block: var(--space-small);
+
+    > label {
+      flex: 1;
+      min-inline-size: 0;
+    }
+  }
+
+  input:is([type='checkbox'], [type='radio']) {
+    inline-size: var(--checkbox-size);
+    block-size: var(--checkbox-size);
+    margin-block: 0;
+    margin-inline: 0 var(--checkbox-margin-inline);
+    vertical-align: middle;
+  }
+
+  hr {
+    border: none;
+    border-block-start: var(--border-width) solid var(--border-color);
   }
 }

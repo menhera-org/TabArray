@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-@import '/css/theme.css';
+/* Colors come from the page: custom properties inherit into the shadow tree. */
 
 @namespace url(http://www.w3.org/1999/xhtml);
 
@@ -28,22 +28,20 @@
   position: relative;
 }
 
-#button:is(:hover, :focus, :active) {
-  background-color: var(--hover-color);
-}
-
+/* Firefox's toolbar buttons and panel menu items. */
 #button {
   display: block flex;
   flex-direction: row;
-  column-gap: .5em;
+  column-gap: var(--space-small);
   align-items: center;
   min-inline-size: 0;
-  min-block-size: 0;
+  min-block-size: var(--button-min-height);
   margin: 0;
   padding: 0;
   inline-size: 100%;
   appearance: none;
   border: none;
+  border-radius: var(--border-radius-small);
   outline: none;
   background-color: transparent;
   text-align: start;
@@ -51,25 +49,46 @@
   color: inherit;
 }
 
+#button:hover {
+  background-color: var(--button-background-color-ghost-hover);
+}
+
+#button:hover:active {
+  background-color: var(--button-background-color-ghost-active);
+}
+
+#button:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-inset);
+}
+
 #button:not(.icon-only) {
-  padding-inline: .5em;
+  padding-inline: var(--space-small);
+}
+
+#button.icon-only {
+  justify-content: center;
+  inline-size: var(--button-size-icon);
 }
 
 #icon {
   display: block;
-  inline-size: 2em;
-  block-size: 2em;
+  flex-shrink: 0;
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
+}
+
+/* The element sets the mask itself; this keeps it at the icon's size. */
+#icon.masked {
+  background-color: currentColor;
+  mask-size: contain !important;
 }
 
 #icon:not(.masked) {
   background-color: transparent;
-  background-size: 75%;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-}
-
-#icon.masked {
-  background-color: var(--text-color);
 }
 
 #label {
@@ -91,7 +110,15 @@
   inset-block-start: 100%;
   inset-inline-end: 0;
   inline-size: max-content;
-  background-color: var(--background-color);
-  box-shadow: 0 0 .5rem var(--border-color);
   max-inline-size: 50vi;
+  padding-block: var(--panel-padding-block);
+  border: var(--border-width) solid var(--border-color-deemphasized);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--background-color-box);
+  box-shadow: var(--box-shadow-level-3);
+  z-index: 100;
+}
+
+#menu-items ::slotted(ctg-menu-item) {
+  margin-inline: var(--space-xsmall);
 }

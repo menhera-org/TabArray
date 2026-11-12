@@ -23,10 +23,6 @@
         "message": "Reabrir no contedor",
         "description": "Heading text for reopen in container."
     },
-    "newContainerNamePlaceholder": {
-        "message": "Nome do contedor",
-        "description": "Placeholder for the input field of the name of a new container."
-    },
     "newContainerDialogTitle": {
         "message": "Xerar un novo contedor",
         "description": "Title of the dialog prompting for creating a new container."
@@ -35,10 +31,6 @@
         "message": "Editar un contedor",
         "description": "Title of the dialog prompting for editting a container."
     },
-    "tooltipEditContainerButton": {
-        "message": "Editar este contedor",
-        "description": "Tooltip for the button to edit a container."
-    },
     "extensionDescription": {
         "message": "Grupos de lapelas semellantes aos de Chrome usando contedores privados e illados: O xestor de lapelas e grupos definitivo para Firefox.",
         "description": "Description of the extension."
@@ -46,10 +38,6 @@
     "browserActionPopupTitle": {
         "message": "Container Tab Groups: Páxina pop-up",
         "description": "Title of the popup page for browserAction."
-    },
-    "buttonHideInactiveContainers": {
-        "message": "Minimizar os outros contedores",
-        "description": "Button label to hide inactive containers on a window."
     },
     "buttonNewContainer": {
         "message": "Xerar un novo contedor…",
@@ -126,16 +114,6 @@
         "message": "Funcións experimentais",
         "description": "Heading text of options page for experimental addon features."
     },
-    "tooltipWindowLabel": {
-        "message": "Trocar á ventá #$ID$",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
     "tooltipContainerCloseAll": {
         "message": "Pechar tódalas lapelas deste contedor",
         "description": "Tooltip for a button to close all tabs of a container."
@@ -147,20 +125,6 @@
             "name": {
                 "content": "$1",
                 "example": "Container 3"
-            }
-        }
-    },
-    "tooltipContainerDelete": {
-        "message": "Borrar permanentemente este contedor",
-        "description": "Tooltip for a button to permanently delete a container."
-    },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
             }
         }
     },
@@ -322,21 +286,9 @@
         "message": "Sitios",
         "description": "Menu item for sites view"
     },
-    "optionsHeadingUserData": {
-        "message": "Os teus datos",
-        "description": "Heading text of options page for managing user data."
-    },
-    "labelSelectContainerExternalTabs": {
-        "message": "Escoller un contedor cando unha aplicación externa abre unha lapela",
-        "description": "Option to enable container selection on externally opened tabs."
-    },
     "labelGroupIndexOptionCollapsed": {
         "message": "Contedores minimizados",
         "description": "Option to show index tabs for collapsed containers."
-    },
-    "buttonClear": {
-        "message": "Borrar",
-        "description": "Button to clear data."
     },
     "privateBrowsing": {
         "message": "Navegación privada",
@@ -360,10 +312,6 @@
             }
         }
     },
-    "tooltipContainerClearCookie": {
-        "message": "Borrar tódalas cookies deste contedor",
-        "description": "Tooltip for a button to clear all cookies in a container."
-    },
     "confirmPrivateBrowsingClearCookie": {
         "message": "Queres borrar as cookies para a navegación privada?",
         "description": "Confirmation message before clearing cookies for private browsing."
@@ -380,10 +328,6 @@
         "message": "Pechar ventá",
         "description": "Tooltip for a button to close all tabs of a window."
     },
-    "buttonSidebar": {
-        "message": "Abrir a barra lateral",
-        "description": "Button to open Sidebar."
-    },
     "buttonEditContainer": {
         "message": "Editar contedor…",
         "description": "Button to edit a container."
@@ -399,10 +343,6 @@
     "buttonDone": {
         "message": "Finalizado",
         "description": "Button to complete an action."
-    },
-    "optionsHeadingContainerSortOrder": {
-        "message": "Ordenar os contedores",
-        "description": "Heading text of options page for changing container order."
     },
     "optionsDescriptionContainerSortOrder": {
         "message": "Este axuste non afecta a outras extensións.",
@@ -522,10 +462,6 @@
         "message": "Chrome",
         "description": "Chrome user agent"
     },
-    "optionsHeadingContainerOverrides": {
-        "message": "Anulacións por contedor",
-        "description": "Heading text of options page for container overrides."
-    },
     "labelAutoDiscard10800": {
         "message": "3 horas",
         "description": "Label text for autodiscard in 10800 seconds."
@@ -629,16 +565,6 @@
     "buttonDeleteProxy": {
         "message": "Eliminar proxy",
         "description": "Delete proxy button."
-    },
-    "newVersionAvailable": {
-        "message": "Nova versión dispoñible: $VERSION$",
-        "description": "New version available message.",
-        "placeholders": {
-            "version": {
-                "content": "$1",
-                "example": "1.0.0"
-            }
-        }
     },
     "optionEnableSorting": {
         "message": "Activar a clasificación automática de lapelas",
@@ -763,14 +689,6 @@
     "packageIntegrityMismatch": {
         "message": "Incompatibilidade de integridade",
         "description": "Label text indicating the integrity of an extension package does not match the expected value."
-    },
-    "copyCookies": {
-        "message": "Copiar cookies",
-        "description": "Copy cookies button or label text."
-    },
-    "copyCookiesTo": {
-        "message": "Copiar cookies a:",
-        "description": "Label text for copy cookies to option."
     },
     "copyCookiesFrom": {
         "message": "Copiar cookies de:",

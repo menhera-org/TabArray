@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,105 +19,95 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* A tab, as in Firefox's vertical tabs: the container's color runs down the start edge. */
 .tab {
   display: block grid;
-  grid-template-columns: 2em 1fr;
-  padding-inline-end: 1em;
+  grid-template-columns: var(--button-size-icon-small) 1fr;
+  align-items: center;
+  padding-inline: var(--space-xsmall);
 }
 
 .privateIcon {
-  inline-size: 75%;
-  align-self: center;
+  inline-size: var(--icon-size);
   justify-self: center;
 }
 
 .main {
   display: block grid;
-  grid-template-columns: 2em 1fr 2em;
-  border: none;
-  border-inline-start: solid 0.25rem transparent;
+  grid-template-columns: var(--button-size-icon-small) 1fr var(--button-size-icon-small);
+  align-items: center;
+  min-block-size: var(--button-min-height);
+  padding-inline: var(--space-xxsmall) var(--space-xsmall);
+  border-inline-start: solid 3px transparent;
+  border-radius: var(--border-radius-small);
+}
+
+.main:hover {
+  background-color: var(--button-background-color-ghost-hover);
+}
+
+/* The window's active tab, raised like Firefox's selected tab. */
+.main:has(> .active) {
+  background-color: var(--background-color-box);
+  box-shadow: var(--box-shadow-level-1);
 }
 
 .main.selected {
-  outline: solid 2px var(--accent-color);
-  outline-offset: -2px;
-}
-
-.main:is(:hover, :focus-within) {
-  background-color: var(--hover-color);
-}
-
-/* The shadow DOM version's button styles matched the page's, except for these. */
-.main > button {
-  color: inherit;
-  min-inline-size: auto;
-}
-
-.main > button:focus {
-  box-shadow: 0 0 0.25rem 0.25rem var(--accent-color);
-  outline: none;
+  outline: var(--focus-outline-width) solid var(--color-accent-primary);
+  outline-offset: calc(-1 * var(--focus-outline-width));
 }
 
 .tabButton {
+  appearance: none;
   display: block grid;
-  grid-template-columns: 2em 1fr;
-  padding: 0;
+  grid-template-columns: var(--icon-size) 1fr;
+  align-items: center;
+  column-gap: var(--space-small);
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--space-xsmall);
+  border: none;
+  border-radius: var(--border-radius-small);
+  background: none;
+  color: inherit;
+  text-align: start;
+}
+
+.tabButton:focus-visible {
+  outline-offset: var(--focus-outline-inset);
 }
 
 .tabButton.discarded {
-  opacity: 0.75;
+  opacity: 0.7;
 }
 
-.main > .tabButton.active {
-  font-weight: bold;
-  box-shadow: inset 0 0 8px 2px rgba(0, 150, 255, 0.4);
-}
-
-.pinButton,
-.closeButton {
-  background-color: var(--text-color);
-}
-
-.pinButton,
-.closeButton {
-  padding: 0;
+.tabButton.active {
+  font-weight: var(--font-weight-semibold);
 }
 
 .pinButton {
+  --icon: url(/img/firefox-icons/pin.svg);
+  color: var(--text-color-deemphasized);
   opacity: 0;
-  mask: url(/img/firefox-icons/pin-fill.svg) center center / 50% no-repeat;
 }
 
-.pinButton.pinned {
+.pinButton.pinned,
+.main:hover > .pinButton,
+.pinButton:focus-visible {
   opacity: 1;
-}
-
-.pinButton:is(:hover, :focus) {
-  opacity: var(--opaque-opacity) !important;
 }
 
 .closeButton {
-  mask: url(/img/firefox-icons/close.svg) center center / 50% no-repeat;
-  opacity: var(--opaque-opacity);
+  --icon: url(/img/firefox-icons/close.svg);
+  color: var(--text-color-deemphasized);
 }
 
-.closeButton:is(:hover, :focus) {
-  opacity: 1;
+:is(.pinButton, .closeButton):is(:hover, :focus-visible) {
+  color: var(--text-color);
 }
 
 .title {
-  padding-inline: 0.5em;
-  padding-block: 0.5em;
   overflow: hidden;
   white-space: nowrap;
-  position: relative;
-}
-
-.title::before {
-  content: '';
-  display: block;
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(to left, var(--background-color), transparent 2em);
-  pointer-events: none;
+  text-overflow: ellipsis;
 }

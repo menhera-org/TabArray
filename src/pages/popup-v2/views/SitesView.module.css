@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,85 +22,81 @@
 .site {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  column-gap: var(--space-xxsmall);
+  margin-inline: var(--space-xsmall);
+  padding-inline-end: var(--space-xsmall);
+  border-radius: var(--border-radius-small);
 }
 
-/* Undo the page's global button styles, which the shadow DOM used to keep out. */
-.siteButton,
-.closeButton {
-  display: block;
-  appearance: none;
-  border: none;
-  background-color: transparent;
-  outline: none;
-  font: inherit;
-  margin: 0;
-  padding: 0;
-  inline-size: auto;
-  min-inline-size: 0;
-  text-align: start;
-  color: inherit;
+.site:hover {
+  background-color: var(--button-background-color-ghost-hover);
 }
 
+/* The site, its most recently used tab below it, the number of tabs, and a chevron to open it. */
 .siteButton {
+  appearance: none;
   flex: 1;
-  /* Firefox's default button padding, which the shadow DOM version kept. */
-  padding-block: 1px;
-  padding-inline: 4px;
+  display: block grid;
+  grid-template-columns: var(--icon-size) 1fr max-content var(--icon-size-xsmall);
+  align-items: center;
+  column-gap: var(--space-small);
+  min-inline-size: 0;
+  margin: 0;
+  padding-block: var(--space-small);
+  padding-inline: var(--space-small);
+  border: none;
+  border-radius: var(--border-radius-small);
+  background: none;
+  color: inherit;
+  text-align: start;
 }
 
-.siteButton:is(:focus, :hover, :active) {
-  background-color: var(--hover-color);
-  opacity: 1;
+.siteButton::after {
+  content: '';
+  inline-size: var(--icon-size-xsmall);
+  block-size: var(--icon-size-xsmall);
+  background-color: var(--text-color-deemphasized);
+  mask: url(/img/firefox-icons/arrow-right.svg) center / contain no-repeat;
 }
 
-.closeButton {
-  flex: none;
-  align-self: start;
-  inline-size: 2em;
-  block-size: 2em;
-  background-color: var(--text-color);
-  mask: url(/img/firefox-icons/close.svg) center / 50% no-repeat;
-  opacity: var(--opaque-opacity);
+.siteButton:dir(rtl)::after {
+  mask-image: url(/img/firefox-icons/arrow-left.svg);
 }
 
-.closeButton:is(:focus, :hover, :active) {
-  opacity: 1;
+.siteButton:focus-visible {
+  outline-offset: var(--focus-outline-inset);
+}
+
+.siteText {
+  display: block grid;
+  min-inline-size: 0;
 }
 
 .siteLabel {
-  opacity: var(--opaque-opacity);
-  padding-inline: 0.25em;
-  padding-block: 0.5em;
-  display: block;
-}
-
-.siteLabel[data-tab-count]::after {
-  content: ' (' attr(data-tab-count) ')';
-}
-
-.siteTab {
-  display: flex;
-  flex-direction: row;
-  padding-inline-start: 0.5em;
-}
-
-.siteTab::after {
-  content: '';
-  display: block;
-  inline-size: 2em;
-  block-size: 2em;
-  align-self: center;
-  background-color: var(--text-color);
-  mask: url(/img/material-icons/chevron_right.svg) center / 75% no-repeat;
-}
-
-.tabLabel {
-  flex: 1;
-  min-inline-size: 0;
-  align-self: center;
-  padding-inline: 0.5em;
-  padding-block: 0.5em;
+  font-weight: var(--font-weight-semibold);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.tabLabel {
+  color: var(--text-color-deemphasized);
+  font-size: var(--font-size-small);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tabCount {
+  color: var(--text-color-deemphasized);
+}
+
+.closeButton {
+  --icon: url(/img/firefox-icons/close.svg);
+  color: var(--text-color-deemphasized);
+}
+
+.closeButton:is(:hover, :focus-visible) {
+  color: var(--text-color);
 }

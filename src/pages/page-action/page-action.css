@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,62 +21,70 @@
 
 @import url(../../css/theme.css);
 
+/* A panel menu, as Firefox's own panels in the address bar. */
 :root {
-  background-color: var(--background-color);
-  color: var(--text-color);
+  background-color: var(--ctg-theme-background, var(--background-color-box));
+  color: var(--ctg-theme-text, var(--text-color));
 }
 
 body {
   max-inline-size: 30rem;
-  color: inherit !important;
+  padding-block: var(--space-small);
 }
 
 h3 {
-  margin-block: .25rem;
-  margin-block-start: .5rem;
-  padding-inline: 1rem;
+  margin: 0;
+  padding: var(--space-small) var(--space-large);
+  font-size: var(--font-size-root);
+  font-weight: var(--font-weight-semibold);
 }
 
 hr {
-  border: none;
-  block-size: 2px;
-  margin-inline: .5rem;
-  background-color: var(--accent-color);
+  margin-block: var(--space-xsmall);
+  margin-inline: 0;
+  border-block-start-color: var(--panel-separator-color);
 }
 
 #main {
-  margin-inline: .5rem;
-  margin-block-end: .5rem;
+  display: block grid;
+  padding-inline: var(--space-small);
 }
 
 .container-button {
   display: block grid;
-  grid-template-columns: 2em 1fr;
+  grid-template-columns: var(--icon-size) 1fr;
+  align-items: center;
+  column-gap: var(--space-small);
   appearance: none;
+  min-block-size: var(--button-min-height);
+  margin: 0;
+  padding-block: var(--space-xsmall);
+  padding-inline: var(--space-small);
   border: none;
-  background-color: transparent;
-  font: inherit !important;
-  color: var(--text-color) !important;
-  border-radius: .25rem;
-  box-sizing: border-box;
-  inline-size: 100%;
+  border-radius: var(--border-radius-small);
+  background: none;
+  color: inherit;
+  text-align: start;
 }
 
-.container-button:is(:hover, :focus, :active) {
-  background-color: var(--hover-color);
+.container-button:hover {
+  background-color: var(--button-background-color-ghost-hover);
 }
 
-.container-button > * {
-  align-self: center;
+.container-button:hover:active {
+  background-color: var(--button-background-color-ghost-active);
+}
+
+.container-button:focus-visible {
+  outline-offset: var(--focus-outline-inset);
 }
 
 .container-icon {
-  inline-size: 75%;
-  justify-self: center;
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
 }
 
 .container-label {
-  padding: .5rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

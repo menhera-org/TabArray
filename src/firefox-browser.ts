@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,23 +19,14 @@
   @license
 **/
 
-export class SanityCheckService {
-  public static readonly FILES_TO_CHECK: readonly string[] = ['/manifest.json', '/css/theme.css'];
+/*
+  The builds and the tests resolve 'webextension-polyfill' to this module. The polyfill adapts Chrome's
+  callback-based chrome.* API; Firefox has the promise-based browser.* API itself, which is all this
+  extension uses. Its type definitions (@types/webextension-polyfill) are still used.
+*/
 
-  private static readonly INSTANCE = new SanityCheckService();
+import type { Browser } from 'webextension-polyfill';
 
-  public static getInstance(): SanityCheckService {
-    return this.INSTANCE;
-  }
+const browser = (globalThis as unknown as { browser: Browser }).browser;
 
-  private constructor() {
-    // nothing.
-  }
-
-  /**
-   * @throws an error if there is an IO error.
-   */
-  public async checkForFiles(): Promise<void> {
-    await Promise.all(SanityCheckService.FILES_TO_CHECK.map((file) => fetch(file)));
-  }
-}
+export default browser;

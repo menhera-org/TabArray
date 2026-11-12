@@ -1,9 +1,8 @@
 /* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
 /* vim: set ts=2 sw=2 et ai : */
-
-/*
+/**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -17,32 +16,34 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+  @license
+**/
 
-* {
-  --text-color: #222;
-  --background-color: #fff;
-  --border-color: #888;
-  --hover-color: rgba(0, 0, 0, 0.1);
-  --secondary-background-color: #d7d7db;
-  --button-text-color: #0033cc;
-  --in-content-link-color: #0033cc;
-  --accent-color: #5eaf30;
-  --overlay-color: rgba(255, 255, 255, .2);
-  --opaque-opacity: .5;
-}
+export class SanityCheckService {
+  public static readonly FILES_TO_CHECK: readonly string[] = [
+    '/manifest.json',
+    '/css/components/ctg/ctg-menu-item.css',
+  ];
 
-@media (prefers-color-scheme: dark) {
-  * {
-    --dummy-rule: 1;
-    --text-color: #fff;
-    --background-color: #0c0c0d;
-    --border-color: #999;
-    --hover-color: rgba(255, 255, 255, 0.1);
-    --secondary-background-color: #4a4a4f;
-    --button-text-color: #aae2ff;
-    --in-content-link-color: #aae2ff;
-    --overlay-color: rgba(0, 0, 0, .2);
-    --opaque-opacity: .5;
+  private static readonly INSTANCE = new SanityCheckService();
+
+  public static getInstance(): SanityCheckService {
+    return this.INSTANCE;
+  }
+
+  private constructor() {
+    // nothing.
+  }
+
+  /**
+   * @throws an error if there is an IO error.
+   */
+  public async checkForFiles(): Promise<void> {
+    await Promise.all(
+      SanityCheckService.FILES_TO_CHECK.map(async (file) => {
+        const response = await fetch(file);
+        if (!response.ok) throw new Error(`${file}: ${response.status}`);
+      })
+    );
   }
 }

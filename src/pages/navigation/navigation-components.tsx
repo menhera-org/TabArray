@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,11 +21,7 @@
 
 import { DisplayedContainer } from 'weeg-containers';
 
-import { DarkThemeMonitor } from '../../lib/themes/DarkThemeMonitor';
-
 import browser from 'webextension-polyfill';
-
-const darkThemeMonitor = new DarkThemeMonitor();
 
 export const Button = ({
   tooltipText,
@@ -42,19 +38,10 @@ export const Button = ({
   onClick?: () => void;
   maskColor?: string;
 }) => {
-  let iconStyle;
-  if (!maskColor) {
-    if (darkThemeMonitor.isDarkTheme) {
-      maskColor = '#fff';
-    } else {
-      maskColor = '#000';
-    }
-  }
-  if (useIconMask) {
-    iconStyle = { backgroundColor: maskColor, mask: `url(${iconUrl}) center center/75% no-repeat` };
-  } else {
-    iconStyle = { background: `no-repeat center/75% url(${iconUrl})` };
-  }
+  // Without a container color, the icon takes the text color.
+  const iconStyle = useIconMask
+    ? { backgroundColor: maskColor || 'currentColor', mask: `url(${iconUrl}) center / contain no-repeat` }
+    : { background: `no-repeat center / contain url(${iconUrl})` };
   return (
     <button className="container-button" title={tooltipText} onClick={() => onClick && onClick()}>
       <span className="container-button-icon" style={iconStyle}></span>

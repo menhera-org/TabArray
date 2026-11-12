@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,11 +20,13 @@
 */
 
 .header {
-  display: block;
+  display: block grid;
+  row-gap: var(--space-xsmall);
   position: sticky;
   inset-block-start: 0;
-  background-color: var(--overlay-color);
-  backdrop-filter: blur(1rem);
+  padding-block: var(--space-small);
+  padding-inline: var(--space-small);
+  background-color: var(--ctg-theme-background, var(--background-color-canvas));
   z-index: 10;
 }
 
@@ -33,82 +35,69 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-inline: 1rem;
+  column-gap: var(--space-xxsmall);
 }
 
-.headerWindow {
-  padding-block: 0.5rem;
-  font-weight: bold;
-}
-
-.headerContainer {
-  block-size: 2rem;
-}
-
-/* As specific as the old select.window-select.browser-style, to beat extension.css. */
-select.windowSelect:global(.browser-style) {
-  display: block;
+.windowSelect {
   flex: 1;
   min-inline-size: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: bold;
 }
 
 .tabCount {
-  margin-inline: 0.5rem;
-  opacity: var(--opaque-opacity);
+  margin-inline: var(--space-xsmall);
+  color: var(--text-color-deemphasized);
 }
 
+/* Firefox's moz-input-search: the magnifier inside a rounded field. */
 .searchWrapper {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  border-block-end: solid 2px transparent;
+  position: relative;
   flex: 1;
-  /* The page makes boxes border-box; the shadow DOM did not, and the underline sat below the bar. */
-  box-sizing: content-box;
-  block-size: 100%;
-  margin-inline-end: 0.5rem;
+  min-inline-size: 0;
+  margin-inline-end: var(--space-xsmall);
 }
 
 .searchWrapper::before {
-  display: block;
   content: '';
-  inline-size: 2.5em;
-  block-size: 100%;
-  mask: url(/img/firefox-icons/search.svg) center center / 50% no-repeat;
-  background-color: var(--text-color);
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--space-medium);
+  inline-size: var(--input-search-icon-size);
+  background-color: var(--text-color-deemphasized);
+  mask: url(/img/firefox-icons/search.svg) center / contain no-repeat;
+  pointer-events: none;
 }
 
-.searchWrapper:focus-within {
-  outline: none;
-  border-color: var(--accent-color);
-}
-
-/* Two classes, to beat the page's input rule the way the old id selector did. */
-.searchWrapper > .search {
-  display: grid;
+.search {
   inline-size: 100%;
-  border: none;
-  outline: none;
-  padding: 0;
-  margin: 0;
-  background-color: transparent;
-  color: inherit;
+  padding-inline-start: calc(var(--space-medium) + var(--input-search-icon-size) + var(--space-small));
 }
 
 .moreContainers,
 .actions {
-  border-block-start: solid 1px var(--border-color);
+  margin-block-start: var(--space-small);
+  padding-block-start: var(--space-xsmall);
+  border-block-start: var(--border-width) solid var(--border-color-deemphasized);
 }
 
 .searchResultsContainers:not(:empty) {
-  border-block-end: solid 1px var(--border-color);
+  margin-block-end: var(--space-small);
+  padding-block-end: var(--space-xsmall);
+  border-block-end: var(--border-width) solid var(--border-color-deemphasized);
 }
 
 .moreContainers > summary {
-  font-weight: bold;
-  margin-block-end: 0;
-  padding: 0.5em;
+  margin-inline: var(--space-xsmall);
+  padding-block: var(--space-small);
+  padding-inline: var(--space-small);
+  border-radius: var(--border-radius-small);
+  color: var(--text-color-deemphasized);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+}
+
+.moreContainers > summary:hover {
+  background-color: var(--button-background-color-ghost-hover);
 }

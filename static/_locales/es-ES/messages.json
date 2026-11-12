@@ -11,10 +11,6 @@
         "message": "Container Tab Groups: Página de pop-up",
         "description": "Title of the popup page for browserAction."
     },
-    "buttonHideInactiveContainers": {
-        "message": "Contraer otros contenedores",
-        "description": "Button label to hide inactive containers on a window."
-    },
     "buttonNewContainer": {
         "message": "Crear un nuevo contenedor…",
         "description": "Button label to create a new container."
@@ -30,10 +26,6 @@
     "newContainerNameLabel": {
         "message": "Nombre",
         "description": "Label for inputting the name of a new container."
-    },
-    "newContainerNamePlaceholder": {
-        "message": "Nombre del contenedor",
-        "description": "Placeholder for the input field of the name of a new container."
     },
     "newContainerDialogTitle": {
         "message": "Crear un nuevo contenedor",
@@ -63,10 +55,6 @@
         "message": "Mostrar las pestañas de este contenedor",
         "description": "Tooltip for the button to unhide the tabs of a container."
     },
-    "tooltipEditContainerButton": {
-        "message": "Editar este contenedor",
-        "description": "Tooltip for the button to edit a container."
-    },
     "currentWindow": {
         "message": "Esta ventana (#$ID$)",
         "description": "Title of popup section for the current window.",
@@ -90,23 +78,9 @@
             }
         }
     },
-    "tooltipWindowLabel": {
-        "message": "Pasar a la ventana #$ID$",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
     "tooltipContainerCloseAll": {
         "message": "Cerrar todas las pestañas de este contenedor",
         "description": "Tooltip for a button to close all tabs of a container."
-    },
-    "tooltipContainerDelete": {
-        "message": "Eliminar permanentemente este contenedor",
-        "description": "Tooltip for a button to permanently delete a container."
     },
     "confirmContainerDelete": {
         "message": "¿Desea eliminar permanentemente este contenedor: $NAME$?",
@@ -157,16 +131,6 @@
     "buttonAboutAddon": {
         "message": "Más información sobre Container Tab Groups y opiniones…",
         "description": "Menu item to open the extension's addons.mozilla.org page."
-    },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
-            }
-        }
     },
     "buttonSettings": {
         "message": "Ajustes",
@@ -233,10 +197,6 @@
     "promptSelectContainer": {
         "message": "Por favor, seleccione un contenedor para abrir esta pestaña.",
         "description": "Message asking the user to select a container for a new tab."
-    },
-    "labelSelectContainerExternalTabs": {
-        "message": "Seleccionar un contenedor cuando una aplicación externa abre una pestaña",
-        "description": "Option to enable container selection on externally opened tabs."
     },
     "labelExternalTabSelectContainerOption": {
         "message": "Cuando una aplicación externa abre una pestaña:",
@@ -310,18 +270,6 @@
         "message": "Nueva ventana",
         "description": "Button to open a new window."
     },
-    "buttonSidebar": {
-        "message": "Abrir barra lateral",
-        "description": "Button to open Sidebar."
-    },
-    "optionsHeadingUserData": {
-        "message": "Sus datos",
-        "description": "Heading text of options page for managing user data."
-    },
-    "buttonClear": {
-        "message": "Borrar",
-        "description": "Button to clear data."
-    },
     "privateBrowsing": {
         "message": "Navegación privada",
         "description": "Private Browsing page"
@@ -335,10 +283,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "tooltipContainerClearCookie": {
-        "message": "Limpiar todas las cookies de este contenedor",
-        "description": "Tooltip for a button to clear all cookies in a container."
     },
     "confirmPrivateBrowsingClearCookie": {
         "message": "¿Desea limpiar cookies para la navegación privada?",
@@ -369,10 +313,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "optionsHeadingContainerSortOrder": {
-        "message": "Ordenar contenedores",
-        "description": "Heading text of options page for changing container order."
     },
     "optionsDescriptionContainerSortOrder": {
         "message": "Este ajuste no afecta a otras extensiones.",
@@ -518,10 +458,6 @@
         "message": "Anulaciones del agente del usuario por contenedor",
         "description": "Label text for UA overrides feature"
     },
-    "optionsHeadingContainerOverrides": {
-        "message": "Anulaciones por contenedor",
-        "description": "Heading text of options page for container overrides."
-    },
     "focusToThisContainer": {
         "message": "Centrarse en este contenedor",
         "description": "Button to focus to this container."
@@ -646,16 +582,6 @@
         "message": "Ajustes de Firefox",
         "description": "Label text for firefox settings tab."
     },
-    "newVersionAvailable": {
-        "message": "Disponible una nueva versión $VERSION$",
-        "description": "New version available message.",
-        "placeholders": {
-            "version": {
-                "content": "$1",
-                "example": "1.0.0"
-            }
-        }
-    },
     "debuggingInformation": {
         "message": "Información de depuración",
         "description": "Debugging information page."
@@ -767,14 +693,6 @@
     "copyCookiesFrom": {
         "message": "Copiar las cookies de:",
         "description": "Label text for copy cookies from option."
-    },
-    "copyCookiesTo": {
-        "message": "Copiar las cookies a:",
-        "description": "Label text for copy cookies to option."
-    },
-    "copyCookies": {
-        "message": "Copiar las cookies",
-        "description": "Copy cookies button or label text."
     },
     "optionAutoCenterInSidebar": {
         "message": "Auto-central lengüeta activa en barra lateral"

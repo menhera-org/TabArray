@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -124,18 +124,3 @@ export const getSerializedConfig = async () => {
   serialized.privacyConfig = await ConfigurationSerializer.serializeConfiguration(privacyConfig);
   return serialized;
 };
-
-export const onConfigChanged = new EventSink<void>();
-export const onPrivacyConfigChanged = new EventSink<void>();
-
-for (const key in config) {
-  config[key as keyof typeof config].onChanged.addListener(() => {
-    onConfigChanged.dispatch();
-  });
-}
-
-for (const key in privacyConfig) {
-  privacyConfig[key as keyof typeof privacyConfig].onChanged.addListener(() => {
-    onPrivacyConfigChanged.dispatch();
-  });
-}

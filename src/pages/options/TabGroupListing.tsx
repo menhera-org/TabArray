@@ -152,8 +152,14 @@ export const TabGroupListing = ({
               <div className={styles.name}>{row.name}</div>
               {sortable && (
                 <>
-                  <button className={`${styles.move} ${styles.up}`} onClick={() => move(row.tabGroupId, true)} />
-                  <button className={`${styles.move} ${styles.down}`} onClick={() => move(row.tabGroupId, false)} />
+                  <button
+                    className={`ctg-icon-button ${styles.move} ${styles.up}`}
+                    onClick={() => move(row.tabGroupId, true)}
+                  />
+                  <button
+                    className={`ctg-icon-button ${styles.move} ${styles.down}`}
+                    onClick={() => move(row.tabGroupId, false)}
+                  />
                 </>
               )}
             </div>

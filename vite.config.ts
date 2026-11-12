@@ -23,7 +23,7 @@ import path from 'node:path';
 import { defineConfig } from 'vite';
 
 import { injectFilename } from './build-plugins/inject-filename.ts';
-import { BUILD_TARGET } from './build-plugins/target.ts';
+import { BROWSER_ALIAS, BUILD_FIREFOX_VERSION, BUILD_TARGET } from './build-plugins/target.ts';
 
 // Extension pages. Output paths mirror their location under src/.
 const PAGES = [
@@ -50,8 +50,12 @@ export default defineConfig({
   publicDir: path.resolve(import.meta.dirname, 'static'),
   base: '/',
   plugins: [{ ...injectFilename(), enforce: 'pre' }],
+  resolve: { alias: BROWSER_ALIAS },
   css: {
     transformer: 'lightningcss',
+    // Vite does not pass build.target on to Lightning CSS, which would then replace light-dark()
+    // and other modern CSS with fallbacks that the themed popup (#33) cannot switch.
+    lightningcss: { targets: { firefox: BUILD_FIREFOX_VERSION << 16 } },
   },
   build: {
     outDir: path.resolve(import.meta.dirname, 'dist'),

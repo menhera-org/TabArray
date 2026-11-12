@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,14 +19,18 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* A table in a card, as in Firefox's settings. */
 .listing {
   inline-size: max-content;
   max-inline-size: 100%;
   display: block grid;
-  border-radius: 0.5em;
-  border: 1px solid var(--border-color);
-  margin-block: 0.5em;
+  margin-block: var(--space-small);
+  border: var(--card-border);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--background-color-box);
+  box-shadow: var(--box-shadow-level-1);
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .rows {
@@ -40,41 +44,56 @@
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
   align-items: end;
-  background-color: var(--hover-color);
+  color: var(--text-color-deemphasized);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
 }
 
 .header > * {
   text-align: center;
-  padding: 0.5em;
+  padding: var(--space-small) var(--space-medium);
 }
 
-.header > :not(:first-child) {
-  border-inline-start: 1px solid var(--border-color);
+.header > :first-child {
+  text-align: start;
 }
 
 .row {
   display: block grid;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
-  border-block-start: 1px solid var(--border-color);
+  align-items: center;
+  column-gap: var(--space-small);
+  padding-inline-end: var(--space-small);
+  border-block-start: var(--border-width) solid var(--border-color-deemphasized);
+}
+
+.row:hover {
+  background-color: var(--button-background-color-ghost-hover);
 }
 
 .rowInner {
   display: block flex;
   flex-direction: row;
+  align-items: center;
+  column-gap: var(--space-xxsmall);
+  padding-inline-start: var(--space-medium);
+  min-block-size: var(--button-min-height);
 }
 
 .icon {
-  inline-size: 2em;
+  flex-shrink: 0;
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
   background-position: center;
-  background-size: 75%;
+  background-size: contain;
   background-repeat: no-repeat;
   mask-position: center;
   mask-repeat: no-repeat;
 }
 
 .icon.masked {
-  background-color: var(--text-color);
+  background-color: currentColor;
 }
 
 .name {
@@ -84,29 +103,21 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 0.5em;
+  padding: var(--space-small);
 }
 
 .move {
-  /* The browser's button font, which sets the em-based size, as in the shadow DOM version. */
-  font: revert;
-  background-color: var(--text-color);
-  opacity: var(--opaque-opacity);
-  appearance: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  inline-size: 2em;
+  color: var(--text-color-deemphasized);
 }
 
-.move:is(:hover, :focus) {
-  opacity: 1;
+.move:is(:hover, :focus-visible) {
+  color: var(--text-color);
 }
 
 .up {
-  mask: url(/img/material-icons/arrow_upward.svg) no-repeat center / contain;
+  --icon: url(/img/firefox-icons/shaft-arrow-up.svg);
 }
 
 .down {
-  mask: url(/img/material-icons/arrow_downward.svg) no-repeat center / contain;
+  --icon: url(/img/firefox-icons/shaft-arrow-down.svg);
 }

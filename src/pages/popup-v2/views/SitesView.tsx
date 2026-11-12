@@ -71,15 +71,14 @@ export const SitesView = ({ sites, onSiteClick, onSiteClose }: SitesViewProps) =
     {sites.map((site) => (
       <div className={styles.site} key={site.domain}>
         <button className={styles.siteButton} onClick={() => onSiteClick(site.domain)} {...FOCUSABLE}>
-          <span className={styles.siteLabel} data-tab-count={site.tabCount}>
-            {site.domain || '(null)'}
-          </span>
-          <span className={styles.siteTab}>
-            <TabFavicon className={styles.tabIcon} url={site.favIconUrl} />
+          <TabFavicon className={styles.tabIcon} url={site.favIconUrl} />
+          <span className={styles.siteText}>
+            <span className={styles.siteLabel}>{site.domain || '(null)'}</span>
             <span className={styles.tabLabel}>{site.title}</span>
           </span>
+          <span className={styles.tabCount}>{site.tabCount}</span>
         </button>
-        <button className={styles.closeButton} onClick={() => onSiteClose(site.domain)} />
+        <button className={`ctg-icon-button ${styles.closeButton}`} onClick={() => onSiteClose(site.domain)} />
       </div>
     ))}
   </>

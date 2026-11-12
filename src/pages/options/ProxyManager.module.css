@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,11 +19,16 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* A list of proxies beside the editor, in one card. */
 .manager {
   display: block flex;
   flex-direction: row;
-  border: solid 1px var(--border-color);
+  border: var(--card-border);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--background-color-box);
+  box-shadow: var(--box-shadow-level-1);
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .list {
@@ -31,86 +36,66 @@
   display: block flex;
   inline-size: 30%;
   flex-direction: column;
+  row-gap: var(--space-xxsmall);
+  padding: var(--space-xsmall);
   overflow-inline: hidden;
 }
 
 .presets {
   display: block flex;
   flex-direction: column;
+  row-gap: var(--space-xxsmall);
   overflow-inline: hidden;
   flex: 1;
-  border-block-start: solid 1px var(--border-color);
   min-inline-size: 0;
 }
 
-.presets > button,
-.newProxy {
-  display: block;
+.presets > button {
   appearance: none;
+  display: block;
+  min-inline-size: 0;
+  min-block-size: var(--button-min-height);
+  margin: 0;
+  padding-block: var(--space-xsmall);
+  padding-inline: var(--space-small);
   border: none;
-  padding-inline: 1em;
-  padding-block: 0.5em;
+  border-radius: var(--border-radius-small);
+  background: none;
+  color: inherit;
+  text-align: start;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-inline-size: 0;
-  background-color: unset;
-  color: inherit;
-  text-align: start;
 }
 
-.list > .newProxy {
-  block-size: 2em;
-  background-color: var(--text-color);
-  mask: url(/img/firefox-icons/plus.svg) center / 1em no-repeat;
-  opacity: var(--opaque-opacity);
-}
-
-.list > .newProxy:is(:hover, :active) {
-  opacity: 1;
+.presets > button:hover {
+  background-color: var(--button-background-color-ghost-hover);
 }
 
 .presets > button.selected {
-  color: var(--background-color);
-  background-color: var(--button-text-color);
+  background-color: color-mix(in srgb, var(--color-accent-primary) 15%, transparent);
+  color: var(--color-accent-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.newProxy {
+  --icon: url(/img/firefox-icons/plus.svg);
+  --icon-button-size: var(--button-size-icon);
+  align-self: end;
 }
 
 .editorDeck {
-  border-inline-start: solid 1px var(--border-color);
+  border-inline-start: var(--border-width) solid var(--border-color-deemphasized);
   min-inline-size: 0;
   flex: 1;
-  padding: 1em;
-}
-
-/* The editor, formerly a shadow DOM of its own. */
-.editor :is(a, button) {
-  color: var(--button-text-color);
-  background-color: transparent;
-  border: none;
-  appearance: none;
-}
-
-.editor :is(a, button):active {
-  opacity: 0.75;
-}
-
-/* Only inputs with these type attributes: the text inputs have none, as before. */
-.editor :is(input:is([type='text'], [type='search'], [type='number'], [type='password']), button, select, textarea) {
-  font: inherit;
-  display: block;
-  box-sizing: border-box;
-  margin: 0;
-}
-
-.editor button {
-  padding-inline: 1em;
-  padding-block: 0.5em;
-  text-align: start;
+  padding: var(--space-large);
 }
 
 .editor p {
   display: block flex;
   flex-direction: row;
+  align-items: center;
+  column-gap: var(--space-small);
 }
 
 .editor p[hidden] {
@@ -119,8 +104,8 @@
 
 .editor p > label {
   display: block;
-  padding-inline: 1em;
-  align-items: baseline;
+  flex: 1;
+  min-inline-size: 0;
 }
 
 .editor p > :is(input:not([type='checkbox']), select) {
@@ -133,25 +118,8 @@
 }
 
 .editor .actions {
-  margin-block: 1em;
-  display: block flex;
-  flex-direction: row;
+  margin-block: var(--space-large) 0;
+  justify-content: flex-end;
   flex-wrap: wrap;
-  justify-content: space-around;
-  row-gap: 1em;
-}
-
-.actions > button {
-  inline-size: max-content;
-  border-radius: 0.25em;
-}
-
-.actions > button:focus {
-  box-shadow: 0 0 0.25rem 0.25rem var(--accent-color);
-  outline: none;
-}
-
-.actions > button.default {
-  background-color: #0033cc;
-  color: #fff;
+  gap: var(--space-small);
 }

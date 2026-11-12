@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,36 +19,30 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* No browser-style classes here: extension.css never reached these inside the old shadow DOM. */
 .autoclean {
-  align-self: center;
-  margin-inline-start: 1em;
-  margin-bottom: unset;
-  text-align: center;
+  justify-self: center;
 }
 
+.autoclean > input {
+  margin: 0;
+}
+
+/* Fields in table cells: the standard field, slightly smaller. */
 .text {
   inline-size: 100%;
   min-inline-size: 0;
-  box-sizing: border-box;
-  margin: 0;
-  font: inherit;
-  border: none;
-  border-radius: 0;
-  padding: 0.5em;
-  color: inherit;
-  background-color: transparent;
-  align-self: stretch;
+  min-block-size: var(--button-min-height-small);
 }
 
 .userAgent {
   display: block flex;
   flex-direction: row;
+  align-items: center;
+  column-gap: var(--space-small);
 }
 
 .userAgentSelect,
 .proxies {
-  margin-inline: 0.5rem;
-  align-self: center;
-  margin-block: 0 !important;
+  min-block-size: var(--button-min-height-small);
+  padding-block: 0;
 }

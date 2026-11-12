@@ -87,12 +87,9 @@ describe('SitesView', () => {
 
   test('shows each site with its tab count and latest tab', () => {
     const { container } = render(<SitesView sites={sites} onSiteClick={() => {}} onSiteClose={() => {}} />);
-    const labels = [...container.querySelectorAll('[data-tab-count]')];
-    expect(labels.map((l) => [l.textContent, l.getAttribute('data-tab-count')])).toEqual([
-      ['example.com', '2'],
-      ['(null)', '1'],
-    ]);
-    expect(container.textContent).toContain('Example');
+    const rows = [...container.querySelectorAll('[data-popup-focusable]')];
+    // The site, then its latest tab's title, then the number of tabs.
+    expect(rows.map((row) => row.textContent)).toEqual(['example.comExample2', '(null)Other1']);
   });
 
   test('reports clicks and closes with the real domain', () => {

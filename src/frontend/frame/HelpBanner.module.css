@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,8 +22,7 @@
 /* Formerly the shadow DOM of <help-banner>. */
 /* :any-link, to beat the dialogs' link color when the banner shows in one, as the shadow DOM did. */
 .banner a:any-link {
-  text-decoration: none;
-  color: var(--accent-color);
+  color: var(--link-color);
 }
 
 .banner * {
@@ -47,11 +46,11 @@
 .version.official::after {
   content: '';
   display: inline-block;
-  inline-size: 2em;
-  block-size: 2em;
-  margin-inline-start: 0.5em;
-  background-color: var(--accent-color);
-  mask: url(/img/firefox-icons/checkmark-circle-fill.svg) no-repeat center / 75%;
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
+  margin-inline-start: var(--space-small);
+  background-color: var(--icon-color-success);
+  mask: url(/img/firefox-icons/checkmark-circle-fill.svg) no-repeat center / contain;
   vertical-align: middle;
 }
 

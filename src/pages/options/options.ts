@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,12 +19,10 @@
   @license
 **/
 
-import browser from 'webextension-polyfill';
+import '../../frontend/documentLocale';
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { OptionsApp } from './OptionsApp';
-
-document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
 createRoot(document.getElementById('app') as HTMLElement).render(createElement(OptionsApp));

@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,4 +21,20 @@
 
 import browser from 'webextension-polyfill';
 
-export type SyncedCookie = Omit<browser.Cookies.Cookie, 'storeId'>;
+import { SanityCheckService } from '../lib/SanityCheckService';
+import { CompatConsole } from '../lib/console/CompatConsole';
+
+import { everyMinuteAlarm } from './includes/alarms';
+
+const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
+
+// The background page outlives its files when the XPI or the add-on's directory is replaced or removed.
+// Reloading then loads the files that are there now, or unloads the extension.
+everyMinuteAlarm.onAlarm.addListener(() => {
+  SanityCheckService.getInstance()
+    .checkForFiles()
+    .catch((e) => {
+      console.error('Sanity check failed, reloading', e);
+      browser.runtime.reload();
+    });
+});

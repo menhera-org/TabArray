@@ -27,10 +27,6 @@
         "message": "Editar um grupo",
         "description": "Title of the dialog to edit a group of containers."
     },
-    "buttonHideInactiveContainers": {
-        "message": "Recolher outros contentores",
-        "description": "Button label to hide inactive containers on a window."
-    },
     "commandOpenSidebar": {
         "message": "Abrir a barra lateral",
         "description": "Description text for using command to open sidebar."
@@ -127,10 +123,6 @@
         "message": "(não rastreada)",
         "description": "Label text indicating an extension built from source not tracked in source control."
     },
-    "labelSelectContainerExternalTabs": {
-        "message": "Selecionar um contentor quando uma aplicação externo abrir uma guia",
-        "description": "Option to enable container selection on externally opened tabs."
-    },
     "buttonDone": {
         "message": "Concluído",
         "description": "Button to complete an action."
@@ -147,17 +139,9 @@
         "message": "Ocultar automaticamente os contentores não utilizados",
         "description": "Label text for auto-hide unused containers option."
     },
-    "buttonClear": {
-        "message": "Limpar",
-        "description": "Button to clear data."
-    },
     "buttonDeleteContainer": {
         "message": "Apagar contentor…",
         "description": "Button to delete a container."
-    },
-    "tooltipContainerClearCookie": {
-        "message": "Limpar todos os cookies neste contentor",
-        "description": "Tooltip for a button to clear all cookies in a container."
     },
     "contextMenuPinTab": {
         "message": "Fixar guia",
@@ -166,10 +150,6 @@
     "buttonAboutAddon": {
         "message": "Mais sobre Container Tab Groups e comentários…",
         "description": "Menu item to open the extension's addons.mozilla.org page."
-    },
-    "tooltipContainerDelete": {
-        "message": "Apagar permanentemente este contentor",
-        "description": "Tooltip for a button to permanently delete a container."
     },
     "buttonDeleteProxy": {
         "message": "Apagar proxy",
@@ -201,10 +181,6 @@
             }
         }
     },
-    "optionsHeadingContainerSortOrder": {
-        "message": "Classificar contentores",
-        "description": "Heading text of options page for changing container order."
-    },
     "github": {
         "message": "GitHub",
         "description": "GitHub link"
@@ -220,16 +196,6 @@
     "labelFirstPartyIsolate": {
         "message": "Ativar First-Party Isolate (FPI)",
         "description": "Option to enable first-party isolation."
-    },
-    "newVersionAvailable": {
-        "message": "Nova versão disponível: $VERSION$",
-        "description": "New version available message.",
-        "placeholders": {
-            "version": {
-                "content": "$1",
-                "example": "1.0.0"
-            }
-        }
     },
     "moveContainer": {
         "message": "Mover para grupo",
@@ -268,20 +234,6 @@
     "fpiDescription": {
         "message": "Esta extensão ativa o recurso First-Party Isolate (FPI) do Firefox por padrão. Isso significa que os cookies de locais diferentes, mesmo para um mesmo contentor, são separados por domínio registrável. Pode desativá-lo aqui.",
         "description": "Description text for FPI"
-    },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
-            }
-        }
-    },
-    "newContainerNamePlaceholder": {
-        "message": "Nome do contentor",
-        "description": "Placeholder for the input field of the name of a new container."
     },
     "proxyPort": {
         "message": "Porto",
@@ -343,10 +295,6 @@
         "message": "Recarregar guia",
         "description": "Reload Tab menu (same as browser's tab menu)"
     },
-    "copyCookiesTo": {
-        "message": "Copiar cookies para:",
-        "description": "Label text for copy cookies to option."
-    },
     "extensionUnsigned": {
         "message": "(sem sinal)",
         "description": "Label text indicating an unsigned extension. (Not cryptographically signed by Mozilla)"
@@ -379,16 +327,6 @@
         "message": "30 minutos",
         "description": "Label text for autodiscard in 1800 seconds."
     },
-    "tooltipWindowLabel": {
-        "message": "Mudar para janela #$ID$",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
     "saveDebuggingInformation": {
         "message": "Gravar informações de depuração",
         "description": "Save debugging information button."
@@ -400,10 +338,6 @@
     "tooltipCookies": {
         "message": "Exibir cookies",
         "description": "Tooltip for a button to view cookies."
-    },
-    "buttonSidebar": {
-        "message": "Abrir barra lateral",
-        "description": "Button to open Sidebar."
     },
     "featureUaOverrides": {
         "message": "Substituições de agente de utilizador por contentor",
@@ -614,10 +548,6 @@
         "message": "Quando uma aplicação externa abre uma guia:",
         "description": "Label for option for handling of externally opened tabs"
     },
-    "optionsHeadingContainerOverrides": {
-        "message": "Substituições por contentor",
-        "description": "Heading text of options page for container overrides."
-    },
     "tooltipUnhideContainerButton": {
         "message": "Mostrar as guias deste contentor",
         "description": "Tooltip for the button to unhide the tabs of a container."
@@ -626,17 +556,9 @@
         "message": "Abrir nova guia",
         "description": "Button label to open a new tab in the specified container"
     },
-    "optionsHeadingUserData": {
-        "message": "Os seus dados",
-        "description": "Heading text of options page for managing user data."
-    },
     "labelGroupIndexOptionAlways": {
         "message": "Todos os contentores",
         "description": "Option to show index tabs for all containers."
-    },
-    "copyCookies": {
-        "message": "Copiar cookies",
-        "description": "Copy cookies button or label text."
     },
     "contextMenuDuplicateTab": {
         "message": "Duplicar guia",
@@ -653,10 +575,6 @@
     "extensionBuildUnknown": {
         "message": "(desconhecida)",
         "description": "Label text indicating an unknown extension build."
-    },
-    "tooltipEditContainerButton": {
-        "message": "Editar este contentor",
-        "description": "Tooltip for the button to edit a container."
     },
     "proxyUsername": {
         "message": "Nome de utilizador",

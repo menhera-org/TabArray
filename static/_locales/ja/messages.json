@@ -11,10 +11,6 @@
         "message": "Container Tab Groups: ポップアップページ",
         "description": "Title of the popup page for browserAction."
     },
-    "buttonHideInactiveContainers": {
-        "message": "他のコンテナーを最小化する",
-        "description": "Button label to hide inactive containers on a window."
-    },
     "buttonNewContainer": {
         "message": "新しいコンテナーを作成…",
         "description": "Button label to create a new container."
@@ -30,10 +26,6 @@
     "newContainerNameLabel": {
         "message": "名前",
         "description": "Label for inputting the name of a new container."
-    },
-    "newContainerNamePlaceholder": {
-        "message": "コンテナーの名前",
-        "description": "Placeholder for the input field of the name of a new container."
     },
     "newContainerDialogTitle": {
         "message": "コンテナーの作成",
@@ -63,10 +55,6 @@
         "message": "このコンテナーのタブを表示",
         "description": "Tooltip for the button to unhide the tabs of a container."
     },
-    "tooltipEditContainerButton": {
-        "message": "このコンテナーを編集",
-        "description": "Tooltip for the button to edit a container."
-    },
     "currentWindow": {
         "message": "このウィンドウ (#$ID$)",
         "description": "Title of popup section for the current window.",
@@ -90,23 +78,9 @@
             }
         }
     },
-    "tooltipWindowLabel": {
-        "message": "ウィンドウ $ID$ に切り替える",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
     "tooltipContainerCloseAll": {
         "message": "このコンテナーのタブを全て閉じる",
         "description": "Tooltip for a button to close all tabs of a container."
-    },
-    "tooltipContainerDelete": {
-        "message": "このコンテナーを永久に削除する",
-        "description": "Tooltip for a button to permanently delete a container."
     },
     "confirmContainerDelete": {
         "message": "本当にこのコンテナーを永久に削除しますか: $NAME$?",
@@ -157,16 +131,6 @@
     "buttonAboutAddon": {
         "message": "Container Tab Groups について・評価…",
         "description": "Menu item to open the extension's addons.mozilla.org page."
-    },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
-            }
-        }
     },
     "buttonSettings": {
         "message": "設定",
@@ -233,10 +197,6 @@
     "promptSelectContainer": {
         "message": "このタブを開くコンテナーを選択してください。",
         "description": "Message asking the user to select a container for a new tab."
-    },
-    "labelSelectContainerExternalTabs": {
-        "message": "外部アプリケーションがタブを開くときにコンテナーを選ぶ",
-        "description": "Option to enable container selection on externally opened tabs."
     },
     "labelExternalTabSelectContainerOption": {
         "message": "外部アプリケーションがタブを開いたとき：",
@@ -310,18 +270,6 @@
         "message": "新規ウインドウ",
         "description": "Button to open a new window."
     },
-    "buttonSidebar": {
-        "message": "サイドバーを開く",
-        "description": "Button to open Sidebar."
-    },
-    "optionsHeadingUserData": {
-        "message": "あなたのデータ",
-        "description": "Heading text of options page for managing user data."
-    },
-    "buttonClear": {
-        "message": "消去",
-        "description": "Button to clear data."
-    },
     "privateBrowsing": {
         "message": "プライベートブラウジング",
         "description": "Private Browsing page"
@@ -335,10 +283,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "tooltipContainerClearCookie": {
-        "message": "このコンテナーの Cookie を削除する",
-        "description": "Tooltip for a button to clear all cookies in a container."
     },
     "confirmPrivateBrowsingClearCookie": {
         "message": "プライベートブラウジングの Cookie をすべて削除してよろしいですか?",
@@ -369,10 +313,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "optionsHeadingContainerSortOrder": {
-        "message": "コンテナーを並び替える",
-        "description": "Heading text of options page for changing container order."
     },
     "optionsDescriptionContainerSortOrder": {
         "message": "この設定はほかの拡張機能には影響ありません。",
@@ -493,10 +433,6 @@
     "featureUaOverrides": {
         "message": "コンテナー別のユーザーエージェントの上書き",
         "description": "Label text for UA overrides feature"
-    },
-    "optionsHeadingContainerOverrides": {
-        "message": "コンテナー別の上書き設定",
-        "description": "Heading text of options page for container overrides."
     },
     "optionsLabelUserAgent": {
         "message": "ユーザーエージェント",
@@ -706,16 +642,6 @@
         "message": "プロキシ",
         "description": "Label text for proxies tab."
     },
-    "newVersionAvailable": {
-        "message": "新しいバージョンが利用可能です： $VERSION$",
-        "description": "New version available message.",
-        "placeholders": {
-            "version": {
-                "content": "$1",
-                "example": "1.0.0"
-            }
-        }
-    },
     "optionAutoHideContainers": {
         "message": "使われていないコンテナーを自動で隠す",
         "description": "Label text for auto-hide unused containers option."
@@ -763,14 +689,6 @@
     "extensionBuildUnknown": {
         "message": "(不明)",
         "description": "Label text indicating an unknown extension build."
-    },
-    "copyCookiesTo": {
-        "message": "クッキーのコピー先：",
-        "description": "Label text for copy cookies to option."
-    },
-    "copyCookies": {
-        "message": "クッキーをコピーする",
-        "description": "Copy cookies button or label text."
     },
     "copyCookiesFrom": {
         "message": "クッキーのコピー元：",

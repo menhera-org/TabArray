@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,22 +21,6 @@
 
 @import url(../../css/theme.css);
 
-* {
-  --warning-background-color: #ffddb1;
-  --warning-text-color: #7e5f1a;
-  --error-background-color: #fdd2d0;
-  --error-text-color: #95210f;
-}
-
-@media (prefers-color-scheme: dark) {
-  * {
-    --warning-background-color: #7e5f1a;
-    --warning-text-color: #ffddb1;
-    --error-background-color: #95210f;
-    --error-text-color: #fdd2d0;
-  }
-}
-
 :root {
   inline-size: 100%;
   block-size: 100%;
@@ -49,9 +33,6 @@
 }
 
 body {
-  font-family: system-ui, sans-serif;
-  color: var(--text-color);
-  background-color: var(--background-color);
   overflow-block: auto;
   overflow-inline: hidden;
   margin: 0;
@@ -88,10 +69,11 @@ body {
 
 :is(#logs-table, #performance-table, #installation-table) > thead > tr > th {
   text-align: start;
-  font-weight: bold;
-  background-color: var(--overlay-color);
-  backdrop-filter: blur(1rem);
-  border-block-end: 1px solid var(--border-color);
+  color: var(--text-color-deemphasized);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  background-color: var(--background-color-canvas);
+  border-block-end: var(--border-width) solid var(--border-color-deemphasized);
 }
 
 :is(#logs-table, #performance-table, #installation-table) :is(th, td) {
@@ -106,21 +88,19 @@ body {
 }
 
 #logs-tbody > tr[data-log-level="warn"] {
-  background-color: var(--warning-background-color);
-  color: var(--warning-text-color);
+  background-color: var(--background-color-warning);
 }
 
 #logs-tbody > tr[data-log-level="error"] {
-  background-color: var(--error-background-color);
-  color: var(--error-text-color);
+  background-color: var(--background-color-critical);
 }
 
 #logs-tbody > tr > td:nth-child(1) {
-  opacity: .5;
+  color: var(--text-color-deemphasized);
 }
 
 #logs-tbody > tr > td:is(:nth-child(2), :nth-child(3)) {
-  color: #844587;
+  color: var(--color-accent-primary);
 }
 
 #files {
@@ -140,13 +120,14 @@ body {
 }
 
 #files-header {
-  font-weight: bold;
+  color: var(--text-color-deemphasized);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
   text-align: start;
-  border-block-end: solid 1px var(--border-color);
+  border-block-end: var(--border-width) solid var(--border-color-deemphasized);
   position: sticky;
   inset-block-start: 0;
-  background-color: var(--overlay-color);
-  backdrop-filter: blur(1rem);
+  background-color: var(--background-color-canvas);
 }
 
 .file-recorded-integrity, .file-current-integrity {
@@ -159,12 +140,11 @@ body {
 }
 
 .file-integrity-changed > :is(.file-recorded-integrity, .file-current-integrity) {
-  color: red;
+  color: var(--text-color-error);
 }
 
 .file-path-link {
   text-decoration: none;
-  color: var(--in-content-link-color);
 }
 
 .file-path-link:hover {

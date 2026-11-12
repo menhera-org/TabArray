@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,5 +20,7 @@
 */
 
 .containers {
-  border-block-end: solid 1px var(--border-color);
+  margin-block-end: var(--space-small);
+  padding-block: var(--space-xsmall);
+  border-block-end: var(--border-width) solid var(--border-color-deemphasized);
 }

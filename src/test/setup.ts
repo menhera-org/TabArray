@@ -62,7 +62,8 @@ const makeApi = (path: string): unknown =>
     },
   });
 
-// webextension-polyfill uses `browser` as it is when it is a plain object (as in Firefox), and needs chrome.runtime.id.
+// Our imports of webextension-polyfill resolve to this `browser` (see src/firefox-browser.ts). The weeg
+// libraries require() the real polyfill in tests, which passes `browser` through once chrome.runtime.id exists.
 Object.assign(globalThis, {
   chrome: { runtime: { id: 'test@example' } },
   browser: new Proxy(

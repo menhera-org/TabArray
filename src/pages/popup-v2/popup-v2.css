@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,52 +21,19 @@
 
 @import url(../../css/theme.css);
 
-a {
-  text-decoration: none;
-  color: var(--accent-color);
-}
-
-button {
-  color: var(--button-text-color);
-  background-color: transparent;
-  border: none;
-  appearance: none;
-}
-
-a:active, button:active {
-  opacity: .75;
-}
-
-input:is([type="text"], [type="search"]), button, select, textarea {
-  font: inherit;
-  display: block;
-  box-sizing: border-box;
-  margin: 0;
-  inline-size: 100%;
-  min-inline-size: 0;
-}
-
-button {
-  padding-inline: 1em;
-  padding-block: .5em;
-  text-align: start;
-}
-
 :root {
   inline-size: 100%;
   block-size: 100%;
   min-inline-size: 0;
   min-block-size: 0;
-  /* max-inline-size: max-content;
-  max-block-size: max-content; */
   display: block flex;
   flex-direction: column;
+  /* The current Firefox theme's popup or sidebar colors, when it sets them (#33). */
+  background-color: var(--ctg-theme-background, var(--background-color-canvas));
+  color: var(--ctg-theme-text, var(--text-color));
 }
 
 body {
-  font-family: system-ui, sans-serif;
-  color: var(--text-color);
-  background-color: var(--background-color);
   overflow-block: auto;
   overflow-inline: hidden;
   margin: 0;

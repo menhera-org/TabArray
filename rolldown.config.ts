@@ -22,7 +22,7 @@
 import { defineConfig } from 'rolldown';
 
 import { injectFilename } from './build-plugins/inject-filename.ts';
-import { BUILD_TARGET } from './build-plugins/target.ts';
+import { BROWSER_ALIAS, BUILD_TARGET } from './build-plugins/target.ts';
 
 // Content scripts are injected as classic scripts, so each one is bundled
 // into a single self-contained IIFE at a fixed path (see manifest.json).
@@ -33,6 +33,7 @@ export default defineConfig(
     input: `src/${name}.ts`,
     platform: 'browser',
     tsconfig: 'tsconfig.json',
+    resolve: { alias: BROWSER_ALIAS },
     plugins: [injectFilename()],
     transform: {
       target: BUILD_TARGET,

@@ -3,10 +3,6 @@
         "message": "cs",
         "description": "Locale of this messages.json."
     },
-    "tooltipContainerDelete": {
-        "message": "Trvale odstranit tento kontejner",
-        "description": "Tooltip for a button to permanently delete a container."
-    },
     "noContainer": {
         "message": "žádný kontejner",
         "description": "Virtual container name for tabs with no container."
@@ -14,10 +10,6 @@
     "promptSelectContainer": {
         "message": "Vyberte kontejner, ve kterém chcete tuto kartu otevřít.",
         "description": "Message asking the user to select a container for a new tab."
-    },
-    "labelSelectContainerExternalTabs": {
-        "message": "Vybrat kontejner při otevření karty externí aplikací",
-        "description": "Option to enable container selection on externally opened tabs."
     },
     "labelExternalTabSelectContainerOption": {
         "message": "Když externí aplikace otevře kartu:",
@@ -32,10 +24,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "optionsHeadingContainerSortOrder": {
-        "message": "Seřadit kontejnery",
-        "description": "Heading text of options page for changing container order."
     },
     "optionsDescriptionContainerSortOrder": {
         "message": "Toto nastavení nemá vliv na jiná rozšíření.",
@@ -52,10 +40,6 @@
     "featureUaOverrides": {
         "message": "Přepínání uživatelských agentů v kontejnerech",
         "description": "Label text for UA overrides feature"
-    },
-    "optionsHeadingContainerOverrides": {
-        "message": "Předvolby v kontejnerech",
-        "description": "Heading text of options page for container overrides."
     },
     "userAgentDefault": {
         "message": "Výchozí",
@@ -135,10 +119,6 @@
             }
         }
     },
-    "buttonHideInactiveContainers": {
-        "message": "Sbalit ostatní kontejnery",
-        "description": "Button label to hide inactive containers on a window."
-    },
     "buttonNewContainer": {
         "message": "Vytvořit nový kontejner…",
         "description": "Button label to create a new container."
@@ -163,10 +143,6 @@
         "message": "Zobrazit karty tohoto kontejneru",
         "description": "Tooltip for the button to unhide the tabs of a container."
     },
-    "newContainerNamePlaceholder": {
-        "message": "Název kontejneru",
-        "description": "Placeholder for the input field of the name of a new container."
-    },
     "browserActionPopupTitle": {
         "message": "Skupiny karet kontejnerů: Vyskakovací stránka",
         "description": "Title of the popup page for browserAction."
@@ -187,10 +163,6 @@
         "message": "Skrýt tento kontejner",
         "description": "Context menu item text for hiding the container of the selected tab."
     },
-    "tooltipEditContainerButton": {
-        "message": "Upravit tento kontejner",
-        "description": "Tooltip for the button to edit a container."
-    },
     "currentWindow": {
         "message": "Toto okno (#$ID$)",
         "description": "Title of popup section for the current window.",
@@ -203,16 +175,6 @@
     },
     "currentWindowMoreContainers": {
         "message": "Další kontejnery pro toto okno"
-    },
-    "tooltipWindowLabel": {
-        "message": "Přepnout na okno #$ID$",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
     },
     "tooltipContainerCloseAll": {
         "message": "Zavřít všechny karty v tomto kontejneru",
@@ -251,16 +213,6 @@
     "browserActionTitle": {
         "message": "Karty a skupiny",
         "description": "Title of browserAction about tabs and container-based groups."
-    },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
-            }
-        }
     },
     "buttonTabClose": {
         "message": "Zavřít tuto kartu",
@@ -324,10 +276,6 @@
         "message": "Okna",
         "description": "Menu item for windows view"
     },
-    "tooltipContainerClearCookie": {
-        "message": "Vymazat všechny soubory cookie v tomto kontejneru",
-        "description": "Tooltip for a button to clear all cookies in a container."
-    },
     "labelExternalTabOptionChooseContainer": {
         "message": "Pokaždé zvolte kontejner",
         "description": "Option to choose a container every time an external application opens a tab."
@@ -351,10 +299,6 @@
     "menuItemMain": {
         "message": "Kontejnery",
         "description": "Menu item for containers view."
-    },
-    "optionsHeadingUserData": {
-        "message": "Vaše data",
-        "description": "Heading text of options page for managing user data."
     },
     "buttonContainerClearCookie": {
         "message": "Vymazat cookies…",
@@ -395,14 +339,6 @@
     "contextMenuMuteTab": {
         "message": "Ztišit kartu",
         "description": "Mute Tab menu (same as browser's tab menu)"
-    },
-    "buttonSidebar": {
-        "message": "Otevřít boční panel",
-        "description": "Button to open Sidebar."
-    },
-    "buttonClear": {
-        "message": "Vyčistit",
-        "description": "Button to clear data."
     },
     "confirmContainerClearCookie": {
         "message": "Chcete vymazat soubory cookie pro tento kontejner: $NAME$?",
@@ -630,16 +566,6 @@
         "message": "Odstranit proxy",
         "description": "Delete proxy button."
     },
-    "newVersionAvailable": {
-        "message": "Nová dostupná verze: $VERSION$",
-        "description": "New version available message.",
-        "placeholders": {
-            "version": {
-                "content": "$1",
-                "example": "1.0.0"
-            }
-        }
-    },
     "newGroupDialogTitle": {
         "message": "Vytvořit novou skupinu",
         "description": "Title of the dialog to create a new group of containers."
@@ -767,13 +693,5 @@
     "copyCookiesFrom": {
         "message": "Zkopírovat cookies z:",
         "description": "Label text for copy cookies from option."
-    },
-    "copyCookiesTo": {
-        "message": "Zkopírovat cookies do:",
-        "description": "Label text for copy cookies to option."
-    },
-    "copyCookies": {
-        "message": "Zkopírovat cookies",
-        "description": "Copy cookies button or label text."
     }
 }

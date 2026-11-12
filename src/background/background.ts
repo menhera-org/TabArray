@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -55,8 +55,8 @@ import './background-closed-tabs';
 import './background-sync';
 import './background-omnibox';
 import './background-bookmarks';
+import './background-sanity-check';
 import './background-created-tab';
-// import './background-update-checker';
 import '../api/ApiDefinitions';
 
 // external services must be registered here

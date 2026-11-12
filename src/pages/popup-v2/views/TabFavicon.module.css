@@ -22,17 +22,17 @@
 .icon {
   display: block;
   flex: none;
-  inline-size: 2em;
-  block-size: 2em;
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
   align-self: center;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: 75%;
+  background-size: contain;
 }
 
 .masked {
-  background-color: var(--text-color);
+  background-color: currentColor;
   mask-position: center;
-  mask-size: 75%;
+  mask-size: contain;
   mask-repeat: no-repeat;
 }

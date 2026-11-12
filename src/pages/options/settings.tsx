@@ -53,16 +53,14 @@ type CheckboxSettingProps = {
 export const CheckboxSetting = ({ id, label, option, save }: CheckboxSettingProps) => {
   const [checked, setChecked] = useOption(option, save);
   return (
-    <p className="browser-style">
+    <p className="ctg-checkbox">
       <input
         type="checkbox"
         id={id}
         checked={checked ?? false}
         onChange={(ev) => setChecked(ev.currentTarget.checked)}
       />{' '}
-      <label className="browser-style-label" htmlFor={id}>
-        {browser.i18n.getMessage(label)}
-      </label>
+      <label htmlFor={id}>{browser.i18n.getMessage(label)}</label>
     </p>
   );
 };
@@ -80,12 +78,9 @@ export const SelectSetting = <T extends string | number>({ id, label, option, ch
   const [value, setValue] = useOption(option);
   return (
     <p>
-      <label className="browser-style-label" htmlFor={id}>
-        {browser.i18n.getMessage(label)}
-      </label>{' '}
+      <label htmlFor={id}>{browser.i18n.getMessage(label)}</label>{' '}
       <select
         id={id}
-        className="browser-style"
         value={String(value ?? choices[0]?.[0])}
         onChange={(ev) => {
           const choice = choices.find(([v]) => String(v) == ev.currentTarget.value);

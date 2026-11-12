@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,28 +20,13 @@
 */
 
 .help {
-  padding-inline: 1rem;
+  padding-inline: var(--space-large);
   max-inline-size: 32rem;
   align-self: center;
 }
 
 .actions {
-  margin-block: 1em;
+  margin-block: var(--space-large);
   display: block flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  row-gap: 1em;
-}
-
-.actions > .getStarted {
-  inline-size: max-content;
-  border-radius: 0.25em;
-  background-color: #0033cc;
-  color: #fff;
-}
-
-.actions > .getStarted:focus {
-  box-shadow: 0 0 0.25rem 0.25rem var(--accent-color);
-  outline: none;
+  justify-content: center;
 }

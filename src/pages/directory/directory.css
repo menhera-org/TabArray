@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,34 +22,49 @@
 @import url(../../css/theme.css);
 
 body {
-  font-family: system-ui;
-  color: var(--text-color);
-  background-color: var(--background-color);
+  padding: var(--space-xxlarge) var(--space-xlarge);
 }
 
+/* A listing in a card, like Firefox's about: pages. */
 table {
   margin-inline: auto;
-  max-inline-size: 50%;
-  margin-block: 1em;
-  border-spacing: .5em;
+  min-inline-size: min(100%, var(--page-main-content-width));
+  border-spacing: 0;
+  border: var(--card-border);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--background-color-box);
+  box-shadow: var(--box-shadow-level-1);
+  overflow: hidden;
 }
 
 th {
+  padding: var(--space-small) var(--space-medium);
+  color: var(--text-color-deemphasized);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
   text-align: start;
 }
 
+td {
+  padding: var(--space-small) var(--space-medium);
+  border-block-start: var(--border-width) solid var(--border-color-deemphasized);
+}
+
+tbody > tr:hover {
+  background-color: var(--button-background-color-ghost-hover);
+}
+
 a {
-  color: var(--in-content-link-color);
   text-decoration: none;
 }
 
 .icon {
   display: inline-block;
-  inline-size: 1em;
-  block-size: 1em;
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
   vertical-align: middle;
-  margin-inline-end: .5em;
-  background-color: var(--text-color);
+  margin-inline-end: var(--space-small);
+  background-color: currentColor;
 }
 
 .icon-directory {

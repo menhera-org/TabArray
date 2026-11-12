@@ -50,7 +50,9 @@ export const BottomNavigation = ({ targets, selected, tooltips, onSelect }: Bott
           data-target-id={target.id}
           onClick={() => onSelect(target.id)}
         >
-          <span className={styles.icon} style={{ maskImage: cssUrl(target.icon) }} />
+          <span className={styles.iconPill}>
+            <span className={styles.icon} style={{ maskImage: cssUrl(target.icon) }} />
+          </span>
           <span>{target.label}</span>
         </button>
       ))}

@@ -25,7 +25,7 @@ import styles from './ModalFrame.module.css';
 
 export type DialogAction = {
   label: string;
-  /** Drawn as the default (blue) button. */
+  /** Drawn as the primary button. */
   isDefault?: boolean;
   onClick: () => void;
 };
@@ -35,21 +35,42 @@ type ModalFrameProps = {
   children?: ReactNode;
   /** The buttons at the bottom. */
   actions: DialogAction[];
+  /** Lists the actions other than the default ones as menu items, above the buttons. */
+  menu?: boolean;
 };
 
+const ActionButton = ({ action }: { action: DialogAction }) => (
+  <button className={`ctg-button ${action.isDefault ? 'primary' : ''}`} onClick={action.onClick}>
+    {action.label}
+  </button>
+);
+
 /** A dialog over the whole page: an optional title, content, and buttons. */
-export const ModalFrame = ({ title, children, actions }: ModalFrameProps) => (
-  <div className={styles.overlay} data-dialog>
-    <div className={styles.content}>
-      {title != null && <h2 className={styles.title}>{title}</h2>}
-      {children}
-      <div className={styles.actions}>
-        {actions.map((action, i) => (
-          <button key={i} className={action.isDefault ? styles.default : ''} onClick={action.onClick}>
-            {action.label}
-          </button>
-        ))}
+export const ModalFrame = ({ title, children, actions, menu = false }: ModalFrameProps) => {
+  const menuItems = menu ? actions.filter((action) => !action.isDefault) : [];
+  const buttons = menu ? actions.filter((action) => action.isDefault) : actions;
+  return (
+    <div className={styles.overlay} data-dialog>
+      <div className={styles.content} role="dialog" aria-label={title}>
+        {title != null && <h2 className={styles.title}>{title}</h2>}
+        {children}
+        {menuItems.length > 0 && (
+          <div className={styles.menu} role="menu">
+            {menuItems.map((action, i) => (
+              <button key={i} className={styles.menuItem} role="menuitem" onClick={action.onClick}>
+                {action.label}
+              </button>
+            ))}
+          </div>
+        )}
+        {buttons.length > 0 && (
+          <div className={styles.actions}>
+            {buttons.map((action, i) => (
+              <ActionButton key={i} action={action} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
-  </div>
-);
+  );
+};

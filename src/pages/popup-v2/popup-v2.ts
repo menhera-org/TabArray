@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,12 +19,14 @@
   @license
 **/
 
+import '../../frontend/documentLocale';
 import browser from 'webextension-polyfill';
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { ExternalServiceProvider } from '../../lib/ExternalServiceProvider';
 import { BrowserStateStore } from '../../lib/states/BrowserStateStore';
+import { followThemeColors } from '../../frontend/themeColors';
 
 import { App } from './app/App';
 import { throttle } from './app/throttledState';
@@ -41,6 +43,7 @@ if (isPopup) {
 }
 
 ExternalServiceProvider.getInstance();
+followThemeColors(isPopup ? 'popup' : 'sidebar');
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
 
 const popupFocusHandlers = new PopupFocusHandlers();

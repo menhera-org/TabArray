@@ -1,12 +1,9 @@
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="16px" height="16px" viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
-<g fill="context-fill" fill-opacity="context-fill-opacity">
-	<path d="M6,7H2C1.448,7,1,6.552,1,6V2c0-0.552,0.448-1,1-1h4c0.552,0,1,0.448,1,1v4C7,6.552,6.552,7,6,7z"/>
-	<path d="M14,7h-4C9.448,7,9,6.552,9,6V2c0-0.552,0.448-1,1-1h4c0.552,0,1,0.448,1,1v4C15,6.552,14.552,7,14,7z"/>
-	<path d="M6,15H2c-0.552,0-1-0.448-1-1v-4c0-0.552,0.448-1,1-1h4c0.552,0,1,0.448,1,1v4C7,14.552,6.552,15,6,15z"/>
-	<path d="M14,15h-4c-0.552,0-1-0.448-1-1v-4c0-0.552,0.448-1,1-1h4c0.552,0,1,0.448,1,1v4C15,14.552,14.552,15,14,15z"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="context-fill" fill-opacity="context-fill-opacity">
+  <path d="M5 7 3 7a2 2 0 0 1-2-2l0-2a2 2 0 0 1 2-2l2 0a2 2 0 0 1 2 2l0 2a2 2 0 0 1-2 2z"/>
+  <path d="m13 7-2 0a2 2 0 0 1-2-2l0-2a2 2 0 0 1 2-2l2 0a2 2 0 0 1 2 2l0 2a2 2 0 0 1-2 2z"/>
+  <path d="m5 15-2 0a2 2 0 0 1-2-2l0-2a2 2 0 0 1 2-2l2 0a2 2 0 0 1 2 2l0 2a2 2 0 0 1-2 2z"/>
+  <path d="m13 15-2 0a2 2 0 0 1-2-2l0-2a2 2 0 0 1 2-2l2 0a2 2 0 0 1 2 2l0 2a2 2 0 0 1-2 2z"/>
 </svg>

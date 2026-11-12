@@ -23,23 +23,9 @@
         "message": "隐藏此容器的标签页",
         "description": "Tooltip for the button to hide the tabs of a container."
     },
-    "tooltipWindowLabel": {
-        "message": "切换到窗口 #$ID$",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
     "tooltipContainerCloseAll": {
         "message": "关闭此容器中的所有标签页",
         "description": "Tooltip for a button to close all tabs of a container."
-    },
-    "tooltipContainerDelete": {
-        "message": "永久删除此容器",
-        "description": "Tooltip for a button to permanently delete a container."
     },
     "defaultContainerName": {
         "message": "容器 #$ID$",
@@ -131,21 +117,9 @@
         "message": "新建窗口",
         "description": "Button to open a new window."
     },
-    "buttonSidebar": {
-        "message": "打开侧边栏",
-        "description": "Button to open Sidebar."
-    },
-    "buttonClear": {
-        "message": "清理",
-        "description": "Button to clear data."
-    },
     "privateBrowsing": {
         "message": "隐私浏览",
         "description": "Private Browsing page"
-    },
-    "tooltipContainerClearCookie": {
-        "message": "清除此容器中的所有 cookie",
-        "description": "Tooltip for a button to clear all cookies in a container."
     },
     "buttonEditContainer": {
         "message": "编辑容器…",
@@ -241,10 +215,6 @@
         "message": "类似 Chrome 的标签组：使用容器隔离的 Firefox 标签组管理器。",
         "description": "Description of the extension."
     },
-    "buttonHideInactiveContainers": {
-        "message": "折叠其他容器",
-        "description": "Button label to hide inactive containers on a window."
-    },
     "buttonNewContainer": {
         "message": "创建新容器…",
         "description": "Button label to create a new container."
@@ -260,10 +230,6 @@
     "editContainerDialogTitle": {
         "message": "编辑容器",
         "description": "Title of the dialog prompting for editting a container."
-    },
-    "newContainerNamePlaceholder": {
-        "message": "容器名称",
-        "description": "Placeholder for the input field of the name of a new container."
     },
     "tooltipUnhideContainerButton": {
         "message": "显示此容器的标签页",
@@ -292,23 +258,9 @@
         "message": "网格视图",
         "description": "Panorama Grid page (grid view of container and tabs)"
     },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
-            }
-        }
-    },
     "optionsDescriptionExperimental": {
         "message": "禁用其中一些选项可能解决某些错误.",
         "description": "Description text for experimental features options."
-    },
-    "labelSelectContainerExternalTabs": {
-        "message": "当外部应用程序打开标签页时选择容器",
-        "description": "Option to enable container selection on externally opened tabs."
     },
     "optionsHeadingExperimental": {
         "message": "实验特征",
@@ -321,10 +273,6 @@
     "tooltipCollapseContainers": {
         "message": "折叠容器组",
         "description": "Tooltip for the button to collapse inactive containers."
-    },
-    "tooltipEditContainerButton": {
-        "message": "编辑此容器",
-        "description": "Tooltip for the button to edit a container."
     },
     "currentWindow": {
         "message": "此窗口 (#$ID$)",
@@ -424,10 +372,6 @@
         "message": "关闭窗口",
         "description": "Tooltip for a button to close all tabs of a window."
     },
-    "optionsHeadingUserData": {
-        "message": "用户数据",
-        "description": "Heading text of options page for managing user data."
-    },
     "contextMenuPinTab": {
         "message": "固定标签页",
         "description": "Pin Tab menu (same as browser's tab menu)"
@@ -463,10 +407,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "optionsHeadingContainerSortOrder": {
-        "message": "排列容器",
-        "description": "Heading text of options page for changing container order."
     },
     "cookiesHeadingDomain": {
         "message": "域名",
@@ -511,10 +451,6 @@
     "privacyPolicy": {
         "message": "隐私策略",
         "description": "Privacy Policy page"
-    },
-    "optionsHeadingContainerOverrides": {
-        "message": "覆盖每个容器",
-        "description": "Heading text of options page for container overrides."
     },
     "sitesN": {
         "message": "站点 ($COUNT$)",
@@ -698,16 +634,6 @@
         "message": "添加新的代理",
         "description": "Add new proxy button."
     },
-    "newVersionAvailable": {
-        "message": "可用的新版本：$VERSION$",
-        "description": "New version available message.",
-        "placeholders": {
-            "version": {
-                "content": "$1",
-                "example": "1.0.0"
-            }
-        }
-    },
     "optionsHeadingAvailableProxies": {
         "message": "可用的代理",
         "description": "Available proxies heading."
@@ -764,17 +690,9 @@
         "message": "相容性的不一致",
         "description": "Label text indicating the integrity of an extension package does not match the expected value."
     },
-    "copyCookies": {
-        "message": "复制cookie",
-        "description": "Copy cookies button or label text."
-    },
     "copyCookiesFrom": {
         "message": "复制cookie从：",
         "description": "Label text for copy cookies from option."
-    },
-    "copyCookiesTo": {
-        "message": "复制cookie到：",
-        "description": "Label text for copy cookies to option."
     },
     "optionAutoCenterInSidebar": {
         "message": "在侧边栏自动居中活动选项卡"

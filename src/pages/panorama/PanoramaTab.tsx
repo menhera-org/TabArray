@@ -80,7 +80,7 @@ export const PanoramaTab = ({ tab, onActivate, onClose, onContextMenu }: Panoram
       </button>
       <div className={styles.controls}>
         <button
-          className={styles.close}
+          className={`ctg-icon-button ${styles.close}`}
           title={browser.i18n.getMessage('buttonTabClose')}
           onClick={(ev) => {
             ev.stopPropagation();

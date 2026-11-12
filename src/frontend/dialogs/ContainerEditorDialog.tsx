@@ -178,7 +178,7 @@ export const ContainerEditorDialog = ({
             onClose();
           },
         },
-        { label: message('buttonOk'), onClick: () => save().catch((e) => console.error(e)) },
+        { label: message('buttonOk'), isDefault: true, onClick: () => save().catch((e) => console.error(e)) },
       ]}
     >
       <NameField value={name} onChange={setName} />

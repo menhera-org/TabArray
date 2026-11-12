@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
   @license
 **/
 
+import '../../frontend/documentLocale';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import browser from 'webextension-polyfill';
@@ -161,7 +162,6 @@ const Buttons = (state: EnvType | null) => {
   return <div>{buttons}</div>;
 };
 
-document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 document.title = browser.i18n.getMessage('titleSelectContainer');
 
 /** The page: what is about to open, the containers to open it in, and a way to the settings. */
@@ -173,7 +173,7 @@ const Page = ({ url, state }: { url: string; state: EnvType | null }) => (
     <p>
       <button
         id="button-settings"
-        className="browser-style"
+        className="ctg-button"
         onClick={() => extensionPageService.openInBackground(ExtensionPageService.OPTIONS)}
       >
         {browser.i18n.getMessage('buttonSettings')}

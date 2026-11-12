@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,22 +21,25 @@
 
 @import url(../../css/theme.css);
 
-:root, body {
-  background-color: var(--background-color) !important;
-  color: var(--text-color) !important;
+/* Laid out like Firefox's about: pages: one column, the table in a card. */
+body {
+  box-sizing: border-box;
+  max-inline-size: calc(var(--page-main-content-width) + 2 * var(--space-xlarge));
+  margin-inline: auto;
+  padding-block: var(--space-xxlarge);
+  padding-inline: var(--space-xlarge);
 }
 
-body {
-  inline-size: 50em;
-  max-inline-size: 50%;
-  margin-inline: auto;
-  margin-block: 1em;
+#headingCookies {
+  margin-block: 0 var(--space-large);
 }
 
 #main {
-  border: solid 2px var(--border-color);
-  border-radius: .5em;
-  paint-order: fill;
+  border: var(--card-border);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--background-color-box);
+  box-shadow: var(--box-shadow-level-1);
+  overflow: clip;
 }
 
 #cookies {
@@ -48,42 +51,47 @@ body {
 #cookies thead {
   position: sticky;
   top: 0;
-  border-top-left-radius: .5em;
-  border-top-right-radius: .5em;
   z-index: 1;
 }
 
 #cookies thead > tr > th {
-  background-color: var(--background-color);
+  background-color: var(--background-color-box);
+  text-align: start;
 }
 
-#cookies thead > tr:first-of-type {
-  border-top-left-radius: .5em;
-  border-top-right-radius: .5em;
+#cookies thead > tr:first-of-type > th {
+  padding: var(--space-medium);
 }
 
-#cookies thead > tr:first-of-type > th:first-of-type {
-  border-top-left-radius: .5em;
-}
-
-#cookies thead > tr:first-of-type > th:last-of-type {
-  border-top-right-radius: .5em;
+#cookies thead > tr:first-of-type > th > select {
+  margin-inline-end: var(--space-small);
 }
 
 #cookies thead > tr:last-of-type > th {
-  border-bottom: solid 2px var(--border-color);
+  color: var(--text-color-deemphasized);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  border-block-end: var(--border-width) solid var(--border-color-deemphasized);
+}
+
+#cookies th#cookiesHeadingActions {
+  text-align: end;
 }
 
 #cookies tbody tr:not(:last-of-type) > td {
-  border-bottom: solid 1px var(--border-color);
+  border-block-end: var(--border-width) solid var(--border-color-deemphasized);
 }
 
-#cookies td.domain, #cookies th, #cookies td.first-party-domain {
-  padding: .5em;
+#cookies td.domain,
+#cookies thead > tr:last-of-type > th,
+#cookies td.first-party-domain {
+  padding: var(--space-small) var(--space-medium);
 }
 
 #cookies td.first-party-domain {
-  background-color: var(--secondary-background-color);
+  background-color: var(--background-color-canvas);
+  color: var(--text-color-deemphasized);
+  font-size: var(--font-size-small);
 }
 
 #cookies td {
@@ -91,21 +99,17 @@ body {
 }
 
 #cookies td.actions {
+  padding-inline-end: var(--space-small);
   text-align: end;
 }
 
 #cookies .delete {
-  display: block;
-  inline-size: 1.5em;
-  block-size: 1.5em;
-  background-color: var(--text-color);
-  opacity: var(--opaque-opacity);
-  mask: url(/img/firefox-icons/close.svg) no-repeat center / 50%;
-  margin-inline-start: auto;
+  --icon: url(/img/firefox-icons/delete.svg);
+  color: var(--text-color-deemphasized);
 }
 
-#cookies .delete:hover, #cookies .delete:focus {
-  opacity: 1;
+#cookies .delete:is(:hover, :focus-visible) {
+  color: var(--text-color);
 }
 
 /* The React root; its content lays out as children of the body. */

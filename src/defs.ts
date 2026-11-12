@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -45,7 +45,3 @@ export const GITHUB_TREE_LINK_BASE = 'https://github.com/menhera-org/TabArray/tr
 export const CTG_OFFICIAL_ED25519_SIGNING_KEY = '2896306f0d985fdd2febcd930b0733c7c86afcd705652f4a4aadd513235d7867';
 
 export const CTG_OFFCIAL_SIGNATURE_URL = 'https://downloads.menhera.org/ctg-metadata/%VERSION%/%HASH%.signed.json';
-
-export enum NotificationChannelId {
-  NEW_VERSION_AVAILABLE = 'new-version-available',
-}

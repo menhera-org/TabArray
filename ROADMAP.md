@@ -23,7 +23,7 @@ Last updated 12 November 2026. "Done" means the change is on `main` and ships in
 | 3. Firefox native tab groups | Done. Tested in Firefox 140 and 159, also with Tree Style Tab. Tags are removed. |
 | 4. Frontend rewrite | Done. |
 | 5. Settings, features and documentation | Done. #355 is folded into #209, and #33 moved to phase 6. Group sync is unit-tested but not tested between two real devices. |
-| 6. Visual design refresh | Not started. Includes #33. |
+| 6. Visual design refresh | Done, with #33. Checked in Firefox 159 in light and dark mode and with a colored theme. |
 
 ## 1. Foundations and breakage bugs
 
@@ -145,7 +145,7 @@ New settings start off by default, so current behavior stays the same. Each adds
 | #281 | Option to hide the tab count on the toolbar icon. | Done |
 | #482 | Option to keep listing a container's tabs in the sidebar while its tab group is collapsed, so collapsing only affects the tab bar. | Done |
 | #486 | Keyboard shortcuts to collapse and expand the active container. | Done. No keys are set by default; users assign them in Firefox's Manage Extension Shortcuts. |
-| #33 | Follow the browser theme in the extension's pages. | Moved to Phase 6. Light and dark already follow Firefox; a theme's own colors are designed with the visual refresh. |
+| #33 | Follow the browser theme in the extension's pages. | Moved to Phase 6, and done there. |
 | #481 | Rules that pick a container from the URL when another app opens a link, with a default for links no rule matches. | Done: a **Sites from other apps** column on the Sort Containers tab; a site covers its subdomains and the most specific one wins. The existing "When an external application opens a tab" option is the default. |
 | #386 | Shift-click to select several tabs, then move or close them together. | Done in the popup and the sidebar: Shift-, Ctrl- or Cmd-click selects; closing or dropping a selected tab on a container acts on the whole selection. |
 | #282 | Mark a single tab to stay loaded when unused tabs are freed from memory. | Done: "Keep This Tab Loaded" in the tab context menu. It also stops Firefox from freeing the tab when memory is low. |
@@ -169,6 +169,14 @@ make it feel like modern, without any visual glitches.
 For this, we can copy mozilla-central's icons and CSS files into this repo, with license notices intact.
 
 This includes #33: the extension's pages use the colors of the current Firefox theme, not only its light or dark mode.
+
+Done:
+
+- Firefox's design tokens for web content (`src/css/vendor/acorn-tokens.css`, MPL-2.0) and its icons, both from the Nova design that Firefox 160 shows by default. The pages follow Firefox's accent color, and the extension's own green is gone.
+- Every page uses the tokens: Firefox's buttons, selects, fields and checkboxes, panel-style lists in the popup, the sidebar and the address bar panel, cards on the full pages, and Firefox's dialogs. The deprecated `browser_style` stylesheet is no longer used.
+- #33: the popup, the sidebar and the address bar panel take their background, text and accent colors from the current theme, and switch between light and dark with it.
+- Pages set `lang` and `dir` from the extension's active locale.
+- The build targets Firefox only: `webextension-polyfill`, a shim for Chrome, is replaced by Firefox's own `browser`, and CSS is no longer rewritten for other browsers.
 
 ## Not in 12.0.0
 

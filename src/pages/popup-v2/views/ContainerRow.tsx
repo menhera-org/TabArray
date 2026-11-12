@@ -94,7 +94,7 @@ export const ContainerRow = ({
       <div className={styles.header}>
         {onHide && onUnhide && tabCount > 0 ? (
           <button
-            className={`${styles.iconButton} ${styles.toggleButton}`}
+            className={`ctg-icon-button ${styles.iconButton} ${styles.toggleButton}`}
             title={browser.i18n.getMessage(hidden ? 'tooltipUnhideContainerButton' : 'tooltipHideContainerButton')}
             onClick={hidden ? onUnhide : onHide}
           />
@@ -125,19 +125,19 @@ export const ContainerRow = ({
         </button>
         {onHighlight && (
           <button
-            className={`${styles.iconButton} ${styles.highlightButton}`}
+            className={`ctg-icon-button ${styles.iconButton} ${styles.highlightButton}`}
             title={browser.i18n.getMessage('focusToThisContainer')}
             onClick={onHighlight}
           />
         )}
         <button
-          className={`${styles.iconButton} ${styles.optionsButton}`}
+          className={`ctg-icon-button ${styles.iconButton} ${styles.optionsButton}`}
           title={browser.i18n.getMessage('containerOptions', container.name)}
           onClick={onOptions}
         />
         {tabCount > 0 && (
           <button
-            className={`${styles.iconButton} ${styles.closeButton}`}
+            className={`ctg-icon-button ${styles.iconButton} ${styles.closeButton}`}
             title={browser.i18n.getMessage('tooltipContainerCloseAll')}
             onClick={onClose}
           />

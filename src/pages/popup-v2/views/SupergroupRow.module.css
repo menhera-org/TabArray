@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,56 +22,53 @@
 .header {
   display: block grid;
   grid-template-columns: 1fr max-content max-content max-content max-content;
-  padding-inline-end: 1em;
-  padding-inline-start: 0.5em;
+  align-items: center;
+  column-gap: var(--space-xxsmall);
+  min-block-size: var(--button-min-height);
+  margin-inline: var(--space-xsmall);
+  padding-inline: var(--space-xxsmall) var(--space-xsmall);
+  border-radius: var(--border-radius-small);
 }
 
-/* Undo the page's global button styles, which the shadow DOM used to keep out. */
-.header > button {
-  color: inherit;
-  text-align: unset;
-  padding: 0;
-  inline-size: auto;
-  min-inline-size: auto;
-  box-sizing: content-box;
-}
-
-.header > button:focus {
-  box-shadow: 0 0 0.25rem 0.25rem var(--accent-color);
-  outline: none;
+.header:hover {
+  background-color: var(--button-background-color-ghost-hover);
 }
 
 .groupButton {
+  appearance: none;
   display: block grid;
-  grid-template-columns: 2em 1fr;
-}
-
-.groupButton:active {
-  opacity: 1;
+  grid-template-columns: var(--icon-size) 1fr;
+  align-items: center;
+  column-gap: var(--space-small);
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--space-xsmall);
+  border: none;
+  background: none;
+  color: inherit;
+  text-align: start;
+  font-weight: var(--font-weight-semibold);
 }
 
 .icon {
-  inline-size: 75%;
-  block-size: 75%;
-  align-self: center;
-  justify-self: center;
-  background-color: var(--text-color);
-  mask: url(/img/firefox-icons/folder.svg) center / 75% no-repeat;
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
+  background-color: currentColor;
+  mask: url(/img/firefox-icons/folder.svg) center / contain no-repeat;
 }
 
 .name {
   display: block flex;
-  padding-inline: 0.5em;
-  padding-block: 0.5em;
   flex-direction: row;
   min-inline-size: 0;
 }
 
 .name::after {
   display: block;
-  margin-inline-start: 0.5em;
-  content: '(' attr(data-tab-count) ')';
-  opacity: var(--opaque-opacity);
+  margin-inline-start: var(--space-small);
+  content: attr(data-tab-count);
+  color: var(--text-color-deemphasized);
+  font-weight: var(--font-weight);
 }
 
 .nameInner {
@@ -83,35 +80,33 @@
 }
 
 .slot {
-  inline-size: 2em;
+  inline-size: var(--button-size-icon-small);
 }
 
-.header > .iconButton {
-  inline-size: 2em;
-  opacity: var(--opaque-opacity);
-  background-color: var(--text-color);
+.iconButton {
+  color: var(--text-color-deemphasized);
 }
 
-.header > .iconButton:is(:hover, :focus) {
-  opacity: 1;
+.iconButton:is(:hover, :focus-visible) {
+  color: var(--text-color);
 }
 
 .hideButton {
-  mask: url(/img/material-icons/unfold_less.svg) center center / 75% no-repeat;
+  --icon: url(/img/material-icons/unfold_less.svg);
 }
 
 .unhideButton {
-  mask: url(/img/material-icons/unfold_more.svg) center center / 75% no-repeat;
+  --icon: url(/img/material-icons/unfold_more.svg);
 }
 
 .closeButton {
-  mask: url(/img/firefox-icons/close.svg) center center / 50% no-repeat;
+  --icon: url(/img/firefox-icons/close.svg);
 }
 
 .optionsButton {
-  mask: url(/img/firefox-icons/more.svg) center center / 75% no-repeat;
+  --icon: url(/img/firefox-icons/more.svg);
 }
 
 .members {
-  padding-inline-start: 2em;
+  padding-inline-start: var(--space-large);
 }

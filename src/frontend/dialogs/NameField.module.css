@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,31 +19,17 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* Firefox's moz-input-text: the label above the field. */
 .inputBox {
   display: block grid;
-  grid-template-columns: max-content 1fr;
-  border-block: solid 0.125rem var(--border-color);
-  margin-block: 0.5rem;
-  padding-inline: 0.5rem;
-  /* Some pages make every box border-box; the shadow DOM did not. */
-  box-sizing: content-box;
+  row-gap: var(--space-xsmall);
+  margin-block: var(--space-small);
 }
 
 .inputBox > label {
-  display: block;
-  inline-size: max-content;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0.5rem;
-  opacity: 0.75;
+  font-weight: var(--font-weight-semibold);
 }
 
 .inputBox > .input {
-  background-color: transparent;
-  color: inherit;
-  border: none;
-  border-radius: 0;
-  margin: 0;
-  padding: 0.5rem;
-  outline: none;
+  inline-size: 100%;
 }

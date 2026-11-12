@@ -99,7 +99,6 @@ export const CookiesApp = () => {
               <th colSpan={2}>
                 <select
                   id="selectContainers"
-                  className="browser-style"
                   value={cookieStoreId ?? ''}
                   onChange={(ev) => setSelected(ev.currentTarget.value)}
                 >
@@ -111,7 +110,7 @@ export const CookiesApp = () => {
                 </select>{' '}
                 <button
                   id="buttonContainerClearCookie"
-                  className="browser-style"
+                  className="ctg-button destructive"
                   onClick={() => {
                     if (cookieStoreId == null) return;
                     TabGroupService.getInstance()
@@ -139,7 +138,7 @@ export const CookiesApp = () => {
                     <td className="domain">{domain}</td>
                     <td className="actions">
                       <button
-                        className="delete"
+                        className="ctg-icon-button delete"
                         onClick={() => {
                           if (cookieStoreId == null) return;
                           removeSiteData(new CookieStore(cookieStoreId), firstPartyDomain, domain)

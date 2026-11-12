@@ -49,11 +49,9 @@ const Checkbox = ({
   checked: boolean;
   onChange: (checked: boolean) => void;
 }) => (
-  <p className="browser-style">
+  <p className="ctg-checkbox">
     <input type="checkbox" id={id} checked={checked} onChange={(ev) => onChange(ev.currentTarget.checked)} />
-    <label htmlFor={id} className="browser-style-label">
-      {browser.i18n.getMessage(label)}
-    </label>
+    <label htmlFor={id}>{browser.i18n.getMessage(label)}</label>
   </p>
 );
 
@@ -91,7 +89,7 @@ export const HelpView = ({ settings, onChange, onGetStarted }: HelpViewProps) =>
       />
     </div>
     <div className={styles.actions}>
-      <button className={styles.getStarted} onClick={onGetStarted}>
+      <button className="ctg-button primary" onClick={onGetStarted}>
         {browser.i18n.getMessage('buttonGetStarted')}
       </button>
     </div>

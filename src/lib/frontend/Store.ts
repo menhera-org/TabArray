@@ -1,7 +1,7 @@
 /* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
 /* vim: set ts=2 sw=2 et ai : */
 /**
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.

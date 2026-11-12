@@ -406,7 +406,7 @@ export const WindowsView = ({
       <div className={styles.header}>
         <div className={styles.headerWindow}>
           <select
-            className={`${styles.windowSelect} browser-style`}
+            className={styles.windowSelect}
             value={String(windowId)}
             onChange={(ev) => setSelectedWindowId(parseInt(ev.currentTarget.value))}
           >

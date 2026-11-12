@@ -66,7 +66,7 @@ export const TopBar = ({ onBack, drawerButton, spinning, isPopup, children }: To
     <>
       <div className={styles.topBar}>
         {onBack ? (
-          <button className={styles.backButton} onClick={onBack} />
+          <button className={`ctg-icon-button ${styles.backButton}`} onClick={onBack} />
         ) : (
           <MenuItem
             className={styles.drawerButton}
@@ -79,7 +79,7 @@ export const TopBar = ({ onBack, drawerButton, spinning, isPopup, children }: To
         <div className={`${styles.spinner} ${spinning ? '' : styles.spinnerDisabled}`} />
         <span className={styles.slot} ref={setSlot} />
         {actions.filter((a) => !a.overflow).map((a) => menuItem(a, true))}
-        <MenuItem icon="/img/material-icons/more_vert.svg" iconOnly>
+        <MenuItem icon="/img/firefox-icons/more.svg" iconOnly>
           {actions.filter((a) => a.overflow).map((a) => menuItem(a, false))}
         </MenuItem>
       </div>

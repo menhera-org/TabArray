@@ -11,10 +11,6 @@
         "message": "Container Tab Groups: Popup page",
         "description": "Title of the popup page for browserAction."
     },
-    "buttonHideInactiveContainers": {
-        "message": "Collapse other containers",
-        "description": "Button label to hide inactive containers on a window."
-    },
     "buttonNewContainer": {
         "message": "Create a new container…",
         "description": "Button label to create a new container."
@@ -30,10 +26,6 @@
     "newContainerNameLabel": {
         "message": "Name",
         "description": "Label for inputting the name of a new container."
-    },
-    "newContainerNamePlaceholder": {
-        "message": "Name of the container",
-        "description": "Placeholder for the input field of the name of a new container."
     },
     "newContainerDialogTitle": {
         "message": "Create a new container",
@@ -63,10 +55,6 @@
         "message": "Show the tabs of this container",
         "description": "Tooltip for the button to unhide the tabs of a container."
     },
-    "tooltipEditContainerButton": {
-        "message": "Edit this container",
-        "description": "Tooltip for the button to edit a container."
-    },
     "currentWindow": {
         "message": "This window (#$ID$)",
         "description": "Title of popup section for the current window.",
@@ -90,23 +78,9 @@
             }
         }
     },
-    "tooltipWindowLabel": {
-        "message": "Switch to window #$ID$",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
     "tooltipContainerCloseAll": {
         "message": "Close all tabs in this container",
         "description": "Tooltip for a button to close all tabs of a container."
-    },
-    "tooltipContainerDelete": {
-        "message": "Permanently delete this container",
-        "description": "Tooltip for a button to permanently delete a container."
     },
     "confirmContainerDelete": {
         "message": "Do you want to permanently delete this container: $NAME$?",
@@ -157,16 +131,6 @@
     "buttonAboutAddon": {
         "message": "More about Container Tab Groups & reviews…",
         "description": "Menu item to open the extension's addons.mozilla.org page."
-    },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
-            }
-        }
     },
     "buttonSettings": {
         "message": "Settings",
@@ -233,10 +197,6 @@
     "promptSelectContainer": {
         "message": "Please select a Container to open this tab in.",
         "description": "Message asking the user to select a container for a new tab."
-    },
-    "labelSelectContainerExternalTabs": {
-        "message": "Select a Container when an external application opens a Tab",
-        "description": "Option to enable container selection on externally opened tabs."
     },
     "labelExternalTabSelectContainerOption": {
         "message": "When an external application opens a tab:",
@@ -314,18 +274,6 @@
         "message": "New Window",
         "description": "Button to open a new window."
     },
-    "buttonSidebar": {
-        "message": "Open Sidebar",
-        "description": "Button to open Sidebar."
-    },
-    "optionsHeadingUserData": {
-        "message": "Your Data",
-        "description": "Heading text of options page for managing user data."
-    },
-    "buttonClear": {
-        "message": "Clear",
-        "description": "Button to clear data."
-    },
     "privateBrowsing": {
         "message": "Private Browsing",
         "description": "Private Browsing page"
@@ -339,10 +287,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "tooltipContainerClearCookie": {
-        "message": "Clear all cookies in this container",
-        "description": "Tooltip for a button to clear all cookies in a container."
     },
     "confirmPrivateBrowsingClearCookie": {
         "message": "Do you want to clear cookies for private browsing?",
@@ -373,10 +317,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "optionsHeadingContainerSortOrder": {
-        "message": "Sort Containers",
-        "description": "Heading text of options page for changing container order."
     },
     "optionsDescriptionContainerSortOrder": {
         "message": "This setting does not affect other extensions.",
@@ -497,10 +437,6 @@
     "featureUaOverrides": {
         "message": "Per-container User-Agent Overrides",
         "description": "Label text for UA overrides feature"
-    },
-    "optionsHeadingContainerOverrides": {
-        "message": "Per-container Overrides",
-        "description": "Heading text of options page for container overrides."
     },
     "optionsLabelUserAgent": {
         "message": "User Agent",
@@ -690,16 +626,6 @@
         "message": "Firefox Settings",
         "description": "Label text for firefox settings tab."
     },
-    "newVersionAvailable": {
-        "message": "New Version Available: $VERSION$",
-        "description": "New version available message.",
-        "placeholders": {
-            "version": {
-                "content": "$1",
-                "example": "1.0.0"
-            }
-        }
-    },
     "debuggingInformation": {
         "message": "Debugging Information",
         "description": "Debugging information page."
@@ -815,13 +741,5 @@
     "copyCookiesFrom": {
         "message": "Copy cookies from:",
         "description": "Label text for copy cookies from option."
-    },
-    "copyCookiesTo": {
-        "message": "Copy cookies to:",
-        "description": "Label text for copy cookies to option."
-    },
-    "copyCookies": {
-        "message": "Copy Cookies",
-        "description": "Copy cookies button or label text."
     }
 }

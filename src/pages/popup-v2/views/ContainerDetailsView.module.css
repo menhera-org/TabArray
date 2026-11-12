@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,19 +19,19 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* A section heading in a list, as in Firefox's sidebar. */
 .windowLabel {
   position: sticky;
-  inset-block-start: -0.125rem;
+  inset-block-start: 0;
   z-index: 2;
-  background-color: var(--background-color);
-  box-shadow:
-    0 0 0.5em var(--background-color),
-    0 0 0.5em var(--background-color);
-  border-block-start: solid 0.125rem var(--border-color);
-  padding-inline: 2em 3em;
-  padding-block: 0.5em;
+  background-color: var(--ctg-theme-background, var(--background-color-canvas));
+  margin-block-start: var(--space-xsmall);
+  padding-inline: var(--space-medium);
+  padding-block: var(--space-small) var(--space-xsmall);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-weight: bold;
+  color: var(--text-color-deemphasized);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
 }

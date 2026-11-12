@@ -1,7 +1,8 @@
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
 /* vim: set ts=2 sw=2 et ai : */
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -29,184 +30,157 @@ body {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  background-color: var(--background-color);
-  color: var(--text-color);
 }
 
-button {
-  color: inherit;
-}
-
+/* Like Firefox View: each container a card holding its tabs as smaller cards. */
 #containers {
   flex-grow: 1;
-  padding: 1rem;
+  padding: var(--space-xlarge);
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: var(--space-large);
+}
+
+#containers > div {
+  border: var(--card-border);
+  border-radius: var(--card-border-radius);
+  background-color: var(--background-color-box);
+  box-shadow: var(--card-box-shadow);
+  overflow: hidden;
 }
 
 .container-heading {
   display: grid;
-  grid-template-columns: 2rem max-content max-content 2rem 2rem 1fr max-content;
-  padding-inline: 1rem;
+  grid-template-columns: var(--icon-size) max-content max-content var(--button-size-icon-small) var(--button-size-icon-small) 1fr var(--button-size-icon-small);
+  align-items: center;
+  column-gap: var(--space-small);
+  padding-block: var(--space-small);
+  padding-inline: var(--space-large) var(--space-small);
+}
+
+.container-heading::after {
+  content: attr(data-tab-count);
+  color: var(--text-color-deemphasized);
+  grid-row: 1 / 2;
+  grid-column: 3 / 4;
+}
+
+.container-icon {
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
+  mask-size: contain !important;
+}
+
+.container-label {
+  display: block;
+  color: inherit;
+  font-size: var(--font-size-large);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+}
+
+.container-edit,
+.container-delete,
+.container-close {
+  color: var(--text-color-deemphasized);
+}
+
+:is(.container-edit, .container-delete, .container-close):is(:hover, :focus-visible) {
+  color: var(--text-color);
 }
 
 .container-edit {
-  appearance: none;
-  border: none;
-  padding: 0 !important;
-  color: inherit;
-  mask: url(/img/firefox-icons/edit.svg) center center / 67% no-repeat;
-  background-color: var(--text-color);
-  opacity: var(--opaque-opacity);
+  --icon: url(/img/firefox-icons/edit.svg);
 }
 
 .container-delete {
-  appearance: none;
-  border: none;
-  padding: 0 !important;
-  color: inherit;
-  mask: url(/img/firefox-icons/delete.svg) center center / 67% no-repeat;
-  background-color: var(--text-color);
-  opacity: var(--opaque-opacity);
+  --icon: url(/img/firefox-icons/delete.svg);
 }
 
 :is(.container-edit, .container-delete):disabled {
   visibility: hidden;
 }
 
-:is(.container-edit, .container-delete):not(:disabled):is(:focus, :hover, :active) {
-  opacity: 1;
-}
-
-.container-heading > *, .container-heading::after {
-  margin: 0;
-  padding: .5rem;
-  display: grid;
-  align-content: baseline;
-}
-
-.container-heading::after {
-  content: '(' attr(data-tab-count) ')';
-  opacity: var(--opaque-opacity);
-  grid-row: 1 / 2;
-  grid-column: 3 / 4;
-}
-
-.container-label {
-  display: block;
-  color: inherit;
-  text-decoration: none;
+.container-close {
+  --icon: url(/img/firefox-icons/close.svg);
+  grid-column: -2 / -1;
 }
 
 .container-tabs {
   position: relative;
   display: flex;
   flex-direction: row;
-  padding: 1rem;
-  background-color: var(--secondary-background-color);
+  column-gap: var(--space-medium);
+  padding: var(--space-medium) var(--space-large) var(--space-large);
   overflow: auto;
-  column-gap: 2rem;
-  /* box-shadow: inset 0 0 1rem var(--border-color); */
-  border: solid .125rem var(--border-color);
 }
 
 .container-tabs > * {
   flex-shrink: 0;
 }
 
-.container-tabs > :hover, .container-tabs > :focus-within {
-  outline: solid .25rem #48b1ff;
-}
-
 .container-new-tab {
   display: grid;
   justify-content: center;
   align-content: end;
-  appearance: none;
-  border: none;
-  background-color: transparent;
-  font: inherit;
-  box-sizing: border-box;
-  padding: .5rem;
+  row-gap: var(--space-small);
+  inline-size: 9rem;
+  margin: 0;
+  padding: var(--space-small);
+  border: var(--border-width) dashed var(--border-color-interactive);
+  border-radius: var(--border-radius-medium);
+  background: none;
+  color: inherit;
   text-align: center;
+}
+
+.container-new-tab:hover {
+  border-color: var(--border-color-interactive-hover);
+  background-color: var(--button-background-color-ghost-hover);
 }
 
 .container-new-tab::before {
   display: block;
   content: '';
-	mask: url(/img/firefox-icons/plus.svg) center center/40% no-repeat;
-	background-color: var(--text-color);
-  inline-size: 8rem;
+  mask: url(/img/firefox-icons/plus.svg) center / var(--icon-size) no-repeat;
+  background-color: currentColor;
   min-block-size: 4.5rem;
-  box-sizing: border-box;
 }
 
-.container-close {
-  display: block;
-  mask: url(/img/firefox-icons/close.svg) center center/50% no-repeat;
-  background-color: var(--text-color);
-  opacity: var(--opaque-opacity);
-  inline-size: 2rem;
-  grid-column: -2 / -1;
-}
-
-.container-close:is(:focus, :hover, :active) {
-  opacity: 1;
-}
-
+/* The bar at the bottom. */
 #topbar {
+  display: flex;
+  column-gap: var(--space-xxsmall);
   position: sticky;
   inset-block-end: 0;
   inset-inline-start: 0;
-  inline-size: 100%;
-  padding: .5rem;
-  background-color: var(--background-color);
-  border-block-start: solid .125rem var(--border-color);
+  padding: var(--space-small);
+  background-color: var(--background-color-canvas);
+  border-block-start: var(--border-width) solid var(--border-color-deemphasized);
   z-index: 3;
 }
 
+#topbar > button {
+  --icon-button-size: var(--button-size-icon);
+}
+
 #button-new-container {
-  block-size: 2em;
-  inline-size: 2em;
-  color: inherit;
-  mask: url(/img/firefox-icons/plus.svg) center center / 67% no-repeat;
-  background-color: var(--text-color);
-  opacity: var(--opaque-opacity);
+  --icon: url(/img/firefox-icons/plus.svg);
 }
 
 #button-new-temporary-container {
-  block-size: 2em;
-  inline-size: 2em;
-  color: inherit;
-  mask: url(/img/material-icons/timelapse.svg) center center / 67% no-repeat;
-  background-color: var(--text-color);
-  opacity: var(--opaque-opacity);
+  --icon: url(/img/material-icons/timelapse.svg);
 }
 
 #button-settings {
-  block-size: 2em;
-  inline-size: 2em;
-  color: inherit;
-  mask: url(/img/firefox-icons/settings.svg) center center / 67% no-repeat;
-  background-color: var(--text-color);
-  opacity: var(--opaque-opacity);
+  --icon: url(/img/firefox-icons/settings.svg);
 }
 
 #button-help {
-  block-size: 2em;
-  inline-size: 2em;
-  color: inherit;
-  mask: url(/img/firefox-icons/help.svg) center center / 67% no-repeat;
-  background-color: var(--text-color);
-  opacity: var(--opaque-opacity);
+  --icon: url(/img/firefox-icons/help.svg);
 }
 
-:is(#button-new-container, #button-new-temporary-container, #button-settings, #button-help):is(:focus, :hover, :active) {
-  opacity: 1;
-}
-
-:is(#button-new-container, #button-new-temporary-container, #button-settings, #button-help) > .button-text {
+#topbar .button-text {
   display: none;
 }
 

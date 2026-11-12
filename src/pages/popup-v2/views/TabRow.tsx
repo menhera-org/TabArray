@@ -135,7 +135,7 @@ export const TabRow = ({ tab, container, actions, draggable = false }: TabRowPro
         style={colored ? { borderColor: container.colorCode } : undefined}
       >
         <button
-          className={`${styles.pinButton} ${tab.pinned ? styles.pinned : ''}`}
+          className={`ctg-icon-button ${styles.pinButton} ${tab.pinned ? styles.pinned : ''}`}
           title={browser.i18n.getMessage(tab.pinned ? 'tooltipTabUnpinButton' : 'tooltipTabPinButton')}
           onClick={() => actions.setPinned(tab.id, !tab.pinned)}
         />
@@ -155,7 +155,7 @@ export const TabRow = ({ tab, container, actions, draggable = false }: TabRowPro
           <span className={styles.title}>{tab.title}</span>
         </button>
         <button
-          className={styles.closeButton}
+          className={`ctg-icon-button ${styles.closeButton}`}
           title={browser.i18n.getMessage('buttonTabClose')}
           onClick={() => actions.close(tab.id)}
         />

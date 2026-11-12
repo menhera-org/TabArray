@@ -61,7 +61,11 @@ export const MenuDialog = ({
   actions: MenuAction[];
   onAction: (id: string) => void;
 }) => (
-  <ModalFrame title={title} actions={actions.map((action) => ({ ...action, onClick: () => onAction(action.id) }))} />
+  <ModalFrame
+    menu
+    title={title}
+    actions={actions.map((action) => ({ ...action, onClick: () => onAction(action.id) }))}
+  />
 );
 
 type NameDialogProps = {
@@ -82,6 +86,7 @@ export const NameDialog = ({ title, initialName = '', onSave, onClose }: NameDia
         { label: message('buttonCancel'), onClick: onClose },
         {
           label: message('buttonOk'),
+          isDefault: true,
           onClick: () => {
             const cleaned = cleanName(name);
             if (cleaned == '') return;
@@ -151,6 +156,7 @@ export const MoveGroupDialog = ({ tabGroupId, onClose }: { tabGroupId: string; o
         { label: message('buttonCancel'), onClick: onClose },
         {
           label: message('buttonMove'),
+          isDefault: true,
           onClick: () => {
             tabGroupDirectory.moveTabGroupToSupergroup(tabGroupId, chosen).then(onClose, (e) => console.error(e));
           },

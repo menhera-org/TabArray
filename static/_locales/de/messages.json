@@ -7,10 +7,6 @@
         "message": "Diesen Tab anheften",
         "description": "Tooltip for the button to pin a tab."
     },
-    "newContainerNamePlaceholder": {
-        "message": "Name des Containers",
-        "description": "Placeholder for the input field of the name of a new container."
-    },
     "buttonNewContainer": {
         "message": "Einen neuen Container erstellen…",
         "description": "Button label to create a new container."
@@ -35,10 +31,6 @@
         "message": "Einen neuen Container erstellen",
         "description": "Title of the dialog prompting for creating a new container."
     },
-    "buttonHideInactiveContainers": {
-        "message": "Andere Container einklappen",
-        "description": "Button label to hide inactive containers on a window."
-    },
     "tooltipTabUnpinButton": {
         "message": "Diesen Tab ablösen",
         "description": "Tooltip for the button to unpin a tab."
@@ -50,10 +42,6 @@
     "tooltipUnhideContainerButton": {
         "message": "Die Registerkarten dieses Containers anzeigen",
         "description": "Tooltip for the button to unhide the tabs of a container."
-    },
-    "tooltipEditContainerButton": {
-        "message": "Diesen Container bearbeiten",
-        "description": "Tooltip for the button to edit a container."
     },
     "currentWindow": {
         "message": "Dieses Fenster (#$ID$)",
@@ -78,23 +66,9 @@
             }
         }
     },
-    "tooltipWindowLabel": {
-        "message": "Zu Fenster #$ID$ wechseln",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
     "tooltipContainerCloseAll": {
         "message": "Alle Registerkarten in diesem Container schließen",
         "description": "Tooltip for a button to close all tabs of a container."
-    },
-    "tooltipContainerDelete": {
-        "message": "Diesen Container endgültig löschen",
-        "description": "Tooltip for a button to permanently delete a container."
     },
     "confirmContainerDelete": {
         "message": "Möchten Sie diesen Container endgültig löschen: $NAME$?",
@@ -133,16 +107,6 @@
     "browserActionTitle": {
         "message": "Registerkarten und Gruppen",
         "description": "Title of browserAction about tabs and container-based groups."
-    },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
-            }
-        }
     },
     "buttonSettings": {
         "message": "Einstellungen",
@@ -242,14 +206,6 @@
         "message": "Neues Fenster",
         "description": "Button to open a new window."
     },
-    "optionsHeadingUserData": {
-        "message": "Ihre Daten",
-        "description": "Heading text of options page for managing user data."
-    },
-    "tooltipContainerClearCookie": {
-        "message": "Alle Cookies in diesem Container löschen",
-        "description": "Tooltip for a button to clear all cookies in a container."
-    },
     "buttonEditContainer": {
         "message": "Container bearbeiten…",
         "description": "Button to edit a container."
@@ -271,10 +227,6 @@
                 "example": "Container 3"
             }
         }
-    },
-    "optionsHeadingContainerSortOrder": {
-        "message": "Container sortieren",
-        "description": "Heading text of options page for changing container order."
     },
     "buttonNewPrivateWindow": {
         "message": "Neues privates Fenster",
@@ -490,14 +442,6 @@
         "message": "Sites",
         "description": "Menu item for sites view"
     },
-    "buttonSidebar": {
-        "message": "Sidebar öffnen",
-        "description": "Button to open Sidebar."
-    },
-    "buttonClear": {
-        "message": "Löschen",
-        "description": "Button to clear data."
-    },
     "privateBrowsing": {
         "message": "Privatesbrowsing",
         "description": "Private Browsing page"
@@ -519,10 +463,6 @@
     "fpiDescription": {
         "message": "Diese Erweiterung aktiviert standardmäßig die First-Party-Isolate-Funktion (FPI) von Firefox. Das bedeutet, dass Cookies für verschiedene Websites, sogar für denselben Container, nach registrierbarer Domain getrennt werden. Sie können diese Funktion hier deaktivieren.",
         "description": "Description text for FPI"
-    },
-    "labelSelectContainerExternalTabs": {
-        "message": "Einen Container auswählen, wenn eine externe Anwendung eine Registerkarte öffnet",
-        "description": "Option to enable container selection on externally opened tabs."
     },
     "commandOpenPopup": {
         "message": "Das Popup öffnen",
@@ -561,10 +501,6 @@
     "featureUaOverrides": {
         "message": "Überschreibungen des Benutzer-Agenten pro Container",
         "description": "Label text for UA overrides feature"
-    },
-    "optionsHeadingContainerOverrides": {
-        "message": "Übersteuerungen pro Container",
-        "description": "Heading text of options page for container overrides."
     },
     "labelAutoDiscardMinAge": {
         "message": "Speicher der Registerkarten nach Inaktivität freigeben für:",
@@ -643,16 +579,6 @@
             "name": {
                 "content": "$1",
                 "example": "Group 3"
-            }
-        }
-    },
-    "newVersionAvailable": {
-        "message": "Neue Version verfügbar: $VERSION$",
-        "description": "New version available message.",
-        "placeholders": {
-            "version": {
-                "content": "$1",
-                "example": "1.0.0"
             }
         }
     },
@@ -764,16 +690,8 @@
         "message": "privacy.resistFingerprinting ist eine erweiterte Schutzeinstellung, die im Tor-Browser verwendet wird und dein Surferlebnis einschränken kann.",
         "description": "Warning message for privacy.resistFingerprinting."
     },
-    "copyCookiesTo": {
-        "message": "Cookies kopieren nach:",
-        "description": "Label text for copy cookies to option."
-    },
     "copyCookiesFrom": {
         "message": "Cookies kopieren aus:",
         "description": "Label text for copy cookies from option."
-    },
-    "copyCookies": {
-        "message": "Cookies kopieren",
-        "description": "Copy cookies button or label text."
     }
 }

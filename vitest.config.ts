@@ -21,7 +21,10 @@
 
 import { defineConfig } from 'vitest/config';
 
+import { BROWSER_ALIAS } from './build-plugins/target.ts';
+
 export default defineConfig({
+  resolve: { alias: BROWSER_ALIAS },
   test: {
     environment: 'happy-dom',
     include: ['src/**/*.test.{ts,tsx}'],

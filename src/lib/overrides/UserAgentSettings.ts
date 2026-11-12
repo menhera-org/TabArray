@@ -2,7 +2,7 @@
 /* vim: set ts=2 sw=2 et ai : */
 /**
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,15 +24,9 @@ import { AbstractPerContainerSettings } from './AbstractPerContainerSettings';
 
 export type UserAgentPreset = 'default' | 'chrome' | 'googlebot' | 'custom';
 
-export type UserAgentEmulationMode = 'none' | 'chrome';
-
 export type UserAgentParams = {
   preset: UserAgentPreset;
   userAgent?: string;
-};
-
-export type UserAgentStorageType = {
-  [cookieStoreId: string]: UserAgentParams;
 };
 
 export class UserAgentSettings extends AbstractPerContainerSettings<UserAgentParams> {

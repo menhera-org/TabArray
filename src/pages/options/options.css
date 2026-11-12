@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,76 +22,60 @@
 @import url(../../css/theme.css);
 
 body {
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
-
-label {
-  font: inherit;
-  color: inherit;
+  padding-block-end: var(--space-xlarge);
 }
 
 #optionsPanes > div:not(.active) {
   display: none;
 }
 
-.pane-header {
-  display: block grid;
-  grid-template-columns: max-content 1fr;
-  column-gap: .5rem;
-  align-items: center;
-  box-shadow: 0 0 .25rem var(--border-color);
+#optionsPanes > div {
+  padding-inline: var(--space-large);
 }
 
-.pane-header > h2 {
-  font: inherit !important;
-  font-weight: bold !important;
-  font-size: 1.08em !important;
-  margin: 0;
-  padding: 0;
+#optionsPanes h2 {
+  margin-block: var(--space-xlarge) var(--space-small);
+  font-size: var(--font-size-large);
 }
 
-.pane-back {
-  padding: 0;
-  display: block;
-  inline-size: 3rem;
-  block-size: 3rem;
-  mask: url(/img/firefox-icons/back.svg) center center/50% no-repeat;
-  background-color: var(--text-color);
+#optionsPanes p {
+  margin-block: var(--space-small);
 }
 
-.text-link {
-  text-decoration: none;
-  color: var(--in-content-link-color);
-}
-
+/* The panes' tabs, like the tabs of an add-on's page in about:addons. */
 #pane-tabs {
   display: block flex;
   flex-direction: row;
-  /* overflow-inline: auto; */
   flex-wrap: wrap;
-  border-block-end: solid 1px var(--border-color);
+  column-gap: var(--space-xxsmall);
+  padding-inline: var(--space-small);
+  border-block-end: var(--border-width) solid var(--border-color-deemphasized);
 }
 
 #pane-tabs > .pane-tab {
-  padding-block: .5em;
-  padding-inline: 1em;
-  text-decoration: none;
-  font-weight: bold;
-  border-block-start: solid .25rem transparent;
   display: block;
-  color: inherit;
   flex-shrink: 0;
+  padding-block: var(--space-small);
+  padding-inline: var(--space-medium);
+  border-start-start-radius: var(--border-radius-small);
+  border-start-end-radius: var(--border-radius-small);
+  color: var(--text-color-deemphasized);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+}
+
+#pane-tabs > .pane-tab:hover {
+  background-color: var(--button-background-color-ghost-hover);
+  color: var(--text-color);
 }
 
 #pane-tabs > .pane-tab.selected {
-  border-block-start-color: var(--button-text-color);
-  color: var(--button-text-color);
+  color: var(--color-accent-primary);
+  box-shadow: inset 0 calc(-1 * var(--focus-outline-width)) 0 var(--color-accent-primary);
 }
 
-#pane-tabs > .pane-tab:is(:hover, :active) {
-  border-block-start-color: var(--border-color);
-  background-color: var(--hover-color);
+#pane-tabs > .pane-tab:focus-visible {
+  outline-offset: var(--focus-outline-inset);
 }
 
 /* The React root; its content lays out as children of the body. */

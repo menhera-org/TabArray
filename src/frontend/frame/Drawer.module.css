@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,77 +22,53 @@
 /* No display here, so that the hidden attribute still hides it. */
 .drawer {
   position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  inline-size: 100%;
-  block-size: 100%;
+  inset: 0;
 }
 
 .scrim {
   display: block;
   position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  background-color: var(--hover-color);
-  backdrop-filter: blur(0.5rem);
+  inset: 0;
+  background-color: var(--background-color-overlay);
   z-index: 50;
 }
 
 .main {
   display: block flex;
   position: absolute;
-  inset-block-start: 0;
+  inset-block: 0;
   inset-inline-start: 0;
   inline-size: 92.5%;
   max-inline-size: 25rem;
-  block-size: 100%;
   z-index: 51;
   flex-direction: column;
-  background-color: var(--background-color);
+  border-start-end-radius: var(--border-radius-large);
+  border-end-end-radius: var(--border-radius-large);
+  background-color: var(--background-color-box);
+  box-shadow: var(--box-shadow-level-4);
 }
 
 .header {
   display: block flex;
   flex-direction: row;
-  column-gap: 0.5em;
-  padding-inline: 1em;
-  padding-block-start: 0.5em;
-  padding-block-end: 0.5em;
+  column-gap: var(--space-xsmall);
+  padding: var(--space-xsmall);
   align-items: center;
 }
 
-/* Two classes, to beat the page's button rules (including button:active). */
-.header > .closeButton {
-  /* The browser's button font, which sets the em-based size, as in the shadow DOM version. */
-  font: revert;
-  display: block;
-  margin: 0;
-  padding: 0;
-  min-inline-size: auto;
-  appearance: none;
-  border: none;
-  background-color: var(--text-color);
-  inline-size: 2em;
-  block-size: 2em;
-  mask: url(/img/firefox-icons/close.svg) center / 75% no-repeat;
-  opacity: var(--opaque-opacity);
-}
-
-.header > .closeButton:is(:hover, :active, :focus) {
-  opacity: 1;
+.closeButton {
+  --icon: url(/img/firefox-icons/close.svg);
+  --icon-button-size: var(--button-size-icon);
 }
 
 .heading {
   display: block;
   margin: 0;
-  padding-inline: 1em;
-  padding-block: 0.5em;
+  padding-inline: var(--space-small);
   flex: 1;
-  font-size: 100%;
   min-inline-size: 0;
-  font-weight: normal;
+  font-size: var(--font-size-root);
+  font-weight: var(--font-weight-semibold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

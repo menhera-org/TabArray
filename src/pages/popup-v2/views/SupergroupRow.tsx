@@ -57,12 +57,12 @@ export const SupergroupRow = ({
       {onHide && onUnhide && tabCount > 0 ? (
         <>
           <button
-            className={`${styles.iconButton} ${styles.hideButton}`}
+            className={`ctg-icon-button ${styles.iconButton} ${styles.hideButton}`}
             title={browser.i18n.getMessage('tooltipCollapseContainers')}
             onClick={onHide}
           />
           <button
-            className={`${styles.iconButton} ${styles.unhideButton}`}
+            className={`ctg-icon-button ${styles.iconButton} ${styles.unhideButton}`}
             title={browser.i18n.getMessage('tooltipExpandContainers')}
             onClick={onUnhide}
           />
@@ -74,13 +74,13 @@ export const SupergroupRow = ({
         </>
       )}
       <button
-        className={`${styles.iconButton} ${styles.optionsButton}`}
+        className={`ctg-icon-button ${styles.iconButton} ${styles.optionsButton}`}
         title={browser.i18n.getMessage('groupOptions', name)}
         onClick={onOptions}
       />
       {tabCount > 0 && (
         <button
-          className={`${styles.iconButton} ${styles.closeButton}`}
+          className={`ctg-icon-button ${styles.iconButton} ${styles.closeButton}`}
           title={browser.i18n.getMessage('tooltipContainerCloseAll')}
           onClick={onClose}
         />

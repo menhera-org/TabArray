@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,38 +19,44 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* Formerly the shadow DOM of <panorama-tab>; :host became .tab. */
+/* A tab as a card: its preview, with its icon and title below. */
 .tab {
   position: relative;
   box-sizing: border-box;
-  inline-size: 8rem;
+  inline-size: 9rem;
   display: grid;
   grid-template-rows: minmax(max-content, 1fr) max-content;
+  border: var(--card-border);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--background-color-box);
+  box-shadow: var(--box-shadow-level-1);
+  overflow: hidden;
+}
+
+.tab:is(:hover, :focus-within) {
+  box-shadow: var(--card-box-shadow-hover);
 }
 
 .controls {
   position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  opacity: var(--opaque-opacity);
+  inset-block-start: var(--space-xsmall);
+  inset-inline-end: var(--space-xsmall);
+  opacity: 0;
 }
 
-.controls:focus-within,
-.controls:hover {
+.tab:is(:hover, :focus-within) > .controls {
   opacity: 1;
 }
 
 .preview {
   min-block-size: 2rem;
-  background-color: #fff;
   display: grid;
   align-content: center;
   border: none;
   appearance: none;
   margin: 0;
   padding: 0;
-  /* The page's own button color, which the shadow DOM kept out. */
-  color: revert;
+  background-color: var(--background-color-canvas);
 }
 
 .previewImage {
@@ -60,43 +66,41 @@
 
 .info {
   display: grid;
-  grid-template-columns: 2rem 1fr;
+  grid-template-columns: var(--icon-size) 1fr;
   align-items: center;
-  justify-items: center;
+  column-gap: var(--space-small);
+  padding: var(--space-small);
 }
 
 .icon {
-  inline-size: 75%;
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
+}
+
+/* The extension's own black icons, which a page cannot recolor. */
+@media (prefers-color-scheme: dark) {
+  .icon[src*='/img/firefox-icons/'] {
+    filter: invert(1);
+  }
 }
 
 .title {
-  text-align: center;
-  inline-size: 100%;
+  min-inline-size: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-inline: 0.5rem;
-  padding-block: 0.5rem;
-  /* Some pages make every box border-box; the shadow DOM did not. */
-  box-sizing: content-box;
+  font-size: var(--font-size-small);
 }
 
+/* Over the preview, so it gets its own background. */
 .close {
+  --icon: url(/img/firefox-icons/close.svg);
   font-size: 0;
-  width: 2rem;
-  height: 2rem;
-  background-size: 75%;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-image: url(/img/firefox-icons/close.svg);
-  appearance: none;
-  border: none;
-  background-color: #fff;
-  opacity: 0.75;
-  color: revert;
+  background-color: var(--background-color-box);
+  box-shadow: var(--box-shadow-level-1);
 }
 
-.close:hover,
-.close:focus {
-  opacity: 1;
+.close:hover {
+  background-color: var(--background-color-box);
+  color: var(--color-accent-primary);
 }

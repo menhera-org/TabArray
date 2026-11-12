@@ -128,11 +128,20 @@
 }
 
 .radios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--button-size-icon));
+  justify-content: space-between;
   align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  padding-block: 8px;
-  justify-content: space-around;
+  gap: var(--space-xsmall);
+  margin: 0;
+  padding-block: var(--space-small);
+  padding-inline: 0;
+  border: none;
+}
+
+/* The radio buttons take no room; their labels draw the choices. */
+.radios > [type="radio"] {
+  position: absolute;
 }
 
 .radios > label {
@@ -167,12 +176,24 @@
   position: relative;
 }
 
-.radios > [type="radio"]:checked + label {
-  background: #d3d3d3;
-  border-radius: 100%;
+.radios > label {
+  display: grid;
+  place-items: center;
+  inline-size: var(--button-size-icon);
+  block-size: var(--button-size-icon);
+  border-radius: var(--border-radius-circle);
 }
 
-.radios > [type="radio"]:focus + label {
-  outline: 1px solid #1f9ffc;
-  -moz-outline-radius: 100%;
+.radios > label:hover {
+  background-color: var(--button-background-color-ghost-hover);
+}
+
+.radios > [type="radio"]:checked + label {
+  background-color: var(--button-background-color-ghost-active);
+  box-shadow: inset 0 0 0 var(--focus-outline-width) var(--color-accent-primary);
+}
+
+.radios > [type="radio"]:focus-visible + label {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
 }

@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,50 +23,54 @@
   display: block;
 }
 
+.header {
+  display: block grid;
+  grid-template-columns: var(--button-size-icon-small) 1fr max-content max-content max-content;
+  align-items: center;
+  column-gap: var(--space-xxsmall);
+  min-block-size: var(--button-min-height);
+  margin-inline: var(--space-xsmall);
+  padding-inline: var(--space-xxsmall) var(--space-xsmall);
+  border-radius: var(--border-radius-small);
+}
+
+.header:hover {
+  background-color: var(--button-background-color-ghost-hover);
+}
+
 /* The container of the window's active tab (#8). */
 .active > .header {
-  box-shadow: inset 0 -2px 0 var(--accent-color);
+  background-color: color-mix(in srgb, var(--color-accent-primary) 12%, transparent);
 }
 
 .active .nameInner {
-  font-weight: bold;
-}
-
-.header {
-  display: block grid;
-  grid-template-columns: 2em 1fr max-content max-content max-content;
-  padding-inline-end: 1em;
-}
-
-/* Undo the page's global button styles, which the shadow DOM used to keep out. */
-.header > button {
-  color: inherit;
-  text-align: unset;
-  padding: 0;
-  inline-size: auto;
-  min-inline-size: auto;
-  box-sizing: content-box;
-}
-
-.header > button:focus {
-  box-shadow: 0 0 0.25rem 0.25rem var(--accent-color);
-  outline: none;
+  font-weight: var(--font-weight-semibold);
 }
 
 .containerButton {
+  appearance: none;
   display: block grid;
-  grid-template-columns: 2em 1fr;
+  grid-template-columns: var(--icon-size) 1fr;
+  align-items: center;
+  column-gap: var(--space-small);
+  min-inline-size: 0;
+  margin: 0;
+  padding-block: var(--space-xsmall);
+  padding-inline: var(--space-xsmall);
+  border: none;
+  border-radius: var(--border-radius-small);
+  background: none;
+  color: inherit;
+  text-align: start;
 }
 
-.containerButton:active {
-  opacity: 1;
+.containerButton:focus-visible {
+  outline-offset: var(--focus-outline-inset);
 }
 
 .icon {
-  inline-size: 75%;
-  block-size: 75%;
-  align-self: center;
-  justify-self: center;
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
   mask-position: center;
   mask-size: contain;
   mask-repeat: no-repeat;
@@ -77,8 +81,6 @@
 }
 
 .name {
-  padding-inline: 0.5em;
-  padding-block: 0.5em;
   display: block flex;
   flex-direction: row;
   min-inline-size: 0;
@@ -86,9 +88,9 @@
 
 .name::after {
   display: block;
-  margin-inline-start: 0.5em;
-  content: '(' attr(data-tab-count) ')';
-  opacity: var(--opaque-opacity);
+  margin-inline-start: var(--space-small);
+  content: attr(data-tab-count);
+  color: var(--text-color-deemphasized);
 }
 
 .nameInner {
@@ -99,34 +101,35 @@
   white-space: nowrap;
 }
 
-.header > .iconButton {
-  inline-size: 2em;
-  opacity: var(--opaque-opacity);
-  background-color: var(--text-color);
+.iconButton {
+  color: var(--text-color-deemphasized);
 }
 
-.header > .iconButton:is(:hover, :focus) {
-  opacity: 1;
+.iconButton:is(:hover, :focus-visible) {
+  color: var(--text-color);
 }
 
-.header > .toggleButton {
-  inline-size: 100%;
-  block-size: 100%;
-  mask: url(/img/material-icons/expand_less.svg) center center / 75% no-repeat;
+.toggleButton {
+  --icon: url(/img/firefox-icons/arrow-down.svg);
+  --icon-size: var(--icon-size-xsmall);
 }
 
 .hidden .toggleButton {
-  mask-image: url(/img/material-icons/expand_more.svg);
+  --icon: url(/img/firefox-icons/arrow-right.svg);
+}
+
+.hidden .toggleButton:dir(rtl) {
+  --icon: url(/img/firefox-icons/arrow-left.svg);
 }
 
 .highlightButton {
-  mask: url(/img/firefox-icons/highlights.svg) center center / 75% no-repeat;
+  --icon: url(/img/firefox-icons/highlights.svg);
 }
 
 .closeButton {
-  mask: url(/img/firefox-icons/close.svg) center center / 50% no-repeat;
+  --icon: url(/img/firefox-icons/close.svg);
 }
 
 .optionsButton {
-  mask: url(/img/firefox-icons/more.svg) center center / 75% no-repeat;
+  --icon: url(/img/firefox-icons/more.svg);
 }

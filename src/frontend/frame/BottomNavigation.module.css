@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,8 +21,7 @@
 
 .bottomNavigation {
   display: block;
-  background-color: var(--background-color);
-  box-shadow: 0 0 0.5rem var(--border-color);
+  border-block-start: var(--border-width) solid var(--border-color-deemphasized);
 }
 
 .targets {
@@ -33,37 +32,59 @@
   overflow-inline: auto;
   max-inline-size: 32rem;
   margin: auto;
+  padding-block: var(--space-xsmall);
 }
 
-/* Two classes, to beat the page's button rules (including button:active). */
-.targets > .target {
-  /* The browser's own button font and size, which the shadow DOM version kept. */
-  font: revert;
-  inline-size: auto;
-  min-inline-size: auto;
-  display: block;
-  text-align: center;
+/* The selected screen's icon sits in an accent pill. */
+.target {
   appearance: none;
+  display: block grid;
+  justify-items: center;
+  row-gap: var(--space-xxsmall);
+  min-inline-size: 4.5rem;
+  margin: 0;
+  padding-block: var(--space-xxsmall);
+  padding-inline: var(--space-small);
   border: none;
-  outline: none;
-  background-color: unset;
-  color: inherit;
-  padding-block: 0.5em;
-  padding-inline: 0.5em;
-  border-block-end: solid 0.25rem transparent;
-  opacity: var(--opaque-opacity);
+  border-radius: var(--border-radius-small);
+  background: none;
+  color: var(--text-color-deemphasized);
+  font-size: var(--font-size-small);
 }
 
-.targets > .target.selected {
-  border-block-end-color: var(--accent-color);
-  opacity: 1;
+.target:hover {
+  color: var(--text-color);
+}
+
+.target:focus-visible {
+  outline-offset: var(--focus-outline-inset);
+}
+
+.target.selected {
+  color: var(--text-color);
+  font-weight: var(--font-weight-semibold);
 }
 
 .icon {
   display: block;
-  inline-size: 1.5em;
-  block-size: 1.5em;
-  background-color: var(--text-color);
-  margin: auto;
-  mask: url(/img/firefox-icons/defaultFavicon.svg) center / 75% no-repeat;
+  inline-size: 3.5rem;
+  block-size: var(--size-item-medium);
+  border-radius: var(--border-radius-medium);
+  background-color: currentColor;
+  mask: url(/img/firefox-icons/defaultFavicon.svg) center / var(--icon-size) no-repeat;
+}
+
+.target:hover > .iconPill {
+  background-color: var(--button-background-color-ghost-hover);
+}
+
+.iconPill {
+  display: block grid;
+  place-items: center;
+  border-radius: var(--border-radius-medium);
+}
+
+.selected > .iconPill {
+  background-color: color-mix(in srgb, var(--color-accent-primary) 18%, transparent);
+  color: var(--color-accent-primary);
 }

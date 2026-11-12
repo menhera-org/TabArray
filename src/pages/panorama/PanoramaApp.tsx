@@ -176,7 +176,7 @@ const ContainerSection = ({
           {container.name}
         </a>
         <button
-          className="container-edit"
+          className="ctg-icon-button container-edit"
           disabled={isDefault}
           title={message('buttonEditContainer')}
           onClick={() => {
@@ -187,7 +187,7 @@ const ContainerSection = ({
           }}
         />
         <button
-          className="container-delete"
+          className="ctg-icon-button container-delete"
           disabled={isDefault}
           title={message('buttonDeleteContainer')}
           onClick={() => {
@@ -210,7 +210,7 @@ const ContainerSection = ({
           }}
         />
         <button
-          className="container-close"
+          className="ctg-icon-button container-close"
           title={message('tooltipContainerCloseAll')}
           onClick={() => {
             TabQueryService.getInstance()
@@ -258,11 +258,17 @@ const ContainerSection = ({
 const BottomBar = () => (
   <div id="topbar">
     {/* actually, this should be called bottombar */}
-    <button id="button-new-container" title={message('buttonNewContainer')} onClick={() => openEditor({})}>
+    <button
+      id="button-new-container"
+      className="ctg-icon-button"
+      title={message('buttonNewContainer')}
+      onClick={() => openEditor({})}
+    >
       <span className="button-text">buttonNewContainer</span>
     </button>{' '}
     <button
       id="button-new-temporary-container"
+      className="ctg-icon-button"
       title={message('buttonNewTemporaryContainer')}
       onClick={() => {
         TemporaryContainerService.getInstance()
@@ -275,6 +281,7 @@ const BottomBar = () => (
     </button>{' '}
     <button
       id="button-settings"
+      className="ctg-icon-button"
       title={message('buttonSettings')}
       onClick={() => {
         browser.runtime.openOptionsPage().then(() => window.close(), logError);
@@ -284,6 +291,7 @@ const BottomBar = () => (
     </button>{' '}
     <button
       id="button-help"
+      className="ctg-icon-button"
       title={message('menuItemHelp')}
       onClick={() =>
         showDialog((close) => (

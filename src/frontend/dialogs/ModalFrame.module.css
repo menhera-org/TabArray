@@ -3,7 +3,7 @@
 
 /*
   Container Tab Groups
-  Copyright (C) 2023 Menhera.org
+  Copyright (C) 2026 Menhera.org
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,88 +19,79 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/*
- * The dialogs used to be custom elements with shadow DOM. These rules are their stylesheet,
- * plus resets for what the pages' own button and input rules would otherwise change.
- */
+/* Firefox's in-content dialogs: a card over a dimmed page. */
 .overlay {
   display: block grid;
   position: fixed;
-  top: 0;
-  left: 0;
-  inline-size: 100%;
-  block-size: 100%;
+  inset: 0;
   align-content: center;
   justify-items: center;
+  padding: var(--space-medium);
   z-index: 100;
-  background-color: var(--hover-color);
-  backdrop-filter: blur(0.5rem);
-}
-
-.overlay :is(a, button) {
-  color: var(--button-text-color);
-  background-color: transparent;
-  border: none;
-  appearance: none;
-}
-
-.overlay :is(a, button):active {
-  opacity: 0.75;
-}
-
-.overlay :is(input:is([type='text'], [type='search']), button, select, textarea) {
-  font: inherit;
-  display: block;
-  box-sizing: border-box;
-  margin: 0;
-  inline-size: 100%;
-  min-inline-size: auto;
-}
-
-.overlay button {
-  padding-inline: 1em;
-  padding-block: 0.5em;
-  text-align: start;
+  background-color: var(--background-color-overlay);
 }
 
 .content {
-  background-color: var(--background-color);
-  overflow: hidden;
+  box-sizing: border-box;
   inline-size: 100%;
   max-inline-size: 30rem;
-  padding: 1rem;
-  /* Some pages make every box border-box; the shadow DOM did not. */
-  box-sizing: content-box;
+  max-block-size: 100%;
+  overflow: auto;
+  padding: var(--space-large);
+  border: var(--border-width) solid var(--border-color-deemphasized);
+  border-radius: var(--border-radius-large);
+  background-color: var(--background-color-box);
+  color: var(--text-color);
+  box-shadow: var(--box-shadow-level-4);
 }
 
 .title {
-  margin-block: 1rem;
-  margin-inline: 1rem;
-  padding: 0;
+  margin-block: 0 var(--space-medium);
+  font-size: var(--font-size-large);
   overflow-wrap: break-word;
-  overflow: hidden;
+}
+
+.content :is(input:is([type='text'], [type='search']), select, textarea) {
+  display: block;
+  inline-size: 100%;
+}
+
+.menu {
+  display: block flex;
+  flex-direction: column;
+  margin-inline: calc(-1 * var(--space-small));
+}
+
+.menuItem {
+  appearance: none;
+  min-block-size: var(--button-min-height);
+  margin: 0;
+  padding-block: var(--space-xsmall);
+  padding-inline: var(--space-small);
+  border: none;
+  border-radius: var(--border-radius-small);
+  background: none;
+  color: inherit;
+  text-align: start;
+}
+
+.menuItem:hover {
+  background-color: var(--button-background-color-ghost-hover);
+}
+
+.menuItem:hover:active {
+  background-color: var(--button-background-color-ghost-active);
+}
+
+.menuItem:focus-visible {
+  outline-offset: var(--focus-outline-inset);
 }
 
 .actions {
-  margin-block: 1em;
   display: block flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
-  row-gap: 1em;
-}
-
-.overlay .actions > button {
-  inline-size: max-content;
-  border-radius: 0.25em;
-}
-
-.actions > button:focus {
-  box-shadow: 0 0 0.25rem 0.25rem var(--accent-color);
-  outline: none;
-}
-
-.overlay .actions > button.default {
-  background-color: #0033cc;
-  color: #fff;
+  justify-content: flex-end;
+  gap: var(--space-small);
+  margin-block-start: var(--space-large);
 }

@@ -1,21 +1,7 @@
 {
-    "tooltipWindowLabel": {
-        "message": "Mudar para janela #$ID$",
-        "description": "Tooltip for a menu item representing a window.",
-        "placeholders": {
-            "id": {
-                "content": "$1",
-                "example": "3"
-            }
-        }
-    },
     "tooltipContainerCloseAll": {
         "message": "Fechar todas as abas neste contêiner",
         "description": "Tooltip for a button to close all tabs of a container."
-    },
-    "tooltipContainerDelete": {
-        "message": "Excluir permanentemente este contêiner",
-        "description": "Tooltip for a button to permanently delete a container."
     },
     "invalidContainerName": {
         "message": "Contêiner indisponível $ID$",
@@ -38,16 +24,6 @@
     "labelFirstPartyIsolate": {
         "message": "Ativar First-Party Isolate (FPI)",
         "description": "Option to enable first-party isolation."
-    },
-    "windowTitlePrefaceTemplate": {
-        "message": "($CONTAINER$)",
-        "description": "String to add before window title",
-        "placeholders": {
-            "container": {
-                "content": "$1",
-                "example": "Container 1"
-            }
-        }
     },
     "buttonPanorama": {
         "message": "Abrir grade panorâmica",
@@ -79,10 +55,6 @@
         "message": "Container Tab Groups: Página pop-up",
         "description": "Title of the popup page for browserAction."
     },
-    "buttonHideInactiveContainers": {
-        "message": "Recolher outros contêineres",
-        "description": "Button label to hide inactive containers on a window."
-    },
     "buttonNewContainer": {
         "message": "Criar um novo contêiner…",
         "description": "Button label to create a new container."
@@ -98,10 +70,6 @@
     "newContainerNameLabel": {
         "message": "Nome",
         "description": "Label for inputting the name of a new container."
-    },
-    "newContainerNamePlaceholder": {
-        "message": "Nome do contêiner",
-        "description": "Placeholder for the input field of the name of a new container."
     },
     "newContainerDialogTitle": {
         "message": "Criar um novo contêiner",
@@ -126,10 +94,6 @@
     "tooltipUnhideContainerButton": {
         "message": "Mostrar as abas deste contêiner",
         "description": "Tooltip for the button to unhide the tabs of a container."
-    },
-    "tooltipEditContainerButton": {
-        "message": "Editar este contêiner",
-        "description": "Tooltip for the button to edit a container."
     },
     "currentWindow": {
         "message": "Esta janela (#$ID$)",
@@ -226,10 +190,6 @@
         "message": "Selecione um contêiner para abrir esta aba.",
         "description": "Message asking the user to select a container for a new tab."
     },
-    "labelSelectContainerExternalTabs": {
-        "message": "Selecionar um contêiner quando um aplicativo externo abrir uma aba",
-        "description": "Option to enable container selection on externally opened tabs."
-    },
     "labelExternalTabSelectContainerOption": {
         "message": "Quando um aplicativo externo abre uma aba:",
         "description": "Label for option for handling of externally opened tabs"
@@ -286,17 +246,9 @@
         "message": "Locais",
         "description": "Menu item for sites view"
     },
-    "buttonClear": {
-        "message": "Limpar",
-        "description": "Button to clear data."
-    },
     "privateBrowsing": {
         "message": "Navegação privada",
         "description": "Private Browsing page"
-    },
-    "tooltipContainerClearCookie": {
-        "message": "Limpar todos os cookies neste contêiner",
-        "description": "Tooltip for a button to clear all cookies in a container."
     },
     "confirmPrivateBrowsingClearCookie": {
         "message": "Deseja limpar os cookies para navegação privada?",
@@ -648,16 +600,6 @@
         "message": "Idiomas e agentes de usuário",
         "description": "Label text for language and user agent overrides tab."
     },
-    "newVersionAvailable": {
-        "message": "Nova versão disponível: $VERSION$",
-        "description": "New version available message.",
-        "placeholders": {
-            "version": {
-                "content": "$1",
-                "example": "1.0.0"
-            }
-        }
-    },
     "optionsHeadingAvailableProxies": {
         "message": "Proxies disponíveis",
         "description": "Available proxies heading."
@@ -678,14 +620,6 @@
         "message": "Fechar janela",
         "description": "Tooltip for a button to close all tabs of a window."
     },
-    "buttonSidebar": {
-        "message": "Abrir barra lateral",
-        "description": "Button to open Sidebar."
-    },
-    "optionsHeadingUserData": {
-        "message": "Seus dados",
-        "description": "Heading text of options page for managing user data."
-    },
     "confirmContainerClearCookie": {
         "message": "Deseja limpar os cookies deste contêiner: $NAME$?",
         "description": "Confirmation message before clearing cookies in a container.",
@@ -699,10 +633,6 @@
     "enableCookiesAutoclean": {
         "message": "Limpar cookies automaticamente",
         "description": "Label text for enabling autoclean of cookies."
-    },
-    "optionsHeadingContainerSortOrder": {
-        "message": "Classificar contêineres",
-        "description": "Heading text of options page for changing container order."
     },
     "featureLanguageOverrides": {
         "message": "Substituições de idioma por contêiner",
@@ -723,10 +653,6 @@
     "optionalFeaturesDescription": {
         "message": "Se você não usar nenhuma extensão conflitante, poderá ativar alguns recursos opcionais aqui.",
         "description": "Description text for optional features"
-    },
-    "optionsHeadingContainerOverrides": {
-        "message": "Substituições por contêiner",
-        "description": "Heading text of options page for container overrides."
     },
     "resistFingerprintingWarning": {
         "message": "privacy.resistFingerprinting é uma configuração de proteção avançada usada no Navegador Tor e pode limitar sua experiência de navegação.",
@@ -767,13 +693,5 @@
     "copyCookiesFrom": {
         "message": "Copiar cookies de:",
         "description": "Label text for copy cookies from option."
-    },
-    "copyCookies": {
-        "message": "Copiar cookies",
-        "description": "Copy cookies button or label text."
-    },
-    "copyCookiesTo": {
-        "message": "Copiar cookies para:",
-        "description": "Label text for copy cookies to option."
     }
 }
