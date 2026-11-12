@@ -56,7 +56,7 @@ Request headers no longer pass through the extension unless a container has a la
 |---|---|---|
 | #403 | A page behind Microsoft Azure sign-in never finishes loading. | Likely fixed by #645. Ask the reporter to retest. |
 | #418 | Google sign-in pop-ups stay blank. | Possibly fixed by #645. Ask the reporter to retest. |
-| #552 | Windows single sign-on to ServiceNow fails. | Not an extension bug. Firefox turns Windows single sign-on off in containers. The about:config pref `network.http.windows-sso.container-enabled.<container ID>` turns it on for one container. Explain this on the issue. |
+| #552 | Windows single sign-on to ServiceNow fails. | Done. Not an extension bug: Firefox turns single sign-on off in containers. `docs/single-sign-on.md` explains how to turn it on for one container. The issue is closed. |
 | #412 | Download managers cannot reach their desktop apps. | Not reproduced. Ask the reporter to retest. |
 | #164 | 1Password cannot connect to its desktop app. | Not reproduced. Ask the reporter to retest. |
 
