@@ -143,6 +143,12 @@ Documentation:
 | #432 | Explain how to sort containers and how to turn off automatic tab sorting. | Not started |
 | #385 | Explain how to keep a group of tabs hidden, and what the extension cannot copy between containers. | Not started |
 
+## 6. Visual design refresh
+
+Refresh extension UI styles (update DOM when needed)
+to match the latest Firefox's chrome look & feel, and
+make it feel like modern, without any visual glitches.
+
 ## Not in 12.0.0
 
 | Issue | Reason |
