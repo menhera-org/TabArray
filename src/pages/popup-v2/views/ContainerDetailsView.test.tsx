@@ -21,7 +21,7 @@
 
 import { describe, expect, test, vi } from 'vitest';
 
-import { IndexTab } from '../../../legacy-lib/modules/IndexTab';
+import { IndexTab } from '../../../lib/tabs/IndexTab';
 
 import { render } from '../../../test/render';
 import { browserState, container, tabDao } from '../../../test/fixtures';

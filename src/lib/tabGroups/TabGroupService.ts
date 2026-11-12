@@ -26,7 +26,7 @@ import { ServiceRegistry } from '../ServiceRegistry';
 import { TabGroupDirectory } from './TabGroupDirectory';
 import { TabGroupOptionDirectory } from './TabGroupOptionDirectory';
 import { TabGroupAttributes } from './TabGroupAttributes';
-import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorageStatistics';
+import { ContentStorageStatistics } from '../cookies/ContentStorageStatistics';
 import { CookieStoreService } from './CookieStoreService';
 import { StartupService } from '../StartupService';
 

@@ -22,11 +22,11 @@
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import * as i18n from '../../legacy-lib/modules/i18n';
+import browser from 'webextension-polyfill';
 
 import { PanoramaApp } from './PanoramaApp';
 
-document.title = i18n.getMessage('panoramaGrid');
-document.documentElement.lang = i18n.getEffectiveLocale();
+document.title = browser.i18n.getMessage('panoramaGrid');
+document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
 
 createRoot(document.getElementById('app') as HTMLElement).render(createElement(PanoramaApp));

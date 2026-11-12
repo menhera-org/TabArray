@@ -27,7 +27,6 @@ import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOp
 import { TemporaryContainerService } from '../../../lib/tabGroups/TemporaryContainerService';
 import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
 import { TagService } from '../../../lib/tabGroups/tags/TagService';
-import * as containers from '../../../legacy-lib/modules/containers';
 
 import { ScreenTopBar } from '../../../frontend/frame/TopBar';
 import { WindowsView, WindowsHandlers } from '../views/WindowsView';
@@ -46,7 +45,7 @@ const supergroupService = SupergroupService.getInstance();
 const handlers: WindowsHandlers = {
   tabActions: browserTabActions,
   collapseAll: (windowId) => {
-    containers.hideAll(windowId).catch(logError);
+    containerVisibilityService.hideAllOnWindow(windowId).catch(logError);
   },
   expandAll: (windowId) => {
     containerVisibilityService.showAllOnWindow(windowId).catch(logError);
@@ -80,7 +79,7 @@ const handlers: WindowsHandlers = {
   closeContainer: (container, windowId) => {
     const cookieStoreId = container.cookieStore.id;
     console.log('Closing all unpinned tabs of window %d in cookie store %s', windowId, cookieStoreId);
-    containers.closeAllTabsOnWindow(cookieStoreId, windowId).catch(logError);
+    containerVisibilityService.closeContainerOnWindow(windowId, cookieStoreId).catch(logError);
   },
   containerOptions: (container, isPrivate) => {
     dialogs.showContainerOptionsPanelAsync(container, isPrivate).catch(logError);
@@ -98,7 +97,7 @@ const handlers: WindowsHandlers = {
   focusContainer: (container, windowId) => {
     containerVisibilityService
       .focusContainerOnWindow(windowId, container.cookieStore.id)
-      .then(() => containers.hideAll(windowId))
+      .then(() => containerVisibilityService.hideAllOnWindow(windowId))
       .catch(logError);
   },
   reopenTabInContainer: (tabId, container) => {

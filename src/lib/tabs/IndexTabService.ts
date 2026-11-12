@@ -29,7 +29,7 @@ import { DisplayedContainerService } from '../tabGroups/DisplayedContainerServic
 import { TabQueryService } from './TabQueryService';
 import { ServiceRegistry } from '../ServiceRegistry';
 
-import { IndexTab } from '../../legacy-lib/modules/IndexTab';
+import { IndexTab } from './IndexTab';
 
 type StorageType = {
   [tabId: number]: Uint32; // userContextId

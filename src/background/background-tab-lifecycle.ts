@@ -28,7 +28,7 @@ import { ActiveContainerService } from '../lib/states/ActiveContainerService';
 import { OpenTabsService } from '../lib/states/OpenTabsService';
 import { TagService } from '../lib/tabGroups/tags/TagService';
 
-import { DarkThemeMonitor } from '../legacy-lib/themes/DarkThemeMonitor';
+import { DarkThemeMonitor } from '../lib/themes/DarkThemeMonitor';
 
 import { config } from '../config/config';
 

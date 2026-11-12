@@ -30,9 +30,9 @@ import { PerformanceHistoryService } from '../history/PerformanceHistoryService'
 
 import { config } from '../../config/config';
 import { WindowContainerHidingHelper } from './WindowContainerHidingHelper';
-import { IndexTab } from '../../legacy-lib/modules/IndexTab';
-import { WindowService } from '../../legacy-lib/tabs/WindowService';
+import { IndexTab } from '../tabs/IndexTab';
 import { TabQueryService } from '../tabs/TabQueryService';
+import { TabService } from '../tabs/TabService';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -46,13 +46,17 @@ export class ContainerVisibilityService {
     return ContainerVisibilityService.INSTANCE;
   }
 
-  private readonly _windowService = WindowService.getInstance();
   private readonly _indexTabService = IndexTabService.getInstance();
   private readonly _performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
   private readonly _tabQueryService = TabQueryService.getInstance();
+  private readonly _tabService = TabService.getInstance();
 
   private constructor() {
     // nothing.
+  }
+
+  private async isPrivateWindow(windowId: number): Promise<boolean> {
+    return (await browser.windows.get(windowId)).incognito;
   }
 
   /**
@@ -96,8 +100,7 @@ export class ContainerVisibilityService {
 
   public async hideContainerOnWindow(windowId: number, cookieStoreId: string): Promise<boolean> {
     const startTime = Date.now();
-    const isPrivate = await this._windowService.isPrivateWindow(windowId);
-    if (isPrivate) return false;
+    if (await this.isPrivateWindow(windowId)) return false;
     const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
     console.log('hideContainerOnWindow(): windowId=%d, cookieStoreId=%s', windowId, cookieStoreId);
     const helper = await WindowContainerHidingHelper.create(windowId, cookieStoreId); // throws for private windows.
@@ -125,8 +128,7 @@ export class ContainerVisibilityService {
 
   public async showContainerOnWindow(windowId: number, cookieStoreId: string): Promise<void> {
     const startTime = Date.now();
-    const isPrivate = await this._windowService.isPrivateWindow(windowId);
-    if (isPrivate) return;
+    if (await this.isPrivateWindow(windowId)) return;
     const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
     const tabs = await this.getContainerTabsOnWindow(windowId, cookieStoreId); // throws for private windows.
     if (tabs.length < 1) {
@@ -167,6 +169,42 @@ export class ContainerVisibilityService {
     await browser.tabs.show(tabs.map((tab) => tab.id));
     const duration = Date.now() - startTime;
     this._performanceHistoryService.addEntry('ContainerVisibilityService.showAllOnWindow', startTime, duration);
+  }
+
+  /**
+   * Hide every container on the window except the one with the active tab.
+   */
+  public async hideAllOnWindow(windowId: number): Promise<void> {
+    if (await this.isPrivateWindow(windowId)) {
+      console.log('hideAllOnWindow: skip for private window');
+      return;
+    }
+    const browserTabs = await browser.tabs.query({ windowId, pinned: false });
+    const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
+    const cookieStoreIds = new Set(tabs.map((tab) => tab.cookieStore.id));
+    for (const tab of tabs) {
+      if (tab.active) cookieStoreIds.delete(tab.cookieStore.id);
+    }
+    await Promise.all([...cookieStoreIds].map((cookieStoreId) => this.hideContainerOnWindow(windowId, cookieStoreId)));
+  }
+
+  /**
+   * Close all unpinned tabs of the container on the window.
+   */
+  public async closeContainerOnWindow(windowId: number, cookieStoreId: string): Promise<void> {
+    const cookieStore = new CookieStore(cookieStoreId);
+    if (!cookieStore.isPrivate && (await this.isPrivateWindow(windowId))) {
+      console.warn('closeContainerOnWindow: cannot close non-private tabs in private window');
+      return;
+    }
+    const tabs = await this._tabQueryService.queryTabs({
+      tabGroupId: cookieStore.id,
+      windowId,
+      pinned: false,
+    });
+    if (tabs.length > 0) {
+      await this._tabService.closeTabs(tabs);
+    }
   }
 }
 

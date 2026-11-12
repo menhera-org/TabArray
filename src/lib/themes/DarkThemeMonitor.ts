@@ -22,7 +22,7 @@
 import { EventSink } from 'weeg-events';
 
 export class DarkThemeMonitor {
-  private _matchedMedia = window.matchMedia('(prefers-color-scheme: dark)');
+  private readonly _matchedMedia = window.matchMedia('(prefers-color-scheme: dark)');
   public readonly onChanged = new EventSink<void>();
 
   public constructor() {

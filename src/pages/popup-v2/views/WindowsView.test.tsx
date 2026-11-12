@@ -23,7 +23,7 @@ import { act } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 
 import { TabDao } from '../../../lib/states/TabDao';
-import { IndexTab } from '../../../legacy-lib/modules/IndexTab';
+import { IndexTab } from '../../../lib/tabs/IndexTab';
 
 import { dragAndDrop, render } from '../../../test/render';
 import { browserState, containerDao, tabDao } from '../../../test/fixtures';

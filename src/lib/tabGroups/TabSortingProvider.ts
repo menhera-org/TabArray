@@ -25,7 +25,7 @@ import { EventSink } from 'weeg-events';
 import { TabGroupDirectory } from './TabGroupDirectory';
 import { TagDirectory } from './tags/TagDirectory';
 import { TabAttributeMap } from './tags/TabAttributeMap';
-import { IndexTab } from '../../legacy-lib/modules/IndexTab';
+import { IndexTab } from '../tabs/IndexTab';
 
 export class TabSortingProvider {
   private static readonly tabGroupDirectory = TabGroupDirectory.getInstance();

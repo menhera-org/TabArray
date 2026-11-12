@@ -34,7 +34,7 @@ import { TabQueryService } from '../../lib/tabs/TabQueryService';
 import { TabService } from '../../lib/tabs/TabService';
 import { CompatConsole } from '../../lib/console/CompatConsole';
 import { PerformanceHistoryService } from '../../lib/history/PerformanceHistoryService';
-import { IndexTab } from '../../legacy-lib/modules/IndexTab';
+import { IndexTab } from '../../lib/tabs/IndexTab';
 
 import { cssUrl } from '../../frontend/cssUrl';
 import { showDialog } from '../../frontend/dialogs/showDialog';

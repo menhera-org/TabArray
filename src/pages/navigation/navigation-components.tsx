@@ -21,9 +21,9 @@
 
 import { DisplayedContainer } from 'weeg-containers';
 
-import { DarkThemeMonitor } from '../../legacy-lib/themes/DarkThemeMonitor';
+import { DarkThemeMonitor } from '../../lib/themes/DarkThemeMonitor';
 
-import * as i18n from '../../legacy-lib/modules/i18n';
+import browser from 'webextension-polyfill';
 
 const darkThemeMonitor = new DarkThemeMonitor();
 
@@ -70,7 +70,10 @@ export const ContainerButton = ({
   displayedContainer: DisplayedContainer;
   onClick?: () => void;
 }) => {
-  const tooltipText = i18n.getMessage('defaultContainerName', String(displayedContainer.cookieStore.userContextId));
+  const tooltipText = browser.i18n.getMessage(
+    'defaultContainerName',
+    String(displayedContainer.cookieStore.userContextId)
+  );
   const iconUrl = displayedContainer.iconUrl || '/img/material-icons/category.svg';
   return (
     <Button
@@ -85,7 +88,7 @@ export const ContainerButton = ({
 };
 
 export const PrivateBrowsingButton = ({ onClick }: { onClick?: () => void }) => {
-  const tooltipText = i18n.getMessage('privateBrowsing');
+  const tooltipText = browser.i18n.getMessage('privateBrowsing');
   const iconUrl = '/img/firefox-icons/private-browsing-icon.svg';
   return (
     <Button
@@ -99,7 +102,7 @@ export const PrivateBrowsingButton = ({ onClick }: { onClick?: () => void }) => 
 };
 
 export const CreateContainerButton = ({ onClick }: { onClick?: () => void }) => {
-  const tooltipText = i18n.getMessage('buttonNewContainer');
+  const tooltipText = browser.i18n.getMessage('buttonNewContainer');
   const iconUrl = '/img/firefox-icons/plus.svg';
   return (
     <Button
@@ -113,7 +116,7 @@ export const CreateContainerButton = ({ onClick }: { onClick?: () => void }) => 
 };
 
 export const TemporatyContainerButton = ({ onClick }: { onClick?: () => void }) => {
-  const tooltipText = i18n.getMessage('buttonNewTemporaryContainer');
+  const tooltipText = browser.i18n.getMessage('buttonNewTemporaryContainer');
   const iconUrl = '/img/material-icons/timelapse.svg';
   return (
     <Button

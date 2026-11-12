@@ -23,7 +23,7 @@ import { MessagingService } from 'weeg-utils';
 import { CookieStore } from 'weeg-containers';
 
 import { ExternalServiceProvider } from '../lib/ExternalServiceProvider';
-import { ContentStorageStatistics } from '../legacy-lib/cookies/ContentStorageStatistics';
+import { ContentStorageStatistics } from '../lib/cookies/ContentStorageStatistics';
 
 const serviceProvider = ExternalServiceProvider.getInstance();
 const statistics = new ContentStorageStatistics();

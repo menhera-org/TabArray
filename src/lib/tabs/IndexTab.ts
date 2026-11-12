@@ -36,7 +36,7 @@ export class IndexTab {
     try {
       new IndexTab(url);
       return true;
-    } catch (_e) {
+    } catch {
       return false;
     }
   }

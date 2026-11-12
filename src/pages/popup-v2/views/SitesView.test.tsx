@@ -23,7 +23,7 @@ import { describe, expect, test, vi } from 'vitest';
 
 import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
 import { TabDao } from '../../../lib/states/TabDao';
-import { IndexTab } from '../../../legacy-lib/modules/IndexTab';
+import { IndexTab } from '../../../lib/tabs/IndexTab';
 
 import { render } from '../../../test/render';
 import { SitesView, getSiteSummaries } from './SitesView';

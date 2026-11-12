@@ -38,8 +38,6 @@ import { UrlRegistrationService } from '../../lib/UrlRegistrationService';
 import { ExtensionPageService } from '../../lib/ExtensionPageService';
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
 
-import * as i18n from '../../legacy-lib/modules/i18n';
-
 import { showDialog } from '../../frontend/dialogs/showDialog';
 import { ContainerEditorDialog } from '../../frontend/dialogs/ContainerEditorDialog';
 
@@ -163,22 +161,22 @@ const Buttons = (state: EnvType | null) => {
   return <div>{buttons}</div>;
 };
 
-document.documentElement.lang = i18n.getEffectiveLocale();
-document.title = i18n.getMessage('titleSelectContainer');
+document.documentElement.lang = browser.i18n.getMessage('effectiveLocale');
+document.title = browser.i18n.getMessage('titleSelectContainer');
 
 /** The page: what is about to open, the containers to open it in, and a way to the settings. */
 const Page = ({ url, state }: { url: string; state: EnvType | null }) => (
   <div className="container">
-    <h1 id="heading">{i18n.getMessage('titleSelectContainer')}</h1>
-    <p id="description">{i18n.getMessage('descriptionSelectContainer', url || 'about:blank')}</p>
-    <p id="prompt">{i18n.getMessage('promptSelectContainer')}</p>
+    <h1 id="heading">{browser.i18n.getMessage('titleSelectContainer')}</h1>
+    <p id="description">{browser.i18n.getMessage('descriptionSelectContainer', url || 'about:blank')}</p>
+    <p id="prompt">{browser.i18n.getMessage('promptSelectContainer')}</p>
     <p>
       <button
         id="button-settings"
         className="browser-style"
         onClick={() => extensionPageService.openInBackground(ExtensionPageService.OPTIONS)}
       >
-        {i18n.getMessage('buttonSettings')}
+        {browser.i18n.getMessage('buttonSettings')}
       </button>
     </p>
     <div id="containers">{Buttons(state)}</div>

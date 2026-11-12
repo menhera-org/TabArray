@@ -28,12 +28,7 @@ export class CookieProvider {
   private readonly _hostnameService = HostnameService.getInstance();
 
   private getDomainsForCookies(cookies: browser.Cookies.Cookie[]): string[] {
-    const domains: Set<string> = new Set();
-    for (const cookie of cookies) {
-      const domain = cookie.domain.startsWith('.') ? cookie.domain.slice(1) : cookie.domain;
-      domains.add(domain);
-    }
-    return this._hostnameService.sortDomains(domains);
+    return this._hostnameService.sortDomains(new Set(cookies.map((cookie) => cookie.domain.replace(/^\./, ''))));
   }
 
   private async getCookiesForFirstPartyDomain(

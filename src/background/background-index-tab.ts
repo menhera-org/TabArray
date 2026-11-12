@@ -28,9 +28,8 @@ import { TabQueryService } from '../lib/tabs/TabQueryService';
 import { IndexTabService } from '../lib/tabs/IndexTabService';
 import { CookieStoreTabMap } from '../lib/tabs/CookieStoreTabMap';
 import { CompatConsole } from '../lib/console/CompatConsole';
-
-import * as containers from '../legacy-lib/modules/containers';
-import { IndexTab } from '../legacy-lib/modules/IndexTab';
+import { ContainerVisibilityService } from '../lib/tabGroups/ContainerVisibilityService';
+import { IndexTab } from '../lib/tabs/IndexTab';
 
 import { config } from '../config/config';
 import { InitialWindowsService } from './includes/InitialWindowsService';
@@ -58,7 +57,7 @@ const handleClosedIndexTab = async (tabId: number, windowId: number) => {
       windowId,
       cookieStore.id
     );
-    await containers.closeAllTabsOnWindow(cookieStore.id, windowId);
+    await ContainerVisibilityService.getInstance().closeContainerOnWindow(windowId, cookieStore.id);
   }
 };
 

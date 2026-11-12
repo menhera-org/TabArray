@@ -26,7 +26,7 @@ import { DisplayedContainer } from 'weeg-containers';
 
 import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
 import { TabDao } from '../../../lib/states/TabDao';
-import { IndexTab } from '../../../legacy-lib/modules/IndexTab';
+import { IndexTab } from '../../../lib/tabs/IndexTab';
 
 import { TabRow, TabActions } from './TabRow';
 

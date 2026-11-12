@@ -28,8 +28,7 @@ import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerSe
 import { IndexTabService } from '../lib/tabs/IndexTabService';
 import { ExtensionPageService } from '../lib/ExtensionPageService';
 import { ContainerHistoryService } from '../lib/history/ContainerHistoryService';
-
-import { hideAll } from '../legacy-lib/modules/containers';
+import { ContainerVisibilityService } from '../lib/tabGroups/ContainerVisibilityService';
 
 import { config } from '../config/config';
 
@@ -94,7 +93,7 @@ activeContainerService.onContainerActivated.addListener(({ windowId, cookieStore
     .getValue()
     .then((autoHideEnabled) => {
       if (autoHideEnabled) {
-        return hideAll(windowId);
+        return ContainerVisibilityService.getInstance().hideAllOnWindow(windowId);
       }
     })
     .catch((e) => {

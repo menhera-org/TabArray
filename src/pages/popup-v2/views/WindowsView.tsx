@@ -34,7 +34,7 @@ import { TabGroupDirectorySnapshot } from '../../../lib/tabGroups/TabGroupDirect
 import { TabAttributeMap } from '../../../lib/tabGroups/tags/TabAttributeMap';
 import { TagType } from '../../../lib/tabGroups/tags/TagDirectory';
 import { CompatConsole } from '../../../lib/console/CompatConsole';
-import { IndexTab } from '../../../legacy-lib/modules/IndexTab';
+import { IndexTab } from '../../../lib/tabs/IndexTab';
 import { config } from '../../../config/config';
 
 import { ContainerRow } from './ContainerRow';

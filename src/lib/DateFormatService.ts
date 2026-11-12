@@ -21,7 +21,7 @@
 
 import { ServiceRegistry } from './ServiceRegistry';
 
-import * as i18n from '../legacy-lib/modules/i18n';
+import browser from 'webextension-polyfill';
 
 export class DateFormatService {
   private static readonly INSTANCE = new DateFormatService();
@@ -36,7 +36,7 @@ export class DateFormatService {
 
   public localeFormat(aDate?: Date): string {
     const date = aDate || new Date();
-    const effectiveLocale = i18n.getEffectiveLocale();
+    const effectiveLocale = browser.i18n.getMessage('effectiveLocale');
     const fallbackLocale = 'en-US';
     const dateTimeFormat = new Intl.DateTimeFormat([effectiveLocale, fallbackLocale], {
       dateStyle: 'medium',

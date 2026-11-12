@@ -29,7 +29,7 @@ import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContaine
 import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
 import { CompatConsole } from '../../lib/console/CompatConsole';
 
-import { ContentStorageStatistics } from '../../legacy-lib/cookies/ContentStorageStatistics';
+import { ContentStorageStatistics } from '../../lib/cookies/ContentStorageStatistics';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const logError = (e: unknown) => console.error(e);
