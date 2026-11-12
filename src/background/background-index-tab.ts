@@ -31,6 +31,8 @@ import { CompatConsole } from '../lib/console/CompatConsole';
 import { ContainerVisibilityService } from '../lib/tabGroups/ContainerVisibilityService';
 import { IndexTab } from '../lib/tabs/IndexTab';
 
+import { NativeTabGroupService } from '../lib/tabGroups/NativeTabGroupService';
+
 import { config } from '../config/config';
 import { InitialWindowsService } from './includes/InitialWindowsService';
 
@@ -38,9 +40,11 @@ const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const initialWindowsService = InitialWindowsService.getInstance();
 const tabQueryService = TabQueryService.getInstance();
 const indexTabService = IndexTabService.getInstance();
+// Index tabs are not used while containers are native tab groups, so every check reads the effective option.
+const nativeTabGroupService = NativeTabGroupService.getInstance();
 
 const handleClosedIndexTab = async (tabId: number, windowId: number) => {
-  const indexTabOption = await config['tab.groups.indexOption'].getValue();
+  const indexTabOption = await nativeTabGroupService.getEffectiveIndexOption();
   const indexTabUserContextId = await indexTabService.getIndexTabUserContextId(tabId);
   if (indexTabUserContextId != undefined) {
     await indexTabService.removeIndexTabUserContextId(tabId);
@@ -98,7 +102,7 @@ browser.tabs.onRemoved.addListener(async (tabId, { windowId, isWindowClosing }) 
 });
 
 const resetIndexTabs = async (browserWindows: browser.Windows.Window[]) => {
-  const indexTabOption = await config['tab.groups.indexOption'].getValue();
+  const indexTabOption = await nativeTabGroupService.getEffectiveIndexOption();
   if (indexTabOption == 'never') return;
   const indexTabIds = new Set<number>();
   const existingIndexTabIds = await indexTabService.getIndexTabIds();
@@ -146,13 +150,13 @@ const resetIndexTabs = async (browserWindows: browser.Windows.Window[]) => {
 
 initialWindowsService
   .getInitialWindows()
-  .then(resetIndexTabs)
+  .then((browserWindows) => applyIndexTabOption(browserWindows))
   .catch((e) => {
     console.error(e);
   });
 
 browser.tabs.onCreated.addListener(async (browserTab) => {
-  const indexTabOption = await config['tab.groups.indexOption'].getValue();
+  const indexTabOption = await nativeTabGroupService.getEffectiveIndexOption();
   if (indexTabOption != 'always') return;
   if (browserTab.cookieStoreId == null || browserTab.windowId == null) {
     console.warn('Incomplete browser tab', browserTab);
@@ -179,7 +183,7 @@ browser.tabs.onUpdated.addListener(
     tabQueryService
       .queryTabs({ tabGroupId: tab.cookieStore.id })
       .then(async (tabs) => {
-        const indexTabOption = await config['tab.groups.indexOption'].getValue();
+        const indexTabOption = await nativeTabGroupService.getEffectiveIndexOption();
         const indexTabIds: number[] = [];
         let nonIndexTabFound = false;
         for (const tab of tabs) {
@@ -241,7 +245,7 @@ browser.tabs.onUpdated.addListener(
       return;
     }
 
-    const indexTabOption = await config['tab.groups.indexOption'].getValue();
+    const indexTabOption = await nativeTabGroupService.getEffectiveIndexOption();
     if (indexTabOption != 'always') return;
     tabQueryService
       .queryTabs({
@@ -272,16 +276,31 @@ browser.tabs.onUpdated.addListener(
   }
 );
 
-config['tab.groups.indexOption'].onChanged.addListener(async (value) => {
-  try {
-    if (value == 'never') {
-      const indexTabIds = await indexTabService.getIndexTabIds();
-      await indexTabService.resetIndexTabStorage();
-      await Promise.all(indexTabIds.map((indexTabId) => browser.tabs.remove(indexTabId)));
-    } else {
-      await resetIndexTabs(await browser.windows.getAll({ populate: true }));
-    }
-  } catch (e) {
-    console.error(e);
+/** Creates or closes index tabs to match the effective option. */
+const applyIndexTabOption = async (browserWindows: browser.Windows.Window[]) => {
+  if ((await nativeTabGroupService.getEffectiveIndexOption()) != 'never') {
+    await resetIndexTabs(browserWindows);
+    return;
   }
-});
+  // Found by URL: stored tab IDs from an earlier session can belong to other tabs now.
+  const indexTabIds = browserWindows
+    .flatMap((browserWindow) => browserWindow.tabs ?? [])
+    .filter((browserTab) => browserTab.id != null && IndexTab.isIndexTabUrl(browserTab.url ?? ''))
+    .map((browserTab) => browserTab.id as number);
+  // Forget them first, so closing them does not count as closing their containers.
+  await indexTabService.resetIndexTabStorage();
+  if (indexTabIds.length > 0) {
+    await browser.tabs.remove(indexTabIds);
+  }
+};
+
+const reapplyIndexTabOption = () => {
+  browser.windows
+    .getAll({ populate: true })
+    .then(applyIndexTabOption)
+    .catch((e) => {
+      console.error(e);
+    });
+};
+config['tab.groups.indexOption'].onChanged.addListener(reapplyIndexTabOption);
+config['tab.groups.nativeSync'].onChanged.addListener(reapplyIndexTabOption);

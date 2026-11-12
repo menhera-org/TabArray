@@ -28,8 +28,8 @@ import { ServiceRegistry } from '../ServiceRegistry';
 import { CompatConsole } from '../console/CompatConsole';
 import { PerformanceHistoryService } from '../history/PerformanceHistoryService';
 
-import { config } from '../../config/config';
 import { WindowContainerHidingHelper } from './WindowContainerHidingHelper';
+import { NativeTabGroupService } from './NativeTabGroupService';
 import { IndexTab } from '../tabs/IndexTab';
 import { TabQueryService } from '../tabs/TabQueryService';
 import { TabService } from '../tabs/TabService';
@@ -50,6 +50,7 @@ export class ContainerVisibilityService {
   private readonly _performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
   private readonly _tabQueryService = TabQueryService.getInstance();
   private readonly _tabService = TabService.getInstance();
+  private readonly _nativeTabGroupService = NativeTabGroupService.getInstance();
 
   private constructor() {
     // nothing.
@@ -101,7 +102,7 @@ export class ContainerVisibilityService {
   public async hideContainerOnWindow(windowId: number, cookieStoreId: string): Promise<boolean> {
     const startTime = Date.now();
     if (await this.isPrivateWindow(windowId)) return false;
-    const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
+    const configGroupIndexOption = await this._nativeTabGroupService.getEffectiveIndexOption();
     console.log('hideContainerOnWindow(): windowId=%d, cookieStoreId=%s', windowId, cookieStoreId);
     const helper = await WindowContainerHidingHelper.create(windowId, cookieStoreId); // throws for private windows.
     if (helper.tabsToHide.length < 1) {
@@ -120,7 +121,12 @@ export class ContainerVisibilityService {
       }
       await tabToActivate.focus();
     }
-    await browser.tabs.hide(helper.tabsToHide.map((tab) => tab.id));
+    if (await this._nativeTabGroupService.isActive()) {
+      // A container shown as a native group is hidden by collapsing the group.
+      if (!(await this._nativeTabGroupService.setContainerCollapsed(windowId, cookieStoreId, true))) return false;
+    } else {
+      await browser.tabs.hide(helper.tabsToHide.map((tab) => tab.id));
+    }
     const duration = Date.now() - startTime;
     this._performanceHistoryService.addEntry('ContainerVisibilityService.hideContainerOnWindow', startTime, duration);
     return true;
@@ -129,11 +135,14 @@ export class ContainerVisibilityService {
   public async showContainerOnWindow(windowId: number, cookieStoreId: string): Promise<void> {
     const startTime = Date.now();
     if (await this.isPrivateWindow(windowId)) return;
-    const configGroupIndexOption = await config['tab.groups.indexOption'].getValue();
+    const configGroupIndexOption = await this._nativeTabGroupService.getEffectiveIndexOption();
     const tabs = await this.getContainerTabsOnWindow(windowId, cookieStoreId); // throws for private windows.
     if (tabs.length < 1) {
       console.log('No tabs to show on window %d for cookie store %s', windowId, cookieStoreId);
       return;
+    }
+    if (await this._nativeTabGroupService.isActive()) {
+      await this._nativeTabGroupService.setContainerCollapsed(windowId, cookieStoreId, false);
     }
     const tabIdsToShow: number[] = [];
     for (const tab of tabs) {
@@ -161,6 +170,10 @@ export class ContainerVisibilityService {
   public async showAllOnWindow(windowId: number): Promise<void> {
     const startTime = Date.now();
     console.log('showAllOnWindow(): windowId=%d', windowId);
+    if (await this._nativeTabGroupService.isActive()) {
+      const collapsedGroups = await browser.tabGroups.query({ windowId, collapsed: true });
+      await Promise.all(collapsedGroups.map((group) => browser.tabGroups.update(group.id, { collapsed: false })));
+    }
     const browserTabs = await browser.tabs.query({ windowId, hidden: true });
     const tabs = browserTabs.map((browserTab) => new CompatTab(browserTab));
     if (tabs.length < 1) {

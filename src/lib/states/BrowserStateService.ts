@@ -36,6 +36,7 @@ import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
 import { DisplayedContainerService } from '../tabGroups/DisplayedContainerService';
 import { PerformanceHistoryService } from '../history/PerformanceHistoryService';
 import { SpinnerService } from '../SpinnerService';
+import { NativeTabGroupService } from '../tabGroups/NativeTabGroupService';
 
 export type BrowserStateConstructParams = {
   browserWindows: browser.Windows.Window[];
@@ -45,6 +46,8 @@ export type BrowserStateConstructParams = {
   tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
   tabAttributeMap: TabAttributeMap;
   registrableDomainMap: Map<string, string>;
+  /** Collapsed native groups: their containers count as hidden while sync is on. */
+  collapsedGroupIds: number[];
 };
 
 const tabGroupDirectory = TabGroupDirectory.getInstance();
@@ -75,6 +78,7 @@ export class BrowserStateService {
         displayedContainers,
         enabledInPrivateBrowsing,
         tabGroupDirectorySnapshot,
+        collapsedGroupIds,
       ] = await Promise.all([
         browser.windows.getAll({
           populate: true,
@@ -84,6 +88,7 @@ export class BrowserStateService {
         displayedContainerService.getDisplayedContainers(),
         extensionService.isAllowedInPrivateBrowsing(),
         tabGroupDirectory.getSnapshot(),
+        NativeTabGroupService.getInstance().getCollapsedGroupIds(),
       ]);
       if (null == currentBrowserWindow.id) {
         throw new Error('currentBrowserWindow.id is null');
@@ -124,6 +129,7 @@ export class BrowserStateService {
         tabGroupDirectorySnapshot,
         tabAttributeMap,
         registrableDomainMap,
+        collapsedGroupIds,
       };
       return constructParams;
     } finally {
@@ -180,6 +186,9 @@ export class BrowserStateService {
       for (const browserTab of browserWindow.tabs) {
         const tab = new CompatTab(browserTab);
         const tabDao = TabDao.fromCompatTab(tab);
+        if (browserTab.groupId != null && params.collapsedGroupIds.includes(browserTab.groupId)) {
+          tabDao.hidden = true;
+        }
         value.tabs[tab.id] = tabDao;
         windowState.tabs[tab.id] = tabDao;
         const cookieStoreId = tabDao.cookieStoreId;

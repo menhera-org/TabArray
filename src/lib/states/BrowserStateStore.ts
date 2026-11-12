@@ -33,6 +33,7 @@ import { TagService } from '../tabGroups/tags/TagService';
 import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
 import { TabGroupDirectorySnapshot } from '../tabGroups/TabGroupDirectorySnapshot';
 import { CompatConsole } from '../console/CompatConsole';
+import { config } from '../../config/config';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const browserStateService = BrowserStateService.getInstance();
@@ -93,6 +94,14 @@ export class BrowserStateStore {
     contextualIdentityFactory.onUpdated.addListener(this.updateContextualIdentity.bind(this));
     contextualIdentityFactory.onRemoved.addListener(this.removeContextualIdentity.bind(this));
     tagDirectory.onChanged.addListener(this.updateTagDirectorySnapshot.bind(this));
+    // Collapsing a native group fires no tab events, but changes which containers count as hidden.
+    if (browser.tabGroups) {
+      const forceUpdate = () => this.forceUpdate();
+      browser.tabGroups.onCreated.addListener(forceUpdate);
+      browser.tabGroups.onUpdated.addListener(forceUpdate);
+      browser.tabGroups.onRemoved.addListener(forceUpdate);
+    }
+    config['tab.groups.nativeSync'].onChanged.addListener(() => this.forceUpdate());
     tagService.onChanged.addListener(() => {
       if (null == this._params) return;
       this._params.tabAttributeMap

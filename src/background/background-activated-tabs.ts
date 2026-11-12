@@ -25,8 +25,7 @@ import { CompatTab } from 'weeg-tabs';
 import { ContainerVisibilityService } from '../lib/tabGroups/ContainerVisibilityService';
 import { TabQueryService } from '../lib/tabs/TabQueryService';
 import { IndexTabService } from '../lib/tabs/IndexTabService';
-
-import { config } from '../config/config';
+import { NativeTabGroupService } from '../lib/tabGroups/NativeTabGroupService';
 
 import { TabState } from './includes/TabState';
 import { TabStateStore } from './includes/TabStateStore';
@@ -34,6 +33,7 @@ import { TabStateStore } from './includes/TabStateStore';
 const containerVisibilityService = ContainerVisibilityService.getInstance();
 const tabQueryService = TabQueryService.getInstance();
 const indexTabService = IndexTabService.getInstance();
+const nativeTabGroupService = NativeTabGroupService.getInstance();
 const tabStateStore = TabStateStore.getInstance();
 
 const activateTab = async (windowId: number, index: number) => {
@@ -66,7 +66,7 @@ browser.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
         throw void 0;
       }
 
-      const indexTabOption = await config['tab.groups.indexOption'].getValue();
+      const indexTabOption = await nativeTabGroupService.getEffectiveIndexOption();
       if (indexTabOption == 'always') {
         const cookieStoreTabs = await tabQueryService.queryTabs({ tabGroupId: cookieStore.id });
         let hidden = false;

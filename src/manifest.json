@@ -37,7 +37,8 @@
     "alarms",
     "scripting",
     "proxy",
-    "publicSuffix"
+    "publicSuffix",
+    "tabGroups"
   ],
   "incognito": "spanning",
   "background": {

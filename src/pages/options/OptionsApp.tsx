@@ -30,6 +30,10 @@ import { HelpBanner } from '../../frontend/frame/HelpBanner';
 import { CheckboxSetting, SelectSetting } from './settings';
 import { TabGroupOverrides, TabGroupProxy, TabGroupSorter } from './listings';
 import { ProxyManager } from './ProxyManager';
+import { NativeTabGroupService } from '../../lib/tabGroups/NativeTabGroupService';
+
+// Firefox for Android has no tab groups.
+const nativeTabGroupsSupported = NativeTabGroupService.getInstance().isSupported();
 
 /** The panes, by their URL fragment, with the i18n message names of their tabs. */
 export const PANES: [string, string][] = [
@@ -92,6 +96,13 @@ export const OptionsApp = () => {
             label="optionEnableSorting"
             option={config['tab.sorting.enabled']}
           />
+          {nativeTabGroupsSupported && (
+            <CheckboxSetting
+              id="input-nativeTabGroupSync"
+              label="optionNativeTabGroupSync"
+              option={config['tab.groups.nativeSync']}
+            />
+          )}
           <SelectSetting
             id="select-autoDiscardMinAge"
             label="labelAutoDiscardMinAge"

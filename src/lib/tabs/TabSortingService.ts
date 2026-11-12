@@ -119,9 +119,10 @@ export class TabSortingService extends BackgroundService<void, void> {
       console.debug('Tab sorting is already in progress.');
       return;
     }
-    tabSorting = true;
+    // Checked before taking the flag: returning with it set would stop sorting until restart.
     const enabled = await config['tab.sorting.enabled'].getValue();
-    if (!enabled) return;
+    if (!enabled || tabSorting) return;
+    tabSorting = true;
     spinnerService.beginTransaction('tab-sorting');
     try {
       for (const windowId of await this.getWindowIds()) {

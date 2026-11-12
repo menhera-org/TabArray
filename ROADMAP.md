@@ -20,7 +20,7 @@ Last updated 12 November 2026. "Done" means the change is on `main` and ships in
 |---|---|
 | 1. Foundations and breakage bugs | Done. Every issue is closed; the #645 reporter is asked to retest 12.0.0 and reopen if needed. |
 | 2. Sign-in and compatibility bugs, memory leak | Done. Every issue is closed; the sign-in and desktop-app reporters are asked to retest 12.0.0 and reopen if needed. |
-| 3. Firefox native tab groups | Planned. The design and the Firefox behavior it relies on are below. |
+| 3. Firefox native tab groups | Done. Tested in Firefox 140 and 159, also with Tree Style Tab. |
 | 4. Frontend rewrite | Done. |
 | 5. Settings, features and documentation | Not started. |
 
@@ -71,7 +71,7 @@ The Chrome user-agent preset now follows Chrome's two-week release cycle, in pla
 
 ## 3. Firefox native tab groups
 
-Status: planned.
+Status: done.
 
 Firefox 139 added native tab groups and the `tabGroups` API. Since 12.0.0 requires Firefox 140, every desktop user has them. This phase also covers #111 (name and collapse groups in the tab bar) and the native tab groups part of #32.
 
@@ -106,7 +106,12 @@ Work, in order:
 5. The setting, its strings before the string freeze, the permission, and release notes.
 6. Firefox tests on 140 and the latest release: grouping as tabs open, both directions of rename and recolor, collapse and hide, dragged tabs, hand-made groups, sorting off, and turning sync off.
 
-We will also check that Tree Style Tab still works with groups synced, the remaining part of #32.
+All six are done. Firefox 140 and 159 passed the same tests. Two more checks passed in Firefox 159:
+
+- Turning sync on closes index tabs without closing the tabs of their containers.
+- Tree Style Tab 4.4.9 works with groups synced, the remaining part of #32: a tree of tabs stays in its container's group, and the two extensions do not keep moving tabs.
+
+Found on the way: with index tabs set to "always", the extension creates several index tabs per container (13 for 5 containers in a test). This was there before 12.0.0 and does not happen while sync is on.
 
 ## 4. Frontend rewrite
 

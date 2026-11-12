@@ -43,6 +43,8 @@ export const config = {
   ),
   'appearance.popupSize': new StorageConfigurationOption<PopupSize>('appearance.popupSize', 'standard'),
   'tab.groups.indexOption': new StorageConfigurationOption<GroupIndexOption>('tab.groups.indexOption', 'never'),
+  // Containers as Firefox's native tab groups. On by default, also for users updating from 11.x.
+  'tab.groups.nativeSync': new StorageConfigurationOption<boolean>('tab.groups.nativeSync', true),
   'tab.autoDiscard.minAge': new StorageConfigurationOption<number>('tab.autoDiscard.minAge', -1),
   'tab.sorting.enabled': new StorageConfigurationOption<boolean>('tab.sorting.enabled', true),
   'tab.autoHide.enabled': new StorageConfigurationOption<boolean>('tab.autoHide.enabled', false),

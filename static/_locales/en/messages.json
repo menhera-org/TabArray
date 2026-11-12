@@ -582,6 +582,10 @@
         "message": "Enable automatic sorting of tabs",
         "description": "Label text for enabling sorting of containers/tabs."
     },
+    "optionNativeTabGroupSync": {
+        "message": "Show containers as Firefox tab groups",
+        "description": "Label text for the option that shows each container as a native Firefox tab group in the tab bar and keeps their names, colors and collapsed state in sync."
+    },
     "buttonNewGroup": {
         "message": "New Group of Containers",
         "description": "Button to create a new group of containers."

@@ -43,6 +43,7 @@ import './background-autodiscard';
 import './background-storage-observer';
 import './background-redirector';
 import './background-tab-sorter';
+import './background-native-tab-groups';
 import './background-activated-tabs';
 import './background-content-script-responder';
 import './background-set-header';
