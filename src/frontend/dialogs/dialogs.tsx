@@ -33,7 +33,7 @@ import { NameField } from './NameField';
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const message = (name: string, substitution?: string) => browser.i18n.getMessage(name, substitution);
 
-/** Removes surrounding whitespace, as the old editors did. */
+/** Removes surrounding whitespace, including non-ASCII spaces such as the ideographic space. */
 export const cleanName = (name: string) => name.trim().replace(/^\s*|\s*$/gu, '');
 
 type ConfirmDialogProps = { title: string; onOk: () => void; onCancel: () => void };
@@ -182,7 +182,7 @@ export const MoveGroupDialog = ({ tabGroupId, onClose }: { tabGroupId: string; o
   );
 };
 
-/** A dialog that only shows something, closed with Done (the old modal-frame). */
+/** A dialog that only shows something, closed with Done or Escape. */
 export const InfoDialog = ({ children, onClose }: { children: ReactNode; onClose: () => void }) => (
   <ModalFrame onCancel={onClose} actions={[{ label: message('buttonDone'), isDefault: true, onClick: onClose }]}>
     {children}

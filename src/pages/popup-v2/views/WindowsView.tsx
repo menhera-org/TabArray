@@ -186,7 +186,7 @@ export const getWindowSummary = (
       }
       const supergroup = snapshot.getSupergroup(tabGroupId) as SupergroupType;
       const members = memberNodes(supergroup.members);
-      // Unlike a container, a group counts index tabs too (as before).
+      // Unlike a container, a group counts index tabs too.
       const tabCount = members.reduce(
         (sum, m) => sum + (m.type == 'container' ? tabsOf(m.container.cookieStore.id).length : m.tabCount),
         0

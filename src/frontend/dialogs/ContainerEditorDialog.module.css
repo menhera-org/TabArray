@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 /* source: https://github.com/mozilla/multi-account-containers/blob/4b56a2f0bb91cd9a12b95121fcff0c8e96ff66bd/src/js/popup.js */
-/* The icon and color pickers, formerly usercontext.css in their shadow DOM. */
+/* The icon and color pickers of the container editor. */
 
 /* Color and icon helpers */
 .radios [data-identity-color="blue"] {

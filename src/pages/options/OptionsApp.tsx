@@ -32,7 +32,7 @@ import { TabGroupOverrides, TabGroupProxy, TabGroupSorter } from './listings';
 import { ProxyManager } from './ProxyManager';
 import { NativeTabGroupService } from '../../lib/tabGroups/NativeTabGroupService';
 
-// Firefox for Android has no tab groups.
+// The tab group options show only where Firefox offers tab groups to extensions.
 const nativeTabGroupsSupported = NativeTabGroupService.getInstance().isSupported();
 
 /** The panes, by their URL fragment, with the i18n message names of their tabs. */

@@ -64,7 +64,7 @@ export const PARENT_SCREENS: Record<string, string> = {
   'fragment-site-details': 'fragment-sites',
 };
 
-/** Kept mounted while hidden, as the old fragments were, so screens keep their state. */
+/** Kept mounted while hidden, so screens keep their state. */
 const Screen = ({ id, activeId, children }: { id: string; activeId: string; children: ReactNode }) => (
   <div id={id} className={styles.screen} hidden={id != activeId} data-screen>
     {children}

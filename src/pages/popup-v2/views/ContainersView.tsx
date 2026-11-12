@@ -40,7 +40,7 @@ export type ContainerNode =
 
 /**
  * Private browsing first, then the containers in the user's group tree.
- * Groups count the tabs of all their members. Index tabs are not counted, except in private browsing (as before).
+ * Groups count the tabs of all their members. Index tabs are not counted, except in private browsing.
  */
 export const getContainerTree = (browserState: BrowserStateDao): ContainerNode[] => {
   const indexTabService = IndexTabService.getInstance();

@@ -12,7 +12,7 @@ Thanks for reading this! We are welcoming your contributions.
 
 ## Critical security issues
 
-- Please contact us at board at menhera.com.
+- Please contact us at https://github.com/menhera-org/TabArray/security/advisories/new.
 
 ## Pull requests
 

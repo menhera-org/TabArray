@@ -81,7 +81,7 @@ type TabRowProps = {
 export const TabRow = ({ tab, container, actions, draggable = false }: TabRowProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  // The old element was rebuilt on every render and re-centered the active tab each time; so does this.
+  // The active tab is scrolled into the middle of the list after every render.
   useEffect(() => {
     if (!tab.active) return;
     const timer = setTimeout(() => {

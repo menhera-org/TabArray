@@ -39,7 +39,7 @@ export class NativeTabGroupService {
     // nothing.
   }
 
-  /** Firefox for Android has no tab groups. */
+  /** Whether this Firefox offers the tab groups API to extensions. */
   public isSupported(): boolean {
     return !!browser.tabGroups && typeof browser.tabs.group == 'function';
   }

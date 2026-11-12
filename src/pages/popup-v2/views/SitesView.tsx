@@ -48,7 +48,7 @@ export const getSiteSummaries = (browserState: BrowserStateDao): SiteSummary[] =
     const tabs = indexTabService.filterOutIndexTabs(
       (browserState.tabIdsBySite[domain] ?? []).map((tabId) => TabDao.toCompatTab(browserState.tabs[tabId] as TabDao))
     );
-    // A site with only index tabs has nothing to show (the old code threw here).
+    // A site with only index tabs has nothing to show.
     if (tabs.length == 0) continue;
     const lastAccessedTab = tabs.reduce((a, b) => (a.lastAccessed > b.lastAccessed ? a : b));
     summaries.push({

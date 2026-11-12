@@ -49,7 +49,7 @@ document.title = browser.i18n.getMessage('browserActionPopupTitle');
 const popupFocusHandlers = new PopupFocusHandlers();
 pushKeyHandlers(popupFocusHandlers.okHandler, popupFocusHandlers.cancelHandler, popupFocusHandlers.keyHandler);
 
-// Tab events come in bursts; render at most every 200 ms, as before.
+// Tab events come in bursts; render at most every 200 ms.
 const state = throttle(new BrowserStateStore(), 200);
 
 createRoot(document.getElementById('app') as HTMLElement).render(createElement(App, { state, isPopup }));

@@ -73,7 +73,7 @@ export const CookiesApp = () => {
   const [containers, setContainers] = useState<[string, string][]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [siteData, setSiteData] = useState<SiteData[]>([]);
-  // Renders of one container's data, one at a time, as before.
+  // One render of a container's data at a time; a render asked for meanwhile runs once afterwards.
   const [handler] = useState(
     () => new ViewRefreshHandler(async (cookieStoreId: string) => setSiteData(await loadSiteData(cookieStoreId)))
   );

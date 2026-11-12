@@ -74,7 +74,7 @@ export const DebuggingApp = () => {
         >
           <div className={styles.frame} ref={frame}>
             <FrameContext value={frame}>
-              {/* All screens stay mounted, as the old fragments did, so each keeps loading its data. */}
+              {/* All screens stay mounted, so each keeps loading its data while hidden. */}
               {SCREENS.map(({ id, Screen }) => (
                 <div key={id} id={id} hidden={id != activeId}>
                   <Screen active={id == activeId} />

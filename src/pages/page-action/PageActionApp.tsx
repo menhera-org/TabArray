@@ -107,7 +107,7 @@ export const PageActionApp = () => {
               reopenIn(info.cookieStoreId).catch((e) => console.error(e));
             }}
           >
-            {/* An icon without a source, as before, for No Container. */}
+            {/* No Container has no icon: the img keeps its place without a source. */}
             <img className="container-icon" {...(info.iconUrl ? { src: info.iconUrl } : {})} />
             <span className="container-label">{info.name}</span>
           </button>

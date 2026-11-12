@@ -30,7 +30,7 @@ export type DebuggingScreenProps = {
 export const FrameContext = createContext<RefObject<HTMLElement | null>>({ current: null });
 
 // Failed loads (an AbortError while the background is busy at startup) go to the browser
-// console only, so they do not show on the Logs screen, as before.
+// console only, so they do not show on the Logs screen.
 export { useLoaded } from '../../../frontend/useLoaded';
 
 /**

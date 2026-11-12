@@ -118,5 +118,5 @@ config['feature.languageOverrides'].observe(update);
 config['feature.uaOverrides'].observe(update);
 languageSettings.onChanged.addListener(update);
 userAgentSettings.onChanged.addListener(update);
-// The Chrome preset follows the current Chrome version, which changes about once a month.
+// The Chrome preset follows the current Chrome version, which changes every two weeks.
 setInterval(update, 60 * 60 * 1000);

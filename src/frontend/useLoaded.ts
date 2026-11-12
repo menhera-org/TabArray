@@ -48,7 +48,7 @@ export const useLoaded = <T>(
           beforeUpdate?.();
           setValue(() => loaded);
         })
-        // Reported to the browser console only, as the old pages mostly left these unhandled.
+        // Reported to the browser console only: a failed load keeps the previous value on screen.
         .catch((e) => console.error(e));
     };
     reload();

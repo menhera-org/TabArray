@@ -69,7 +69,7 @@ This extension is intended to replace the following features/extensions:
 ## Known issues
 
 - View source (view-source: URLs) on No Container does not work. This is the limitation of WebExtensions API.
-- HTTP requests in "No Container" (default container) are a little slower than ones in containers.
+- Pages opening in "No Container" (the default container) start loading a little later than in containers, because the extension first checks whether another app opened them.
 
 ## Compatiblity
 
@@ -87,7 +87,7 @@ Probably more compatible extensions...
 ### Incompatible
 
 - Simple Tab Groups (?)
-- Many other tab management extensions? (#32)
+- Some other tab management extensions, untested so far.
 
 ### Compatibility To Do's
 

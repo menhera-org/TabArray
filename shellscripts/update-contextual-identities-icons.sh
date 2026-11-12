@@ -46,6 +46,7 @@ orange    #ff9f00
 red       #ff613d
 pink      #ff4bda
 purple    #af51f5
+violet    #764edd
 toolbar-dark  #F9F9FA
 toolbar-light #0C0C0D
 END

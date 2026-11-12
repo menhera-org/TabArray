@@ -6,7 +6,7 @@ Version 12.0.0 replaces both old milestones. The "Version 12.0.0" milestone was 
 
 ## Schedule
 
-We will release 12.0.0 on addons.mozilla.org (AMO) as soon as the work below is done, and no later than 31 December 2026. The five phases are in priority order, not on a calendar. Phases 2 to 4 touch different parts of the code, so they can run in parallel once phase 1 is done. The popup and sidebar items in phase 5 build on the rewrite in phase 4.
+We will release 12.0.0 on addons.mozilla.org (AMO) as soon as the work below is done, and no later than 31 December 2026. The six phases are in priority order, not on a calendar. Phases 2 to 4 touch different parts of the code, so they can run in parallel once phase 1 is done. The popup and sidebar items in phase 5 build on the rewrite in phase 4.
 
 Strings freeze one week before the release, so translators on Weblate have time to catch up.
 

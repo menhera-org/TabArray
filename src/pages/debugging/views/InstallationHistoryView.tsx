@@ -66,7 +66,7 @@ export const InstallationHistoryScreen = ({ active }: DebuggingScreenProps) => {
   const stick = useStickToBottom(active);
   const entries = useLoaded(
     () => InstallationHistoryService.getInstance().getValue(),
-    // As before, this reloads with the console log, not with the installation history.
+    // This reloads with the console log, not with the installation history.
     ConsoleHistoryService.getInstance<ConsoleHistoryService>().onChanged,
     stick.measure
   );

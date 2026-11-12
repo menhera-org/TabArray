@@ -19,8 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* Formerly the shadow DOM of <help-banner>. */
-/* :any-link, to beat the dialogs' link color when the banner shows in one, as the shadow DOM did. */
+/* The extension's link color, also where the banner shows in a dialog (Panorama's help). */
 .banner a:any-link {
   color: var(--link-color);
 }
@@ -64,7 +63,7 @@
   min-inline-size: 0;
 }
 
-/* Two classes, to beat the pages' own input rules as the old id selector did. */
+/* Two classes, to beat the pages' own input rules. */
 .integrity > .hash {
   display: block;
   min-inline-size: 0;

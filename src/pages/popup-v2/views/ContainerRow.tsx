@@ -48,7 +48,7 @@ type ContainerRowProps = {
   onHighlight?: () => void;
   /** Accepts unpinned tabs of other containers dropped on the row. */
   onDropTab?: (tabId: number) => void;
-  /** Tag and tab rows. */
+  /** The container's tab rows. */
   children?: ReactNode;
 };
 
