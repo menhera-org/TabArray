@@ -42,6 +42,9 @@ export interface TabDao {
   audible: boolean;
 
   cookieStoreId: string;
+
+  /** In a collapsed tab group while containers are tab groups: its container counts as hidden. */
+  groupCollapsed?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

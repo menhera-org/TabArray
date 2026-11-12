@@ -582,6 +582,42 @@
         "message": "Enable automatic sorting of tabs",
         "description": "Label text for enabling sorting of containers/tabs."
     },
+    "optionsLabelExternalSites": {
+        "message": "Sites from other apps",
+        "description": "Column heading on the Sort Containers tab of the settings. Each container lists sites, such as example.com; links to them that another app opens go to that container."
+    },
+    "contextMenuOpenInContainer": {
+        "message": "Open in Container",
+        "description": "Context menu on bookmarks and bookmark folders; its submenu lists the containers to open them in."
+    },
+    "buttonSaveTabsAsBookmarks": {
+        "message": "Save Tabs as Bookmarks",
+        "description": "Button in the container options menu. Saves the container's tabs as bookmarks in a new folder named after the container."
+    },
+    "contextMenuKeepTabLoaded": {
+        "message": "Keep This Tab Loaded",
+        "description": "Checkbox in the tab context menu. When checked, the tab is never freed from memory, neither by the extension's \"free memory\" setting nor by Firefox."
+    },
+    "commandCollapseActiveContainer": {
+        "message": "Collapse the current container",
+        "description": "Name of the keyboard shortcut that collapses the container (tab group) of the active tab. Shown in Firefox's Manage Extension Shortcuts."
+    },
+    "commandExpandActiveContainer": {
+        "message": "Expand the current container",
+        "description": "Name of the keyboard shortcut that expands the container (tab group) of the active tab. Shown in Firefox's Manage Extension Shortcuts."
+    },
+    "optionSortContainersByName": {
+        "message": "Sort containers by name",
+        "description": "Label text for the option that keeps containers sorted by name within each container group, everywhere the extension and the tab bar show them."
+    },
+    "optionListCollapsedTabs": {
+        "message": "In the sidebar, list the tabs of collapsed tab groups",
+        "description": "Label text for the option that keeps listing a container's tabs in the sidebar while its Firefox tab group is collapsed."
+    },
+    "optionHideTabCount": {
+        "message": "Hide the tab count on the toolbar button",
+        "description": "Label text for the option that removes the number of tabs from the extension's toolbar button."
+    },
     "optionNativeTabGroupSync": {
         "message": "Show containers as Firefox tab groups",
         "description": "Label text for the option that shows each container as a native Firefox tab group in the tab bar and keeps their names, colors and collapsed state in sync."

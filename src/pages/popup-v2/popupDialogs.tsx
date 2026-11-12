@@ -28,6 +28,7 @@ import { CompatConsole } from '../../lib/console/CompatConsole';
 import { SupergroupType, TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { TabGroupAttributes } from '../../lib/tabGroups/TabGroupAttributes';
 import { SupergroupService } from '../../lib/tabGroups/SupergroupService';
+import { ContainerBookmarkService } from '../../lib/bookmarks/ContainerBookmarkService';
 
 import { showDialog } from '../../frontend/dialogs/showDialog';
 import {
@@ -184,6 +185,7 @@ export const showContainerOptionsPanelAsync = async (displayedContainer: Display
       : []),
     { id: 'clearCookie', label: message('buttonContainerClearCookie') },
     { id: 'move', label: message('moveContainer') },
+    ...(isPrivate ? [] : [{ id: 'saveBookmarks', label: message('buttonSaveTabsAsBookmarks') }]),
     { id: 'done', label: message('buttonDone'), isDefault: true },
   ];
   showMenu(
@@ -202,6 +204,13 @@ export const showContainerOptionsPanelAsync = async (displayedContainer: Display
           break;
         case 'move':
           showMoveGroup(displayedContainer.cookieStore.id);
+          break;
+        case 'saveBookmarks':
+          // Still in the click, so Firefox can ask for the bookmarks permission.
+          ContainerBookmarkService.getInstance<ContainerBookmarkService>().saveContainerTabs(
+            displayedContainer.cookieStore.id,
+            displayedContainer.name
+          );
           break;
       }
     }

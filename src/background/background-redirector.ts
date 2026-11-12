@@ -27,6 +27,8 @@ import { OpenTabsService } from '../lib/states/OpenTabsService';
 import { ActiveContainerService } from '../lib/states/ActiveContainerService';
 import { ElapsedTimeService } from '../lib/ElapsedTimeService';
 import { CompatConsole } from '../lib/console/CompatConsole';
+import { ExternalLinkSettings } from '../lib/overrides/ExternalLinkSettings';
+import { TabGroupService } from '../lib/tabGroups/TabGroupService';
 
 import { config } from '../config/config';
 
@@ -36,6 +38,8 @@ const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const openTabsService = OpenTabsService.getInstance();
 const activeContainerService = ActiveContainerService.getInstance();
 const elapsedTimeService = ElapsedTimeService.getInstance();
+const externalLinkSettings = ExternalLinkSettings.getInstance();
+const tabGroupService = TabGroupService.getInstance();
 
 const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   // This is never called for private tabs.
@@ -52,18 +56,15 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
     const cookieStoreId = details.cookieStoreId;
 
     // all of these IO operations are now cached.
-    const [elapsedTime, externalTabContainerOption, tabIsPreviouslyOpen] = await Promise.all([
+    const [elapsedTime, externalTabContainerOption, tabIsPreviouslyOpen, ruleCookieStoreId] = await Promise.all([
       elapsedTimeService.getElapsedTime(),
       config['tab.external.containerOption'].getValue(),
       openTabsService.hasTab(details.tabId),
+      externalLinkSettings.getContainerForUrl(details.url),
     ]);
 
     // do not redirect if the tab is loaded when the browser is started
     if (elapsedTime < 2000) return false;
-
-    if (externalTabContainerOption == 'disabled') {
-      return false;
-    }
 
     if (tabIsPreviouslyOpen) {
       // we have commented this out because it is IO intensive
@@ -72,6 +73,25 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
     }
 
     const { tabId, url } = details;
+
+    // Finish before the blocked request continues, and do not also redirect to the
+    // confirm page, which left a second tab behind when the removal lost the race (#411).
+    const reopenIn = async (targetCookieStoreId: string) => {
+      const { windowId } = await browser.tabs.get(tabId);
+      await browser.tabs.create({ cookieStoreId: targetCookieStoreId, url, windowId });
+      console.log('Reopened %s in container id %s', url, targetCookieStoreId);
+      await browser.tabs.remove(tabId);
+      return false;
+    };
+
+    // A container's sites come first; the option below is for links no site matches (#481).
+    if (ruleCookieStoreId !== undefined) {
+      return ruleCookieStoreId == cookieStoreId ? false : await reopenIn(ruleCookieStoreId);
+    }
+
+    if (externalTabContainerOption == 'disabled') {
+      return false;
+    }
 
     if ('sticky' == externalTabContainerOption) {
       const browserTab = await browser.tabs.get(tabId);
@@ -82,18 +102,8 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
       if (cookieStoreId == activeCookieStoreId || activeCookieStoreId == null) {
         console.log('Tab %d in active cookie store %s', tabId, cookieStoreId);
         return false;
-      } else {
-        // Finish before the blocked request continues, and do not also redirect to the
-        // confirm page, which left a second tab behind when the removal lost the race (#411).
-        await browser.tabs.create({
-          cookieStoreId: activeCookieStoreId,
-          url,
-          windowId,
-        });
-        console.log('Reopened %s in container id %s', url, activeCookieStoreId);
-        await browser.tabs.remove(tabId);
-        return false;
       }
+      return await reopenIn(activeCookieStoreId);
     }
 
     console.log('Capturing request for tab %d: %s', tabId, url);
@@ -104,3 +114,9 @@ const beforeRequestHandler = new BeforeRequestHandler(async (details) => {
   }
 });
 beforeRequestHandler.startListening();
+
+tabGroupService.directory.onChanged.addListener(async () => {
+  externalLinkSettings.removeUnknownTabGroupIds(await tabGroupService.getTabGroupIds()).catch((e) => {
+    console.error(e);
+  });
+});

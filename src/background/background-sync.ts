@@ -20,17 +20,23 @@
 **/
 
 import { ContainerSyncService } from '../lib/sync/ContainerSyncService';
+import { GroupSyncService } from '../lib/sync/GroupSyncService';
 
 import { config } from '../config/config';
 
 import { everyMinuteAlarm } from './includes/alarms';
 
 const containerSyncService = ContainerSyncService.getInstance();
+const groupSyncService = GroupSyncService.getInstance();
 
 everyMinuteAlarm.onAlarm.addListener(async () => {
   const enabled = await config['feature.syncContainers'].getValue();
   if (!enabled) return;
-  containerSyncService.sync().catch((e) => {
-    console.error(e);
-  });
+  // Container groups refer to containers by their synced IDs, so they sync after the containers.
+  containerSyncService
+    .sync()
+    .then(() => groupSyncService.sync())
+    .catch((e) => {
+      console.error(e);
+    });
 });

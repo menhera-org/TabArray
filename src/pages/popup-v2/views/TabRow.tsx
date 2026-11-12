@@ -38,6 +38,9 @@ export type TabActions = {
   showContextMenu: (tabId: number) => void;
   /** Moves a tab to a position in its window. */
   move: (tabId: number, index: number) => void;
+  /** Shift-, Ctrl- or Cmd-click adds or removes a tab from the selection, where there is one (#386). */
+  toggleSelected?: (tabId: number) => void;
+  isSelected?: (tabId: number) => boolean;
 };
 
 /** What a dragged tab row carries. */
@@ -127,7 +130,10 @@ export const TabRow = ({ tab, container, actions, draggable = false }: TabRowPro
         alt=""
         style={{ visibility: tab.isPrivate ? 'visible' : 'hidden' }}
       />
-      <div className={styles.main} style={colored ? { borderColor: container.colorCode } : undefined}>
+      <div
+        className={`${styles.main} ${actions.isSelected?.(tab.id) ? styles.selected : ''}`}
+        style={colored ? { borderColor: container.colorCode } : undefined}
+      >
         <button
           className={`${styles.pinButton} ${tab.pinned ? styles.pinned : ''}`}
           title={browser.i18n.getMessage(tab.pinned ? 'tooltipTabUnpinButton' : 'tooltipTabPinButton')}
@@ -136,7 +142,13 @@ export const TabRow = ({ tab, container, actions, draggable = false }: TabRowPro
         <button
           className={`${styles.tabButton} ${tab.discarded ? styles.discarded : ''} ${tab.active ? styles.active : ''}`}
           title={tab.url}
-          onClick={() => actions.activate(tab.id)}
+          onClick={(ev) => {
+            if (actions.toggleSelected && (ev.shiftKey || ev.ctrlKey || ev.metaKey)) {
+              actions.toggleSelected(tab.id);
+            } else {
+              actions.activate(tab.id);
+            }
+          }}
           {...FOCUSABLE}
         >
           <TabFavicon url={tab.favIconUrl} />

@@ -39,10 +39,11 @@ export class BrowserActionService {
     // Do nothing
   }
 
-  public setBadgeTextForWindow(windowId: number, tabCount: number) {
+  /** Shows the tab count on the toolbar button, or nothing for null. */
+  public setBadgeTextForWindow(windowId: number, tabCount: number | null) {
     browser.browserAction
       .setBadgeText({
-        text: tabCount.toString(),
+        text: tabCount == null ? '' : tabCount.toString(),
         windowId,
       })
       .catch((e) => {

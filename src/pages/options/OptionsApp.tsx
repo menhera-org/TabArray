@@ -96,11 +96,23 @@ export const OptionsApp = () => {
             label="optionEnableSorting"
             option={config['tab.sorting.enabled']}
           />
+          <CheckboxSetting
+            id="input-sortContainersByName"
+            label="optionSortContainersByName"
+            option={config['tab.groups.sortByName']}
+          />
           {nativeTabGroupsSupported && (
             <CheckboxSetting
               id="input-nativeTabGroupSync"
               label="optionNativeTabGroupSync"
               option={config['tab.groups.nativeSync']}
+            />
+          )}
+          {nativeTabGroupsSupported && (
+            <CheckboxSetting
+              id="input-listCollapsedTabs"
+              label="optionListCollapsedTabs"
+              option={config['sidebar.listCollapsedTabs']}
             />
           )}
           <SelectSetting
@@ -132,6 +144,11 @@ export const OptionsApp = () => {
               ['standard', 'labelPopupSizeStandard'],
               ['large', 'labelPopupSizeLarge'],
             ]}
+          />
+          <CheckboxSetting
+            id="input-hideTabCount"
+            label="optionHideTabCount"
+            option={config['appearance.hideTabCount']}
           />
           <h2>{message('optionsHeadingExperimental')}</h2>
           <p>{message('optionsDescriptionExperimental')}</p>

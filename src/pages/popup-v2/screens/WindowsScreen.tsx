@@ -113,7 +113,11 @@ const handlers: WindowsHandlers = {
   },
 };
 
-export const WindowsScreen = ({ browserState, active }: ScreenProps) => (
+export const WindowsScreen = ({
+  browserState,
+  active,
+  listCollapsedTabs = false,
+}: ScreenProps & { listCollapsedTabs?: boolean }) => (
   <>
     <ScreenTopBar
       active={active}
@@ -135,6 +139,11 @@ export const WindowsScreen = ({ browserState, active }: ScreenProps) => (
         )}
       </MenuItem>
     </ScreenTopBar>
-    <WindowsView browserState={browserState} handlers={handlers} active={active} />
+    <WindowsView
+      browserState={browserState}
+      handlers={handlers}
+      active={active}
+      listCollapsedTabs={listCollapsedTabs}
+    />
   </>
 );

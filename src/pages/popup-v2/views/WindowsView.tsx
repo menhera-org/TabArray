@@ -55,6 +55,8 @@ export type WindowContainerNode =
       hidden: boolean;
       /** Has tabs in the window: offers "focus to this container". */
       open: boolean;
+      /** Holds the window's active tab, and is highlighted (#8). */
+      active: boolean;
       /** Visible tabs. */
       tabs: CompatTab[];
     }
@@ -85,23 +87,48 @@ const getWindowContainers = (browserState: BrowserStateDao, windowState: WindowS
     .sort((a, b) => snapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id));
 };
 
-const containerNode = (container: DisplayedContainer, tabs: CompatTab[], open = false): WindowContainerNode => {
+/**
+ * A container's row. Tabs of a collapsed tab group make it count as hidden, but are still listed
+ * when `listCollapsedTabs` is set (#482).
+ */
+const containerNode = (
+  container: DisplayedContainer,
+  tabs: CompatTab[],
+  open = false,
+  collapsedTabIds: ReadonlySet<number> = new Set(),
+  listCollapsedTabs = false
+): WindowContainerNode => {
   const visibleTabs: CompatTab[] = [];
   let tabCount = 0;
   let hidden = false;
   for (const tab of tabs) {
     if (IndexTab.isIndexTabUrl(tab.url)) continue;
     tabCount++;
-    hidden = tab.hidden;
-    if (tab.hidden) continue;
+    const collapsed = collapsedTabIds.has(tab.id);
+    hidden = tab.hidden || collapsed;
+    if (tab.hidden || (collapsed && !listCollapsedTabs)) continue;
     visibleTabs.push(tab);
   }
-  return { type: 'container', container, tabCount, hidden, open, tabs: visibleTabs };
+  return { type: 'container', container, tabCount, hidden, open, active: false, tabs: visibleTabs };
 };
 
 /** Everything the Windows screen shows for one window when not searching. */
-export const getWindowSummary = (browserState: BrowserStateDao, windowId: number): WindowSummary => {
+export const getWindowSummary = (
+  browserState: BrowserStateDao,
+  windowId: number,
+  listCollapsedTabs = false
+): WindowSummary => {
   const windowState = browserState.windows[windowId] as WindowStateDao;
+  const collapsedTabIds = new Set(
+    Object.values(windowState.tabs)
+      .filter((tab) => tab.groupCollapsed)
+      .map((tab) => tab.id)
+  );
+  const node = (container: DisplayedContainer, tabs: CompatTab[], open = false): WindowContainerNode =>
+    ({
+      ...containerNode(container, tabs, open, collapsedTabIds, listCollapsedTabs),
+      active: windowState.activeContainers.includes(container.cookieStore.id),
+    }) as WindowContainerNode;
   const containers = getWindowContainers(browserState, windowState);
   const containerOf = (tab: CompatTab) => containers.find((c) => c.cookieStore.id == tab.cookieStore.id);
   const tabsOf = (cookieStoreId: string) =>
@@ -132,8 +159,8 @@ export const getWindowSummary = (browserState: BrowserStateDao, windowId: number
   if (windowState.isPrivate) {
     const isActive = (c: DisplayedContainer) => windowState.activeContainers.includes(c.cookieStore.id);
     return summary(
-      containers.filter(isActive).map((c) => containerNode(c, tabsOf(c.cookieStore.id), true)),
-      containers.filter((c) => !isActive(c)).map((c) => containerNode(c, []))
+      containers.filter(isActive).map((c) => node(c, tabsOf(c.cookieStore.id), true)),
+      containers.filter((c) => !isActive(c)).map((c) => node(c, []))
     );
   }
 
@@ -155,7 +182,7 @@ export const getWindowSummary = (browserState: BrowserStateDao, windowId: number
         const container = containers.find((c) => c.cookieStore.id == tabGroupId);
         if (!container) return [];
         const tabs = tabsOf(tabGroupId);
-        return [containerNode(container, tabs, tabs.length > 0)];
+        return [node(container, tabs, tabs.length > 0)];
       }
       const supergroup = snapshot.getSupergroup(tabGroupId) as SupergroupType;
       const members = memberNodes(supergroup.members);
@@ -262,6 +289,7 @@ const ContainerNodes = ({ nodes, windowId, isPrivate, handlers: h }: NodesProps)
         container={c}
         tabCount={node.tabCount}
         hidden={node.hidden}
+        active={node.active}
         onClick={() => h.openTabInContainer(c, windowId)}
         onClose={() => h.closeContainer(c, windowId)}
         onOptions={() => h.containerOptions(c, isPrivate)}
@@ -314,9 +342,51 @@ type WindowsViewProps = {
   handlers: WindowsHandlers;
   /** Shown: the search box takes focus each time this becomes true. */
   active: boolean;
+  /** List the tabs of containers whose tab group is collapsed (#482). */
+  listCollapsedTabs?: boolean;
 };
 
-export const WindowsView = ({ browserState, handlers: h, active }: WindowsViewProps) => {
+/** Closing or moving a selected tab closes or moves all selected tabs; a plain click ends the selection (#386). */
+const withSelection = (
+  h: WindowsHandlers,
+  selection: ReadonlySet<number>,
+  setSelection: (selection: ReadonlySet<number>) => void
+): WindowsHandlers => {
+  const together = (tabId: number) => (selection.has(tabId) ? [...selection] : [tabId]);
+  return {
+    ...h,
+    tabActions: {
+      ...h.tabActions,
+      activate: (tabId) => {
+        setSelection(new Set());
+        h.tabActions.activate(tabId);
+      },
+      close: (tabId) => {
+        setSelection(new Set());
+        for (const id of together(tabId)) h.tabActions.close(id);
+      },
+      toggleSelected: (tabId) => {
+        const next = new Set(selection);
+        if (!next.delete(tabId)) next.add(tabId);
+        setSelection(next);
+      },
+      isSelected: (tabId) => selection.has(tabId),
+    },
+    reopenTabInContainer: (tabId, container) => {
+      setSelection(new Set());
+      for (const id of together(tabId)) h.reopenTabInContainer(id, container);
+    },
+  };
+};
+
+export const WindowsView = ({
+  browserState,
+  handlers: plainHandlers,
+  active,
+  listCollapsedTabs = false,
+}: WindowsViewProps) => {
+  const [selection, setSelection] = useState<ReadonlySet<number>>(new Set());
+  const h = withSelection(plainHandlers, selection, setSelection);
   const [selectedWindowId, setSelectedWindowId] = useState(browserState.currentWindowId);
   const [search, setSearch] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
@@ -327,7 +397,7 @@ export const WindowsView = ({ browserState, handlers: h, active }: WindowsViewPr
   const windowId = browserState.windowIds.includes(selectedWindowId) ? selectedWindowId : browserState.currentWindowId;
   if (windowId != selectedWindowId) setSelectedWindowId(windowId);
 
-  const summary = getWindowSummary(browserState, windowId);
+  const summary = getWindowSummary(browserState, windowId, listCollapsedTabs);
   const searchString = search.trim();
   const results = searchString ? getSearchResults(browserState, windowId, searchString) : null;
   const isPrivate = summary.isPrivate;

@@ -175,7 +175,7 @@ export class BrowserStateService {
         const tab = new CompatTab(browserTab);
         const tabDao = TabDao.fromCompatTab(tab);
         if (browserTab.groupId != null && params.collapsedGroupIds.includes(browserTab.groupId)) {
-          tabDao.hidden = true;
+          tabDao.groupCollapsed = true;
         }
         value.tabs[tab.id] = tabDao;
         windowState.tabs[tab.id] = tabDao;

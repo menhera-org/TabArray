@@ -22,7 +22,7 @@
 import { Asserts } from 'weeg-utils';
 import { StorageItem } from 'weeg-storage';
 import { Uint32 } from 'weeg-types';
-import { ContextualIdentity } from 'weeg-containers';
+import { ContextualIdentity, CookieStore } from 'weeg-containers';
 
 import { ServiceRegistry } from '../ServiceRegistry';
 import { PrefixStorageItems } from '../storage/PrefixStorageItems';
@@ -83,6 +83,17 @@ export class ContainerSyncService {
 
   private constructor() {
     // do nothing
+  }
+
+  /** Local container ID to synced container ID, for containers that sync. */
+  public async getSyncedIdentityIds(): Promise<Map<string, string>> {
+    const syncedIdentityMap = await this._syncedIdentityMapStorage.getValue();
+    return new Map(
+      Object.entries(syncedIdentityMap).map(([userContextId, metadata]) => [
+        CookieStore.fromParams({ userContextId: Uint32(userContextId), privateBrowsingId: 0 as Uint32 }).id,
+        metadata.id,
+      ])
+    );
   }
 
   public isIdentitySyncable(identity: ContextualIdentity): boolean {

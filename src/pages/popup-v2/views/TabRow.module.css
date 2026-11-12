@@ -38,6 +38,11 @@
   border-inline-start: solid 0.25rem transparent;
 }
 
+.main.selected {
+  outline: solid 2px var(--accent-color);
+  outline-offset: -2px;
+}
+
 .main:is(:hover, :focus-within) {
   background-color: var(--hover-color);
 }

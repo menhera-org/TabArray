@@ -23,6 +23,15 @@
   display: block;
 }
 
+/* The container of the window's active tab (#8). */
+.active > .header {
+  box-shadow: inset 0 -2px 0 var(--accent-color);
+}
+
+.active .nameInner {
+  font-weight: bold;
+}
+
 .header {
   display: block grid;
   grid-template-columns: 2em 1fr max-content max-content max-content;

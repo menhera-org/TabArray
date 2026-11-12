@@ -26,6 +26,7 @@ import { CookieStore } from 'weeg-containers';
 import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
 import { SpinnerService } from '../../../lib/SpinnerService';
 import { CompatConsole } from '../../../lib/console/CompatConsole';
+import { config } from '../../../config/config';
 
 import { PopupCommandHandler, SCREEN_COMMANDS } from '../PopupCommandHandler';
 
@@ -126,6 +127,9 @@ export const App = ({ state, isPopup }: AppProps) => {
   const [domain, setDomain] = useState('(none)');
   const help = useHelp();
   const spinning = useSpinning();
+  // The sidebar can keep listing tabs of collapsed tab groups (#482).
+  const [listCollapsedTabs, setListCollapsedTabs] = useState(false);
+  useEffect(() => config['sidebar.listCollapsedTabs'].observe(setListCollapsedTabs), []);
   const shortcuts = useCommands(setActiveId);
 
   const parentId = PARENT_SCREENS[activeId];
@@ -143,7 +147,11 @@ export const App = ({ state, isPopup }: AppProps) => {
             {browserState && (
               <>
                 <Screen id="fragment-windows" activeId={activeId}>
-                  <WindowsScreen browserState={browserState} active={isActive('fragment-windows')} />
+                  <WindowsScreen
+                    browserState={browserState}
+                    active={isActive('fragment-windows')}
+                    listCollapsedTabs={!isPopup && listCollapsedTabs}
+                  />
                 </Screen>
                 <Screen id="fragment-containers" activeId={activeId}>
                   <ContainersScreen

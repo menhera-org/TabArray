@@ -36,6 +36,8 @@ type ContainerRowProps = {
   dimmed?: boolean;
   /** The container's tabs are hidden in the window: the toggle and the name show them again. */
   hidden?: boolean;
+  /** Holds the window's active tab (#8). */
+  active?: boolean;
   onClick?: () => void;
   onClose: () => void;
   onOptions: () => void;
@@ -56,6 +58,7 @@ export const ContainerRow = ({
   tabCount,
   dimmed,
   hidden = false,
+  active = false,
   onClick,
   onClose,
   onOptions,
@@ -84,7 +87,7 @@ export const ContainerRow = ({
   };
   return (
     <div
-      className={`${styles.container} ${hidden ? styles.hidden : ''}`}
+      className={`${styles.container} ${hidden ? styles.hidden : ''} ${active ? styles.active : ''}`}
       style={dimmed ? { opacity: 0.75 } : undefined}
       {...dropHandlers}
     >

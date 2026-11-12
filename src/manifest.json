@@ -40,6 +40,9 @@
     "publicSuffix",
     "tabGroups"
   ],
+  "optional_permissions": [
+    "bookmarks"
+  ],
   "incognito": "spanning",
   "background": {
     "page": "background/background.html"
@@ -127,6 +130,12 @@
         "default": "Ctrl+Alt+5"
       },
       "description": "__MSG_buttonSettings__"
+    },
+    "collapse_active_container": {
+      "description": "__MSG_commandCollapseActiveContainer__"
+    },
+    "expand_active_container": {
+      "description": "__MSG_commandExpandActiveContainer__"
     }
   },
   "content_scripts": [

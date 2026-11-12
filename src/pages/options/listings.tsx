@@ -27,6 +27,8 @@ import { LanguageSettings } from '../../lib/overrides/LanguageSettings';
 import { UserAgentPreset, UserAgentSettings } from '../../lib/overrides/UserAgentSettings';
 import { ProxySettings } from '../../lib/proxies/ProxySettings';
 import { ProxyPreset } from '../../lib/proxies/ProxyPreset';
+import { ExternalLinkSettings } from '../../lib/overrides/ExternalLinkSettings';
+import { TabGroupAttributes } from '../../lib/tabGroups/TabGroupAttributes';
 import { CompatConsole } from '../../lib/console/CompatConsole';
 import { config } from '../../config/config';
 
@@ -45,6 +47,7 @@ const tabGroupService = TabGroupService.getInstance();
 const languageSettings = LanguageSettings.getInstance();
 const userAgentSettings = UserAgentSettings.getInstance();
 const proxySettings = ProxySettings.getInstance();
+const externalLinkSettings = ExternalLinkSettings.getInstance();
 
 /** Sort Containers pane: reorder containers and groups, and choose which clear their cookies automatically. */
 export const TabGroupSorter = () => {
@@ -56,21 +59,46 @@ export const TabGroupSorter = () => {
   return (
     <TabGroupListing
       sortable
-      columns={[browser.i18n.getMessage('enableCookiesAutoclean')]}
-      gridTemplateColumns="1fr min-content"
+      columns={[
+        browser.i18n.getMessage('enableCookiesAutoclean'),
+        browser.i18n.getMessage('optionsLabelExternalSites'),
+      ]}
+      gridTemplateColumns="1fr min-content 12em"
       cells={(tabGroupId) => (
-        <div className={styles.autoclean}>
-          <input
-            type="checkbox"
-            checked={changed.get(tabGroupId) ?? autocleanIds?.includes(tabGroupId) ?? false}
-            onChange={(ev) => {
-              const enabled = ev.currentTarget.checked;
-              setChanged((map) => new Map(map).set(tabGroupId, enabled));
-              tabGroupService.optionDirectory.setAutocleanForTabGroupId(tabGroupId, enabled).catch(logError);
-            }}
-          />
-        </div>
+        <>
+          <div className={styles.autoclean}>
+            <input
+              type="checkbox"
+              checked={changed.get(tabGroupId) ?? autocleanIds?.includes(tabGroupId) ?? false}
+              onChange={(ev) => {
+                const enabled = ev.currentTarget.checked;
+                setChanged((map) => new Map(map).set(tabGroupId, enabled));
+                tabGroupService.optionDirectory.setAutocleanForTabGroupId(tabGroupId, enabled).catch(logError);
+              }}
+            />
+          </div>
+          {new TabGroupAttributes(tabGroupId).tabGroupType == 'cookieStore' ? (
+            <ExternalSitesCell tabGroupId={tabGroupId} />
+          ) : (
+            <div />
+          )}
+        </>
       )}
+    />
+  );
+};
+
+/** Sites that links from other apps open in this container (#481). */
+const ExternalSitesCell = ({ tabGroupId }: { tabGroupId: string }) => {
+  const hosts = useLoaded(() => externalLinkSettings.getValueForTabGroup(tabGroupId), externalLinkSettings.onChanged);
+  return (
+    <CommitInput
+      className={styles.text}
+      value={hosts ?? ''}
+      placeholder="example.com"
+      onCommit={(value) => {
+        externalLinkSettings.setValueForTabGroup(tabGroupId, value).catch(logError);
+      }}
     />
   );
 };

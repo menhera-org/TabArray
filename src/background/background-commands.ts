@@ -22,6 +22,7 @@
 import browser from 'webextension-polyfill';
 
 import { ExtensionPageService } from '../lib/ExtensionPageService';
+import { setActiveContainerCollapsed } from '../lib/tabGroups/activeContainerCommands';
 
 const extensionPageService = ExtensionPageService.getInstance();
 
@@ -35,6 +36,16 @@ browser.commands.onCommand.addListener(async (command) => {
 
       case 'open_settings_view': {
         await extensionPageService.open(ExtensionPageService.OPTIONS);
+        break;
+      }
+
+      case 'collapse_active_container': {
+        await setActiveContainerCollapsed(true);
+        break;
+      }
+
+      case 'expand_active_container': {
+        await setActiveContainerCollapsed(false);
         break;
       }
     }

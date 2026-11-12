@@ -22,8 +22,8 @@ Last updated 12 November 2026. "Done" means the change is on `main` and ships in
 | 2. Sign-in and compatibility bugs, memory leak | Done. Every issue is closed; the sign-in and desktop-app reporters are asked to retest 12.0.0 and reopen if needed. |
 | 3. Firefox native tab groups | Done. Tested in Firefox 140 and 159, also with Tree Style Tab. Tags are removed. |
 | 4. Frontend rewrite | Done. |
-| 5. Settings, features and documentation | Not started. |
-| 6. Visual design refresh | Not started. |
+| 5. Settings, features and documentation | Done. #355 is folded into #209, and #33 moved to phase 6. Group sync is unit-tested but not tested between two real devices. |
+| 6. Visual design refresh | Not started. Includes #33. |
 
 ## 1. Foundations and breakage bugs
 
@@ -141,31 +141,34 @@ New settings start off by default, so current behavior stays the same. Each adds
 
 | Issue | Change | Status |
 |---|---|---|
-| #377 | Option to sort containers by name within each container group. The popup, the sidebar, tab sorting and the order of tab groups in the tab bar all follow it. | Not started |
-| #281 | Option to hide the tab count on the toolbar icon. | Not started |
-| #482 | Option to keep listing a container's tabs in the sidebar while its tab group is collapsed, so collapsing only affects the tab bar. | Not started |
-| #486 | Keyboard shortcuts to collapse and expand the active container. | Not started |
-| #33 | Follow the browser theme in the extension's pages. | Not started |
-| #481 | Rules that pick a container from the URL when another app opens a link, with a default for links no rule matches. | Not started |
-| #386 | Shift-click to select several tabs, then move or close them together. | Not started |
-| #282 | Mark a single tab to stay loaded when unused tabs are freed from memory. | Not started |
-| #355 | Keep container tabs across restarts, saved by the extension as well as by Firefox's session store. | Not started |
-| #209 | Open bookmarks in a container, and save a container's tabs as bookmarks. | Not started |
-| | Sync container groups between devices, the way containers already sync. Devices on Firefox ESR 140 and on the latest release must be able to share them. | Not started |
-| #8 | The remaining popup ideas: a highlight on the active container, and arrow-key navigation. Collapsing the container list by default is dropped, since with sync on it would collapse the groups in the tab bar too. | Not started |
+| #377 | Option to sort containers by name within each container group. The popup, the sidebar, tab sorting and the order of tab groups in the tab bar all follow it. | Done |
+| #281 | Option to hide the tab count on the toolbar icon. | Done |
+| #482 | Option to keep listing a container's tabs in the sidebar while its tab group is collapsed, so collapsing only affects the tab bar. | Done |
+| #486 | Keyboard shortcuts to collapse and expand the active container. | Done. No keys are set by default; users assign them in Firefox's Manage Extension Shortcuts. |
+| #33 | Follow the browser theme in the extension's pages. | Moved to Phase 6. Light and dark already follow Firefox; a theme's own colors are designed with the visual refresh. |
+| #481 | Rules that pick a container from the URL when another app opens a link, with a default for links no rule matches. | Done: a **Sites from other apps** column on the Sort Containers tab; a site covers its subdomains and the most specific one wins. The existing "When an external application opens a tab" option is the default. |
+| #386 | Shift-click to select several tabs, then move or close them together. | Done in the popup and the sidebar: Shift-, Ctrl- or Cmd-click selects; closing or dropping a selected tab on a container acts on the whole selection. |
+| #282 | Mark a single tab to stay loaded when unused tabs are freed from memory. | Done: "Keep This Tab Loaded" in the tab context menu. It also stops Firefox from freeing the tab when memory is low. |
+| #355 | Folded into #209. Firefox already restores container tabs with "Open previous windows and tabs"; the request for a backup outside the session store is covered by saving a container's tabs as bookmarks. | Closed |
+| #209 | Open bookmarks in a container, and save a container's tabs as bookmarks that reopen in the same container. This also serves as a backup of a container's tabs outside the session store (#355). The `bookmarks` permission is optional, so Firefox asks for it only when someone first uses these features. | Done: **Save Tabs as Bookmarks** in a container's options, and **Open in Container** on bookmarks and folders while the permission is granted. |
+| | Sync container groups between devices, the way containers already sync. Devices on Firefox ESR 140 and on the latest release must be able to share them. | Done, with "Sync Containers": each group syncs on its own, members by synced IDs. Unit-tested; not tested between two real devices. |
+| #8 | The remaining popup ideas: a highlight on the active container, and arrow-key navigation. Collapsing the container list by default is dropped, since with sync on it would collapse the groups in the tab bar too. | Done. Arrow keys already moved between rows, search results included; the container of the active tab is now highlighted. |
 
 Documentation:
 
 | Issue | Change | Status |
 |---|---|---|
-| #432 | Explain how to sort containers and how to turn off automatic tab sorting. | Not started |
-| #385 | Explain how to keep a group of tabs hidden, and what the extension cannot copy between containers. | Not started |
+| #432 | Explain how to sort containers and how to turn off automatic tab sorting. | Done: `docs/organizing-tabs.md` |
+| #385 | Explain how to keep a group of tabs hidden, and what the extension cannot copy between containers. | Done: `docs/organizing-tabs.md` |
 
 ## 6. Visual design refresh
 
 Refresh extension UI styles (update DOM when needed)
 to match the latest Firefox's chrome look & feel, and
 make it feel like modern, without any visual glitches.
+For this, we can copy mozilla-central's icons and CSS files into this repo, with license notices intact.
+
+This includes #33: the extension's pages use the colors of the current Firefox theme, not only its light or dark mode.
 
 ## Not in 12.0.0
 

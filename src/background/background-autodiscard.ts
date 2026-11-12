@@ -23,12 +23,73 @@ import browser from 'webextension-polyfill';
 import { Alarm } from 'weeg-utils';
 
 import { CompatConsole } from '../lib/console/CompatConsole';
+import { MenuItem } from '../lib/menus/MenuItem';
+import { StartupService } from '../lib/StartupService';
+import { selectTabsToDiscard } from '../lib/tabs/selectTabsToDiscard';
 
 import { config } from '../config/config';
 
 const AUTODISCARD_INTERVAL_IN_MINUTES = 5; // 5 minutes
 
+// Session value marking a tab to stay loaded (#282). Session values survive restarts.
+const KEEP_LOADED = 'keepLoaded';
+
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
+
+const isKeptLoaded = async (tabId: number): Promise<boolean> =>
+  (await browser.sessions.getTabValue(tabId, KEEP_LOADED)) === true;
+
+/** Also tells Firefox not to free the tab when memory is low. */
+const setKeptLoaded = async (tabId: number, keep: boolean) => {
+  if (keep) {
+    await browser.sessions.setTabValue(tabId, KEEP_LOADED, true);
+  } else {
+    await browser.sessions.removeTabValue(tabId, KEEP_LOADED);
+  }
+  await browser.tabs.update(tabId, { autoDiscardable: !keep });
+};
+
+const keepLoadedMenu = new MenuItem({
+  id: 'tab-keep-loaded',
+  type: 'checkbox',
+  title: browser.i18n.getMessage('contextMenuKeepTabLoaded'),
+  contexts: ['tab'],
+});
+
+keepLoadedMenu.onShown.addListener(({ tab }) => {
+  if (!tab) return;
+  isKeptLoaded(tab.id)
+    .then((checked) => {
+      browser.menus.update(keepLoadedMenu.id, { checked });
+      browser.menus.refresh();
+    })
+    .catch((e) => {
+      console.error(e);
+    });
+});
+
+keepLoadedMenu.onClicked.addListener(({ tab, checked }) => {
+  if (!tab) return;
+  setKeptLoaded(tab.id, !!checked).catch((e) => {
+    console.error(e);
+  });
+});
+
+// Firefox does not keep autoDiscardable across restarts, so apply it again from the session values.
+StartupService.getInstance().onStartup.addListener(() => {
+  browser.tabs
+    .query({})
+    .then(async (browserTabs) => {
+      for (const browserTab of browserTabs) {
+        if (browserTab.id != null && (await isKeptLoaded(browserTab.id))) {
+          await browser.tabs.update(browserTab.id, { autoDiscardable: false });
+        }
+      }
+    })
+    .catch((e) => {
+      console.error(e);
+    });
+});
 
 const alarm = new Alarm('tab.autoDiscard', {
   periodInMinutes: AUTODISCARD_INTERVAL_IN_MINUTES,
@@ -40,26 +101,12 @@ alarm.onAlarm.addListener(async () => {
     return;
   }
 
-  // Get all tabs
-  const tabs = await browser.tabs.query({});
-
-  // Filter tabs that are not discarded and are older than minAge
-  const now = Date.now();
-  const tabsToDiscard = tabs.filter((tab) => {
-    const url = new URL(tab.url ?? 'about:blank');
-    const isHttpScheme = url.protocol.startsWith('http');
-    return (
-      isHttpScheme &&
-      !tab.discarded &&
-      !tab.active &&
-      !tab.pinned &&
-      null != tab.lastAccessed &&
-      tab.lastAccessed + minAge * 1000 < now
-    );
-  });
-
-  // Discard the tabs
-  const tabIdsToDiscard = tabsToDiscard.map((tab) => tab.id).filter((id) => id != null) as number[];
+  const browserTabs = await browser.tabs.query({});
+  const keptTabIds = new Set<number>();
+  for (const browserTab of browserTabs) {
+    if (browserTab.id != null && (await isKeptLoaded(browserTab.id))) keptTabIds.add(browserTab.id);
+  }
+  const tabIdsToDiscard = selectTabsToDiscard(browserTabs, minAge, Date.now(), keptTabIds);
   if (tabIdsToDiscard.length == 0) {
     return;
   }

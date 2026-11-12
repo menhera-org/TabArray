@@ -45,6 +45,9 @@ export const config = {
   'tab.groups.indexOption': new StorageConfigurationOption<GroupIndexOption>('tab.groups.indexOption', 'never'),
   // Containers as Firefox's native tab groups. On by default, also for users updating from 11.x.
   'tab.groups.nativeSync': new StorageConfigurationOption<boolean>('tab.groups.nativeSync', true),
+  'tab.groups.sortByName': new StorageConfigurationOption<boolean>('tab.groups.sortByName', false),
+  'appearance.hideTabCount': new StorageConfigurationOption<boolean>('appearance.hideTabCount', false),
+  'sidebar.listCollapsedTabs': new StorageConfigurationOption<boolean>('sidebar.listCollapsedTabs', false),
   'tab.autoDiscard.minAge': new StorageConfigurationOption<number>('tab.autoDiscard.minAge', -1),
   'tab.sorting.enabled': new StorageConfigurationOption<boolean>('tab.sorting.enabled', true),
   'tab.autoHide.enabled': new StorageConfigurationOption<boolean>('tab.autoHide.enabled', false),

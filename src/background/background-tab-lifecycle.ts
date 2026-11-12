@@ -75,6 +75,7 @@ browser.windows.onCreated.addListener((browserWindow) => {
 
 browser.windows.onRemoved.addListener((windowId) => {
   windowTabCountService.removeWindow(windowId);
+  lastTabCounts.delete(windowId);
   activeContainerService.removeWindow(windowId).catch((e) => {
     console.error(e);
   });
@@ -100,12 +101,24 @@ browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
   });
 });
 
+// The tab count on the toolbar button can be turned off (#281).
+const lastTabCounts = new Map<number, number>();
+let hideTabCount = false;
+const showTabCount = (windowId: number, tabCount: number) => {
+  browserActionService.setBadgeTextForWindow(windowId, hideTabCount ? null : tabCount);
+};
+config['appearance.hideTabCount'].observe((value) => {
+  hideTabCount = value;
+  for (const [windowId, tabCount] of lastTabCounts) showTabCount(windowId, tabCount);
+});
+
 windowTabCountService.onChanged.addListener((tabCountHistory) => {
   const windowIds = WindowTabCountHistory.getWindowIds(tabCountHistory);
   for (const windowId of windowIds) {
     const tabCount = WindowTabCountHistory.getLastTabCountForWindow(tabCountHistory, windowId) as number;
-    if (tabCount < 1) return;
-    browserActionService.setBadgeTextForWindow(windowId, tabCount);
+    if (tabCount < 1) continue;
+    lastTabCounts.set(windowId, tabCount);
+    showTabCount(windowId, tabCount);
   }
 });
 

@@ -23,6 +23,7 @@ import { act } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 
 import { TabDao } from '../../../lib/states/TabDao';
+import { WindowStateDao } from '../../../lib/states/WindowStateDao';
 import { IndexTab } from '../../../lib/tabs/IndexTab';
 
 import { dragAndDrop, render } from '../../../test/render';
@@ -110,6 +111,25 @@ describe('getWindowSummary', () => {
       ],
     ]);
     expect(outline(summary.inactiveContainers)).toEqual([['Bank', 0, { hidden: false, open: false }, []]]);
+  });
+
+  test("marks the containers holding the window's active tabs (#8)", () => {
+    const active = (nodes: WindowContainerNode[]): string[] =>
+      nodes.flatMap((node) =>
+        node.type == 'container' ? (node.active ? [node.container.name] : []) : active(node.members)
+      );
+    const summary = getWindowSummary(state, 1);
+    expect(active([...summary.openContainers, ...summary.inactiveContainers])).toEqual(['No Container', 'Work']);
+  });
+
+  test('a collapsed tab group hides its container, and its tabs are listed only when asked (#482)', () => {
+    const collapsed = structuredClone(state);
+    const windowTabs = (collapsed.windows[1] as WindowStateDao).tabs;
+    for (const id of [3, 4]) (windowTabs[id] as TabDao).groupCollapsed = true;
+    const work = (listCollapsedTabs: boolean) =>
+      outline(getWindowSummary(collapsed, 1, listCollapsedTabs).openContainers)[1] as unknown[];
+    expect((work(false)[2] as unknown[])[0]).toEqual(['Work', 2, { hidden: true, open: true }, []]);
+    expect((work(true)[2] as unknown[])[0]).toEqual(['Work', 2, { hidden: true, open: true }, [3, 4]]);
   });
 
   test('shows only private browsing in a private window', () => {
@@ -233,6 +253,33 @@ describe('WindowsView', () => {
     const bank = root.querySelector('[title="defaultContainerName(3)"]');
     expect(dragAndDrop(tab4!, bank!)).toBe(true);
     expect(named(vi.mocked(h.reopenTabInContainer).mock.calls.map(([tabId, c]) => [c, tabId]))).toEqual([['Bank', 4]]);
+  });
+
+  test('closes and moves selected tabs together', () => {
+    const h = handlers();
+    const { container: root, click } = render(<WindowsView browserState={state} handlers={h} active={false} />);
+    const row = (title: string) =>
+      [...root.querySelectorAll('[draggable="true"]')].find((r) => r.textContent == title) as HTMLElement;
+    const select = (title: string, init: MouseEventInit) =>
+      act(() => {
+        row(title)
+          .querySelector('[title^="https://"]')
+          ?.dispatchEvent(new MouseEvent('click', { bubbles: true, ...init }));
+      });
+    select('Tab 3', { shiftKey: true });
+    select('Tab 4', { ctrlKey: true });
+    expect(root.querySelectorAll('[class*="selected"]')).toHaveLength(2);
+    expect(dragAndDrop(row('Tab 4'), root.querySelector('[title="defaultContainerName(3)"]')!)).toBe(true);
+    expect(vi.mocked(h.reopenTabInContainer).mock.calls.map(([tabId]) => tabId)).toEqual([3, 4]);
+    expect(root.querySelectorAll('[class*="selected"]')).toHaveLength(0);
+
+    select('Tab 3', { shiftKey: true });
+    select('Tab 4', { shiftKey: true });
+    select('Tab 4', { shiftKey: true });
+    click(row('Tab 3').querySelector('[title="buttonTabClose"]'));
+    expect(h.tabActions.close).toHaveBeenCalledTimes(1);
+    expect(h.tabActions.close).toHaveBeenCalledWith(3);
+    expect(h.tabActions.activate).not.toHaveBeenCalled();
   });
 
   test('shows search results instead of the window while the search box has words', () => {
