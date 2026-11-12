@@ -44,7 +44,7 @@
         "description": "Option to enable container selection on externally opened tabs."
     },
     "labelExternalTabSelectContainerOption": {
-        "message": "Quando un externe application aperi un shceda:",
+        "message": "Quando un externe application aperi un scheda:",
         "description": "Label for option for handling of externally opened tabs"
     },
     "labelExternalTabOptionDisabled": {
@@ -268,7 +268,7 @@
         "description": "Button to focus to this container."
     },
     "labelGroupIndexOption": {
-        "message": "Monstrar un indice shceda por cata contentores",
+        "message": "Monstrar un indice scheda por cata contentor",
         "description": "Option to show index tabs for containers."
     },
     "menuItemWindows": {
@@ -775,5 +775,53 @@
     "copyCookies": {
         "message": "Copiar cookies",
         "description": "Copy cookies button or label text."
+    },
+    "buttonSaveTabsAsBookmarks": {
+        "message": "Salvar le schedas como marcapaginas",
+        "description": "Button in the container options menu. Saves the container's tabs as bookmarks in a new folder named after the container."
+    },
+    "commandCollapseActiveContainer": {
+        "message": "Celar le currente contentor",
+        "description": "Name of the keyboard shortcut that collapses the container (tab group) of the active tab. Shown in Firefox's Manage Extension Shortcuts."
+    },
+    "commandExpandActiveContainer": {
+        "message": "Monstrar le currente contentor",
+        "description": "Name of the keyboard shortcut that expands the container (tab group) of the active tab. Shown in Firefox's Manage Extension Shortcuts."
+    },
+    "confirmWindowClose": {
+        "message": "Vole tu clauder iste fenestra e tote su schedas?",
+        "description": "Confirmation message before closing a browser window from the extension."
+    },
+    "contextMenuKeepTabLoaded": {
+        "message": "Mantener iste scheda cargate",
+        "description": "Checkbox in the tab context menu. When checked, the tab is never freed from memory, neither by the extension's \"free memory\" setting nor by Firefox."
+    },
+    "contextMenuOpenInContainer": {
+        "message": "Aperir in contentor",
+        "description": "Context menu on bookmarks and bookmark folders; its submenu lists the containers to open them in."
+    },
+    "optionAutoCenterInSidebar": {
+        "message": "Centrar automaticamente le scheda active in le barra lateral",
+        "description": "Label text for auto-center active tab in sidebar option."
+    },
+    "optionHideTabCount": {
+        "message": "Celar le numero de schedas sur le button del barra de instrumentos",
+        "description": "Label text for the option that removes the number of tabs from the extension's toolbar button."
+    },
+    "optionListCollapsedTabs": {
+        "message": "In le barra lateral, listar le schedas del gruppos de schedas celate",
+        "description": "Label text for the option that keeps listing a container's tabs in the sidebar while its Firefox tab group is collapsed."
+    },
+    "optionNativeTabGroupSync": {
+        "message": "Monstrar le contentores como gruppos de schedas de Firefox",
+        "description": "Label text for the option that shows each container as a native Firefox tab group in the tab bar and keeps their names, colors and collapsed state in sync."
+    },
+    "optionSortContainersByName": {
+        "message": "Assortir le contentores per nomine",
+        "description": "Label text for the option that keeps containers sorted by name within each container group, everywhere the extension and the tab bar show them."
+    },
+    "optionsLabelExternalSites": {
+        "message": "Sitos ab applicationes externe",
+        "description": "Column heading on the Sort Containers tab of the settings. Each container lists sites, such as example.com; links to them that another app opens go to that container."
     }
 }
