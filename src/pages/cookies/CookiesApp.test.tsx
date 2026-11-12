@@ -22,6 +22,7 @@
 import { act } from 'react';
 import { expect, test, vi } from 'vitest';
 
+import { ContentStorageStatistics } from '../../lib/cookies/ContentStorageStatistics';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
 import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
 
@@ -30,6 +31,29 @@ import { render } from '../../test/render';
 import { CookiesApp } from './CookiesApp';
 
 const settle = () => act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+
+test('switching containers while one is loading shows the container picked last', async () => {
+  vi.spyOn(DisplayedContainerService.getInstance(), 'getDisplayedContainers').mockResolvedValue([
+    container('firefox-container-1', 'Work'),
+    container('firefox-container-2', 'Home'),
+  ]);
+  // Work's sites load slowly, so the switch to Home happens while they are still loading.
+  vi.spyOn(ContentStorageStatistics.prototype, 'getFirstPartyDomainList').mockImplementation((cookieStoreId) =>
+    cookieStoreId == 'firefox-container-1'
+      ? new Promise((resolve) => setTimeout(() => resolve(['work.example']), 50))
+      : Promise.resolve(['home.example'])
+  );
+  vi.spyOn(ContentStorageStatistics.prototype, 'getDomainList').mockImplementation(async (_id, domain) => [domain]);
+  const { container: root } = render(<CookiesApp />);
+  await settle();
+  const select = root.querySelector('#selectContainers') as HTMLSelectElement;
+  act(() => {
+    Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value')?.set?.call(select, 'firefox-container-2');
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  await act(() => new Promise((resolve) => setTimeout(resolve, 200)));
+  expect([...root.querySelectorAll('td.domain')].map((td) => td.textContent)).toEqual(['home.example']);
+});
 
 test('Clear Cookies asks first, and clears only after OK', async () => {
   vi.spyOn(DisplayedContainerService.getInstance(), 'getDisplayedContainers').mockResolvedValue([

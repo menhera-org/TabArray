@@ -22,7 +22,6 @@
 import browser from 'webextension-polyfill';
 import { Fragment, useEffect, useState } from 'react';
 import { CookieStore } from 'weeg-containers';
-import { ViewRefreshHandler } from 'weeg-utils';
 
 import { TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { DisplayedContainerService } from '../../lib/tabGroups/DisplayedContainerService';
@@ -73,10 +72,9 @@ export const CookiesApp = () => {
   const [containers, setContainers] = useState<[string, string][]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [siteData, setSiteData] = useState<SiteData[]>([]);
-  // One render of a container's data at a time; a render asked for meanwhile runs once afterwards.
-  const [handler] = useState(
-    () => new ViewRefreshHandler(async (cookieStoreId: string) => setSiteData(await loadSiteData(cookieStoreId)))
-  );
+  // Bumped after this page removes data, to load the container's sites again.
+  const [reloads, setReloads] = useState(0);
+  const reload = () => setReloads((n) => n + 1);
   const cookieStoreId = selected ?? containers[0]?.[0] ?? null;
 
   useEffect(() => {
@@ -84,11 +82,23 @@ export const CookiesApp = () => {
   }, []);
   useEffect(() => {
     if (cookieStoreId == null) return;
-    handler.renderInBackground(cookieStoreId);
-    const rerender = () => handler.renderInBackground(cookieStoreId);
-    contentStorageStatistics.onChanged.addListener(rerender);
-    return () => contentStorageStatistics.onChanged.removeListener(rerender);
-  }, [cookieStoreId, handler]);
+    // Only the load started last shows, and none once another container is picked: loads can finish
+    // out of order.
+    let latest = 0;
+    let shown = true;
+    const load = () => {
+      const current = ++latest;
+      loadSiteData(cookieStoreId).then((data) => {
+        if (shown && current == latest) setSiteData(data);
+      }, logError);
+    };
+    load();
+    contentStorageStatistics.onChanged.addListener(load);
+    return () => {
+      shown = false;
+      contentStorageStatistics.onChanged.removeListener(load);
+    };
+  }, [cookieStoreId, reloads]);
 
   return (
     <>
@@ -119,7 +129,7 @@ export const CookiesApp = () => {
                       .then(async (confirmed) => {
                         if (!confirmed) return;
                         await TabGroupService.getInstance().removeBrowsingDataForTabGroupId(cookieStoreId);
-                        handler.renderInBackground(cookieStoreId);
+                        reload();
                       })
                       .catch(logError);
                   }}
@@ -147,9 +157,10 @@ export const CookiesApp = () => {
                         className="ctg-icon-button delete"
                         onClick={() => {
                           if (cookieStoreId == null) return;
-                          removeSiteData(new CookieStore(cookieStoreId), firstPartyDomain, domain)
-                            .then(() => handler.render(cookieStoreId))
-                            .catch(logError);
+                          removeSiteData(new CookieStore(cookieStoreId), firstPartyDomain, domain).then(
+                            reload,
+                            logError
+                          );
                         }}
                       />
                     </td>
