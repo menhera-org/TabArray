@@ -110,7 +110,7 @@ export class ContainerVisibilityService {
       return false;
     }
     if ('collapsed' == configGroupIndexOption && !helper.hasIndexTab) {
-      await this._indexTabService.createIndexTab(windowId, cookieStoreId);
+      await this._indexTabService.ensureIndexTab(windowId, cookieStoreId);
     }
     if (helper.active) {
       const tabToActivate = helper.tabToActivate;

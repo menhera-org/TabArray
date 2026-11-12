@@ -56,16 +56,29 @@ export class IndexTabService {
     return value[tabId];
   }
 
+  // One write at a time: concurrent read-modify-writes of the registry lost entries,
+  // and an index tab missing from it got a duplicate.
+  private _storageUpdates: Promise<void> = Promise.resolve();
+  private updateStorage(update: (value: StorageType) => void): Promise<void> {
+    const next = this._storageUpdates.then(async () => {
+      const value = await indexTabStorage.getValue();
+      update(value);
+      await indexTabStorage.setValue(value);
+    });
+    this._storageUpdates = next.catch(() => undefined);
+    return next;
+  }
+
   public async setIndexTabUserContextId(tabId: number, userContextId: Uint32) {
-    const value = await indexTabStorage.getValue();
-    value[tabId] = userContextId;
-    await indexTabStorage.setValue(value);
+    await this.updateStorage((value) => {
+      value[tabId] = userContextId;
+    });
   }
 
   public async removeIndexTabUserContextId(tabId: number) {
-    const value = await indexTabStorage.getValue();
-    delete value[tabId];
-    await indexTabStorage.setValue(value);
+    await this.updateStorage((value) => {
+      delete value[tabId];
+    });
   }
 
   public async getIndexTabIds(): Promise<number[]> {
@@ -74,13 +87,50 @@ export class IndexTabService {
   }
 
   public async resetIndexTabStorage() {
-    await indexTabStorage.setValue({});
+    await this.updateStorage((value) => {
+      for (const tabId of Object.keys(value)) delete value[Number(tabId)];
+    });
+  }
+
+  // Index tabs being created, by window and container. A new index tab fires tab events before
+  // it is registered, and those events used to create another one.
+  private readonly _creating = new Map<string, Promise<CompatTab | undefined>>();
+
+  /**
+   * Creates the container's index tab in the window, unless it has one or one is being created.
+   * Returns the new index tab, if one was created.
+   */
+  public async ensureIndexTab(windowId: number, cookieStoreId: string): Promise<CompatTab | undefined> {
+    const key = `${windowId}:${cookieStoreId}`;
+    const pending = this._creating.get(key);
+    if (pending) {
+      await pending;
+      return undefined;
+    }
+    const creation = (async () => {
+      const [browserTabs, registered] = await Promise.all([
+        browser.tabs.query({ windowId, cookieStoreId }),
+        indexTabStorage.getValue(),
+      ]);
+      const hasIndexTab = browserTabs.some(
+        (browserTab) =>
+          (browserTab.id != null && registered[browserTab.id] !== undefined) ||
+          IndexTab.isIndexTabUrl(browserTab.url ?? '')
+      );
+      return hasIndexTab ? undefined : await this.createIndexTab(windowId, cookieStoreId);
+    })();
+    this._creating.set(key, creation);
+    try {
+      return await creation;
+    } finally {
+      this._creating.delete(key);
+    }
   }
 
   /**
    * You should not create index tabs for private windows (useless).
    */
-  public async createIndexTab(windowId: number, cookieStoreId: string): Promise<CompatTab> {
+  private async createIndexTab(windowId: number, cookieStoreId: string): Promise<CompatTab> {
     const userContextId = new CookieStore(cookieStoreId).userContextId;
     const displayedContainer = await this._displayedContainerService.getDisplayedContainer(cookieStoreId);
     const url = IndexTab.getUrl(

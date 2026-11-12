@@ -106,7 +106,7 @@ const resetIndexTabs = async (browserWindows: browser.Windows.Window[]) => {
   if (indexTabOption == 'never') return;
   const indexTabIds = new Set<number>();
   const existingIndexTabIds = await indexTabService.getIndexTabIds();
-  const createIndexTabPromises: Promise<CompatTab>[] = [];
+  const createIndexTabPromises: Promise<CompatTab | undefined>[] = [];
   const removeIndexTabPromises: Promise<void>[] = [];
   for (const browserWindow of browserWindows) {
     if (browserWindow.incognito) continue;
@@ -131,7 +131,7 @@ const resetIndexTabs = async (browserWindows: browser.Windows.Window[]) => {
         }
       }
       if (!hasIndexTab && (hidden || indexTabOption == 'always')) {
-        createIndexTabPromises.push(indexTabService.createIndexTab(browserWindow.id, cookieStoreId));
+        createIndexTabPromises.push(indexTabService.ensureIndexTab(browserWindow.id, cookieStoreId));
       }
       if (hasIndexTab && !hidden && indexTabOption == 'collapsed') {
         removeIndexTabPromises.push(removeIndexTabForCookieStore(cookieStoreId));
@@ -140,7 +140,7 @@ const resetIndexTabs = async (browserWindows: browser.Windows.Window[]) => {
   }
   const newIndexTabs = await Promise.all(createIndexTabPromises);
   await Promise.all(removeIndexTabPromises);
-  const newIndexTabIds = newIndexTabs.map((tab) => tab.id);
+  const newIndexTabIds = newIndexTabs.flatMap((tab) => (tab ? [tab.id] : []));
   for (const indexTabId of existingIndexTabIds) {
     if (!indexTabIds.has(indexTabId) && !newIndexTabIds.includes(indexTabId)) {
       await indexTabService.removeIndexTabUserContextId(indexTabId);
@@ -165,13 +165,9 @@ browser.tabs.onCreated.addListener(async (browserTab) => {
   if (browserTab.incognito) return;
   const windowId = browserTab.windowId;
   const cookieStoreId = browserTab.cookieStoreId;
-  tabQueryService.queryTabs({ tabGroupId: cookieStoreId }).then(async (tabs) => {
-    for (const tab of tabs) {
-      if ((await indexTabService.getIndexTabUserContextId(tab.id)) != undefined) {
-        return;
-      }
-    }
-    await indexTabService.createIndexTab(windowId, cookieStoreId);
+  // A tab of the new index tab's own container fires this too; ensureIndexTab creates one at most.
+  indexTabService.ensureIndexTab(windowId, cookieStoreId).catch((e) => {
+    console.error(e);
   });
 });
 
@@ -201,7 +197,7 @@ browser.tabs.onUpdated.addListener(
           }
         } else if (nonIndexTabFound && indexTabIds.length < 1 && indexTabOption == 'always') {
           // unpinned tab found, so create an index tab for that container
-          await indexTabService.createIndexTab(tab.windowId, tab.cookieStore.id);
+          await indexTabService.ensureIndexTab(tab.windowId, tab.cookieStore.id);
         }
       })
       .catch((e) => {
@@ -262,7 +258,7 @@ browser.tabs.onUpdated.addListener(
         }
 
         if (!hasIndexTab) {
-          indexTabService.createIndexTab(tab.windowId, cookieStoreId).catch((e) => {
+          indexTabService.ensureIndexTab(tab.windowId, cookieStoreId).catch((e) => {
             console.error(e);
           });
         }

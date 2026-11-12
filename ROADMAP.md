@@ -112,7 +112,7 @@ All six are done. Firefox 140 and 159 passed the same tests. Two more checks pas
 - Turning sync on closes index tabs without closing the tabs of their containers.
 - Tree Style Tab 4.4.9 works with groups synced, the remaining part of #32: a tree of tabs stays in its container's group, and the two extensions do not keep moving tabs.
 
-Found on the way: with index tabs set to "always", the extension creates several index tabs per container (13 for 5 containers in a test). This was there before 12.0.0 and does not happen while sync is on.
+Found on the way and fixed: with index tabs set to "always", the extension created several index tabs per container (13 for 5 containers in a test). A new index tab fired tab events before it was registered, and those events created another one; concurrent registrations also overwrote each other. Index tabs are now created through one guarded path, and registrations are written one at a time. The same test now gives one index tab per container, also after more tabs open.
 
 ### Tags removed
 
@@ -137,12 +137,13 @@ Status: done. Every page with a user interface, and every shared dialog, now ren
 
 New settings start off by default, so current behavior stays the same. Each adds strings that translators need before the string freeze.
 
+#377, #482 and #8 were re-scoped on 12 November 2026 for containers shown as tab groups, and #496 moved to "Not in 12.0.0".
+
 | Issue | Change | Status |
 |---|---|---|
-| #377 | Option to sort containers alphabetically. | Not started |
+| #377 | Option to sort containers by name within each container group. The popup, the sidebar, tab sorting and the order of tab groups in the tab bar all follow it. | Not started |
 | #281 | Option to hide the tab count on the toolbar icon. | Not started |
-| #482 | Option to keep containers expanded in the sidebar and hide only their tabs in the tab bar. | Not started |
-| #496 | Option to show a "+" button on each container that opens a new tab. With it on, clicking the container's name focuses the container instead. Native tab groups cover much of the same need, so the option is off by default. | Not started |
+| #482 | Option to keep listing a container's tabs in the sidebar while its tab group is collapsed, so collapsing only affects the tab bar. | Not started |
 | #486 | Keyboard shortcuts to collapse and expand the active container. | Not started |
 | #33 | Follow the browser theme in the extension's pages. | Not started |
 | #481 | Rules that pick a container from the URL when another app opens a link, with a default for links no rule matches. | Not started |
@@ -151,7 +152,7 @@ New settings start off by default, so current behavior stays the same. Each adds
 | #355 | Keep container tabs across restarts, saved by the extension as well as by Firefox's session store. | Not started |
 | #209 | Open bookmarks in a container, and save a container's tabs as bookmarks. | Not started |
 | | Sync container groups between devices, the way containers already sync. Devices on Firefox ESR 140 and on the latest release must be able to share them. | Not started |
-| #8 | The remaining popup ideas: an option to collapse the container list by default, a highlight on the active container, and arrow-key navigation. | Not started |
+| #8 | The remaining popup ideas: a highlight on the active container, and arrow-key navigation. Collapsing the container list by default is dropped, since with sync on it would collapse the groups in the tab bar too. | Not started |
 
 Documentation:
 
@@ -173,6 +174,7 @@ make it feel like modern, without any visual glitches.
 | #156, #34 | Moving to a non-persistent background page and then to Manifest V3. Firefox still supports Manifest V2. The language override content scripts block #156, and the change touches every part of the extension, so it is too risky for one release. |
 | #501 | Per-container Mozilla VPN locations need changes from Mozilla. |
 | #473 | Firefox's fingerprinting protection hides dark mode from websites on purpose. This is not a bug in the extension. |
+| #496 | A "+" button on each container to open a new tab. Firefox's tab group menu already opens a new tab in a group, and 12.0.0 keeps fewer ways of doing the same thing. |
 
 ## Release checklist
 
