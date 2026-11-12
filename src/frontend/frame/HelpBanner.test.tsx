@@ -33,7 +33,6 @@ test('development builds are marked by version', () => {
 
 test('the build line links the commit and tells how the build was made', () => {
   const info = {
-    isOfficial: true,
     isSigned: false,
     recordedHash: 'h',
     computedHash: 'h',

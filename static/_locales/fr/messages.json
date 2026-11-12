@@ -450,10 +450,6 @@
         "message": "Remplacements d'agent utilisateur par conteneur",
         "description": "Label text for UA overrides feature"
     },
-    "fpiDescription": {
-        "message": "Cette extension active par défaut la fonction First-Party Isolate (FPI) de Firefox. Cela signifie que les cookies de différents sites, même pour un même conteneur, sont séparés par domaine enregistrable. Vous pouvez la désactiver ici.",
-        "description": "Description text for FPI"
-    },
     "userAgentCustom": {
         "message": "Personnalisation",
         "description": "Custom user agent"

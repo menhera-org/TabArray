@@ -231,10 +231,6 @@
         "message": "Configurações do Firefox",
         "description": "Label text for firefox settings tab."
     },
-    "fpiDescription": {
-        "message": "Esta extensão ativa o recurso First-Party Isolate (FPI) do Firefox por padrão. Isso significa que os cookies de locais diferentes, mesmo para um mesmo contentor, são separados por domínio registrável. Pode desativá-lo aqui.",
-        "description": "Description text for FPI"
-    },
     "proxyPort": {
         "message": "Porto",
         "description": "Proxy port option."

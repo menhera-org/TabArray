@@ -167,17 +167,16 @@ export const ContainerEditorDialog = ({
   };
 
   const message = (key: string) => browser.i18n.getMessage(key);
+  const cancel = () => {
+    onCancel?.();
+    onClose();
+  };
   return (
     <ModalFrame
       title={message(contextualIdentity ? 'editContainerDialogTitle' : 'newContainerDialogTitle')}
+      onCancel={cancel}
       actions={[
-        {
-          label: message('buttonCancel'),
-          onClick: () => {
-            onCancel?.();
-            onClose();
-          },
-        },
+        { label: message('buttonCancel'), onClick: cancel },
         { label: message('buttonOk'), isDefault: true, onClick: () => save().catch((e) => console.error(e)) },
       ]}
     >

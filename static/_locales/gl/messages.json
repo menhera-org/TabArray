@@ -438,10 +438,6 @@
         "message": "Comezar",
         "description": "Button to get started"
     },
-    "fpiDescription": {
-        "message": "Esta extensión activa por defecto a función First-Party Isolate (FPI) de Firefox. Isto significa que as cookies para diferentes sitios, incluso para un mesmo contedor, sepáranse por dominio rexistrable. Podes desactivalo aquí.",
-        "description": "Description text for FPI"
-    },
     "featureLanguageOverrides": {
         "message": "Anulacións de idioma por contedor",
         "description": "Label text for language overrides feature"

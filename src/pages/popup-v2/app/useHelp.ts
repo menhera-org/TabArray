@@ -19,7 +19,7 @@
   @license
 **/
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { FpiService } from '../../../lib/config/FpiService';
 import { CompatConsole } from '../../../lib/console/CompatConsole';
@@ -41,9 +41,8 @@ const setFirstPartyIsolate = (value: boolean) => {
 };
 
 /**
- * The help drawer's state. It opens by itself until the user has seen it once (first run), and
- * then first-party isolation stays checked whatever the browser reports. Closing the drawer
- * applies the first-party isolation checkbox and records that help was shown.
+ * The help drawer's state. It opens by itself until the user has seen it once (first run).
+ * Firefox settings change only when the user asks: a checkbox, or "apply recommended settings".
  */
 export const useHelp = () => {
   const [open, setOpen] = useState(false);
@@ -53,20 +52,16 @@ export const useHelp = () => {
     uaOverrides: false,
     perContainerProxy: false,
   });
-  const firstRun = useRef(false);
   const set = (name: keyof HelpSettings, value: boolean) => setSettings((s) => ({ ...s, [name]: value }));
 
   useEffect(() => {
     config['help.shownOnce']
       .getValue()
       .then((shownOnce) => {
-        if (shownOnce) return;
-        firstRun.current = true;
-        setOpen(true);
-        set('firstPartyIsolate', true);
+        if (!shownOnce) setOpen(true);
       })
       .catch(logError);
-    privacyConfig.firstPartyIsolate.observe((value) => set('firstPartyIsolate', firstRun.current || value));
+    privacyConfig.firstPartyIsolate.observe((value) => set('firstPartyIsolate', value));
     for (const [name, option] of Object.entries(FEATURES)) {
       option.observe((value) => set(name as keyof typeof FEATURES, value));
     }
@@ -78,8 +73,12 @@ export const useHelp = () => {
     show: () => setOpen(true),
     hide: () => {
       setOpen(false);
-      setFirstPartyIsolate(settings.firstPartyIsolate);
       config['help.shownOnce'].setValue(true, 'local').catch(logError);
+    },
+    /** The recommended Firefox settings: first-party isolation on. */
+    applyRecommended: () => {
+      set('firstPartyIsolate', true);
+      setFirstPartyIsolate(true);
     },
     change: (name: keyof HelpSettings, checked: boolean) => {
       set(name, checked);

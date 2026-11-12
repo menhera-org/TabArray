@@ -47,6 +47,34 @@ test('ConfirmDialog offers Cancel and a default OK', () => {
   expect([onOk.mock.calls.length, onCancel.mock.calls.length]).toEqual([1, 1]);
 });
 
+test('a dialog is modal, takes focus, cancels on Escape and gives focus back when it goes away', () => {
+  const before = document.body.appendChild(document.createElement('button'));
+  before.focus();
+  const onCancel = vi.fn();
+  const { container: root, rerender } = render(<ConfirmDialog title="Sure?" onOk={() => {}} onCancel={onCancel} />);
+  const dialog = root.querySelector('dialog') as HTMLDialogElement;
+  // Firefox's showModal() also focuses the first control; happy-dom's does not, so that is checked in Firefox.
+  expect(dialog.open).toBe(true);
+  act(() => {
+    dialog.dispatchEvent(new Event('cancel', { cancelable: true }));
+  });
+  expect(onCancel).toHaveBeenCalled();
+  rerender(null);
+  expect(document.activeElement).toBe(before);
+  before.remove();
+});
+
+test('Enter in the name field means OK', async () => {
+  const onSave = vi.fn(async () => {});
+  const { container: root } = render(<NameDialog title="T" onSave={onSave} onClose={() => {}} />);
+  const input = root.querySelector('input') as HTMLInputElement;
+  typeInto(input, 'Name');
+  await act(async () => {
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+  });
+  expect(onSave).toHaveBeenCalledWith('Name');
+});
+
 test('MenuDialog reports the chosen action', () => {
   const onAction = vi.fn();
   const { container: root, click } = render(

@@ -199,7 +199,12 @@ export const App = ({ state, isPopup }: AppProps) => {
         />
       </div>
       <Drawer open={help.open} heading={browser.i18n.getMessage('menuItemHelp')} onClose={help.hide}>
-        <HelpView settings={help.settings} onChange={help.change} onGetStarted={help.hide} />
+        <HelpView
+          settings={help.settings}
+          onChange={help.change}
+          onApplyRecommended={help.applyRecommended}
+          onGetStarted={help.hide}
+        />
       </Drawer>
     </>
   );

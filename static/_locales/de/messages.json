@@ -460,10 +460,6 @@
         "message": "Möchten Sie Cookies für Privatesbrowsing löschen?",
         "description": "Confirmation message before clearing cookies for private browsing."
     },
-    "fpiDescription": {
-        "message": "Diese Erweiterung aktiviert standardmäßig die First-Party-Isolate-Funktion (FPI) von Firefox. Das bedeutet, dass Cookies für verschiedene Websites, sogar für denselben Container, nach registrierbarer Domain getrennt werden. Sie können diese Funktion hier deaktivieren.",
-        "description": "Description text for FPI"
-    },
     "commandOpenPopup": {
         "message": "Das Popup öffnen",
         "description": "Description text for using command to open popup."

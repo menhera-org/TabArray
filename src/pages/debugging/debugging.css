@@ -151,8 +151,44 @@ body {
   text-decoration: underline;
 }
 
-iframe#time-chart {
-  border: none;
+#time-chart {
+  margin: var(--space-large);
+}
+
+#time-chart svg {
+  display: block;
   inline-size: 100%;
-  block-size: 100%;
+  block-size: auto;
+  overflow: visible;
+  font-size: 12px;
+  fill: currentColor;
+}
+
+#time-chart path {
+  fill: none;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+#time-chart .axis {
+  stroke: var(--border-color);
+  vector-effect: non-scaling-stroke;
+}
+
+#time-chart figcaption {
+  display: block flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-small);
+  color: var(--text-color-deemphasized);
+}
+
+#time-chart .legend::before {
+  content: '';
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 3px;
+  margin-inline: var(--space-small);
+  vertical-align: middle;
+  background-color: var(--legend-color);
 }

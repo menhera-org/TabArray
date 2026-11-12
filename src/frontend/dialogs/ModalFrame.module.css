@@ -19,23 +19,16 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* Firefox's in-content dialogs: a card over a dimmed page. */
-.overlay {
-  display: block grid;
-  position: fixed;
-  inset: 0;
-  align-content: center;
-  justify-items: center;
-  padding: var(--space-medium);
-  z-index: 100;
+/* Firefox's in-content dialogs: a card over a dimmed page (a modal <dialog>, centered by default). */
+.content::backdrop {
   background-color: var(--background-color-overlay);
 }
 
 .content {
   box-sizing: border-box;
-  inline-size: 100%;
+  inline-size: calc(100% - 2 * var(--space-medium));
   max-inline-size: 30rem;
-  max-block-size: 100%;
+  max-block-size: calc(100% - 2 * var(--space-medium));
   overflow: auto;
   padding: var(--space-large);
   border: var(--border-width) solid var(--border-color-deemphasized);

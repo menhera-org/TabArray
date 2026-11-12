@@ -406,10 +406,6 @@
             }
         }
     },
-    "fpiDescription": {
-        "message": "Toto rozšíření ve výchozím nastavení zapíná funkci Izolace první strany (FPI) prohlížeče Firefox. To znamená, že soubory cookie pro různé weby, dokonce i pro stejný kontejner, jsou odděleny podle registrované domény. Zde to můžete vypnout.",
-        "description": "Description text for FPI"
-    },
     "featureLanguageOverrides": {
         "message": "Přepínání jazyků v kontejnerech",
         "description": "Label text for language overrides feature"

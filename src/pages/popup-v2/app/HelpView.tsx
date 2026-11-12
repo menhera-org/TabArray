@@ -35,6 +35,7 @@ export type HelpSettings = {
 type HelpViewProps = {
   settings: HelpSettings;
   onChange: (name: keyof HelpSettings, checked: boolean) => void;
+  onApplyRecommended: () => void;
   onGetStarted: () => void;
 };
 
@@ -56,12 +57,17 @@ const Checkbox = ({
 );
 
 /** The help drawer's content: the banner, a few settings and "get started". */
-export const HelpView = ({ settings, onChange, onGetStarted }: HelpViewProps) => (
+export const HelpView = ({ settings, onChange, onApplyRecommended, onGetStarted }: HelpViewProps) => (
   <div className={styles.help}>
     <HelpBanner />
     <hr />
     <div>
-      <p>{browser.i18n.getMessage('fpiDescription')}</p>
+      <p>{browser.i18n.getMessage('fpiDescriptionOptIn')}</p>
+      <div className={styles.actions}>
+        <button className="ctg-button primary" disabled={settings.firstPartyIsolate} onClick={onApplyRecommended}>
+          {browser.i18n.getMessage('buttonApplyRecommendedSettings')}
+        </button>
+      </div>
       <Checkbox
         id="input-firstPartyIsolate"
         label="labelFirstPartyIsolate"
@@ -89,7 +95,7 @@ export const HelpView = ({ settings, onChange, onGetStarted }: HelpViewProps) =>
       />
     </div>
     <div className={styles.actions}>
-      <button className="ctg-button primary" onClick={onGetStarted}>
+      <button className="ctg-button" onClick={onGetStarted}>
         {browser.i18n.getMessage('buttonGetStarted')}
       </button>
     </div>

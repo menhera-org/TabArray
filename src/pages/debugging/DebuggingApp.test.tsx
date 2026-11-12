@@ -24,7 +24,6 @@ import { expect, test } from 'vitest';
 
 import { render } from '../../test/render';
 import { DebuggingApp } from './DebuggingApp';
-import { CHART_URL } from './views/TabCountView';
 
 test('switches between the debugging screens, each with its own heading', async () => {
   const { container: root, click } = render(<DebuggingApp />);
@@ -42,7 +41,8 @@ test('switches between the debugging screens, each with its own heading', async 
     click(root.querySelector(`[data-target-id="${id}"]`));
     expect([shown(), heading()]).toEqual([id, title]);
   }
-  expect(root.querySelector('iframe#time-chart')?.getAttribute('src')).toBe(CHART_URL);
+  // The chart is drawn here, not by a remote page.
+  expect(root.querySelector('iframe')).toBeNull();
   // Outside the popup, the overflow menu offers to open the popup, and the drawer holds the banner.
   expect(root.querySelector('[title="commandOpenPopup"]')).not.toBeNull();
   expect(root.ownerDocument.querySelector('#drawer img[src="/icon.svg"]')).not.toBeNull();

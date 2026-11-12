@@ -53,7 +53,9 @@ The button to show controls for containers is by default on the corner of the ta
 
 **Compatibility and other extensions**
 
-Now private browsing is supported. No data is stored in persistent storage or sent elsewhere, whether or not in private browsing. You need to give permission to use the extension in private browsing.
+Private browsing is supported. You need to give permission to use the extension in private browsing.
+
+The extension collects no data about you. Its settings stay in Firefox, and it contacts a server only when you click **Check for Official Build**, or to download the public suffix list once a day on Firefox 140 to 152. With **Sync Containers** on, Firefox Sync copies your containers to your other devices. The privacy policy has the details.
 
 This add-on is probably compatible with the Firefox Multi-Account Containers add-on. But you do not need it for this addon to operate.
 
@@ -65,7 +67,7 @@ _Perfect replacement for Chrome's tab groups and the discontinued add-on Conex._
 
 **Development**
 
-This extension is actively developed/maintained as of 2023, so please wait for new features/fixes.
+This extension is actively developed/maintained as of 2026, so please wait for new features/fixes.
 
 Available languages: English, 日本語, Esperanto, Français, Español, Русский, Deutsch, Čeština, Galego, Interlingua, 中文 (简体), Português (do Brasil)
 ([Help us translate!](https://hosted.weblate.org/projects/container-tab-groups/#languages))

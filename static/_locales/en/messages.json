@@ -422,9 +422,13 @@
         "message": "Get Started",
         "description": "Button to get started"
     },
-    "fpiDescription": {
-        "message": "This extension enables Firefox's First-Party Isolate (FPI) feature by default. This means that cookies for different sites, even for a same container, are separated by registrable domain. You can turn it off here.",
-        "description": "Description text for FPI"
+    "fpiDescriptionOptIn": {
+        "message": "Firefox's First-Party Isolate (FPI) keeps the cookies of different sites apart, even within the same container: they are separated by registrable domain. We recommend turning it on.",
+        "description": "Description of First-Party Isolate (FPI), in the help view and on the Firefox Settings tab of the settings. FPI stays off unless the user turns it on."
+    },
+    "buttonApplyRecommendedSettings": {
+        "message": "Apply Recommended Firefox Settings",
+        "description": "Button in the help view, below the description of First-Party Isolate (FPI). Turns FPI on."
     },
     "optionalFeaturesDescription": {
         "message": "If you do not use any conflicting extensions, you can enable some optional features here.",
@@ -737,6 +741,18 @@
     "packageIntegrityMismatch": {
         "message": "Integrity Mismatch",
         "description": "Label text indicating the integrity of an extension package does not match the expected value."
+    },
+    "buttonVerifyBuild": {
+        "message": "Check for Official Build",
+        "description": "Button in the help view. Downloads this version's signature from the developers' server (downloads.menhera.org) and checks whether this copy of the extension is an official build."
+    },
+    "extensionOfficial": {
+        "message": "(official build)",
+        "description": "Shown in the help view after Check for Official Build, when this copy is an official build."
+    },
+    "extensionNotOfficial": {
+        "message": "(not confirmed as an official build)",
+        "description": "Shown in the help view after Check for Official Build, when this copy is not an official build or the signature could not be downloaded."
     },
     "copyCookiesFrom": {
         "message": "Copy cookies from:",

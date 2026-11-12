@@ -28,7 +28,7 @@ import { LogTable } from './LogsView';
 import { PerformanceTable, summarizePerformance } from './PerformanceView';
 import { InstallationTable, describeCommit } from './InstallationHistoryView';
 import { FileTable } from './FilesView';
-import { buildChartData } from './TabCountView';
+import { buildChartData, stepPaths } from './TabCountView';
 
 const cells = (root: HTMLElement) =>
   [...root.querySelectorAll('tbody > tr')].map((tr) => [...tr.children].map((td) => td.textContent));
@@ -127,4 +127,29 @@ test('tab count: extends each series to now with its last value', () => {
     ],
     2: [],
   });
+});
+
+test('tab count: draws each window as a step line scaled to the box', () => {
+  const chart = stepPaths(
+    {
+      1: [
+        { time: 0, value: 2 },
+        { time: 50, value: 4 },
+        { time: 100, value: 4 },
+      ],
+      2: [],
+    },
+    100,
+    40
+  );
+  expect(chart).toEqual({
+    minTime: 0,
+    maxTime: 100,
+    maxValue: 4,
+    paths: [
+      { series: '1', d: 'M0.0 20.0 H50.0 V0.0 H100.0 V0.0' },
+      { series: '2', d: '' },
+    ],
+  });
+  expect(stepPaths({ 1: [] }, 100, 40)).toBeNull();
 });

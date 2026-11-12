@@ -19,6 +19,8 @@
   @license
 **/
 
+import { fileURLToPath } from 'node:url';
+
 /** Minimum supported Firefox (keep in sync with manifest.json strict_min_version). */
 export const BUILD_FIREFOX_VERSION = 140;
 
@@ -26,5 +28,5 @@ export const BUILD_TARGET = `firefox${BUILD_FIREFOX_VERSION}`;
 
 /** Firefox's own `browser` in place of webextension-polyfill, a shim for Chrome (see src/firefox-browser.ts). */
 export const BROWSER_ALIAS = {
-  'webextension-polyfill': new URL('../src/firefox-browser.ts', import.meta.url).pathname,
+  'webextension-polyfill': fileURLToPath(new URL('../src/firefox-browser.ts', import.meta.url)),
 };

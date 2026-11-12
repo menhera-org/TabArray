@@ -418,9 +418,13 @@
         "message": "はじめる",
         "description": "Button to get started"
     },
-    "fpiDescription": {
-        "message": "この拡張機能はFirefoxのFirst-Party-Isolate (FPI)機能をデフォルトで有効化します。これは同じコンテナーであっても，異なるサイトへのクッキーはregistrable domainで分離されていることを意味します。ここでこれを無効化できます。",
-        "description": "Description text for FPI"
+    "fpiDescriptionOptIn": {
+        "message": "Firefox のファーストパーティ分離 (FPI) は，同じコンテナーの中でも，異なるサイトのクッキーを registrable domain ごとに分けます。有効化をおすすめします。",
+        "description": "Description of First-Party Isolate (FPI), in the help view and on the Firefox Settings tab of the settings. FPI stays off unless the user turns it on."
+    },
+    "buttonApplyRecommendedSettings": {
+        "message": "推奨の Firefox 設定を適用",
+        "description": "Button in the help view, below the description of First-Party Isolate (FPI). Turns FPI on."
     },
     "optionalFeaturesDescription": {
         "message": "矛盾する拡張機能を使用しない場合は，追加の機能を有効化できます。",
@@ -661,6 +665,18 @@
     "packageIntegrityMismatch": {
         "message": "整合性の不一致",
         "description": "Label text indicating the integrity of an extension package does not match the expected value."
+    },
+    "buttonVerifyBuild": {
+        "message": "公式ビルドか確認",
+        "description": "Button in the help view. Downloads this version's signature from the developers' server (downloads.menhera.org) and checks whether this copy of the extension is an official build."
+    },
+    "extensionOfficial": {
+        "message": "(公式ビルド)",
+        "description": "Shown in the help view after Check for Official Build, when this copy is an official build."
+    },
+    "extensionNotOfficial": {
+        "message": "(公式ビルドと確認できませんでした)",
+        "description": "Shown in the help view after Check for Official Build, when this copy is not an official build or the signature could not be downloaded."
     },
     "resistFingerprintingWarning": {
         "message": "privacy.resistFingerprinting は Tor Browser で使われている高度な保護設定で，あなたのブラウジング体験を制限する可能性があります。",

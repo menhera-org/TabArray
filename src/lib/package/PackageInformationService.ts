@@ -23,12 +23,10 @@ import { BackgroundService } from 'weeg-utils';
 
 import { BuildJson, PackageInformation } from './PackageInformation';
 import { PackageIntegrityService } from './PackageIntegrityService';
-import { BuildMetadataService } from './BuildMetadataService';
 import { InstallationHistoryService } from '../history/InstallationHistoryService';
 import { ServiceRegistry } from '../ServiceRegistry';
 
 const packageIntegrityService = PackageIntegrityService.getInstance();
-const buildMetadataService = BuildMetadataService.getInstance();
 const installationHistoryService = InstallationHistoryService.getInstance();
 
 export class PackageInformationService extends BackgroundService<void, PackageInformation> {
@@ -67,16 +65,7 @@ export class PackageInformationService extends BackgroundService<void, PackageIn
       installationHistoryService.isSigned(),
       this.getBuildInfo(),
     ]);
-    let isOfficial = false;
-    if (recordedHash == computedHash) {
-      try {
-        isOfficial = await buildMetadataService.verifySignature(computedHash);
-      } catch (_e) {
-        // ignore
-      }
-    }
     const info: PackageInformation = {
-      isOfficial,
       isSigned,
       buildInfo,
       recordedHash,

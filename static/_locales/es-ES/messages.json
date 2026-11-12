@@ -442,10 +442,6 @@
         "message": "Nuevo contenedor temporal",
         "description": "Button to open a new temporary container."
     },
-    "fpiDescription": {
-        "message": "Esta extensión activa por defecto la función First-Party Isolate (FPI) de Firefox. Esto significa que las cookies para diferentes sitios, incluso para un mismo contenedor, se separan por dominio registrable. Puede desactivarla aquí.",
-        "description": "Description text for FPI"
-    },
     "optionalFeaturesDescription": {
         "message": "Si no utiliza ninguna extensión conflictiva, puede activar aquí algunas funciones opcionales.",
         "description": "Description text for optional features"

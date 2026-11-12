@@ -157,7 +157,7 @@ The two digits after 1 or 2 indicate patch level.
 
 1. Clone this repository.
 2. Install the latest Node.JS/NPM using [NVM](https://github.com/nvm-sh/nvm).
-3. In this directory, run `npm install` to install dependencies.
+3. In this directory, run `npm ci` to install the dependencies listed in `package-lock.json`.
 4. Run `npm run build` to build the extension. Built extension's path is printed on console (usually under the `builds/` directory).
 
 `npm run build-for-amo` is the same build. AMO's automated source rebuild uses this script name.
@@ -174,7 +174,7 @@ To use this feature, make sure that:
 
 `npm run package-source` writes `builds/<version>/ctg-<version>-<commit time>-<commit>-source.tar.gz` from `HEAD` and refuses to run with uncommitted changes. It works like `cargo package`: the tarball contains `.menhera_vcs_info.json`, which records the commit hash and the commit's date. Builds from the tarball read them from that file instead of Git, so they produce the same extension as a build from that commit. This is the source package to upload to AMO.
 
-Since the hashes are the same, your built extension from the official source should show a green checkmark ("ofiicial build") next to the version in the help view.
+Since the hashes are the same, an extension you build from the official source passes **Check for Official Build** in the help view, which then shows a green checkmark next to the version. The button downloads this version's signature from `downloads.menhera.org`; nothing is downloaded until you click it.
 
 When checking the integrity of package, certain files are ignored:
 

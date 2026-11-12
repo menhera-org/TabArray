@@ -32,10 +32,13 @@ const catchEvent = (ev: Event) => {
   ev.stopImmediatePropagation();
 };
 
-/** The popup's keyboard: the newest handlers get Enter, Escape and, if they want them, other keys. */
+/**
+ * The popup's keyboard: the newest handlers get Enter, Escape and, if they want them, other keys.
+ * An open modal dialog keeps its keys.
+ */
 const onKeyDown = (ev: KeyboardEvent) => {
   const handlers = stack[stack.length - 1];
-  if (!handlers) return;
+  if (!handlers || document.querySelector('dialog[open]')) return;
   if (ev.key == 'Enter') {
     catchEvent(ev);
     handlers.okHandler(ev);

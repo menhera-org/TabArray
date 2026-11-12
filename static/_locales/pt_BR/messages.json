@@ -646,10 +646,6 @@
         "message": "Desafixar aba",
         "description": "Unpin Tab menu (same as browser's tab menu)"
     },
-    "fpiDescription": {
-        "message": "Esta extensão ativa o recurso First-Party Isolate (FPI) do Firefox por padrão. Isso significa que os cookies de locais diferentes, mesmo para um mesmo contêiner, são separados por domínio registrável. Você pode desativá-lo aqui.",
-        "description": "Description text for FPI"
-    },
     "optionalFeaturesDescription": {
         "message": "Se você não usar nenhuma extensão conflitante, poderá ativar alguns recursos opcionais aqui.",
         "description": "Description text for optional features"

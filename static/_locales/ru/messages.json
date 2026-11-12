@@ -430,10 +430,6 @@
         "message": "Приступить",
         "description": "Button to get started"
     },
-    "fpiDescription": {
-        "message": "Это расширение по умолчанию включает функцию First-Party Isolate (FPI) в Firefox. Это означает, что файлы cookie для разных сайтов, даже для одного и того же контейнера, разделяются по регистрируемому домену. Вы можете отключить эту функцию здесь.",
-        "description": "Description text for FPI"
-    },
     "optionalFeaturesDescription": {
         "message": "Если вы не используете никаких конфликтующих расширений, вы можете включить некоторые дополнительные функции здесь.",
         "description": "Description text for optional features"

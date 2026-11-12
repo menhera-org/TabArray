@@ -29,7 +29,7 @@ Last updated 12 November 2026. "Done" means the change is on `main` and ships in
 
 These changes are done:
 
-- Firefox 140 or later is required (Firefox for Android 142).
+- Firefox 140 or later is required. Firefox for Android is not supported: it has no containers API.
 - The manifest declares that the extension collects no data (`data_collection_permissions`). AMO requires this for new extensions and will require it for updates.
 - React 19 is bundled from npm instead of copied into the repository.
 - Builds are reproducible from a source tarball as well as from Git.
@@ -88,7 +88,6 @@ The plan is to show each container as a native tab group and keep the two in syn
 - Turning sync off ungroups the container groups and hides the tabs of collapsed ones, so what was out of sight stays out of sight.
 - Sync is on by default, including for existing users after they update, and can be turned off in settings. The release notes explain how.
 - The extension needs the `tabGroups` permission. Firefox does not prompt for it, so users will not see a new permission request.
-- Firefox for Android has no tab groups, so sync only runs on desktop.
 
 What we measured in Firefox 140 and 159, which behave the same:
 

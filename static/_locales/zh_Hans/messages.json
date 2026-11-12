@@ -462,10 +462,6 @@
             }
         }
     },
-    "fpiDescription": {
-        "message": "此扩展默认启用Firefox的第一方隔离（FPI）功能。这意味着不同站点的 cookie，即使在同一个容器中，也会被隔离。您可以在这里关掉它。",
-        "description": "Description text for FPI"
-    },
     "optionalFeaturesDescription": {
         "message": "如果您没有使用任何冲突的扩展，您可以在这里启用一些可选功能。",
         "description": "Description text for optional features"

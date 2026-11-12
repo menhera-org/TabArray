@@ -27,6 +27,7 @@ import { ExtensionPage, ExtensionPageService } from '../../lib/ExtensionPageServ
 import { DateFormatService } from '../../lib/DateFormatService';
 import { CompatConsole } from '../../lib/console/CompatConsole';
 import { ExtensionVersion } from '../../lib/ExtensionVersion';
+import { BuildMetadataService } from '../../lib/package/BuildMetadataService';
 import { PackageInformationService } from '../../lib/package/PackageInformationService';
 import { PackageInformation } from '../../lib/package/PackageInformation';
 
@@ -87,6 +88,19 @@ export const HelpBanner = () => {
   const [platform, setPlatform] = useState('Firefox');
   const [info, setInfo] = useState<PackageInformation | null>(null);
   const [buildError, setBuildError] = useState<string | null>(null);
+  // null until the user asks; the check downloads this version's signature from our server.
+  const [official, setOfficial] = useState<boolean | null>(null);
+  const [checking, setChecking] = useState(false);
+  const verify = (computedHash: string) => {
+    setChecking(true);
+    BuildMetadataService.getInstance()
+      .verifySignature(computedHash)
+      .catch((e) => {
+        console.error(e);
+        return false;
+      })
+      .then(setOfficial);
+  };
   useEffect(() => {
     Promise.all([browser.runtime.getBrowserInfo(), browser.runtime.getPlatformInfo()])
       .then(([browserInfo, platformInfo]) => {
@@ -109,10 +123,19 @@ export const HelpBanner = () => {
     <div className={styles.banner}>
       <img src="/icon.svg" className={styles.image} />
       <h2>{manifest.name}</h2>
-      <p className={`${styles.version} ${info && intact && info.isOfficial ? styles.official : ''}`}>
-        {versionText(manifest.version)}
-      </p>
+      <p className={`${styles.version} ${official ? styles.official : ''}`}>{versionText(manifest.version)}</p>
       <p>{build}</p>
+      {info && intact && (
+        <p>
+          {official == null ? (
+            <button className="ctg-button" disabled={checking} onClick={() => verify(info.computedHash)}>
+              {message('buttonVerifyBuild')}
+            </button>
+          ) : (
+            message(official ? 'extensionOfficial' : 'extensionNotOfficial')
+          )}
+        </p>
+      )}
       <p>{platform}</p>
       <div className={styles.integrity}>
         <div>{message(intact ? 'packageIntegrity' : 'packageIntegrityMismatch')}</div>

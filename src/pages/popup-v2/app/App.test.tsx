@@ -87,14 +87,19 @@ test('switches screens from the bottom navigation and goes back from details', a
   expect(selectedTarget(root)).toBe('fragment-sites');
 });
 
-test('opens help on first run with first-party isolation checked, until "get started"', async () => {
+test('opens help on first run with first-party isolation off until applied, until "get started"', async () => {
   // The fake storage has no help.shownOnce, and the fake browser reports isolation as off.
   const { container: root, click } = render(<App state={source} isPopup={true} />);
   await settle();
   const drawer = root.ownerDocument.querySelector('#drawer') as HTMLElement;
+  const button = (text: string) => [...drawer.querySelectorAll('button')].find((b) => b.textContent == text) ?? null;
+  const fpi = drawer.querySelector('#input-firstPartyIsolate') as HTMLInputElement;
   expect(drawer.hidden).toBe(false);
-  expect((drawer.querySelector('#input-firstPartyIsolate') as HTMLInputElement).checked).toBe(true);
-  click([...drawer.querySelectorAll('button')].find((b) => b.textContent == 'buttonGetStarted') ?? null);
+  expect(fpi.checked).toBe(false);
+  click(button('buttonApplyRecommendedSettings'));
+  expect(fpi.checked).toBe(true);
+  expect(button('buttonApplyRecommendedSettings')?.disabled).toBe(true);
+  click(button('buttonGetStarted'));
   expect(drawer.hidden).toBe(true);
 });
 

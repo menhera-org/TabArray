@@ -21,17 +21,14 @@
 
 // this is not translated.
 
-import { useEffect, useRef } from 'react';
+import { type CSSProperties, useEffect, useState } from 'react';
 
 import { WindowTabCountService, WindowTabCountHistory } from '../../../lib/windows/WindowTabCountService';
+import { DateFormatService } from '../../../lib/DateFormatService';
 
 import { ScreenTopBar } from '../../../frontend/frame/TopBar';
 
 import { DebuggingScreenProps } from './common';
-
-export const CHART_URL = 'https://menhera-org.github.io/time-chart/';
-/** Only this origin may receive the data. */
-export const CHART_ORIGIN = 'https://menhera-org.github.io';
 
 export type ChartData = { time: number; value: number };
 export type ChartType = { [series: string]: ChartData[] };
@@ -48,32 +45,80 @@ export const buildChartData = (history: WindowTabCountHistory, now: number): Cha
   return data;
 };
 
-/** The tab count history, drawn by an external chart page in an iframe. */
+/**
+ * Step lines in a `width` x `height` box (y grows downward): each count holds until the next one.
+ * Time runs from the earliest to the latest point, and counts from 0 to the largest one.
+ */
+export const stepPaths = (data: ChartType, width: number, height: number) => {
+  let minTime = Infinity;
+  let maxTime = -Infinity;
+  let maxValue = 1;
+  for (const points of Object.values(data)) {
+    for (const { time, value } of points) {
+      minTime = Math.min(minTime, time);
+      maxTime = Math.max(maxTime, time);
+      maxValue = Math.max(maxValue, value);
+    }
+  }
+  if (minTime > maxTime) return null;
+  const x = (time: number) => (maxTime == minTime ? 0 : ((time - minTime) / (maxTime - minTime)) * width).toFixed(1);
+  const y = (value: number) => (height - (value / maxValue) * height).toFixed(1);
+  const paths = Object.entries(data).map(([series, points]) => ({
+    series,
+    d: points.map(({ time, value }, i) => (i == 0 ? `M${x(time)} ${y(value)}` : `H${x(time)} V${y(value)}`)).join(' '),
+  }));
+  return { minTime, maxTime, maxValue, paths };
+};
+
+const WIDTH = 600;
+const HEIGHT = 300;
+const COLORS = ['blue', 'green', 'orange', 'purple', 'red', 'cyan', 'yellow', 'pink'];
+const color = (i: number) => `var(--color-${COLORS[i % COLORS.length]}-50)`;
+
+/** The tab count history of each window, as a step chart drawn here (no remote page). */
 export const TabCountScreen = ({ active }: DebuggingScreenProps) => {
-  const iframe = useRef<HTMLIFrameElement>(null);
+  const [data, setData] = useState<ChartType>({});
   const service = WindowTabCountService.getInstance<WindowTabCountService>();
-  const post = (history: WindowTabCountHistory) => {
-    iframe.current?.contentWindow?.postMessage(
-      { type: 'update-chart', value: buildChartData(history, Date.now()) },
-      CHART_ORIGIN
-    );
-  };
   useEffect(() => {
-    service.onChanged.addListener(post);
-    return () => service.onChanged.removeListener(post);
-    // The service and the iframe ref do not change.
+    const update = (history: WindowTabCountHistory) => setData(buildChartData(history, Date.now()));
+    service.getTabCountHistory().then(update, (e) => console.error(e));
+    service.onChanged.addListener(update);
+    return () => service.onChanged.removeListener(update);
+    // The service does not change.
   }, []);
+  const chart = stepPaths(data, WIDTH, HEIGHT);
+  const formatTime = (time: number) => DateFormatService.getInstance().localeFormat(new Date(time));
   return (
     <>
       <ScreenTopBar active={active} heading="Tab Count" />
-      <iframe
-        ref={iframe}
-        id="time-chart"
-        src={CHART_URL}
-        onLoad={() => {
-          service.getTabCountHistory().then(post, (e) => console.error(e));
-        }}
-      />
+      {chart && (
+        <figure id="time-chart">
+          <svg viewBox={`-40 -10 ${WIDTH + 50} ${HEIGHT + 20}`} role="img" aria-label="Tab count per window">
+            <line className="axis" x1={0} y1={0} x2={0} y2={HEIGHT} />
+            <line className="axis" x1={0} y1={HEIGHT} x2={WIDTH} y2={HEIGHT} />
+            <text x={-8} y={HEIGHT} textAnchor="end" dominantBaseline="middle">
+              0
+            </text>
+            <text x={-8} y={0} textAnchor="end" dominantBaseline="middle">
+              {chart.maxValue}
+            </text>
+            {chart.paths.map(({ series, d }, i) => (
+              <path key={series} d={d} stroke={color(i)} />
+            ))}
+          </svg>
+          <figcaption>
+            <span>{formatTime(chart.minTime)}</span>
+            <span>
+              {chart.paths.map(({ series }, i) => (
+                <span key={series} className="legend" style={{ '--legend-color': color(i) } as CSSProperties}>
+                  Window {series}
+                </span>
+              ))}
+            </span>
+            <span>{formatTime(chart.maxTime)}</span>
+          </figcaption>
+        </figure>
+      )}
     </>
   );
 };

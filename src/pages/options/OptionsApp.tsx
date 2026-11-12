@@ -222,7 +222,7 @@ export const OptionsApp = () => {
         <Pane name="firefox-settings" active={active}>
           <h2>{message('optionsHeadingFirefox')}</h2>
           <p>{message('optionsDescriptionFirefox')}</p>
-          <p>{message('fpiDescription')}</p>
+          <p>{message('fpiDescriptionOptIn')}</p>
           <CheckboxSetting
             id="input-firstPartyIsolate"
             label="labelFirstPartyIsolate"

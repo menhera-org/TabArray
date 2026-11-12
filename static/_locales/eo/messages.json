@@ -418,9 +418,13 @@
         "message": "Komenci",
         "description": "Button to get started"
     },
-    "fpiDescription": {
-        "message": "Ĉi tiu etendajo ŝaltas First-Party Isolate (FPI) trajton de Firefox, aŭtomate. Tio signifas, ke kuketoj por malsamaj retejoj eĉ por sama ujo, estas dividita per registrable domain. Vi povas malŝalti ĝin ĉi tie.",
-        "description": "Description text for FPI"
+    "fpiDescriptionOptIn": {
+        "message": "First-Party Isolate (FPI) de Firefox tenas kuketojn de malsamaj retejoj apartaj, eĉ en sama ujo: ili estas dividitaj per registrable domain. Ni rekomendas ŝalti ĝin.",
+        "description": "Description of First-Party Isolate (FPI), in the help view and on the Firefox Settings tab of the settings. FPI stays off unless the user turns it on."
+    },
+    "buttonApplyRecommendedSettings": {
+        "message": "Apliki rekomenditajn Firefox agordojn",
+        "description": "Button in the help view, below the description of First-Party Isolate (FPI). Turns FPI on."
     },
     "optionalFeaturesDescription": {
         "message": "Se vi ne uzas konfliktajn etendaĵojn, vi povas ebligi iujn laŭvolajn funkciojn ĉi tie.",
@@ -677,6 +681,18 @@
     "packageIntegrityMismatch": {
         "message": "Integreca Miskongruo",
         "description": "Label text indicating the integrity of an extension package does not match the expected value."
+    },
+    "buttonVerifyBuild": {
+        "message": "Kontroli, ĉu ĝi estas oficiala build",
+        "description": "Button in the help view. Downloads this version's signature from the developers' server (downloads.menhera.org) and checks whether this copy of the extension is an official build."
+    },
+    "extensionOfficial": {
+        "message": "(oficiala build)",
+        "description": "Shown in the help view after Check for Official Build, when this copy is an official build."
+    },
+    "extensionNotOfficial": {
+        "message": "(ne konfirmita kiel oficiala build)",
+        "description": "Shown in the help view after Check for Official Build, when this copy is not an official build or the signature could not be downloaded."
     },
     "extensionDevBuild": {
         "message": "(dev)",

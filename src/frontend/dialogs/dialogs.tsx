@@ -42,6 +42,7 @@ type ConfirmDialogProps = { title: string; onOk: () => void; onCancel: () => voi
 export const ConfirmDialog = ({ title, onOk, onCancel }: ConfirmDialogProps) => (
   <ModalFrame
     title={title}
+    onCancel={onCancel}
     actions={[
       { label: message('buttonCancel'), onClick: onCancel },
       { label: message('buttonOk'), isDefault: true, onClick: onOk },
@@ -65,6 +66,11 @@ export const MenuDialog = ({
     menu
     title={title}
     actions={actions.map((action) => ({ ...action, onClick: () => onAction(action.id) }))}
+    onCancel={() => {
+      // Escape is the default action, which closes the menu ("done").
+      const done = actions.find((action) => action.isDefault);
+      if (done) onAction(done.id);
+    }}
   />
 );
 
@@ -82,6 +88,7 @@ export const NameDialog = ({ title, initialName = '', onSave, onClose }: NameDia
   return (
     <ModalFrame
       title={title}
+      onCancel={onClose}
       actions={[
         { label: message('buttonCancel'), onClick: onClose },
         {
@@ -152,6 +159,7 @@ export const MoveGroupDialog = ({ tabGroupId, onClose }: { tabGroupId: string; o
   return (
     <ModalFrame
       title={message('moveContainer')}
+      onCancel={onClose}
       actions={[
         { label: message('buttonCancel'), onClick: onClose },
         {
@@ -176,5 +184,7 @@ export const MoveGroupDialog = ({ tabGroupId, onClose }: { tabGroupId: string; o
 
 /** A dialog that only shows something, closed with Done (the old modal-frame). */
 export const InfoDialog = ({ children, onClose }: { children: ReactNode; onClose: () => void }) => (
-  <ModalFrame actions={[{ label: message('buttonDone'), isDefault: true, onClick: onClose }]}>{children}</ModalFrame>
+  <ModalFrame onCancel={onClose} actions={[{ label: message('buttonDone'), isDefault: true, onClick: onClose }]}>
+    {children}
+  </ModalFrame>
 );

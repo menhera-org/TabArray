@@ -19,7 +19,7 @@
   @license
 **/
 
-import { type ReactNode } from 'react';
+import { type ReactNode, useLayoutEffect, useRef } from 'react';
 
 import styles from './ModalFrame.module.css';
 
@@ -37,6 +37,8 @@ type ModalFrameProps = {
   actions: DialogAction[];
   /** Lists the actions other than the default ones as menu items, above the buttons. */
   menu?: boolean;
+  /** Escape. Without it, Escape does nothing. */
+  onCancel?: () => void;
 };
 
 const ActionButton = ({ action }: { action: DialogAction }) => (
@@ -45,13 +47,44 @@ const ActionButton = ({ action }: { action: DialogAction }) => (
   </button>
 );
 
-/** A dialog over the whole page: an optional title, content, and buttons. */
-export const ModalFrame = ({ title, children, actions, menu = false }: ModalFrameProps) => {
+/**
+ * A modal dialog: an optional title, content, and buttons. It takes focus (its first control)
+ * and makes the page behind it inert while open, and gives focus back when it goes away.
+ */
+export const ModalFrame = ({ title, children, actions, menu = false, onCancel }: ModalFrameProps) => {
   const menuItems = menu ? actions.filter((action) => !action.isDefault) : [];
   const buttons = menu ? actions.filter((action) => action.isDefault) : actions;
+  const dialog = useRef<HTMLDialogElement>(null);
+  // A layout effect, so the cleanup runs while the dialog is still in the document.
+  useLayoutEffect(() => {
+    const previous = document.activeElement;
+    dialog.current?.showModal();
+    return () => {
+      dialog.current?.close();
+      if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
+    };
+  }, []);
+  const defaultAction = actions.find((action) => action.isDefault);
   return (
-    <div className={styles.overlay} data-dialog>
-      <div className={styles.content} role="dialog" aria-label={title}>
+    <dialog
+      ref={dialog}
+      className={styles.content}
+      aria-label={title}
+      onCancel={(ev) => {
+        // The dialog closes when React removes it.
+        ev.preventDefault();
+        onCancel?.();
+      }}
+      onKeyDown={(ev) => {
+        // Enter in a text field means the default button, as in a form.
+        const target = ev.target;
+        if (ev.key == 'Enter' && target instanceof HTMLInputElement && target.type == 'text' && defaultAction) {
+          ev.preventDefault();
+          defaultAction.onClick();
+        }
+      }}
+    >
+      <div>
         {title != null && <h2 className={styles.title}>{title}</h2>}
         {children}
         {menuItems.length > 0 && (
@@ -71,6 +104,6 @@ export const ModalFrame = ({ title, children, actions, menu = false }: ModalFram
           </div>
         )}
       </div>
-    </div>
+    </dialog>
   );
 };

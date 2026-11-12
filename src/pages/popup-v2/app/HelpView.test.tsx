@@ -31,7 +31,7 @@ test('HelpView shows the settings and reports changes and "get started"', () => 
   const onChange = vi.fn();
   const onGetStarted = vi.fn();
   const { container: root, click } = render(
-    <HelpView settings={settings} onChange={onChange} onGetStarted={onGetStarted} />
+    <HelpView settings={settings} onChange={onChange} onApplyRecommended={() => {}} onGetStarted={onGetStarted} />
   );
   const boxes = [...root.querySelectorAll<HTMLInputElement>('input[type=checkbox]')];
   expect(boxes.map((b) => b.checked)).toEqual([true, false, true, false]);
@@ -40,7 +40,7 @@ test('HelpView shows the settings and reports changes and "get started"', () => 
   expect(onChange).toHaveBeenCalledWith('languageOverrides', true);
   click(boxes[0] ?? null);
   expect(onChange).toHaveBeenCalledWith('firstPartyIsolate', false);
-  click(root.querySelector('button'));
+  click([...root.querySelectorAll('button')].find((b) => b.textContent == 'buttonGetStarted') ?? null);
   expect(onGetStarted).toHaveBeenCalled();
   expect(root.querySelector('img[src="/icon.svg"]')).not.toBeNull();
 });

@@ -30,7 +30,6 @@ export interface BuildJson {
 }
 
 export interface PackageInformation {
-  isOfficial: boolean; // BuildMetadataService.verifySignature()
   isSigned: boolean;
   buildInfo: BuildJson;
   recordedHash: string;
