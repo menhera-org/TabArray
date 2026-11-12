@@ -20,7 +20,7 @@ Last updated 12 November 2026. "Done" means the change is on `main` and ships in
 |---|---|
 | 1. Foundations and breakage bugs | Done. Every issue is closed; the #645 reporter is asked to retest 12.0.0 and reopen if needed. |
 | 2. Sign-in and compatibility bugs, memory leak | Done. Every issue is closed; the sign-in and desktop-app reporters are asked to retest 12.0.0 and reopen if needed. |
-| 3. Firefox native tab groups | Not started. Container colors already accept both the Firefox 153 and the ESR 140 names (#646), which the group color mapping needs. |
+| 3. Firefox native tab groups | Planned. The design and the Firefox behavior it relies on are below. |
 | 4. Frontend rewrite | Done. |
 | 5. Settings, features and documentation | Not started. |
 
@@ -71,19 +71,40 @@ The Chrome user-agent preset now follows Chrome's two-week release cycle, in pla
 
 ## 3. Firefox native tab groups
 
-Status: not started.
+Status: planned.
 
 Firefox 139 added native tab groups and the `tabGroups` API. Since 12.0.0 requires Firefox 140, every desktop user has them. This phase also covers #111 (name and collapse groups in the tab bar) and the native tab groups part of #32.
 
 The plan is to show each container as a native tab group and keep the two in sync:
 
-- Each container that has tabs in a window gets one native group in that window. Pinned tabs and tabs with no container stay outside groups.
-- The group takes the container's name and nearest color. Container colors gray (called "toolbar" before Firefox 153) and cyan ("turquoise") map to grey and cyan. Native groups have no violet, so violet maps to purple.
+- Each container that has tabs in a window gets one native group in that window. Pinned tabs and tabs with no container stay outside groups. Container groups (supergroups) have no native equivalent, since native groups cannot nest.
+- The extension owns every group that holds container tabs. A tab dragged out of its container's group goes back, a tab with no container dropped into a group is moved out, and a group the user makes by hand around container tabs is split into one group per container.
+- Each container's tabs are kept together while sync is on, even with automatic sorting turned off. Turning sorting off then only stops the extension from ordering the containers.
+- The group takes the container's name and nearest color. Container colors gray (called "toolbar" before Firefox 153) and cyan ("turquoise") map to grey and cyan. Native groups have no violet, so violet maps to purple, and a violet container stays violet while its group is purple.
 - Renaming or recoloring either side updates the other.
-- Collapsing a group in the tab bar matches hiding the container in the extension, and the reverse.
+- Hiding a container collapses its group instead of hiding its tabs, and expanding the group in the tab bar shows the container again. Firefox keeps the active tab visible in a collapsed group, and collapsed tabs stay in Ctrl+Tab. Containers that are hidden when sync starts are shown and collapsed instead.
+- Index tabs are not created while sync is on, and existing ones are closed. The option still works with sync off.
+- Turning sync off ungroups the container groups and hides the tabs of collapsed ones, so what was out of sight stays out of sight.
 - Sync is on by default, including for existing users after they update, and can be turned off in settings. The release notes explain how.
 - The extension needs the `tabGroups` permission. Firefox does not prompt for it, so users will not see a new permission request.
 - Firefox for Android has no tab groups, so sync only runs on desktop.
+
+What we measured in Firefox 140 and 159, which behave the same:
+
+- Group IDs can change across restarts, so groups are matched to containers by their tabs, never by stored IDs.
+- Group membership follows tab position: moving a tab out of a group's range removes it, moving it back adds it, and a new tab created inside the range joins the group.
+- Hidden tabs can be grouped and stay grouped. A group whose tabs are all hidden keeps its label in the tab bar.
+- Collapsing a group does not mark its tabs hidden.
+- The `tabGroups` events fire for creation and for title, color and collapse changes.
+
+Work, in order:
+
+1. A planner that takes one window's tabs, groups and containers and returns the changes needed (group, ungroup, retitle, recolor). It has no side effects, so unit tests cover the rules above.
+2. A sync service that runs the planner per window after tab, group and container events, and after sorting, debounced and without reacting to its own changes.
+3. Group changes made in the tab bar flow back: title and color to the container, collapse to the container's hidden state.
+4. Hiding and showing containers, auto-hide and the popup's hidden state use the group's collapsed state while sync is on.
+5. The setting, its strings before the string freeze, the permission, and release notes.
+6. Firefox tests on 140 and the latest release: grouping as tabs open, both directions of rename and recolor, collapse and hide, dragged tabs, hand-made groups, sorting off, and turning sync off.
 
 We will also check that Tree Style Tab still works with groups synced, the remaining part of #32.
 
