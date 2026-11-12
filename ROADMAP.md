@@ -19,7 +19,7 @@ Last updated 12 November 2026. "Done" means the change is on `main` and ships in
 | Phase | Status |
 |---|---|
 | 1. Foundations and breakage bugs | Code done. #645 waits for the reporter to confirm the fix, and #519 needs a comment on the issue. |
-| 2. Sign-in and compatibility bugs, memory leak | Code done for #139 and #396. The sign-in and desktop-app reports need their reporters to retest. |
+| 2. Sign-in and compatibility bugs, memory leak | #139, #396 and #552 are done and closed. The sign-in and desktop-app reports need their reporters to retest. |
 | 3. Firefox native tab groups | Not started. Container colors already accept both the Firefox 153 and the ESR 140 names (#646), which the group color mapping needs. |
 | 4. Frontend rewrite | Done. |
 | 5. Settings, features and documentation | Not started. |
@@ -64,8 +64,8 @@ Two long-standing problems also belong here:
 
 | Issue | Problem | Cause | Status |
 |---|---|---|---|
-| #139 | The extension's memory use grows until Firefox stops responding. Still confirmed in 2026. | A report showed 205,073 of the extension's messages, 879 MB, waiting for replies. The content script sent a message from every frame that nothing answered, and weeg-utils' `MessagingService` promised a reply to every message, even ones it had no handler for. | Fixed. Unanswered messages are gone, and storage statistics are sent and saved only when they change. Includes weeg-utils 0.11.1. |
-| #396 | JavaScript reports the real user agent while the request header has the override. | Firefox gives a page the user agent of its request, except when a service worker serves the page. | Fixed for pages and their frames: the user agent is now also set by a content script registered for each container. Workers started by such pages still report the real user agent. |
+| #139 | The extension's memory use grows until Firefox stops responding. Still confirmed in 2026. | A report showed 205,073 of the extension's messages, 879 MB, waiting for replies. The content script sent a message from every frame that nothing answered, and weeg-utils' `MessagingService` promised a reply to every message, even ones it had no handler for. | Fixed. Unanswered messages are gone, and storage statistics are sent and saved only when they change. Includes weeg-utils 0.11.1. Closed. |
+| #396 | JavaScript reports the real user agent while the request header has the override. | Firefox gives a page the user agent of its request, except when a service worker serves the page. | Fixed for pages and their frames: the user agent is now also set by a content script registered for each container. Workers started by such pages still report the real user agent. Closed. |
 
 The Chrome user-agent preset now follows Chrome's two-week release cycle, in place since Chrome 153.
 
