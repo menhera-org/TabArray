@@ -31,19 +31,29 @@ jobs:
           name: Check repository status
           command: "git status || true"
       - run:
+          name: Run tests
+          command: npm test
+      - run:
           name: Build package
-          command: npm run build
+          # Only builds of main are signed as official, and only they are uploaded (below).
+          command: |
+            if [ "$CIRCLE_BRANCH" != main ]; then unset ED25519_IDENTITY; fi
+            npm run build
       - run:
           name: Check repository status again
           command: "git status || true"
-      - aws-s3/sync:
-          from: build-metadata/
-          install-aws-cli: true
-          to: s3://menhera-downloads/ctg-metadata/
-      - aws-s3/sync:
-          from: builds/
-          install-aws-cli: false
-          to: s3://menhera-downloads/ctg/
+      - when:
+          condition:
+            equal: [main, << pipeline.git.branch >>]
+          steps:
+            - aws-s3/sync:
+                from: build-metadata/
+                install-aws-cli: true
+                to: s3://menhera-downloads/ctg-metadata/
+            - aws-s3/sync:
+                from: builds/
+                install-aws-cli: false
+                to: s3://menhera-downloads/ctg/
 
 workflows:
   # Below is the definition of your workflow.

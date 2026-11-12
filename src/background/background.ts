@@ -46,7 +46,6 @@ import './background-tab-sorter';
 import './background-native-tab-groups';
 import './background-container-order';
 import './background-activated-tabs';
-import './background-content-script-responder';
 import './background-set-header';
 import './background-content-script-registrar';
 import './background-url-change';

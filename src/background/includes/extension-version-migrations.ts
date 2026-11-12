@@ -22,14 +22,18 @@
 import browser from 'webextension-polyfill';
 
 import { ExtensionVersionMigrationRegistry } from '../../lib/ExtensionVersionMigrationRegistry';
+import { config } from '../../config/config';
 
 /**
  * Codes to run on first installation.
  */
 export const MIGRATIONS = new ExtensionVersionMigrationRegistry();
 
-// 12.0.0 removed tags: forget the tag list and the tag stored with each tab.
+// 12.0.0 stopped syncing the proxy switch: keep the value this device had, so other devices cannot change it.
+// It also removed tags: forget the tag list and the tag stored with each tab.
 MIGRATIONS.defineMigration('12.0.0', async () => {
+  const containerProxy = config['feature.containerProxy'];
+  await containerProxy.setValue(await containerProxy.getValue());
   await browser.storage.local.remove('tagDirectory');
   const browserTabs = await browser.tabs.query({});
   await Promise.all(

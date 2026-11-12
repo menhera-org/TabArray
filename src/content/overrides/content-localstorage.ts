@@ -41,7 +41,6 @@ const notifyStorageData = () => {
       type: 'content-localstorage-statistics',
       payload: {
         origin: window.location.origin,
-        url: window.location.href,
         localStorageLength,
       },
     })

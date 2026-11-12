@@ -19,8 +19,6 @@
   @license
 **/
 
-import { ExtensionService } from 'weeg-utils';
-
 import { DirectoryListingService } from './package/DirectoryListingService';
 import { PackageIntegrityService } from './package/PackageIntegrityService';
 import { ConsoleHistoryService } from './console/ConsoleHistoryService';
@@ -32,7 +30,13 @@ import { getSerializedConfig } from '../config/config';
 
 import { ServiceRegistry } from './ServiceRegistry';
 
-const extensionService = ExtensionService.getInstance();
+/**
+ * A website that knows an extension's UUID can recognize this Firefox profile, so the file people share has none:
+ * not this extension's, and not those of other extensions in logged addresses.
+ */
+export const redactUuids = (text: string): string =>
+  text.replace(/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/gi, '(uuid)');
+
 const directoryListingService = DirectoryListingService.getInstance();
 const packageIntegrityService = PackageIntegrityService.getInstance();
 const consoleHistoryService = ConsoleHistoryService.getInstance<ConsoleHistoryService>();
@@ -59,9 +63,7 @@ export class DebuggingInformationService {
     const installationHistory = await installationHistoryService.getValue();
     const windowTabCountHistory = await windowTabCountService.getTabCountHistory();
     const config = await getSerializedConfig();
-    const internalUuid = extensionService.getInternalUuid();
     const info = {
-      internalUuid,
       packageLocation,
       computedIntegrityListing,
       consoleLogs,
@@ -70,7 +72,7 @@ export class DebuggingInformationService {
       windowTabCountHistory,
       config,
     };
-    return JSON.stringify(info, null, 2);
+    return redactUuids(JSON.stringify(info, null, 2));
   }
 }
 

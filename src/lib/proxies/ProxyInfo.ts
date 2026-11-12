@@ -72,7 +72,17 @@ export type ProxyInfo = DirectProxyInfo | HttpProxyInfo | SocksProxyInfo;
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ProxyInfo {
+  export const UNUSABLE_PROXY: ProxyInfo = Object.freeze({
+    type: 'socks',
+    host: '127.127.127.127',
+    port: 1,
+    proxyDNS: true,
+    failoverTimeout: 1,
+  });
+
   export const fromProxyPreset = (preset: ProxyPreset): ProxyInfo => {
+    // Firefox would reject this proxy and connect directly, so block the connection instead.
+    if (!ProxyPreset.isValidAddress(preset.host, preset.port)) return UNUSABLE_PROXY;
     switch (preset.type) {
       case ProxyType.HTTP:
       case ProxyType.HTTPS: {
@@ -100,12 +110,4 @@ export namespace ProxyInfo {
       }
     }
   };
-
-  export const UNUSABLE_PROXY: ProxyInfo = Object.freeze({
-    type: 'socks',
-    host: '127.127.127.127',
-    port: 1,
-    proxyDNS: true,
-    failoverTimeout: 1,
-  });
 }

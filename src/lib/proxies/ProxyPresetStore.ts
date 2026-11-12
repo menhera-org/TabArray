@@ -63,8 +63,8 @@ export class ProxyPresetStore {
     const type = ProxyType.fromString(params.type);
     const host = params.host.trim();
     const port = parseInt(params.port.toString().trim(), 10);
-    if (isNaN(port)) {
-      throw new Error('Invalid port');
+    if (!ProxyPreset.isValidAddress(host, port)) {
+      throw new Error('Invalid host or port');
     }
     const username = params.username || undefined;
     const password = params.password || undefined;

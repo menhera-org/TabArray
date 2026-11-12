@@ -56,4 +56,10 @@ export namespace ProxyPreset {
   export const getName = (preset: ProxyPreset): string => {
     return preset.title || toUrlString(preset);
   };
+
+  /**
+   * Firefox rejects a proxy with any other host or port, and then connects without a proxy.
+   */
+  export const isValidAddress = (host: string, port: number): boolean =>
+    host != '' && !/\s/.test(host) && Number.isInteger(port) && port >= 1 && port <= 65535;
 }

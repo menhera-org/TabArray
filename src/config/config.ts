@@ -34,7 +34,8 @@ export const config = {
   'help.shownOnce': new StorageConfigurationOption<boolean>('help.shownOnce', false),
   'feature.languageOverrides': new StorageConfigurationOption<boolean>('feature.languageOverrides', true),
   'feature.uaOverrides': new StorageConfigurationOption<boolean>('feature.uaOverrides', false),
-  'feature.containerProxy': new StorageConfigurationOption<boolean>('feature.containerProxy', false),
+  // Kept on this device, as the proxies are: synced, turning it off on one device stopped proxying on the others.
+  'feature.containerProxy': new StorageConfigurationOption<boolean>('feature.containerProxy', false, 'local'),
   'feature.syncContainers': new StorageConfigurationOption<boolean>('feature.syncContainers', false, 'local'),
   'newtab.keepContainer': new StorageConfigurationOption<boolean>('newtab.keepContainer', true),
   'tab.external.containerOption': new StorageConfigurationOption<ExternalContainerOption>(
