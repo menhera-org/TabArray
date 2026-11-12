@@ -30,6 +30,7 @@ import { TabGroupService } from '../../lib/tabGroups/TabGroupService';
 import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import { ContentStorageStatistics } from '../../lib/cookies/ContentStorageStatistics';
+import { confirmAsync } from '../../frontend/dialogs/showDialog';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const logError = (e: unknown) => console.error(e);
@@ -113,9 +114,14 @@ export const CookiesApp = () => {
                   className="ctg-button destructive"
                   onClick={() => {
                     if (cookieStoreId == null) return;
-                    TabGroupService.getInstance()
-                      .removeBrowsingDataForTabGroupId(cookieStoreId)
-                      .then(() => handler.renderInBackground(cookieStoreId), logError);
+                    const name = containers.find(([id]) => id == cookieStoreId)?.[1] ?? '';
+                    confirmAsync(browser.i18n.getMessage('confirmContainerClearCookie', name))
+                      .then(async (confirmed) => {
+                        if (!confirmed) return;
+                        await TabGroupService.getInstance().removeBrowsingDataForTabGroupId(cookieStoreId);
+                        handler.renderInBackground(cookieStoreId);
+                      })
+                      .catch(logError);
                   }}
                 >
                   {message('buttonContainerClearCookie')}

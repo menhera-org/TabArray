@@ -30,14 +30,8 @@ import { TabGroupAttributes } from '../../lib/tabGroups/TabGroupAttributes';
 import { SupergroupService } from '../../lib/tabGroups/SupergroupService';
 import { ContainerBookmarkService } from '../../lib/bookmarks/ContainerBookmarkService';
 
-import { showDialog } from '../../frontend/dialogs/showDialog';
-import {
-  ConfirmDialog,
-  MenuAction,
-  MenuDialog,
-  MoveGroupDialog,
-  SupergroupEditorDialog,
-} from '../../frontend/dialogs/dialogs';
+import { confirmAsync, showDialog } from '../../frontend/dialogs/showDialog';
+import { MenuAction, MenuDialog, MoveGroupDialog, SupergroupEditorDialog } from '../../frontend/dialogs/dialogs';
 import { ContainerEditorDialog } from '../../frontend/dialogs/ContainerEditorDialog';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
@@ -47,22 +41,7 @@ const contextualIdentityFactory = ContextualIdentityService.getInstance().getFac
 
 /** The popup's dialogs. */
 
-export const confirmAsync = (title: string): Promise<boolean> =>
-  new Promise((resolve) => {
-    showDialog((close) => (
-      <ConfirmDialog
-        title={title}
-        onCancel={() => {
-          close();
-          resolve(false);
-        }}
-        onOk={() => {
-          close();
-          resolve(true);
-        }}
-      />
-    ));
-  });
+export { confirmAsync };
 
 /** Shows a menu; choosing an action closes it first. */
 const showMenu = (title: string, actions: MenuAction[], onAction: (id: string) => void) => {

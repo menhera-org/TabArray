@@ -64,6 +64,7 @@ test('Drawer hides itself when closed and closes from its button or the scrim', 
     </Drawer>
   );
   expect(drawer.hidden).toBe(false);
+  expect(root.querySelector('[data-drawer-close]')?.getAttribute('title')).toBe('buttonClose');
   click(root.querySelector('[data-drawer-close]'));
   click(drawer.firstElementChild);
   expect(onClose).toHaveBeenCalledTimes(2);

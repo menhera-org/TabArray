@@ -96,6 +96,7 @@ describe('TopBar', () => {
       </TopBar>
     );
     expect(root.querySelector('[title="menuItemHelp"]')).toBeNull();
+    expect(bar(root).querySelector('button')?.title).toBe('buttonBack');
     click(bar(root).querySelector('button'));
     expect(onBack).toHaveBeenCalled();
   });

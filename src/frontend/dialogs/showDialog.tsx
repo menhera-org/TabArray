@@ -22,6 +22,8 @@
 import { type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { ConfirmDialog } from './dialogs';
+
 /**
  * Shows a dialog over the page, as its own React root at the end of the body.
  * `render` gets the function that closes it; so does the caller.
@@ -40,3 +42,21 @@ export const showDialog = (render: (close: () => void) => ReactNode): (() => voi
   root.render(render(close));
   return close;
 };
+
+/** Asks to confirm `title`; resolves true for OK, false for Cancel or Escape. */
+export const confirmAsync = (title: string): Promise<boolean> =>
+  new Promise((resolve) => {
+    showDialog((close) => (
+      <ConfirmDialog
+        title={title}
+        onCancel={() => {
+          close();
+          resolve(false);
+        }}
+        onOk={() => {
+          close();
+          resolve(true);
+        }}
+      />
+    ));
+  });

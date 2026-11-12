@@ -172,6 +172,18 @@
         "message": "Fermi la langeton",
         "description": "Button label to close a tab."
     },
+    "buttonBack": {
+        "message": "Reen",
+        "description": "Tooltip and accessible name of the icon-only button that goes back to the previous screen in the popup and the sidebar."
+    },
+    "buttonClose": {
+        "message": "Fermi",
+        "description": "Tooltip and accessible name of the icon-only button that closes the help panel."
+    },
+    "tooltipSiteCloseAll": {
+        "message": "Fermi ĉiujn langetojn de tiu retejo",
+        "description": "Tooltip and accessible name of the icon-only button that closes every tab of a site in the Sites view."
+    },
     "tooltipCollapseContainers": {
         "message": "Kolapsi la ujojn",
         "description": "Tooltip for the button to collapse inactive containers."

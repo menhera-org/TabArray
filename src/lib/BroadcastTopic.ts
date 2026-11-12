@@ -19,14 +19,65 @@
   @license
 **/
 
-import { MessagingService, Asserts } from 'weeg-utils';
+import browser from 'webextension-polyfill';
+import { Asserts, ExtensionService } from 'weeg-utils';
 
 export type BroadcastListener<T> = (message: T) => void;
 
-const messagingService = MessagingService.getInstance();
+type Envelope = { topic: string; message: unknown };
+
+const PORT_NAME = 'broadcast-topic';
+const isBackground = ExtensionService.getInstance().isBackgroundPage();
+const listeners = new Map<string, Set<BroadcastListener<unknown>>>();
+
+const dispatch = ({ topic, message }: Envelope) => {
+  for (const listener of listeners.get(topic) ?? []) listener(message);
+};
+
+/*
+  Broadcasts go over ports, not runtime.sendMessage: since Firefox 154, a message that reaches an
+  extension page without a runtime.onMessage listener (one still loading, say) makes Firefox log an
+  uncaught exception. A page connects to the background when it first listens or broadcasts; the
+  background posts to the connected pages and relays what one page sends to the others.
+*/
+const pagePorts = new Set<browser.Runtime.Port>();
+
+const postToPages = (envelope: Envelope, except?: browser.Runtime.Port) => {
+  for (const port of pagePorts) {
+    if (port === except) continue;
+    try {
+      port.postMessage(envelope);
+    } catch {
+      pagePorts.delete(port); // closed without a disconnect event yet
+    }
+  }
+};
+
+if (isBackground) {
+  browser.runtime.onConnect.addListener((port) => {
+    if (port.name != PORT_NAME) return;
+    pagePorts.add(port);
+    port.onDisconnect.addListener(() => pagePorts.delete(port));
+    port.onMessage.addListener((envelope) => {
+      postToPages(envelope as Envelope, port);
+      dispatch(envelope as Envelope);
+    });
+  });
+}
+
+let backgroundPort: browser.Runtime.Port | undefined;
+
+const getBackgroundPort = () => {
+  if (!backgroundPort) {
+    backgroundPort = browser.runtime.connect({ name: PORT_NAME });
+    backgroundPort.onMessage.addListener((envelope) => dispatch(envelope as Envelope));
+  }
+  return backgroundPort;
+};
 
 /**
- * This does not send back messages to the sender script.
+ * A topic shared by the background page and the extension's pages. A broadcast reaches every
+ * other context listening to the topic, but not the sender.
  */
 export class BroadcastTopic<T> {
   public readonly topic: string;
@@ -37,12 +88,18 @@ export class BroadcastTopic<T> {
   }
 
   public broadcast(message: T): void {
-    messagingService.sendMessageAndIgnoreResponse(this.topic, message);
+    const envelope: Envelope = { topic: this.topic, message };
+    if (isBackground) {
+      postToPages(envelope);
+    } else {
+      getBackgroundPort().postMessage(envelope);
+    }
   }
 
   public addListener(listener: BroadcastListener<T>): void {
-    messagingService.addListener(this.topic, (message) => {
-      listener(message as T);
-    });
+    let set = listeners.get(this.topic);
+    if (!set) listeners.set(this.topic, (set = new Set()));
+    set.add(listener as BroadcastListener<unknown>);
+    if (!isBackground) getBackgroundPort();
   }
 }

@@ -19,6 +19,7 @@
   @license
 **/
 
+import browser from 'webextension-polyfill';
 import { type ReactNode } from 'react';
 
 import styles from './Drawer.module.css';
@@ -37,7 +38,12 @@ export const Drawer = ({ open, heading, onClose, children }: DrawerProps) => (
     <div className={styles.main}>
       <div className={styles.header}>
         {/* data-drawer-close: a stable hook for tools such as the smoke test. */}
-        <button className={`ctg-icon-button ${styles.closeButton}`} onClick={onClose} data-drawer-close />
+        <button
+          className={`ctg-icon-button ${styles.closeButton}`}
+          title={browser.i18n.getMessage('buttonClose')}
+          onClick={onClose}
+          data-drawer-close
+        />
         <h2 className={styles.heading}>{heading}</h2>
       </div>
       <div className={styles.content}>{children}</div>

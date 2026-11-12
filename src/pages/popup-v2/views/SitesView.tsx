@@ -19,6 +19,7 @@
   @license
 **/
 
+import browser from 'webextension-polyfill';
 import { HostnameService } from 'weeg-domains';
 
 import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
@@ -78,7 +79,11 @@ export const SitesView = ({ sites, onSiteClick, onSiteClose }: SitesViewProps) =
           </span>
           <span className={styles.tabCount}>{site.tabCount}</span>
         </button>
-        <button className={`ctg-icon-button ${styles.closeButton}`} onClick={() => onSiteClose(site.domain)} />
+        <button
+          className={`ctg-icon-button ${styles.closeButton}`}
+          title={browser.i18n.getMessage('tooltipSiteCloseAll')}
+          onClick={() => onSiteClose(site.domain)}
+        />
       </div>
     ))}
   </>

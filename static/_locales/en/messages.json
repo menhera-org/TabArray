@@ -172,6 +172,18 @@
         "message": "Close This Tab",
         "description": "Button label to close a tab."
     },
+    "buttonBack": {
+        "message": "Back",
+        "description": "Tooltip and accessible name of the icon-only button that goes back to the previous screen in the popup and the sidebar."
+    },
+    "buttonClose": {
+        "message": "Close",
+        "description": "Tooltip and accessible name of the icon-only button that closes the help panel."
+    },
+    "tooltipSiteCloseAll": {
+        "message": "Close all tabs of this site",
+        "description": "Tooltip and accessible name of the icon-only button that closes every tab of a site in the Sites view."
+    },
     "tooltipCollapseContainers": {
         "message": "Collapse Containers",
         "description": "Tooltip for the button to collapse inactive containers."

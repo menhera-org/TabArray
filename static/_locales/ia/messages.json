@@ -314,6 +314,18 @@
         "message": "Clauder iste scheda",
         "description": "Button label to close a tab."
     },
+    "buttonBack": {
+        "message": "Retro",
+        "description": "Tooltip and accessible name of the icon-only button that goes back to the previous screen in the popup and the sidebar."
+    },
+    "buttonClose": {
+        "message": "Clauder",
+        "description": "Tooltip and accessible name of the icon-only button that closes the help panel."
+    },
+    "tooltipSiteCloseAll": {
+        "message": "Clauder tote le schedas de iste sito",
+        "description": "Tooltip and accessible name of the icon-only button that closes every tab of a site in the Sites view."
+    },
     "promptSelectContainer": {
         "message": "Si il tu place, selectiona un contentor ubi tu aperi le scheda.",
         "description": "Message asking the user to select a container for a new tab."

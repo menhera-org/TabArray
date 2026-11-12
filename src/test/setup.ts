@@ -30,9 +30,15 @@ const FUNCTIONS: Record<string, (...args: never[]) => unknown> = {
   'runtime.getManifest': () => ({ name: 'Container Tab Groups', version: '0.0.0' }),
   'runtime.getBrowserInfo': async () => ({ name: 'Firefox', version: '0.0' }),
   'runtime.getPlatformInfo': async () => ({ os: 'linux' }),
+  'runtime.connect': () => ({
+    onMessage: { addListener: () => {} },
+    onDisconnect: { addListener: () => {} },
+    postMessage: () => {},
+  }),
   'commands.getAll': async () => [],
   'tabs.query': async () => [],
   'contextualIdentities.query': async () => [],
+  'cookies.getAll': async () => [],
   'privacy.websites.firstPartyIsolate.get': async () => ({ value: false }),
   'privacy.websites.cookieConfig.get': async () => ({ value: { behavior: 'reject_trackers' } }),
 };

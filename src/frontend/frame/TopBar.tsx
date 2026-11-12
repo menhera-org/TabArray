@@ -19,6 +19,7 @@
   @license
 **/
 
+import browser from 'webextension-polyfill';
 import { createContext, type ReactNode, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -66,7 +67,11 @@ export const TopBar = ({ onBack, drawerButton, spinning, isPopup, children }: To
     <>
       <div className={styles.topBar}>
         {onBack ? (
-          <button className={`ctg-icon-button ${styles.backButton}`} onClick={onBack} />
+          <button
+            className={`ctg-icon-button ${styles.backButton}`}
+            title={browser.i18n.getMessage('buttonBack')}
+            onClick={onBack}
+          />
         ) : (
           <MenuItem
             className={styles.drawerButton}

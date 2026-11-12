@@ -102,7 +102,9 @@ describe('SitesView', () => {
     expect(focusable).toHaveLength(2);
     click(focusable[1] ?? null);
     expect(onSiteClick).toHaveBeenCalledWith('');
-    click(container.querySelectorAll('button:not([data-popup-focusable])')[0] ?? null);
+    const closeButton = container.querySelectorAll('button:not([data-popup-focusable])')[0] ?? null;
+    expect(closeButton?.getAttribute('title')).toBe('tooltipSiteCloseAll');
+    click(closeButton);
     expect(onSiteClose).toHaveBeenCalledWith('example.com');
   });
 

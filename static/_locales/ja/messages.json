@@ -172,6 +172,18 @@
         "message": "このタブを閉じる",
         "description": "Button label to close a tab."
     },
+    "buttonBack": {
+        "message": "戻る",
+        "description": "Tooltip and accessible name of the icon-only button that goes back to the previous screen in the popup and the sidebar."
+    },
+    "buttonClose": {
+        "message": "閉じる",
+        "description": "Tooltip and accessible name of the icon-only button that closes the help panel."
+    },
+    "tooltipSiteCloseAll": {
+        "message": "このサイトのタブを全て閉じる",
+        "description": "Tooltip and accessible name of the icon-only button that closes every tab of a site in the Sites view."
+    },
     "tooltipCollapseContainers": {
         "message": "コンテナーを最小化する",
         "description": "Tooltip for the button to collapse inactive containers."
