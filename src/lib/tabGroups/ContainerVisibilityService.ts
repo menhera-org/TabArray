@@ -121,10 +121,12 @@ export class ContainerVisibilityService {
       }
       await tabToActivate.focus();
     }
-    if (await this._nativeTabGroupService.isActive()) {
-      // A container shown as a native group is hidden by collapsing the group.
-      if (!(await this._nativeTabGroupService.setContainerCollapsed(windowId, cookieStoreId, true))) return false;
-    } else {
+    // A container shown as a native group is hidden by collapsing the group. No Container has no
+    // group, so its tabs are hidden, as every container's were before tab groups.
+    const collapsed =
+      (await this._nativeTabGroupService.isActive()) &&
+      (await this._nativeTabGroupService.setContainerCollapsed(windowId, cookieStoreId, true));
+    if (!collapsed) {
       await browser.tabs.hide(helper.tabsToHide.map((tab) => tab.id));
     }
     const duration = Date.now() - startTime;

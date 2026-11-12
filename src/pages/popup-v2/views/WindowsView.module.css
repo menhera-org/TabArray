@@ -21,6 +21,8 @@
 
 .header {
   display: block grid;
+  /* minmax(0, …): the rows may get narrower than their content, so the select and the search shrink. */
+  grid-template-columns: minmax(0, 1fr);
   row-gap: var(--space-xsmall);
   position: sticky;
   inset-block-start: 0;

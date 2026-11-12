@@ -21,6 +21,7 @@
 
 /* A panel header, as in Firefox's own panels and sidebar. */
 .topBar {
+  position: relative;
   display: block flex;
   flex-direction: row;
   align-items: center;
@@ -45,8 +46,11 @@
   transform: scaleX(-1);
 }
 
+/* Over the start of the heading, so it takes no room from the buttons in a narrow sidebar. */
 .spinner {
-  flex-shrink: 0;
+  position: absolute;
+  inset-inline-start: calc(var(--space-xsmall) + var(--button-size-icon) + var(--space-xsmall));
+  pointer-events: none;
   background-color: currentColor;
   inline-size: var(--icon-size);
   block-size: var(--icon-size);
@@ -67,7 +71,7 @@
   min-inline-size: 0;
   flex: 1;
   margin: 0;
-  padding-inline: var(--space-small);
+  padding-inline: var(--space-xxsmall);
   font-size: var(--font-size-root);
   font-weight: var(--font-weight-semibold);
   text-align: center;

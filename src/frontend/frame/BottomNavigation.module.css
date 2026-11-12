@@ -41,7 +41,11 @@
   display: block grid;
   justify-items: center;
   row-gap: var(--space-xxsmall);
-  min-inline-size: 4.5rem;
+  /* As wide as the label and the 3.5rem icon pill when there is room; narrower in a narrow sidebar,
+     where the label ends in an ellipsis. */
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  grid-template-columns: minmax(0, 1fr);
   margin: 0;
   padding-block: var(--space-xxsmall);
   padding-inline: var(--space-small);
@@ -50,6 +54,13 @@
   background: none;
   color: var(--text-color-deemphasized);
   font-size: var(--font-size-small);
+}
+
+.target > :last-child {
+  max-inline-size: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .target:hover {
@@ -68,6 +79,7 @@
 .icon {
   display: block;
   inline-size: 3.5rem;
+  max-inline-size: 100%;
   block-size: var(--size-item-medium);
   border-radius: var(--border-radius-medium);
   background-color: currentColor;
@@ -79,6 +91,7 @@
 }
 
 .iconPill {
+  max-inline-size: 100%;
   display: block grid;
   place-items: center;
   border-radius: var(--border-radius-medium);
