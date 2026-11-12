@@ -42,7 +42,7 @@ test('HelpView shows the settings and reports changes and "get started"', () => 
   expect(onChange).toHaveBeenCalledWith('firstPartyIsolate', false);
   click(root.querySelector('button'));
   expect(onGetStarted).toHaveBeenCalled();
-  expect(root.querySelector('help-banner')).not.toBeNull();
+  expect(root.querySelector('img[src="/icon.svg"]')).not.toBeNull();
 });
 
 test('Drawer hides itself when closed and closes from its button or the scrim', () => {

@@ -29,16 +29,13 @@ import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
 import { TagService } from '../../../lib/tabGroups/tags/TagService';
 import * as containers from '../../../legacy-lib/modules/containers';
 
-import { SupergroupEditorElement } from '../../../components/supergroup-editor';
-import { TagEditorElement } from '../../../components/tag-editor';
-
 import { ScreenTopBar } from '../../../frontend/frame/TopBar';
 import { WindowsView, WindowsHandlers } from '../views/WindowsView';
 import { MenuItem } from '../../../frontend/frame/MenuItem';
 import { browserTabActions } from '../views/tabActions';
-import { PopupUtils } from '../legacy/PopupUtils';
+import { PopupUtils } from '../PopupUtils';
 
-import { ScreenProps, logError, modalRenderer } from './common';
+import { ScreenProps, logError, dialogs } from './common';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const popupUtils = new PopupUtils();
@@ -56,18 +53,18 @@ const handlers: WindowsHandlers = {
   },
   closeWindow: async (windowId) => {
     // In the sidebar this button looks like "close sidebar", and closing the last window quits Firefox (#508).
-    const confirmed = await modalRenderer.confirmAsync(browser.i18n.getMessage('confirmWindowClose'));
+    const confirmed = await dialogs.confirmAsync(browser.i18n.getMessage('confirmWindowClose'));
     if (!confirmed) return;
     browser.windows.remove(windowId).catch(logError);
   },
   createTag: () => {
-    document.body.appendChild(new TagEditorElement());
+    dialogs.showTagEditor();
   },
   createGroup: () => {
-    document.body.appendChild(new SupergroupEditorElement());
+    dialogs.showSupergroupEditor();
   },
   createContainer: () => {
-    modalRenderer
+    dialogs
       .showNewContainerPanelAsync()
       .then((result) => {
         if (result) console.log('Created new container', result);
@@ -86,7 +83,7 @@ const handlers: WindowsHandlers = {
     containers.closeAllTabsOnWindow(cookieStoreId, windowId).catch(logError);
   },
   containerOptions: (container, isPrivate) => {
-    modalRenderer.showContainerOptionsPanelAsync(container, isPrivate).catch(logError);
+    dialogs.showContainerOptionsPanelAsync(container, isPrivate).catch(logError);
   },
   hideContainer: (container, windowId) => {
     containerVisibilityService.hideContainerOnWindow(windowId, container.cookieStore.id).catch(() => {
@@ -108,7 +105,7 @@ const handlers: WindowsHandlers = {
     containerTabOpenerService.reopenTabInContainer(tabId, container.cookieStore.id, false).catch(logError);
   },
   editTag: (tag) => {
-    document.body.appendChild(new TagEditorElement(tag));
+    dialogs.showTagEditor(tag);
   },
   deleteTag: (tag) => {
     TagService.getInstance().deleteTag(tag.tagId).catch(logError);
@@ -123,7 +120,7 @@ const handlers: WindowsHandlers = {
     supergroupService.closeUnpinnedSupergroupTabsOnWindow(tabGroupId, windowId).catch(logError);
   },
   supergroupOptions: (supergroup) => {
-    modalRenderer.showSupergroupOptions(supergroup);
+    dialogs.showSupergroupOptions(supergroup);
   },
 };
 

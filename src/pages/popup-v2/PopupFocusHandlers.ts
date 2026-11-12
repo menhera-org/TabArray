@@ -19,7 +19,7 @@
   @license
 **/
 
-import { PopupUtils } from './legacy/PopupUtils';
+import { PopupUtils } from './PopupUtils';
 import { getFocusableElements } from './views/focus';
 
 const utils = new PopupUtils();

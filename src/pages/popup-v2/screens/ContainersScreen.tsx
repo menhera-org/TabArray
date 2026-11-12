@@ -32,7 +32,7 @@ import { MenuItem } from '../../../frontend/frame/MenuItem';
 
 import { CompatConsole } from '../../../lib/console/CompatConsole';
 
-import { ScreenProps, logError, modalRenderer } from './common';
+import { ScreenProps, logError, dialogs } from './common';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
@@ -42,7 +42,7 @@ const closeContainerTabs = async (cookieStoreId: string) => {
 };
 
 const createContainer = () => {
-  modalRenderer
+  dialogs
     .showNewContainerPanelAsync()
     .then((result) => {
       if (result) console.log('Created new container', result);
@@ -84,12 +84,12 @@ export const ContainersScreen = ({
       onContainerClick={(container) => onContainerClick(container.cookieStore.id)}
       onContainerClose={(container) => closeContainerTabs(container.cookieStore.id).catch(logError)}
       onContainerOptions={(container) =>
-        modalRenderer.showContainerOptionsPanelAsync(container, container.cookieStore.isPrivate).catch(logError)
+        dialogs.showContainerOptionsPanelAsync(container, container.cookieStore.isPrivate).catch(logError)
       }
       onSupergroupClose={(tabGroupId) =>
         SupergroupService.getInstance().closeUnpinnedSupergroupTabs(tabGroupId).catch(logError)
       }
-      onSupergroupOptions={(supergroup) => modalRenderer.showSupergroupOptions(supergroup)}
+      onSupergroupOptions={(supergroup) => dialogs.showSupergroupOptions(supergroup)}
     />
   </>
 );

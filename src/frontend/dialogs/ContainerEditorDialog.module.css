@@ -1,0 +1,178 @@
+/* vim: ts=2 sw=2 et ai */
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+/* source: https://github.com/mozilla/multi-account-containers/blob/4b56a2f0bb91cd9a12b95121fcff0c8e96ff66bd/src/js/popup.js */
+/* The icon and color pickers, formerly usercontext.css in their shadow DOM. */
+
+/* Color and icon helpers */
+.radios [data-identity-color="blue"] {
+  --identity-tab-color: #37adff;
+  --identity-icon-color: #37adff;
+}
+
+.radios [data-identity-color="turquoise"] {
+  --identity-tab-color: #00c79a;
+  --identity-icon-color: #00c79a;
+}
+
+.radios [data-identity-color="green"] {
+  --identity-tab-color: #51cd00;
+  --identity-icon-color: #51cd00;
+}
+
+.radios [data-identity-color="grey"] {
+  /* Only used for the edit panel */
+  --identity-icon-color: #616161;
+}
+
+.radios [data-identity-color="yellow"] {
+  --identity-tab-color: #ffcb00;
+  --identity-icon-color: #ffcb00;
+}
+
+.radios [data-identity-color="orange"] {
+  --identity-tab-color: #ff9f00;
+  --identity-icon-color: #ff9f00;
+}
+
+.radios [data-identity-color="red"] {
+  --identity-tab-color: #ff613d;
+  --identity-icon-color: #ff613d;
+}
+
+.radios [data-identity-color="pink"] {
+  --identity-tab-color: #ff4bda;
+  --identity-icon-color: #ff4bda;
+}
+
+.radios [data-identity-color="purple"] {
+  --identity-tab-color: #af51f5;
+  --identity-icon-color: #af51f5;
+}
+
+/* Firefox 153 and later */
+.radios [data-identity-color="violet"] {
+  --identity-tab-color: #764edd;
+  --identity-icon-color: #764edd;
+}
+
+.radios [data-identity-icon="fingerprint"] {
+  --identity-icon: url("/img/usercontext.svg#fingerprint");
+}
+
+.radios [data-identity-icon="briefcase"] {
+  --identity-icon: url("/img/usercontext.svg#briefcase");
+}
+
+.radios [data-identity-icon="dollar"] {
+  --identity-icon: url("/img/usercontext.svg#dollar");
+}
+
+.radios [data-identity-icon="cart"] {
+  --identity-icon: url("/img/usercontext.svg#cart");
+}
+
+.radios [data-identity-icon="circle"] {
+  --identity-icon: url("/img/usercontext.svg#circle");
+}
+
+.radios [data-identity-icon="food"] {
+  --identity-icon: url("/img/usercontext.svg#food");
+}
+
+.radios [data-identity-icon="gift"] {
+  --identity-icon: url("/img/usercontext.svg#gift");
+}
+
+.radios [data-identity-icon="vacation"] {
+  --identity-icon: url("/img/usercontext.svg#vacation");
+}
+
+.radios [data-identity-icon="fruit"] {
+  --identity-icon: url("/img/usercontext.svg#fruit");
+}
+
+.radios [data-identity-icon="pet"] {
+  --identity-icon: url("/img/usercontext.svg#pet");
+}
+
+.radios [data-identity-icon="tree"] {
+  --identity-icon: url("/img/usercontext.svg#tree");
+}
+
+.radios [data-identity-icon="chill"] {
+  --identity-icon: url("/img/usercontext.svg#chill");
+}
+
+.radios [data-identity-icon="fence"] {
+  --identity-icon: url("/img/usercontext.svg#fence");
+}
+
+/* .userContext-icon is used natively, Bug 1333811 was raised to fix */
+.swatch {
+  background-image: var(--identity-icon);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  block-size: 100%;
+  fill: var(--identity-icon-color);
+  filter: url('/img/filters.svg#fill');
+}
+
+.radios > [type="radio"] {
+  -moz-appearance: none;
+  display: inline;
+  opacity: 0;
+  margin: 0;
+}
+
+.radios {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding-block: 8px;
+  justify-content: space-around;
+}
+
+.radios > label {
+  background: none;
+  block-size: 23px;
+  border: 0;
+  filter: none;
+  inline-size: 23px;
+  margin-block-end: 0;
+  margin-block-start: 0;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  padding-block-end: 0;
+  padding-block-start: 0;
+  padding-inline-end: 0;
+  padding-inline-start: 0;
+}
+
+.radios > label::before {
+  background-color: unset;
+  background-image: var(--identity-icon);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  block-size: 23px;
+  border: none;
+  content: "";
+  display: block;
+  fill: var(--identity-icon-color);
+  filter: url('/img/filters.svg#fill');
+  inline-size: 23px;
+  position: relative;
+}
+
+.radios > [type="radio"]:checked + label {
+  background: #d3d3d3;
+  border-radius: 100%;
+}
+
+.radios > [type="radio"]:focus + label {
+  outline: 1px solid #1f9ffc;
+  -moz-outline-radius: 100%;
+}

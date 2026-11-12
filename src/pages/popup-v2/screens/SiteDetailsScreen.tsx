@@ -26,7 +26,7 @@ import { ScreenTopBar } from '../../../frontend/frame/TopBar';
 import { SiteDetailsView, getSiteTabs, getSiteTabsByContainer } from '../views/SiteDetailsView';
 import { browserTabActions } from '../views/tabActions';
 
-import { ScreenProps, logError, modalRenderer } from './common';
+import { ScreenProps, logError, dialogs } from './common';
 
 const closeSiteTabs = async (cookieStoreId: string, domain: string) => {
   const tabs = await TabQueryService.getInstance().queryTabs({ tabGroupId: cookieStoreId, registrableDomain: domain });
@@ -42,7 +42,7 @@ export const SiteDetailsScreen = ({ browserState, active, domain }: ScreenProps 
       tabActions={browserTabActions}
       onContainerClose={(container) => closeSiteTabs(container.cookieStore.id, domain).catch(logError)}
       onContainerOptions={(container) =>
-        modalRenderer.showContainerOptionsPanelAsync(container, container.cookieStore.isPrivate).catch(logError)
+        dialogs.showContainerOptionsPanelAsync(container, container.cookieStore.isPrivate).catch(logError)
       }
     />
   </>

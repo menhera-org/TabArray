@@ -1,0 +1,102 @@
+/* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
+/* vim: set ts=2 sw=2 et ai : */
+
+/*
+  Container Tab Groups
+  Copyright (C) 2023 Menhera.org
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/* Formerly the shadow DOM of <panorama-tab>; :host became .tab. */
+.tab {
+  position: relative;
+  box-sizing: border-box;
+  inline-size: 8rem;
+  display: grid;
+  grid-template-rows: minmax(max-content, 1fr) max-content;
+}
+
+.controls {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  opacity: var(--opaque-opacity);
+}
+
+.controls:focus-within,
+.controls:hover {
+  opacity: 1;
+}
+
+.preview {
+  min-block-size: 2rem;
+  background-color: #fff;
+  display: grid;
+  align-content: center;
+  border: none;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  /* The page's own button color, which the shadow DOM kept out. */
+  color: revert;
+}
+
+.previewImage {
+  inline-size: 100%;
+  user-select: none;
+}
+
+.info {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  align-items: center;
+  justify-items: center;
+}
+
+.icon {
+  inline-size: 75%;
+}
+
+.title {
+  text-align: center;
+  inline-size: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-inline: 0.5rem;
+  padding-block: 0.5rem;
+  /* Some pages make every box border-box; the shadow DOM did not. */
+  box-sizing: content-box;
+}
+
+.close {
+  font-size: 0;
+  width: 2rem;
+  height: 2rem;
+  background-size: 75%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(/img/firefox-icons/close.svg);
+  appearance: none;
+  border: none;
+  background-color: #fff;
+  opacity: 0.75;
+  color: revert;
+}
+
+.close:hover,
+.close:focus {
+  opacity: 1;
+}

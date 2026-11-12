@@ -209,3 +209,8 @@ button {
 :is(#button-new-container, #button-new-temporary-container, #button-settings, #button-help) > .button-text {
   display: none;
 }
+
+/* The React root; its content lays out as children of the body. */
+#app {
+  display: contents;
+}

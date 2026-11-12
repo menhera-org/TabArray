@@ -19,7 +19,7 @@
   @license
 **/
 
-import { createContext, type RefObject, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, type RefObject, useContext, useEffect, useRef } from 'react';
 
 export type DebuggingScreenProps = {
   /** Shown, and owning the top bar. */
@@ -29,38 +29,9 @@ export type DebuggingScreenProps = {
 /** The element that scrolls the debugging screens. */
 export const FrameContext = createContext<RefObject<HTMLElement | null>>({ current: null });
 
-/** An EventSink of any value type. */
-type ChangeSource = {
-  addListener: (listener: () => void) => void;
-  removeListener: (listener: () => void) => void;
-};
-
-/**
- * Loads a value when mounted and again whenever `onChanged` fires.
- * `beforeUpdate` runs just before a newly loaded value is shown.
- */
-export const useLoaded = <T>(load: () => Promise<T>, onChanged?: ChangeSource, beforeUpdate?: () => void) => {
-  const [value, setValue] = useState<T | null>(null);
-  // The first arguments are kept: they are module-level services.
-  const args = useRef({ load, onChanged, beforeUpdate });
-  useEffect(() => {
-    const { load, onChanged, beforeUpdate } = args.current;
-    const reload = () => {
-      load()
-        .then((loaded) => {
-          beforeUpdate?.();
-          setValue(() => loaded);
-        })
-        // Reported to the browser console only: the old page left these failures (an AbortError
-        // while the background is busy at startup) unhandled, so they never showed on the Logs screen.
-        .catch((e) => console.error(e));
-    };
-    reload();
-    onChanged?.addListener(reload);
-    return () => onChanged?.removeListener(reload);
-  }, []);
-  return value;
-};
+// Failed loads (an AbortError while the background is busy at startup) go to the browser
+// console only, so they do not show on the Logs screen, as before.
+export { useLoaded } from '../../../frontend/useLoaded';
 
 /**
  * Keeps a log-like screen scrolled to its end: when it is shown, and when new rows arrive

@@ -24,13 +24,15 @@
 
 const FUNCTIONS: Record<string, (...args: never[]) => unknown> = {
   'i18n.getMessage': (name: string, substitutions?: string | string[]) =>
-    substitutions == null ? name : `${name}(${[substitutions].flat().join(',')})`,
+    name == 'effectiveLocale' ? 'en' : substitutions == null ? name : `${name}(${[substitutions].flat().join(',')})`,
   'i18n.getUILanguage': () => 'en',
   'runtime.getURL': (path: string) => `moz-extension://test/${path.replace(/^\//, '')}`,
   'runtime.getManifest': () => ({ name: 'Container Tab Groups', version: '0.0.0' }),
   'runtime.getBrowserInfo': async () => ({ name: 'Firefox', version: '0.0' }),
   'runtime.getPlatformInfo': async () => ({ os: 'linux' }),
   'commands.getAll': async () => [],
+  'tabs.query': async () => [],
+  'contextualIdentities.query': async () => [],
   'privacy.websites.firstPartyIsolate.get': async () => ({ value: false }),
   'privacy.websites.cookieConfig.get': async () => ({ value: { behavior: 'reject_trackers' } }),
 };

@@ -45,5 +45,5 @@ test('switches between the debugging screens, each with its own heading', async 
   expect(root.querySelector('iframe#time-chart')?.getAttribute('src')).toBe(CHART_URL);
   // Outside the popup, the overflow menu offers to open the popup, and the drawer holds the banner.
   expect(root.querySelector('[title="commandOpenPopup"]')).not.toBeNull();
-  expect(root.ownerDocument.querySelector('#drawer help-banner')).not.toBeNull();
+  expect(root.ownerDocument.querySelector('#drawer img[src="/icon.svg"]')).not.toBeNull();
 });

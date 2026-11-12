@@ -28,7 +28,7 @@ import { BrowserStateStore } from '../../lib/states/BrowserStateStore';
 
 import { App } from './app/App';
 import { throttle } from './app/throttledState';
-import { PopupRendererService } from './PopupRendererService';
+import { pushKeyHandlers } from './keyHandlers';
 import { PopupFocusHandlers } from './PopupFocusHandlers';
 
 const searchParams = new URLSearchParams(window.location.search);
@@ -44,11 +44,7 @@ ExternalServiceProvider.getInstance();
 document.title = browser.i18n.getMessage('browserActionPopupTitle');
 
 const popupFocusHandlers = new PopupFocusHandlers();
-PopupRendererService.getInstance().modalRenderer.pushKeyHandlers(
-  popupFocusHandlers.okHandler,
-  popupFocusHandlers.cancelHandler,
-  popupFocusHandlers.keyHandler
-);
+pushKeyHandlers(popupFocusHandlers.okHandler, popupFocusHandlers.cancelHandler, popupFocusHandlers.keyHandler);
 
 // Tab events come in bursts; render at most every 200 ms, as before.
 const state = throttle(new BrowserStateStore(), 200);

@@ -38,10 +38,11 @@ import { UrlRegistrationService } from '../../lib/UrlRegistrationService';
 import { ExtensionPageService } from '../../lib/ExtensionPageService';
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
 
-import { ContainerEditorElement } from '../../components/container-editor';
+import * as i18n from '../../legacy-lib/modules/i18n';
 
-import { settingsButton, containersElement } from './navigation-elements';
-import { setUrl } from './navigation-i18n';
+import { showDialog } from '../../frontend/dialogs/showDialog';
+import { ContainerEditorDialog } from '../../frontend/dialogs/ContainerEditorDialog';
+
 import {
   ContainerButton,
   CreateContainerButton,
@@ -144,8 +145,7 @@ const Buttons = (state: EnvType | null) => {
   buttons.unshift(
     <CreateContainerButton
       onClick={() => {
-        const containerEditorElement = new ContainerEditorElement();
-        document.body.append(containerEditorElement);
+        showDialog((close) => <ContainerEditorDialog onClose={close} />);
       }}
     />
   );
@@ -163,11 +163,40 @@ const Buttons = (state: EnvType | null) => {
   return <div>{buttons}</div>;
 };
 
-const root = createRoot(containersElement);
-store.registerListener((state) => {
+document.documentElement.lang = i18n.getEffectiveLocale();
+document.title = i18n.getMessage('titleSelectContainer');
+
+/** The page: what is about to open, the containers to open it in, and a way to the settings. */
+const Page = ({ url, state }: { url: string; state: EnvType | null }) => (
+  <div className="container">
+    <h1 id="heading">{i18n.getMessage('titleSelectContainer')}</h1>
+    <p id="description">{i18n.getMessage('descriptionSelectContainer', url || 'about:blank')}</p>
+    <p id="prompt">{i18n.getMessage('promptSelectContainer')}</p>
+    <p>
+      <button
+        id="button-settings"
+        className="browser-style"
+        onClick={() => extensionPageService.openInBackground(ExtensionPageService.OPTIONS)}
+      >
+        {i18n.getMessage('buttonSettings')}
+      </button>
+    </p>
+    <div id="containers">{Buttons(state)}</div>
+  </div>
+);
+
+let shownUrl = 'about:blank';
+const root = createRoot(document.getElementById('app') as HTMLElement);
+const renderPage = () => {
   // Synchronous like the legacy ReactDOM.render, so buttons exist before restoreScreen().
-  flushSync(() => root.render(Buttons(state)));
-});
+  flushSync(() => root.render(<Page url={shownUrl} state={store.value} />));
+};
+const setUrl = (url: string) => {
+  shownUrl = url;
+  renderPage();
+};
+store.registerListener(renderPage);
+renderPage();
 
 const blankScreen = () => {
   document.body.style.display = 'none';
@@ -212,10 +241,6 @@ const envPromise: Promise<EnvType> = Promise.all([
   }
   const tab = new CompatTab(browserTab);
   return { url, tab, displayedContainers, tabGroupDirectorySnapshot, privateBrowsingSupported };
-});
-
-settingsButton.addEventListener('click', () => {
-  extensionPageService.openInBackground(ExtensionPageService.OPTIONS);
 });
 
 const _loadUrl = (env: EnvType) => {

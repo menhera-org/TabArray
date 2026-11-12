@@ -76,3 +76,8 @@ body {
 .container-button-label {
   padding: .5em;
 }
+
+/* The React root; its content lays out as children of the body. */
+#app {
+  display: contents;
+}

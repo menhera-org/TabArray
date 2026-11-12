@@ -107,3 +107,8 @@ body {
 #cookies .delete:hover, #cookies .delete:focus {
   opacity: 1;
 }
+
+/* The React root; its content lays out as children of the body. */
+#app {
+  display: contents;
+}

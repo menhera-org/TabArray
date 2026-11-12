@@ -72,12 +72,7 @@ The extension's pages move to React 19, which the build now bundles from npm (#1
 
 The rewrite keeps the current features and layout. Changes that users can see come from the issues in phase 5.
 
-The popup, the sidebar and the Debugging page are done. The other pages follow in this order:
-
-1. The Options page, with its proxy and container-override editors.
-2. The Panorama page.
-3. The dialogs and editors shared by several pages, such as the container editor and the confirmation dialog. These go last, once no page creates them by hand.
-4. The small pages: Cookies, Page action and the index tab.
+This is done. Every page with a user interface, and every shared dialog, now renders with React. The index tab stays as it is because it has no user interface: it only sets its title and favicon. One small custom element remains, the menu item in the top bars, and React components wrap it.
 
 ## 5. Settings, features and documentation
 

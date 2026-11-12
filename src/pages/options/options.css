@@ -93,3 +93,8 @@ label {
   border-block-start-color: var(--border-color);
   background-color: var(--hover-color);
 }
+
+/* The React root; its content lays out as children of the body. */
+#app {
+  display: contents;
+}

@@ -23,7 +23,7 @@ import browser from 'webextension-polyfill';
 
 import { CompatConsole } from '../../../lib/console/CompatConsole';
 
-import { ModalSetTagElement } from '../../../components/modal-set-tag';
+import { showSetTag } from '../popupDialogs';
 
 import type { TabActions } from './TabRow';
 
@@ -47,7 +47,7 @@ export const browserTabActions: TabActions = {
     });
   },
   setTag: (tabId) => {
-    document.body.appendChild(new ModalSetTagElement(tabId));
+    showSetTag(tabId);
   },
   showContextMenu: (tabId) => {
     browser.menus.overrideContext({ context: 'tab', tabId });

@@ -22,7 +22,7 @@
 import { BrowserStateDao } from '../../../lib/states/BrowserStateDao';
 import { CompatConsole } from '../../../lib/console/CompatConsole';
 
-import { PopupRendererService } from '../PopupRendererService';
+import * as popupDialogs from '../popupDialogs';
 
 export type ScreenProps = {
   browserState: BrowserStateDao;
@@ -30,7 +30,8 @@ export type ScreenProps = {
   active: boolean;
 };
 
-export const modalRenderer = PopupRendererService.getInstance().modalRenderer;
+/** The popup's dialogs. */
+export const dialogs = popupDialogs;
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 export const logError = (e: unknown) => console.error(e);
