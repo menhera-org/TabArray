@@ -18,8 +18,8 @@ Last updated 12 November 2026. "Done" means the change is on `main` and ships in
 
 | Phase | Status |
 |---|---|
-| 1. Foundations and breakage bugs | Code done. #645 waits for the reporter to confirm the fix, and #519 needs a comment on the issue. |
-| 2. Sign-in and compatibility bugs, memory leak | #139, #396 and #552 are done and closed. The sign-in and desktop-app reports need their reporters to retest. |
+| 1. Foundations and breakage bugs | Done. Every issue is closed; the #645 reporter is asked to retest 12.0.0 and reopen if needed. |
+| 2. Sign-in and compatibility bugs, memory leak | Done. Every issue is closed; the sign-in and desktop-app reporters are asked to retest 12.0.0 and reopen if needed. |
 | 3. Firefox native tab groups | Not started. Container colors already accept both the Firefox 153 and the ESR 140 names (#646), which the group color mapping needs. |
 | 4. Frontend rewrite | Done. |
 | 5. Settings, features and documentation | Not started. |
@@ -40,8 +40,8 @@ Bugs that can lose tabs or break the UI come first:
 |---|---|---|---|
 | #508 | The sidebar's close button closes Firefox. | The button closes the selected window, which quits Firefox when it is the last one. Ask for confirmation first. | Done |
 | #646 | "Edit container" does nothing for containers without an icon, and new icons are not saved. | Firefox 153 renamed the container colors toolbar and turquoise to gray and cyan, and added violet. Accept both sets of names, so ESR 140 and the latest release both work, including container sync between them. | Done |
-| #645 | A site reloads every 2 seconds while the extension is on. | The content script added `navigator.userAgentData` to every page, even without a user-agent override. Add it only when the override needs it, then ask the reporter to confirm. | Fixed. Ask the reporter to confirm. |
-| #519 | New tabs open in the last-used container. | Works as intended: the "sticky container" setting, on by default, does this. Explain the setting on the issue. | Explain the setting on the issue. |
+| #645 | A site reloads every 2 seconds while the extension is on. | The content script added `navigator.userAgentData` to every page, even without a user-agent override. Add it only when the override needs it, then ask the reporter to confirm. | Fixed. Closed; the reporter is asked to retest 12.0.0. |
+| #519 | New tabs open in the last-used container. | Works as intended: the "sticky container" setting, on by default, does this. Explain the setting on the issue. | Done. The setting is explained on the issue, which is closed. |
 | #411 | Links from other apps open twice when "last active container" is set. | After reopening the link in the container, the original tab was also sent to the container picker. Reopen it once and wait for the old tab to close. | Done |
 
 ## 2. Sign-in and compatibility bugs, memory leak
@@ -54,11 +54,11 @@ Request headers no longer pass through the extension unless a container has a la
 
 | Issue | Problem | Status |
 |---|---|---|
-| #403 | A page behind Microsoft Azure sign-in never finishes loading. | Likely fixed by #645. Ask the reporter to retest. |
-| #418 | Google sign-in pop-ups stay blank. | Possibly fixed by #645. Ask the reporter to retest. |
+| #403 | A page behind Microsoft Azure sign-in never finishes loading. | Likely fixed by #645. Closed; the reporter is asked to retest 12.0.0. |
+| #418 | Google sign-in pop-ups stay blank. | Possibly fixed by #645. Closed; the reporter is asked to retest 12.0.0. |
 | #552 | Windows single sign-on to ServiceNow fails. | Done. Not an extension bug: Firefox turns single sign-on off in containers. `docs/single-sign-on.md` explains how to turn it on for one container. The issue is closed. |
-| #412 | Download managers cannot reach their desktop apps. | Not reproduced. Ask the reporter to retest. |
-| #164 | 1Password cannot connect to its desktop app. | Not reproduced. Ask the reporter to retest. |
+| #412 | Download managers cannot reach their desktop apps. | Not reproduced. Closed; the reporter is asked to retest 12.0.0. |
+| #164 | 1Password cannot connect to its desktop app. | Not reproduced. Closed; the reporter is asked to retest 12.0.0. |
 
 Two long-standing problems also belong here:
 
