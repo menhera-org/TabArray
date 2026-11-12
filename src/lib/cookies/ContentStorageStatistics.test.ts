@@ -30,3 +30,25 @@ test('domain list skips the "null" origins of opaque documents', async () => {
   const domains = await statistics.getDomainList('firefox-default', '');
   expect([...domains].sort()).toEqual(['a.example.com', 'b.example.org']);
 });
+
+test('recording the same statistics again writes nothing', async () => {
+  const statistics = new ContentStorageStatistics();
+  const stored = {
+    'firefox-default': {
+      'example.com': { 'https://example.com': { origin: 'https://example.com', hasLocalStorage: true } },
+    },
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const storageItem = (statistics as any)._storageItem;
+  vi.spyOn(storageItem, 'getValue').mockImplementation(async () => structuredClone(stored));
+  const setValue = vi.spyOn(storageItem, 'setValue').mockResolvedValue(undefined);
+  const record = (hasLocalStorage: boolean) =>
+    statistics.setOriginStatistics('firefox-default', 'example.com', 'https://example.com', {
+      origin: 'https://example.com',
+      hasLocalStorage,
+    });
+  await record(true);
+  expect(setValue).not.toHaveBeenCalled();
+  await record(false); // removes the origin
+  expect(setValue).toHaveBeenCalledTimes(1);
+});

@@ -97,6 +97,9 @@ export class ContentStorageStatistics {
     }
 
     const storage = await this._storageItem.getValue();
+    const stored = storage[cookieStoreId]?.[firstPartyDomain]?.[origin];
+    // Every write is copied to every storage listener in every extension page, so skip unchanged ones.
+    if (stored?.origin == statistics.origin && stored.hasLocalStorage == statistics.hasLocalStorage) return;
     const cookieStoreStorage = (storage[cookieStoreId] ??= {});
     (cookieStoreStorage[firstPartyDomain] ??= {})[origin] = statistics;
     await this._storageItem.setValue(storage);

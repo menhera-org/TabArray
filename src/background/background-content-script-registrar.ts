@@ -19,90 +19,104 @@
   @license
 **/
 
+/*
+  Per-container overrides reach pages through content scripts registered for each container,
+  with the values written into the code, so pages see them before their first script runs.
+*/
+
 import browser from 'webextension-polyfill';
 
 import { CookieStoreService } from '../lib/tabGroups/CookieStoreService';
 
 import { LanguageSettings } from '../lib/overrides/LanguageSettings';
+import { UserAgentSettings } from '../lib/overrides/UserAgentSettings';
 import { config } from '../config/config';
 
 const languageSettings = LanguageSettings.getInstance();
-let languageSettingsValues = new Map<string, string>();
-const contentScripts = new Map<string, browser.ContentScripts.RegisteredContentScript>();
+const userAgentSettings = UserAgentSettings.getInstance();
 const cookieStoreService = CookieStoreService.getInstance();
 
-const unregisterContentScript = async (key: string) => {
-  await contentScripts.get(key)?.unregister();
-  contentScripts.delete(key);
+const contentScripts = new Map<string, { code: string; script: browser.ContentScripts.RegisteredContentScript }>();
+
+/** The code that hands a container's overrides to content/overrides/content.ts, whichever runs first. */
+const getCode = async (cookieStoreId: string, languagesEnabled: boolean, userAgentEnabled: boolean) => {
+  const lines: string[] = [];
+  const languages = languagesEnabled ? await languageSettings.getValueForTabGroup(cookieStoreId) : '';
+  if ('' !== languages) {
+    lines.push(
+      'globalThis.gLanguageStore = globalThis.gLanguageStore ?? {};',
+      `gLanguageStore.languages = ${JSON.stringify(languages)};`
+    );
+  }
+  // Pages served by a service worker do not take the user agent from the request header (#396).
+  const userAgent = userAgentEnabled ? await userAgentSettings.getUserAgent(cookieStoreId) : '';
+  if ('' !== userAgent) {
+    lines.push(
+      `globalThis.gUserAgentOverride = ${JSON.stringify(userAgent)};`,
+      'globalThis.gApplyUserAgentOverride?.();'
+    );
+  }
+  return lines.join('\n');
 };
 
-const unregisterAllContentScripts = async () => {
-  const promises = [];
-  for (const key of contentScripts.keys()) {
-    promises.push(unregisterContentScript(key));
+const doUpdate = async () => {
+  const [languagesEnabled, userAgentEnabled, cookieStores] = await Promise.all([
+    config['feature.languageOverrides'].getValue(),
+    config['feature.uaOverrides'].getValue(),
+    cookieStoreService.getCookieStores(),
+  ]);
+  const wanted = new Map<string, string>();
+  for (const cookieStore of cookieStores) {
+    const code = await getCode(cookieStore.id, languagesEnabled, userAgentEnabled);
+    if ('' !== code) wanted.set(cookieStore.id, code);
   }
-  await Promise.all(promises);
+
+  for (const [cookieStoreId, { code, script }] of contentScripts) {
+    if (wanted.get(cookieStoreId) === code) continue;
+    contentScripts.delete(cookieStoreId);
+    await script.unregister();
+  }
+
+  for (const [cookieStoreId, code] of wanted) {
+    if (contentScripts.has(cookieStoreId)) continue;
+    const script = await browser.contentScripts.register({
+      js: [{ code }],
+      matches: ['<all_urls>'],
+      allFrames: true,
+      matchAboutBlank: true,
+      runAt: 'document_start',
+      cookieStoreId,
+    });
+    contentScripts.set(cookieStoreId, { code, script });
+  }
 };
 
-let updating = false;
-const update = async () => {
-  if (updating) return;
-  updating = true;
-  try {
-    const enabled = await config['feature.languageOverrides'].getValue();
-    if (!enabled) {
-      await unregisterAllContentScripts();
-      return;
-    }
-
-    const cookieStores = await cookieStoreService.getCookieStores();
-    const newValues = new Map<string, string>();
-    for (const cookieStore of cookieStores) {
-      const languages = await languageSettings.getValueForTabGroup(cookieStore.id);
-      const cookieStoreId = cookieStore.id;
-      if ('' === languages) continue;
-      newValues.set(cookieStoreId, languages);
-    }
-    const promises = [];
-    for (const key of contentScripts.keys()) {
-      if (!newValues.has(key)) {
-        promises.push(unregisterContentScript(key));
-      }
-    }
-    await Promise.all(promises);
-
-    for (const [key, languages] of newValues) {
-      if (languageSettingsValues.has(key)) {
-        if (languageSettingsValues.get(key) === languages) continue;
-
-        await unregisterContentScript(key);
-      }
-
-      const cookieStoreId = key;
-      const contentScript = await browser.contentScripts.register({
-        js: [
-          {
-            code: `
-            globalThis.gLanguageStore = globalThis.gLanguageStore ?? {};
-            gLanguageStore.languages = ${JSON.stringify(languages)};
-          `,
-          },
-        ],
-        matches: ['<all_urls>'],
-        allFrames: true,
-        matchAboutBlank: true,
-        runAt: 'document_start',
-        cookieStoreId,
-      });
-      // console.log(contentScript);
-      contentScripts.set(key, contentScript);
-    }
-
-    languageSettingsValues = newValues;
-  } finally {
-    updating = false;
+let running = false;
+let rerun = false;
+/** Runs one update at a time; a change during an update runs another one after it. */
+const update = () => {
+  if (running) {
+    rerun = true;
+    return;
   }
+  running = true;
+  (async () => {
+    do {
+      rerun = false;
+      await doUpdate();
+    } while (rerun);
+  })()
+    .catch((e) => {
+      console.error(e);
+    })
+    .finally(() => {
+      running = false;
+    });
 };
 
 config['feature.languageOverrides'].observe(update);
+config['feature.uaOverrides'].observe(update);
 languageSettings.onChanged.addListener(update);
+userAgentSettings.onChanged.addListener(update);
+// The Chrome preset follows the current Chrome version, which changes about once a month.
+setInterval(update, 60 * 60 * 1000);

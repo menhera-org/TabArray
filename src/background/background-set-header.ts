@@ -63,48 +63,91 @@ const setHeader = (
   }
 };
 
-browser.webRequest.onBeforeSendHeaders.addListener(
-  async (details) => {
-    if (!details.cookieStoreId) {
-      return {};
+const onBeforeSendHeaders = async (
+  details: browser.WebRequest.OnBeforeSendHeadersDetailsType
+): Promise<browser.WebRequest.BlockingResponse> => {
+  if (!details.cookieStoreId) {
+    return {};
+  }
+
+  const cookieStoreId = details.cookieStoreId;
+
+  // all of these IO operations are now cached.
+  const [userAgent, acceptLanguages, featureLanguageOverridesEnabled, featureUserAgentOverridesEnabled] =
+    await Promise.all([
+      userAgentSettings.getUserAgent(cookieStoreId),
+      languageSettings.getAcceptLanguages(cookieStoreId),
+      config['feature.languageOverrides'].getValue(),
+      config['feature.uaOverrides'].getValue(),
+    ]);
+  const overrideUserAgent = '' !== userAgent && featureUserAgentOverridesEnabled;
+  const overrideLanguages = '' !== acceptLanguages && featureLanguageOverridesEnabled;
+
+  // Returning the headers unchanged would still replace them, for every request in the browser.
+  if (!overrideUserAgent && !overrideLanguages) {
+    return {};
+  }
+
+  if (overrideUserAgent) {
+    setHeader(details, 'user-agent', userAgent);
+  }
+
+  if (overrideLanguages) {
+    setHeader(details, 'accept-language', acceptLanguages);
+  }
+
+  // this feature is only available in secure contexts.
+  if (overrideUserAgent && details.url?.startsWith('https://')) {
+    const secChUa = getSecChUa(userAgent);
+    if ('' !== secChUa) {
+      setHeader(details, 'sec-ch-ua', secChUa);
+      const secChUaFullVersionList = secChUa.replaceAll(/v="(\d+)"/g, 'v="$1.0.0.0"');
+      setHeader(details, 'sec-ch-ua-full-version-list', secChUaFullVersionList);
     }
+  }
 
-    const cookieStoreId = details.cookieStoreId;
+  return { requestHeaders: details.requestHeaders };
+};
 
-    // all of these IO operations are now cached.
-    const [userAgent, acceptLanguages, featureLanguageOverridesEnabled, featureUserAgentOverridesEnabled] =
-      await Promise.all([
-        userAgentSettings.getUserAgent(cookieStoreId),
-        languageSettings.getAcceptLanguages(cookieStoreId),
-        config['feature.languageOverrides'].getValue(),
-        config['feature.uaOverrides'].getValue(),
-      ]);
+/**
+ * A blocking listener makes every request in the browser wait for the extension,
+ * so listen only while a container has an override that is turned on.
+ */
+const updateListener = async () => {
+  const [featureLanguageOverridesEnabled, featureUserAgentOverridesEnabled, languageTabGroupIds, uaTabGroupIds] =
+    await Promise.all([
+      config['feature.languageOverrides'].getValue(),
+      config['feature.uaOverrides'].getValue(),
+      languageSettings.getTabGroupIds(),
+      userAgentSettings.getTabGroupIds(),
+    ]);
+  const needed =
+    (featureLanguageOverridesEnabled && languageTabGroupIds.length > 0) ||
+    (featureUserAgentOverridesEnabled && uaTabGroupIds.length > 0);
+  const listening = browser.webRequest.onBeforeSendHeaders.hasListener(onBeforeSendHeaders);
+  if (needed && !listening) {
+    browser.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, { urls: ['<all_urls>'] }, [
+      'blocking',
+      'requestHeaders',
+    ]);
+  } else if (!needed && listening) {
+    browser.webRequest.onBeforeSendHeaders.removeListener(onBeforeSendHeaders);
+  }
+};
 
-    if ('' !== userAgent && featureUserAgentOverridesEnabled) {
-      setHeader(details, 'user-agent', userAgent);
-    }
-
-    if ('' !== acceptLanguages && featureLanguageOverridesEnabled) {
-      setHeader(details, 'accept-language', acceptLanguages);
-    }
-
-    // this feature is only available in secure contexts.
-    if ('' !== userAgent && featureUserAgentOverridesEnabled && details.url?.startsWith('https://')) {
-      const secChUa = getSecChUa(userAgent);
-      if ('' !== secChUa) {
-        setHeader(details, 'sec-ch-ua', secChUa);
-        const secChUaFullVersionList = secChUa.replaceAll(/v="(\d+)"/g, 'v="$1.0.0.0"');
-        setHeader(details, 'sec-ch-ua-full-version-list', secChUaFullVersionList);
-      }
-    }
-
-    return { requestHeaders: details.requestHeaders };
-  },
-  {
-    urls: ['<all_urls>'],
-  },
-  ['blocking', 'requestHeaders']
-);
+const logUpdateError = (e: unknown) => {
+  console.error(e);
+};
+// Listen from the start, so tabs restored before the settings are read still get their overrides.
+browser.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, { urls: ['<all_urls>'] }, [
+  'blocking',
+  'requestHeaders',
+]);
+updateListener().catch(logUpdateError);
+config['feature.languageOverrides'].onChanged.addListener(() => updateListener().catch(logUpdateError));
+config['feature.uaOverrides'].onChanged.addListener(() => updateListener().catch(logUpdateError));
+languageSettings.onChanged.addListener(() => updateListener().catch(logUpdateError));
+userAgentSettings.onChanged.addListener(() => updateListener().catch(logUpdateError));
 
 contextualIdentityFactory.onRemoved.addListener((contextualIdentity) => {
   const cookieStoreId = contextualIdentity.cookieStore.id;

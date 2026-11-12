@@ -38,9 +38,15 @@ const DEC = 11;
  * Chromium/Chrome release service.
  */
 export class ChromiumReleaseService {
-  private static readonly _ANCHOR_RELEASE_NUMBER = 108;
-  private static readonly _ANCHOR_RELEASE_TIME = new Date(2022, DEC, 1).getTime();
-  private static readonly _RELEASE_INTERVAL = 2611200000;
+  // Chrome ships every two weeks since Chrome 153 (8 September 2026), with longer gaps over the
+  // year-end holidays. Chrome 160 is the first release after the 2026 holidays.
+  private static readonly _ANCHOR_RELEASE_NUMBER = 160;
+  private static readonly _ANCHOR_RELEASE_TIME = Date.UTC(2027, JAN, 5);
+  private static readonly _RELEASE_INTERVAL = 14 * 24 * 60 * 60 * 1000;
+  // The holidays delay about two releases a year. Running behind is safer than naming a Chrome
+  // that does not exist yet.
+  private static readonly _HOLIDAY_RELEASES_PER_YEAR = 2;
+  private static readonly _YEAR = 365 * 24 * 60 * 60 * 1000;
   private static readonly _INSTANCE = new ChromiumReleaseService();
 
   public static getInstance(): ChromiumReleaseService {
@@ -51,11 +57,14 @@ export class ChromiumReleaseService {
    * Calculates the approximate release number of the latest release based on the current time.
    * @returns The approximate release number of the latest release.
    */
-  public getLatestReleaseNumber(): number {
+  public getLatestReleaseNumber(now = Date.now()): number {
+    const elapsed = now - ChromiumReleaseService._ANCHOR_RELEASE_TIME;
+    const releases = Math.floor(elapsed / ChromiumReleaseService._RELEASE_INTERVAL);
+    const years = Math.max(0, Math.floor(elapsed / ChromiumReleaseService._YEAR));
     return (
-      Math.floor(
-        (Date.now() - ChromiumReleaseService._ANCHOR_RELEASE_TIME) / ChromiumReleaseService._RELEASE_INTERVAL
-      ) + ChromiumReleaseService._ANCHOR_RELEASE_NUMBER
+      ChromiumReleaseService._ANCHOR_RELEASE_NUMBER +
+      releases -
+      years * ChromiumReleaseService._HOLIDAY_RELEASES_PER_YEAR
     );
   }
 

@@ -19,7 +19,6 @@
   @license
 **/
 
-import browser from 'webextension-polyfill';
 import { LanguageStore } from './LanguageStore';
 import '../content-interfaces';
 import './content-localstorage';
@@ -28,16 +27,12 @@ import { UaDataService } from '../../lib/overrides/UaDataService';
 declare global {
   // eslint-disable-next-line no-var
   var gLanguageStore: LanguageStore;
+  /** Set by the container's registered content script (background-content-script-registrar.ts). */
+  // eslint-disable-next-line no-var
+  var gUserAgentOverride: string | undefined;
+  // eslint-disable-next-line no-var
+  var gApplyUserAgentOverride: (() => void) | undefined;
 }
-
-browser.runtime
-  .sendMessage({
-    type: 'content-script-loaded',
-    url: window.location.href,
-  })
-  .catch(() => {
-    // ignore.
-  });
 
 let languages: string | null = null;
 if (globalThis.gLanguageStore) {
@@ -97,18 +92,6 @@ const setUpLanguageOverrides = () => {
   languageSetupDone = true;
 };
 
-gLanguageStore.onLanguagesChanged.addListener(() => {
-  if (!languageSetupDone && gLanguageStore.language !== '') {
-    setUpLanguageOverrides();
-  }
-  window.dispatchEvent(
-    new Event('languagechange', {
-      bubbles: false,
-      cancelable: false,
-    })
-  );
-});
-
 const getUaDataPlatform = () => {
   const userAgent = window.navigator.userAgent;
   if (userAgent.includes('Windows')) {
@@ -119,19 +102,28 @@ const getUaDataPlatform = () => {
   return 'Linux';
 };
 
+const windowsWithLoadBlocker = new WeakSet<Window>();
+
+/**
+ * Makes the page see the container's user agent. Firefox already reports the user agent of the
+ * document's request, except for pages a service worker serves (#396) and frames with no request.
+ * Returns whether this window needed an override of its own.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototypeWrapped: any) => {
+const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototypeWrapped: any): boolean => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const windowWrapped = window.wrappedJSObject as any;
 
     const seenUserAgent = window.navigator.userAgent;
-    let userAgent = seenUserAgent;
-    try {
-      userAgent = window.parent?.navigator.userAgent ?? userAgent;
-      userAgent = window.top?.navigator.userAgent ?? userAgent;
-    } catch (_e) {
-      // ignore.
+    let userAgent = globalThis.gUserAgentOverride ?? seenUserAgent;
+    if (undefined === globalThis.gUserAgentOverride) {
+      try {
+        userAgent = window.parent?.navigator.userAgent ?? userAgent;
+        userAgent = window.top?.navigator.userAgent ?? userAgent;
+      } catch (_e) {
+        // ignore.
+      }
     }
     const brands = uaDataService.getBrands(userAgent);
     const highEntropyBrands = uaDataService.getHighEntropyBrands(userAgent);
@@ -234,7 +226,8 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
       });
     }
 
-    if (!isMozilla) {
+    if (!isMozilla && !windowsWithLoadBlocker.has(window)) {
+      windowsWithLoadBlocker.add(window);
       const blockPattern = /^(?:resource|chrome):\/\//;
 
       window.document.addEventListener(
@@ -270,8 +263,10 @@ const setupUaOverrides = (window: Window & typeof globalThis, navigatorPrototype
         { capture: true, passive: false }
       );
     }
+    return seenUserAgent != userAgent;
   } catch (e) {
     console.error(String(e));
+    return false;
   }
 };
 
@@ -299,8 +294,6 @@ gLanguageStore.onLanguagesChanged.addListener(() => {
   }
 });
 
-setupUaOverrides(window, navigatorPrototypeWrapped);
-
 const visitedIframes = new WeakSet<HTMLIFrameElement>();
 const iframeMutationObserver = new MutationObserver(() => {
   const iframes = document.querySelectorAll('iframe');
@@ -322,4 +315,19 @@ const iframeMutationObserver = new MutationObserver(() => {
   }
 });
 
-iframeMutationObserver.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+let observingIframes = false;
+// The registered content script may run before or after this one, so both call this.
+const applyUaOverrides = () => {
+  // Watching every DOM change costs every page, so only frames with an override copy it into their iframes.
+  if (setupUaOverrides(window, navigatorPrototypeWrapped) && !observingIframes) {
+    observingIframes = true;
+    iframeMutationObserver.observe(document, {
+      attributes: false,
+      childList: true,
+      characterData: false,
+      subtree: true,
+    });
+  }
+};
+globalThis.gApplyUserAgentOverride = applyUaOverrides;
+applyUaOverrides();

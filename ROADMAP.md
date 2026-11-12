@@ -19,7 +19,7 @@ Last updated 12 November 2026. "Done" means the change is on `main` and ships in
 | Phase | Status |
 |---|---|
 | 1. Foundations and breakage bugs | Code done. #645 waits for the reporter to confirm the fix, and #519 needs a comment on the issue. |
-| 2. Sign-in and compatibility bugs, memory leak | Not started. |
+| 2. Sign-in and compatibility bugs, memory leak | Code done for #139 and #396. The sign-in and desktop-app reports need their reporters to retest. |
 | 3. Firefox native tab groups | Not started. Container colors already accept both the Firefox 153 and the ESR 140 names (#646), which the group color mapping needs. |
 | 4. Frontend rewrite | Done. |
 | 5. Settings, features and documentation | Not started. |
@@ -46,22 +46,28 @@ Bugs that can lose tabs or break the UI come first:
 
 ## 2. Sign-in and compatibility bugs, memory leak
 
-Several reports may share one cause: sign-in pages and connections to desktop apps fail while the extension is on. Earlier comments point at first-party isolation and at how the extension handles requests. We will look for that cause first, then confirm each issue against the fix.
+Several reports may share one cause: sign-in pages and connections to desktop apps fail while the extension is on. We could not reproduce them without the sites involved, so each reporter needs to retest 12.0.0.
+
+Until 12.0.0, the content script added `navigator.userAgentData` to every page, with no browser brands in it (#645). A page that sees `userAgentData` assumes Chrome and reads the brands. That fits #403, which failed with a script error and worked with a Chrome-based user agent in the container. The same may explain #418.
+
+Request headers no longer pass through the extension unless a container has a language or user-agent override. Before, every request in the browser waited for the extension. We checked that the old behavior did not undo header changes made by other extensions, so that is not the cause of #412.
 
 | Issue | Problem | Status |
 |---|---|---|
-| #403 | A page behind Microsoft Azure sign-in never finishes loading. | Not started |
-| #418 | Google sign-in pop-ups stay blank. | Not started |
-| #552 | Windows single sign-on to ServiceNow fails. | Not started |
-| #412 | Download managers cannot reach their desktop apps. | Not started |
-| #164 | 1Password cannot connect to its desktop app. | Not started |
+| #403 | A page behind Microsoft Azure sign-in never finishes loading. | Likely fixed by #645. Ask the reporter to retest. |
+| #418 | Google sign-in pop-ups stay blank. | Possibly fixed by #645. Ask the reporter to retest. |
+| #552 | Windows single sign-on to ServiceNow fails. | Not an extension bug. Firefox turns Windows single sign-on off in containers. The about:config pref `network.http.windows-sso.container-enabled.<container ID>` turns it on for one container. Explain this on the issue. |
+| #412 | Download managers cannot reach their desktop apps. | Not reproduced. Ask the reporter to retest. |
+| #164 | 1Password cannot connect to its desktop app. | Not reproduced. Ask the reporter to retest. |
 
 Two long-standing problems also belong here:
 
-| Issue | Problem | Plan | Status |
+| Issue | Problem | Cause | Status |
 |---|---|---|---|
-| #139 | Per-container overrides leak memory until Firefox stops responding. Still confirmed in 2026. | Find what holds the memory and release it. | Not started |
-| #396 | A page can load before the user-agent override applies, so JavaScript reports the real user agent. | Apply the override before the page's first script runs. | Not started |
+| #139 | The extension's memory use grows until Firefox stops responding. Still confirmed in 2026. | A report showed 205,073 of the extension's messages, 879 MB, waiting for replies. The content script sent a message from every frame that nothing answered, and weeg-utils' `MessagingService` promised a reply to every message, even ones it had no handler for. | Fixed. Unanswered messages are gone, and storage statistics are sent and saved only when they change. Includes weeg-utils 0.11.1. |
+| #396 | JavaScript reports the real user agent while the request header has the override. | Firefox gives a page the user agent of its request, except when a service worker serves the page. | Fixed for pages and their frames: the user agent is now also set by a content script registered for each container. Workers started by such pages still report the real user agent. |
+
+The Chrome user-agent preset now follows Chrome's two-week release cycle, in place since Chrome 153.
 
 ## 3. Firefox native tab groups
 

@@ -21,14 +21,28 @@
 
 import browser from 'webextension-polyfill';
 
+// Only whether the origin has local storage is recorded, so report it when that changes, not on every storage event.
+let reportedHasLocalStorage: boolean | undefined;
+
 const notifyStorageData = () => {
+  // Opaque origins (sandboxed frames, data: URLs) have no host to record.
+  if (window.location.origin == 'null') return;
+  let localStorageLength: number;
+  try {
+    localStorageLength = window.localStorage.length;
+  } catch {
+    return; // Storage access can be denied, for example in sandboxed frames.
+  }
+  const hasLocalStorage = localStorageLength > 0;
+  if (hasLocalStorage === reportedHasLocalStorage) return;
+  reportedHasLocalStorage = hasLocalStorage;
   browser.runtime
     .sendMessage({
       type: 'content-localstorage-statistics',
       payload: {
         origin: window.location.origin,
         url: window.location.href,
-        localStorageLength: window.localStorage.length,
+        localStorageLength,
       },
     })
     .catch(() => {
@@ -37,9 +51,4 @@ const notifyStorageData = () => {
 };
 
 window.addEventListener('storage', notifyStorageData);
-
-try {
-  notifyStorageData();
-} catch (_e) {
-  // ignore
-}
+notifyStorageData();
