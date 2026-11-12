@@ -21,7 +21,7 @@
 
 import browser from 'webextension-polyfill';
 import { StorageItem } from 'weeg-storage';
-import { ContextualIdentity } from 'weeg-containers';
+import { ContextualIdentity, CookieStore } from 'weeg-containers';
 
 import { ServiceRegistry } from '../ServiceRegistry';
 import { ContextualIdentityService } from './ContextualIdentityService';
@@ -29,6 +29,23 @@ import { TabGroupService } from './TabGroupService';
 import { CompatConsole } from '../console/CompatConsole';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
+
+const temporaryContainerName = (userContextId: number) => `tmp-${userContextId.toFixed(0)}`;
+
+/**
+ * Temporary containers left over from earlier sessions: named tmp-<userContextId>, with no tabs
+ * at all. `tabs` must be every tab in every window, pinned and hidden ones included.
+ */
+export const findLeftoverTemporaryContainers = <T extends { name: string; cookieStore: CookieStore }>(
+  containers: readonly T[],
+  tabs: readonly { cookieStoreId?: string }[]
+): T[] => {
+  const cookieStoreIdsWithTabs = new Set(tabs.map((tab) => tab.cookieStoreId));
+  return containers.filter(
+    ({ name, cookieStore }) =>
+      name == temporaryContainerName(cookieStore.userContextId) && !cookieStoreIdsWithTabs.has(cookieStore.id)
+  );
+};
 
 export class TemporaryContainerService {
   private static readonly _INSTANCE = new TemporaryContainerService();
@@ -83,7 +100,7 @@ export class TemporaryContainerService {
     });
 
     identity = await this._contextualIdentityFactory.setParams(identity.cookieStore.id, {
-      name: `tmp-${identity.cookieStore.userContextId.toFixed(0)}`,
+      name: temporaryContainerName(identity.cookieStore.userContextId),
       color: identity.color,
       icon: identity.icon,
     });
@@ -99,6 +116,21 @@ export class TemporaryContainerService {
 
     console.info('Created temporary container:', identity.cookieStore.id, identity.name);
     return identity;
+  }
+
+  /**
+   * Remove the temporary containers that earlier sessions left behind, with their browsing data.
+   */
+  public async removeLeftoverTemporaryContainers(): Promise<void> {
+    // No filter: every tab in every window, including pinned and hidden ones.
+    const [identities, browserTabs] = await Promise.all([
+      this._contextualIdentityFactory.getAll(),
+      browser.tabs.query({}),
+    ]);
+    for (const identity of findLeftoverTemporaryContainers(identities, browserTabs)) {
+      console.info('Removing leftover temporary container:', identity.cookieStore.id, identity.name);
+      await this.removeTemporaryContainer(identity.cookieStore.id);
+    }
   }
 }
 

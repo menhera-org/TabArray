@@ -1,6 +1,7 @@
 /* -*- indent-tabs-mode: nil; tab-width: 2; -*- */
 /* vim: set ts=2 sw=2 et ai : */
-/**
+
+/*
   Container Tab Groups
   Copyright (C) 2023 Menhera.org
 
@@ -16,19 +17,49 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-  @license
-**/
+*/
 
-import { CONTENT_EXTENSION_DIRECTORY_LISTING } from '../../defs';
+@import url(../../css/theme.css);
 
-export type ExtensionContentScriptDefinition = {
-  matchPattern: RegExp;
-  source: string;
-};
+body {
+  font-family: system-ui;
+  color: var(--text-color);
+  background-color: var(--background-color);
+}
 
-export const EXTENSION_CONTENT_SCRIPTS: ExtensionContentScriptDefinition[] = [
-  {
-    matchPattern: /\/$/,
-    source: CONTENT_EXTENSION_DIRECTORY_LISTING,
-  },
-];
+table {
+  margin-inline: auto;
+  max-inline-size: 50%;
+  margin-block: 1em;
+  border-spacing: .5em;
+}
+
+th {
+  text-align: start;
+}
+
+a {
+  color: var(--in-content-link-color);
+  text-decoration: none;
+}
+
+.icon {
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 1em;
+  vertical-align: middle;
+  margin-inline-end: .5em;
+  background-color: var(--text-color);
+}
+
+.icon-directory {
+  mask: url(/img/firefox-icons/folder.svg) no-repeat center / contain;
+}
+
+.icon-file {
+  mask: url(/img/firefox-icons/page-vertical.svg) no-repeat center / contain;
+}
+
+.error {
+  text-align: center;
+}

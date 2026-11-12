@@ -25,9 +25,8 @@ import { injectFilename } from './build-plugins/inject-filename.ts';
 import { BUILD_TARGET } from './build-plugins/target.ts';
 
 // Content scripts are injected as classic scripts, so each one is bundled
-// into a single self-contained IIFE at a fixed path (see manifest.json and
-// CONTENT_EXTENSION_DIRECTORY_LISTING in src/defs.ts).
-const CONTENT_SCRIPTS = ['content/overrides/content', 'content/ext/directory-listing/directory-listing'];
+// into a single self-contained IIFE at a fixed path (see manifest.json).
+const CONTENT_SCRIPTS = ['content/overrides/content'];
 
 export default defineConfig(
   CONTENT_SCRIPTS.map((name) => ({

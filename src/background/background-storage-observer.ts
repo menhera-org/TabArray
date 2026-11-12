@@ -35,6 +35,8 @@ messagingService.addListener('content-localstorage-statistics', async (message, 
   if (!sender.tab.cookieStoreId) return;
   if (null == message || typeof message != 'object' || !('origin' in message) || !('localStorageLength' in message))
     return;
+  // Opaque origins (sandboxed frames, data: URLs) report "null", which has no host to clear data for.
+  if (typeof message.origin != 'string' || !URL.canParse(message.origin)) return;
 
   const { cookieStoreId } = sender.tab;
 

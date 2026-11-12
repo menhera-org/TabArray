@@ -19,26 +19,12 @@
   @license
 **/
 
-// prevent scripts from executing twice
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
 
-import '../content-interfaces';
+import { DirectoryApp } from './DirectoryApp';
 
-interface WindowGlobals {
-  gScriptLoaded?: boolean;
-}
+const path = new URLSearchParams(location.search).get('path') ?? '/';
+document.title = path;
 
-const wrappedWindow = window.wrappedJSObject as WindowGlobals;
-
-export function executeOnce(callback: () => unknown) {
-  if (wrappedWindow.gScriptLoaded) {
-    return;
-  }
-  wrappedWindow.gScriptLoaded = true;
-  try {
-    Promise.resolve(callback()).catch((e) => {
-      console.error(e);
-    });
-  } catch (e) {
-    console.error(e);
-  }
-}
+createRoot(document.getElementById('app') as HTMLElement).render(createElement(DirectoryApp, { path }));

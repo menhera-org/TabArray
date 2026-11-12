@@ -27,6 +27,7 @@ import { TemporaryContainerService } from '../lib/tabGroups/TemporaryContainerSe
 import { CompatConsole } from '../lib/console/CompatConsole';
 import { TabGroupService } from '../lib/tabGroups/TabGroupService';
 import { OpenTabState } from '../lib/tabGroups/OpenTabState';
+import { StartupService } from '../lib/StartupService';
 import { InitialWindowsService } from './includes/InitialWindowsService';
 
 const contextualIdentityService = ContextualIdentityService.getInstance();
@@ -38,6 +39,12 @@ const openTabs = new OpenTabState();
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tabGroupService = TabGroupService.getInstance();
+
+StartupService.getInstance().onStartup.addListener(() => {
+  temporatyContainerService.removeLeftoverTemporaryContainers().catch((e) => {
+    console.error(e);
+  });
+});
 
 contextualIdentityFactory.onRemoved.addListener(async (identity) => {
   temporatyContainerService.removeTemporaryContainerFromList(identity.cookieStore.id);

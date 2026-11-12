@@ -33,7 +33,7 @@ import { DarkThemeMonitor } from '../lib/themes/DarkThemeMonitor';
 import { config } from '../config/config';
 
 import { InitialWindowsService } from './includes/InitialWindowsService';
-import { injectExtensionContentScript } from './includes/ext-content';
+import { openDirectoryListingPage } from './includes/directory-listing';
 import { doBatchOperationOnInitialWindows } from './includes/active-container';
 import { TabState } from './includes/TabState';
 import { TabStateStore } from './includes/TabStateStore';
@@ -58,7 +58,7 @@ initialWindowsService.getInitialWindows().then((browserWindows) => {
     if (browserWindow.id == null || browserWindow.tabs == null || browserWindow.incognito) continue;
     tabCountByWindow[browserWindow.id] = browserWindow.tabs.length;
     for (const browserTab of browserWindow.tabs) {
-      injectExtensionContentScript(browserTab);
+      openDirectoryListingPage(browserTab);
     }
   }
   windowTabCountService.setInitialTabCounts(tabCountByWindow).catch((e) => {

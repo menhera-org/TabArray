@@ -19,6 +19,7 @@
   @license
 **/
 
+import { DIRECTORY_PAGE } from '../../defs';
 import { ServiceRegistry } from '../ServiceRegistry';
 import { PackageDirectory } from './PackageDirectory';
 import { DirectoryListingParser } from './DirectoryListingParser';
@@ -44,6 +45,13 @@ export class DirectoryListingService {
     const text = await response.text();
     const packageDirectory = this._parser.parse(text, pathUrl);
     return packageDirectory;
+  }
+
+  /**
+   * The extension page that shows the listing of a directory (a decoded path ending with "/").
+   */
+  public getListingPageUrl(pathUrl: string): string {
+    return `${DIRECTORY_PAGE}?${new URLSearchParams({ path: pathUrl })}`;
   }
 
   public async getPackageLocationUrl(): Promise<string> {

@@ -139,7 +139,11 @@ export class ContentStorageStatistics {
       this.getStorageOriginList(cookieStoreId, firstPartyDomain),
       this.cookieProvider.getCookieDomainsForFirstPartyDomain(cookieStoreId, firstPartyDomain),
     ]);
-    const storageDomains = origins.map((origin) => new URL(origin).hostname);
+    // Opaque origins were stored as "null" before 12.0.0; they have no host to show.
+    const storageDomains = origins
+      .filter((origin) => URL.canParse(origin))
+      .map((origin) => new URL(origin).hostname)
+      .filter((hostname) => hostname != '');
     return this._hostnameService.sortDomains(new Set([...storageDomains, ...cookieDomains]));
   }
 

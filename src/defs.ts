@@ -35,14 +35,11 @@ export const POPUP_PAGE = '/pages/popup-v2/popup-v2.html';
 export const INDEX_TAB_PAGE = '/pages/index/index-tab.html';
 export const DEBUGGING_PAGE = '/pages/debugging/debugging.html';
 export const OPEN_CONTAINER_PAGE = '/pages/navigation/open-container.html';
+export const DIRECTORY_PAGE = '/pages/directory/directory.html';
 export const ISSUES_PAGE = 'https://github.com/menhera-org/TabArray/issues';
 
 // github links
 export const GITHUB_TREE_LINK_BASE = 'https://github.com/menhera-org/TabArray/tree/';
-
-/* Content scripts */
-// content scripts for extension pages
-export const CONTENT_EXTENSION_DIRECTORY_LISTING = '/content/ext/directory-listing/directory-listing.js';
 
 // Public key for verifying signed messages from the official CTG developers (Continuous Integration key)
 export const CTG_OFFICIAL_ED25519_SIGNING_KEY = '2896306f0d985fdd2febcd930b0733c7c86afcd705652f4a4aadd513235d7867';

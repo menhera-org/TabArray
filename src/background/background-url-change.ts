@@ -27,7 +27,7 @@ import { ContainerTabOpenerService } from '../lib/tabGroups/ContainerTabOpenerSe
 import { OpenTabsService } from '../lib/states/OpenTabsService';
 import { TabStateStore } from './includes/TabStateStore';
 
-import { injectExtensionContentScript } from './includes/ext-content';
+import { openDirectoryListingPage } from './includes/directory-listing';
 import { TabState } from './includes/TabState';
 
 import { OPEN_CONTAINER_PAGE } from '../defs';
@@ -64,7 +64,7 @@ browser.tabs.onUpdated.addListener(
         return;
       }
 
-      injectExtensionContentScript(browserTab);
+      openDirectoryListingPage(browserTab);
       openTabsService.hasTab(tabState.id).then((hasTab) => {
         if (!hasTab) {
           tabStateStore.onBeforeTabCreated.dispatch(tabState);

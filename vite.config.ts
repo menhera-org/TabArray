@@ -30,6 +30,7 @@ const PAGES = [
   'background/background.html',
   'pages/cookies/cookies.html',
   'pages/debugging/debugging.html',
+  'pages/directory/directory.html',
   'pages/index/index-tab.html',
   'pages/navigation/confirm.html',
   'pages/navigation/open-container.html',
