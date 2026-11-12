@@ -20,9 +20,10 @@ Last updated 12 November 2026. "Done" means the change is on `main` and ships in
 |---|---|
 | 1. Foundations and breakage bugs | Done. Every issue is closed; the #645 reporter is asked to retest 12.0.0 and reopen if needed. |
 | 2. Sign-in and compatibility bugs, memory leak | Done. Every issue is closed; the sign-in and desktop-app reporters are asked to retest 12.0.0 and reopen if needed. |
-| 3. Firefox native tab groups | Done. Tested in Firefox 140 and 159, also with Tree Style Tab. |
+| 3. Firefox native tab groups | Done. Tested in Firefox 140 and 159, also with Tree Style Tab. Tags are removed. |
 | 4. Frontend rewrite | Done. |
 | 5. Settings, features and documentation | Not started. |
+| 6. Visual design refresh | Not started. |
 
 ## 1. Foundations and breakage bugs
 
@@ -112,6 +113,17 @@ All six are done. Firefox 140 and 159 passed the same tests. Two more checks pas
 - Tree Style Tab 4.4.9 works with groups synced, the remaining part of #32: a tree of tabs stays in its container's group, and the two extensions do not keep moving tabs.
 
 Found on the way: with index tabs set to "always", the extension creates several index tabs per container (13 for 5 containers in a test). This was there before 12.0.0 and does not happen while sync is on.
+
+### Tags removed
+
+Status: done.
+
+Tags sorted and labeled tabs inside a container. With containers shown as tab groups, which cannot nest, tags could only exist in the popup, with nothing matching them in the tab bar. Containers and their groups cover the same need, so 12.0.0 drops tags to keep one way of grouping tabs:
+
+- The popup no longer has tag headings, the "New tag" button, or the set-tag button on tabs. Search no longer matches tag names.
+- Tabs keep their order inside a container instead of being sorted by tag.
+- Updating to 12.0.0 deletes the saved tags and the tag stored with each open tab.
+- The release notes say so, since users who used tags lose them.
 
 ## 4. Frontend rewrite
 

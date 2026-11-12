@@ -688,10 +688,6 @@
         "message": "Odstranit skupinu",
         "description": "Button to delete a group of containers."
     },
-    "editTagDialogTitle": {
-        "message": "Upravit tagu",
-        "description": "Title of the dialog to edit a tag."
-    },
     "buttonMove": {
         "message": "Přesunout",
         "description": "Button to move a container to another group."
@@ -700,33 +696,13 @@
         "message": "(Skupina Kořen)",
         "description": "Root group name."
     },
-    "newTagDialogTitle": {
-        "message": "Vytvoření nového tagu",
-        "description": "Title of the dialog to create a new tag."
-    },
-    "buttonNewTag": {
-        "message": "Nový tag",
-        "description": "Button to create a new tag."
-    },
-    "setTag": {
-        "message": "Nastavit tag",
-        "description": "Set a tag to a tab."
-    },
     "optionsTabSortContainers": {
         "message": "Třídit kontejnery",
         "description": "Label text for sort containers tab."
     },
-    "buttonEditTag": {
-        "message": "Upravit tag",
-        "description": "Button to edit a tag."
-    },
     "optionsTabGeneral": {
         "message": "Obecné",
         "description": "Label text for general tab."
-    },
-    "buttonDeleteTag": {
-        "message": "Odstranit tag",
-        "description": "Button to delete a tag."
     },
     "optionsTabContainerOverrides": {
         "message": "Jazyky a uživatelští agenti",
@@ -739,10 +715,6 @@
     "github": {
         "message": "GitHub",
         "description": "GitHub link"
-    },
-    "noTag": {
-        "message": "(bez tagu)",
-        "description": "No tag name."
     },
     "optionSyncContainers": {
         "message": "Synchronizovat kontejnery",

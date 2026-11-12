@@ -688,41 +688,13 @@
         "message": "(Grupo raíz)",
         "description": "Root group name."
     },
-    "newTagDialogTitle": {
-        "message": "Crear unha etiqueta nova",
-        "description": "Title of the dialog to create a new tag."
-    },
-    "setTag": {
-        "message": "Establecer unha etiqueta",
-        "description": "Set a tag to a tab."
-    },
-    "buttonEditTag": {
-        "message": "Editar unha etiqueta",
-        "description": "Button to edit a tag."
-    },
-    "buttonDeleteTag": {
-        "message": "Eliminar unha etiqueta",
-        "description": "Button to delete a tag."
-    },
     "moveContainer": {
         "message": "Mover a outro grupo",
         "description": "Move a container to another group."
     },
-    "editTagDialogTitle": {
-        "message": "Editar unha etiqueta",
-        "description": "Title of the dialog to edit a tag."
-    },
     "buttonMove": {
         "message": "Mover",
         "description": "Button to move a container to another group."
-    },
-    "buttonNewTag": {
-        "message": "Nova etiqueta",
-        "description": "Button to create a new tag."
-    },
-    "noTag": {
-        "message": "(sen etiqueta)",
-        "description": "No tag name."
     },
     "optionsTabFirefoxSettings": {
         "message": "Configuración de Firefox",

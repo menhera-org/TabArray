@@ -31,7 +31,6 @@ const actions = () => ({
   activate: vi.fn(),
   close: vi.fn(),
   setPinned: vi.fn(),
-  setTag: vi.fn(),
   showContextMenu: vi.fn(),
   move: vi.fn(),
 });
@@ -46,8 +45,6 @@ describe('TabRow', () => {
     expect(a.activate).toHaveBeenCalledWith(7);
     click(root.querySelector('[title="tooltipTabUnpinButton"]'));
     expect(a.setPinned).toHaveBeenCalledWith(7, false);
-    click(root.querySelector('[title="setTag"]'));
-    expect(a.setTag).toHaveBeenCalledWith(7);
     click(root.querySelector('[title="buttonTabClose"]'));
     expect(a.close).toHaveBeenCalledWith(7);
   });

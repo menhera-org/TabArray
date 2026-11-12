@@ -19,6 +19,8 @@
   @license
 **/
 
+import browser from 'webextension-polyfill';
+
 import { ExtensionVersionMigrationRegistry } from '../../lib/ExtensionVersionMigrationRegistry';
 
 /**
@@ -26,7 +28,17 @@ import { ExtensionVersionMigrationRegistry } from '../../lib/ExtensionVersionMig
  */
 export const MIGRATIONS = new ExtensionVersionMigrationRegistry();
 
-// define migrations here
-// MIGRATIONS.defineMigration('12.0.0', () => {
-//   // do something
-// });
+// 12.0.0 removed tags: forget the tag list and the tag stored with each tab.
+MIGRATIONS.defineMigration('12.0.0', async () => {
+  await browser.storage.local.remove('tagDirectory');
+  const browserTabs = await browser.tabs.query({});
+  await Promise.all(
+    browserTabs.map((browserTab) =>
+      browserTab.id == null
+        ? undefined
+        : browser.sessions.removeTabValue(browserTab.id, 'weeg.tabAttributes').catch(() => {
+            // tabs that never had a tag
+          })
+    )
+  );
+});

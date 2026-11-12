@@ -600,34 +600,6 @@
         "message": "(ルート・グループ)",
         "description": "Root group name."
     },
-    "newTagDialogTitle": {
-        "message": "新しいタグを作成する",
-        "description": "Title of the dialog to create a new tag."
-    },
-    "editTagDialogTitle": {
-        "message": "タグを編集する",
-        "description": "Title of the dialog to edit a tag."
-    },
-    "buttonNewTag": {
-        "message": "新しいタグ",
-        "description": "Button to create a new tag."
-    },
-    "noTag": {
-        "message": "(タグなし)",
-        "description": "No tag name."
-    },
-    "setTag": {
-        "message": "タグをセットする",
-        "description": "Set a tag to a tab."
-    },
-    "buttonEditTag": {
-        "message": "タグを編集する",
-        "description": "Button to edit a tag."
-    },
-    "buttonDeleteTag": {
-        "message": "タグを削除する",
-        "description": "Button to delete a tag."
-    },
     "optionsTabGeneral": {
         "message": "一般",
         "description": "Label text for general tab."

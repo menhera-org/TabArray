@@ -638,34 +638,6 @@
         "message": "(Root Group)",
         "description": "Root group name."
     },
-    "newTagDialogTitle": {
-        "message": "Create a new tag",
-        "description": "Title of the dialog to create a new tag."
-    },
-    "editTagDialogTitle": {
-        "message": "Edit a tag",
-        "description": "Title of the dialog to edit a tag."
-    },
-    "buttonNewTag": {
-        "message": "New Tag",
-        "description": "Button to create a new tag."
-    },
-    "noTag": {
-        "message": "(no Tag)",
-        "description": "No tag name."
-    },
-    "setTag": {
-        "message": "Set Tag",
-        "description": "Set a tag to a tab."
-    },
-    "buttonEditTag": {
-        "message": "Edit Tag",
-        "description": "Button to edit a tag."
-    },
-    "buttonDeleteTag": {
-        "message": "Delete Tag",
-        "description": "Button to delete a tag."
-    },
     "optionsTabGeneral": {
         "message": "General",
         "description": "Label text for general tab."

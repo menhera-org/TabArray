@@ -70,7 +70,6 @@ test('ContainerDetailsView labels each window and lists its tabs', () => {
         activate,
         close: vi.fn(),
         setPinned: vi.fn(),
-        setTag: vi.fn(),
         showContextMenu: vi.fn(),
         move: vi.fn(),
       }}

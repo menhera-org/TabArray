@@ -26,7 +26,6 @@ import { WindowTabCountService, TabCountByWindow, WindowTabCountHistory } from '
 import { BrowserActionService } from '../lib/browserAction/BrowserActionService';
 import { ActiveContainerService } from '../lib/states/ActiveContainerService';
 import { OpenTabsService } from '../lib/states/OpenTabsService';
-import { TagService } from '../lib/tabGroups/tags/TagService';
 
 import { DarkThemeMonitor } from '../lib/themes/DarkThemeMonitor';
 
@@ -44,7 +43,6 @@ const windowTabCountService = WindowTabCountService.getInstance<WindowTabCountSe
 const browserActionService = BrowserActionService.getInstance();
 const activeContainerService = ActiveContainerService.getInstance();
 const openTabsService = OpenTabsService.getInstance();
-const tagService = TagService.getInstance();
 const tabStateStore = TabStateStore.getInstance();
 
 config['appearance.popupSize'].observe((value) => {
@@ -90,20 +88,6 @@ browser.tabs.onCreated.addListener((browserTab) => {
   const tabState = TabState.createFromBrowserTab(browserTab);
   if (tabState.url != 'about:blank' || !tabState.isLoading) {
     tabStateStore.onBeforeTabCreated.dispatch(tabState);
-  }
-
-  if (null != browserTab.openerTabId && null != browserTab.id && browserTab.openerTabId > 0) {
-    const tabId = browserTab.id;
-    const openerTabId = browserTab.openerTabId;
-    tagService
-      .getTagForTabId(openerTabId)
-      .then((tag) => {
-        if (!tag) return;
-        return tagService.setTagIdForTabId(tabId, tag.tagId);
-      })
-      .catch((e) => {
-        console.error(e);
-      });
   }
 });
 

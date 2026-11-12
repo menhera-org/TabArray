@@ -23,13 +23,10 @@ import { CompatTab } from 'weeg-tabs';
 import { EventSink } from 'weeg-events';
 
 import { TabGroupDirectory } from './TabGroupDirectory';
-import { TagDirectory } from './tags/TagDirectory';
-import { TabAttributeMap } from './tags/TabAttributeMap';
 import { IndexTab } from '../tabs/IndexTab';
 
 export class TabSortingProvider {
   private static readonly tabGroupDirectory = TabGroupDirectory.getInstance();
-  private static readonly tagDirectory = TagDirectory.getInstance();
 
   public readonly onChanged = new EventSink<void>();
 
@@ -37,17 +34,12 @@ export class TabSortingProvider {
     TabSortingProvider.tabGroupDirectory.onChanged.addListener(() => {
       this.onChanged.dispatch();
     });
-    TabSortingProvider.tagDirectory.onChanged.addListener(() => {
-      this.onChanged.dispatch();
-    });
   }
 
+  /** Containers in the user's order, each with its index tab first; tabs within a container keep their order. */
   public async getTabSortingOrder(tabs: Iterable<CompatTab>): Promise<CompatTab[]> {
     const tabArray = Array.from(tabs);
-    const [tabGroupDirectorySnapshot, tabAttributeMap] = await Promise.all([
-      TabSortingProvider.tabGroupDirectory.getSnapshot(),
-      TabAttributeMap.create(tabArray),
-    ]);
+    const tabGroupDirectorySnapshot = await TabSortingProvider.tabGroupDirectory.getSnapshot();
     const tabGroupIds = tabGroupDirectorySnapshot.getContainerOrder();
     tabArray.sort((a, b) => {
       const aIndex = tabGroupIds.indexOf(a.cookieStore.id);
@@ -61,11 +53,6 @@ export class TabSortingProvider {
         }
         if (IndexTab.isIndexTabUrl(b.url)) {
           return 1;
-        }
-        const aTagId = tabAttributeMap.getTagForTab(a.id)?.tagId ?? 0;
-        const bTagId = tabAttributeMap.getTagForTab(b.id)?.tagId ?? 0;
-        if (aTagId != bTagId) {
-          return aTagId - bTagId;
         }
       }
       return aIndex - bIndex;

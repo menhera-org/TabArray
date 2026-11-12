@@ -20,7 +20,6 @@
 **/
 
 import { TabDao } from './TabDao';
-import { TagType } from '../tabGroups/tags/TagDirectory';
 import { DisplayedContainerDao } from './DisplayedContainerDao';
 import { SupergroupStorageType } from '../tabGroups/TabGroupDirectory';
 import { WindowStateDao } from './WindowStateDao';
@@ -30,12 +29,6 @@ export interface BrowserStateDao {
   enabledInPrivateBrowsing: boolean;
   windowIds: number[];
   displayedContainers: DisplayedContainerDao[];
-  tags: {
-    [tagId: number]: TagType;
-  };
-  tagIdsForTabs: {
-    [tabId: number]: number; // tagId
-  };
   supergroups: SupergroupStorageType; // can be used in constructor of TabGroupDirectorySnapshot
   tabIdsByContainer: {
     [cookieStoreId: string]: number[]; // tabIds

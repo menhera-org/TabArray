@@ -26,7 +26,6 @@ import { CompatTab } from 'weeg-tabs';
 
 import { ServiceRegistry } from '../ServiceRegistry';
 import { TabSortingProvider } from '../tabGroups/TabSortingProvider';
-import { TagService } from '../tabGroups/tags/TagService';
 import { CompatConsole } from '../console/CompatConsole';
 import { PerformanceHistoryService } from '../history/PerformanceHistoryService';
 import { SpinnerService } from '../SpinnerService';
@@ -35,7 +34,6 @@ import { config } from '../../config/config';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 const tabSortingProvider = new TabSortingProvider();
-const tagService = TagService.getInstance();
 const performanceHistoryService = PerformanceHistoryService.getInstance<PerformanceHistoryService>();
 const spinnerService = SpinnerService.getInstance();
 
@@ -104,7 +102,6 @@ export class TabSortingService extends BackgroundService<void, void> {
   protected override initializeBackground(): void {
     // only executed in background page.
     tabSortingProvider.onChanged.addListener(() => this.sortTabs());
-    tagService.onChanged.addListener(() => this.sortTabs());
   }
 
   private async getWindowIds(): Promise<number[]> {

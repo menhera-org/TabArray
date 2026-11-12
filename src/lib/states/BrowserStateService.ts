@@ -31,7 +31,6 @@ import { TabDao } from './TabDao';
 import { DisplayedContainerDao } from './DisplayedContainerDao';
 
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
-import { TabAttributeMap } from '../tabGroups/tags/TabAttributeMap';
 import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
 import { DisplayedContainerService } from '../tabGroups/DisplayedContainerService';
 import { PerformanceHistoryService } from '../history/PerformanceHistoryService';
@@ -44,7 +43,6 @@ export type BrowserStateConstructParams = {
   displayedContainers: DisplayedContainer[];
   enabledInPrivateBrowsing: boolean;
   tabGroupDirectorySnapshot: TabGroupDirectorySnapshot;
-  tabAttributeMap: TabAttributeMap;
   registrableDomainMap: Map<string, string>;
   /** Collapsed native groups: their containers count as hidden while sync is on. */
   collapsedGroupIds: number[];
@@ -95,12 +93,10 @@ export class BrowserStateService {
       }
       const registrableDomainMap = new Map<string, string>();
       const urls: string[] = [];
-      const compatTabMap = new Map<number, CompatTab>();
       for (const browserWindow of browserWindows) {
         if (browserWindow.tabs == null) continue;
         for (const browserTab of browserWindow.tabs) {
           if (browserTab.id == null) continue;
-          compatTabMap.set(browserTab.id, new CompatTab(browserTab));
           if (browserTab.url) {
             const url = browserTab.url;
             if (!urls.includes(url)) {
@@ -117,7 +113,6 @@ export class BrowserStateService {
         registrableDomainMap.set(urls[i] as string, registrableDomains[i] as string);
       }
 
-      const tabAttributeMap = await TabAttributeMap.create(compatTabMap.values());
       const duration = Date.now() - startTime;
       performanceHistoryService.addEntry('BrowserStateService.getConstructParams', startTime, duration);
 
@@ -127,7 +122,6 @@ export class BrowserStateService {
         displayedContainers,
         enabledInPrivateBrowsing,
         tabGroupDirectorySnapshot,
-        tabAttributeMap,
         registrableDomainMap,
         collapsedGroupIds,
       };
@@ -145,8 +139,6 @@ export class BrowserStateService {
       enabledInPrivateBrowsing: false,
       windowIds: [],
       displayedContainers: [],
-      tags: {},
-      tagIdsForTabs: {},
       supergroups: {},
       tabIdsByContainer: {},
       tabIdsBySite: {},
@@ -159,10 +151,6 @@ export class BrowserStateService {
     for (const displayedContainer of displayedContainers) {
       const dao = DisplayedContainerDao.fromDisplayedContainer(displayedContainer);
       value.displayedContainers.push(dao);
-    }
-
-    for (const tag of params.tabAttributeMap.getTags()) {
-      value.tags[tag.tagId] = tag;
     }
 
     value.currentWindowId = params.currentWindowId;
@@ -204,10 +192,6 @@ export class BrowserStateService {
           const unpinnedTabIds = windowState.unpinnedTabIdsByContainer[cookieStoreId] || [];
           unpinnedTabIds.push(tab.id);
           windowState.unpinnedTabIdsByContainer[cookieStoreId] = unpinnedTabIds;
-        }
-        const tagId = params.tabAttributeMap.getTagIdForTab(tab.id);
-        if (tagId != 0 && tagId != null) {
-          value.tagIdsForTabs[tab.id] = tagId;
         }
         {
           const tabIds = value.tabIdsByContainer[cookieStoreId] || [];

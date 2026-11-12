@@ -40,7 +40,7 @@ The button to show controls for containers is by default on the corner of the ta
 - Option to save memory for inactive tabs withoug closing them.
 - Reopen any tab in any container, from the button in the address bar.
 - Group containers.
-- Use tags to organize tabs inside a container.
+- Show each container as a Firefox tab group in the tab bar.
 
 **Keyboard shorcuts (can be changed or disabled in Add-ons Manager):**
 

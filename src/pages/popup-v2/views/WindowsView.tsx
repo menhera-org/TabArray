@@ -31,15 +31,12 @@ import { TabDao } from '../../../lib/states/TabDao';
 import { SupergroupType } from '../../../lib/tabGroups/TabGroupDirectory';
 import { TabGroupAttributes } from '../../../lib/tabGroups/TabGroupAttributes';
 import { TabGroupDirectorySnapshot } from '../../../lib/tabGroups/TabGroupDirectorySnapshot';
-import { TabAttributeMap } from '../../../lib/tabGroups/tags/TabAttributeMap';
-import { TagType } from '../../../lib/tabGroups/tags/TagDirectory';
 import { CompatConsole } from '../../../lib/console/CompatConsole';
 import { IndexTab } from '../../../lib/tabs/IndexTab';
 import { config } from '../../../config/config';
 
 import { ContainerRow } from './ContainerRow';
 import { SupergroupRow } from './SupergroupRow';
-import { TagRow } from './TagRow';
 import { TabRow, TabActions } from './TabRow';
 import { MenuItem } from '../../../frontend/frame/MenuItem';
 import { FOCUSABLE } from './focus';
@@ -47,8 +44,6 @@ import { FOCUSABLE } from './focus';
 import styles from './WindowsView.module.css';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
-
-export type TabItem = { type: 'tag'; tag: TagType } | { type: 'tab'; tab: CompatTab };
 
 export type WindowContainerNode =
   | {
@@ -58,10 +53,10 @@ export type WindowContainerNode =
       tabCount: number;
       /** Whether the container's last tab is hidden. */
       hidden: boolean;
-      /** Has tabs in the window: offers "focus to this container", and shows tags. */
+      /** Has tabs in the window: offers "focus to this container". */
       open: boolean;
-      /** Visible tabs, each tag heading before its tabs. */
-      items: TabItem[];
+      /** Visible tabs. */
+      tabs: CompatTab[];
     }
   | {
       type: 'supergroup';
@@ -90,30 +85,18 @@ const getWindowContainers = (browserState: BrowserStateDao, windowState: WindowS
     .sort((a, b) => snapshot.cookieStoreIdSortingCallback(a.cookieStore.id, b.cookieStore.id));
 };
 
-const containerNode = (
-  container: DisplayedContainer,
-  tabs: CompatTab[],
-  tabAttributeMap?: TabAttributeMap
-): WindowContainerNode => {
-  const tagIdOf = (tab: CompatTab) => tabAttributeMap?.getTagForTab(tab.id)?.tagId ?? 0;
-  const sorted = tabAttributeMap ? [...tabs].sort((a, b) => tagIdOf(a) - tagIdOf(b)) : tabs;
-  const items: TabItem[] = [];
+const containerNode = (container: DisplayedContainer, tabs: CompatTab[], open = false): WindowContainerNode => {
+  const visibleTabs: CompatTab[] = [];
   let tabCount = 0;
   let hidden = false;
-  let tagId = 0;
-  for (const tab of sorted) {
+  for (const tab of tabs) {
     if (IndexTab.isIndexTabUrl(tab.url)) continue;
     tabCount++;
     hidden = tab.hidden;
     if (tab.hidden) continue;
-    if (tabAttributeMap && tagIdOf(tab) != tagId) {
-      tagId = tagIdOf(tab);
-      const tag = tabAttributeMap.getTagForTab(tab.id);
-      if (tag) items.push({ type: 'tag', tag });
-    }
-    items.push({ type: 'tab', tab });
+    visibleTabs.push(tab);
   }
-  return { type: 'container', container, tabCount, hidden, open: tabAttributeMap != null, items };
+  return { type: 'container', container, tabCount, hidden, open, tabs: visibleTabs };
 };
 
 /** Everything the Windows screen shows for one window when not searching. */
@@ -125,7 +108,6 @@ export const getWindowSummary = (browserState: BrowserStateDao, windowId: number
     (windowState.unpinnedTabIdsByContainer[cookieStoreId] ?? []).map((tabId) =>
       TabDao.toCompatTab(windowState.tabs[tabId] as TabDao)
     );
-  const tabAttributeMap = TabAttributeMap.createFromBrowserState(browserState);
 
   const pinnedTabs = windowState.pinnedTabIds
     .map((tabId) => TabDao.toCompatTab(windowState.tabs[tabId] as TabDao))
@@ -150,7 +132,7 @@ export const getWindowSummary = (browserState: BrowserStateDao, windowId: number
   if (windowState.isPrivate) {
     const isActive = (c: DisplayedContainer) => windowState.activeContainers.includes(c.cookieStore.id);
     return summary(
-      containers.filter(isActive).map((c) => containerNode(c, tabsOf(c.cookieStore.id), tabAttributeMap)),
+      containers.filter(isActive).map((c) => containerNode(c, tabsOf(c.cookieStore.id), true)),
       containers.filter((c) => !isActive(c)).map((c) => containerNode(c, []))
     );
   }
@@ -173,7 +155,7 @@ export const getWindowSummary = (browserState: BrowserStateDao, windowId: number
         const container = containers.find((c) => c.cookieStore.id == tabGroupId);
         if (!container) return [];
         const tabs = tabsOf(tabGroupId);
-        return [tabs.length == 0 ? containerNode(container, []) : containerNode(container, tabs, tabAttributeMap)];
+        return [containerNode(container, tabs, tabs.length > 0)];
       }
       const supergroup = snapshot.getSupergroup(tabGroupId) as SupergroupType;
       const members = memberNodes(supergroup.members);
@@ -200,25 +182,17 @@ export type SearchResults = {
 
 /**
  * Containers whose names contain every word, and the window's tabs whose title or URL contains
- * every word or that carry a tag whose name does. Words are separated by spaces and ignore case.
+ * every word. Words are separated by spaces and ignore case.
  */
 export const getSearchResults = (browserState: BrowserStateDao, windowId: number, search: string): SearchResults => {
   const windowState = browserState.windows[windowId] as WindowStateDao;
   const containers = getWindowContainers(browserState, windowState);
   const words = [...new Set(search.split(/\s+/u).map((word) => word.toLowerCase()))];
   const matches = (text: string) => words.every((word) => text.toLowerCase().includes(word));
-  const tagIds = Object.values(browserState.tags)
-    .filter((tag) => matches(tag.name))
-    .map((tag) => tag.tagId);
   const tabs = Object.values(windowState.tabs)
     .map((dao) => TabDao.toCompatTab(dao))
     .filter((tab) =>
-      words.every(
-        (word) =>
-          tab.title.toLowerCase().includes(word) ||
-          tab.url.toLowerCase().includes(word) ||
-          tagIds.includes(browserState.tagIdsForTabs[tab.id] ?? 0)
-      )
+      words.every((word) => tab.title.toLowerCase().includes(word) || tab.url.toLowerCase().includes(word))
     )
     .sort((a, b) => a.index - b.index);
   return {
@@ -245,19 +219,16 @@ export type WindowsHandlers = {
   collapseAll(windowId: number): void;
   expandAll(windowId: number): void;
   closeWindow(windowId: number): void;
-  createTag(): void;
   createGroup(): void;
   createContainer(): void;
   createTemporaryContainer(): void;
-  openTabInContainer(container: DisplayedContainer, windowId: number, tagId?: number): void;
+  openTabInContainer(container: DisplayedContainer, windowId: number): void;
   closeContainer(container: DisplayedContainer, windowId: number): void;
   containerOptions(container: DisplayedContainer, isPrivate: boolean): void;
   hideContainer(container: DisplayedContainer, windowId: number): void;
   showContainer(container: DisplayedContainer, windowId: number): void;
   focusContainer(container: DisplayedContainer, windowId: number): void;
   reopenTabInContainer(tabId: number, container: DisplayedContainer): void;
-  editTag(tag: TagType): void;
-  deleteTag(tag: TagType): void;
   hideSupergroup(tabGroupId: string, windowId: number): void;
   showSupergroup(tabGroupId: string, windowId: number): void;
   closeSupergroup(tabGroupId: string, windowId: number): void;
@@ -299,19 +270,9 @@ const ContainerNodes = ({ nodes, windowId, isPrivate, handlers: h }: NodesProps)
         onHighlight={node.open ? () => h.focusContainer(c, windowId) : undefined}
         onDropTab={(tabId) => h.reopenTabInContainer(tabId, c)}
       >
-        {node.items.map((item) =>
-          item.type == 'tag' ? (
-            <TagRow
-              key={`tag-${item.tag.tagId}`}
-              name={item.tag.name}
-              onClick={() => h.openTabInContainer(c, windowId, item.tag.tagId)}
-              onEdit={() => h.editTag(item.tag)}
-              onDelete={() => h.deleteTag(item.tag)}
-            />
-          ) : (
-            <TabRow key={`tab-${item.tab.id}`} tab={item.tab} container={c} actions={h.tabActions} draggable />
-          )
-        )}
+        {node.tabs.map((tab) => (
+          <TabRow key={`tab-${tab.id}`} tab={tab} container={c} actions={h.tabActions} draggable />
+        ))}
       </ContainerRow>
     );
   });
@@ -420,7 +381,6 @@ export const WindowsView = ({ browserState, handlers: h, active }: WindowsViewPr
               {...FOCUSABLE}
             />
           </div>
-          <MenuItem iconOnly icon="/img/material-icons/new_label.svg" label="buttonNewTag" onClick={h.createTag} />
           <MenuItem
             iconOnly
             hidden={isPrivate}

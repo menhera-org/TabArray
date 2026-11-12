@@ -26,7 +26,6 @@ import { ContainerVisibilityService } from '../../../lib/tabGroups/ContainerVisi
 import { ContainerTabOpenerService } from '../../../lib/tabGroups/ContainerTabOpenerService';
 import { TemporaryContainerService } from '../../../lib/tabGroups/TemporaryContainerService';
 import { SupergroupService } from '../../../lib/tabGroups/SupergroupService';
-import { TagService } from '../../../lib/tabGroups/tags/TagService';
 
 import { ScreenTopBar } from '../../../frontend/frame/TopBar';
 import { WindowsView, WindowsHandlers } from '../views/WindowsView';
@@ -56,9 +55,6 @@ const handlers: WindowsHandlers = {
     if (!confirmed) return;
     browser.windows.remove(windowId).catch(logError);
   },
-  createTag: () => {
-    dialogs.showTagEditor();
-  },
   createGroup: () => {
     dialogs.showSupergroupEditor();
   },
@@ -73,8 +69,8 @@ const handlers: WindowsHandlers = {
   createTemporaryContainer: () => {
     TemporaryContainerService.getInstance().createTemporaryContainer().catch(logError);
   },
-  openTabInContainer: (container, windowId, tagId) => {
-    containerTabOpenerService.openNewTabInContainer(container.cookieStore.id, true, windowId, tagId).catch(logError);
+  openTabInContainer: (container, windowId) => {
+    containerTabOpenerService.openNewTabInContainer(container.cookieStore.id, true, windowId).catch(logError);
   },
   closeContainer: (container, windowId) => {
     const cookieStoreId = container.cookieStore.id;
@@ -102,12 +98,6 @@ const handlers: WindowsHandlers = {
   },
   reopenTabInContainer: (tabId, container) => {
     containerTabOpenerService.reopenTabInContainer(tabId, container.cookieStore.id, false).catch(logError);
-  },
-  editTag: (tag) => {
-    dialogs.showTagEditor(tag);
-  },
-  deleteTag: (tag) => {
-    TagService.getInstance().deleteTag(tag.tagId).catch(logError);
   },
   hideSupergroup: (tabGroupId, windowId) => {
     supergroupService.hideSupergroupOnWindow(tabGroupId, windowId).catch(logError);

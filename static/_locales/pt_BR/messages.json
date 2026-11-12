@@ -512,26 +512,6 @@
         "message": "(Grupo de raiz)",
         "description": "Root group name."
     },
-    "newTagDialogTitle": {
-        "message": "Criar uma nova etiqueta",
-        "description": "Title of the dialog to create a new tag."
-    },
-    "buttonNewTag": {
-        "message": "Nova etiqueta",
-        "description": "Button to create a new tag."
-    },
-    "noTag": {
-        "message": "(sem etiqueta)",
-        "description": "No tag name."
-    },
-    "setTag": {
-        "message": "Definir etiqueta",
-        "description": "Set a tag to a tab."
-    },
-    "buttonEditTag": {
-        "message": "Editar etiqueta",
-        "description": "Button to edit a tag."
-    },
     "optionsTabGeneral": {
         "message": "Geral",
         "description": "Label text for general tab."
@@ -659,14 +639,6 @@
                 "example": "Group 3"
             }
         }
-    },
-    "editTagDialogTitle": {
-        "message": "Editar uma etiqueta",
-        "description": "Title of the dialog to edit a tag."
-    },
-    "buttonDeleteTag": {
-        "message": "Excluir etiqueta",
-        "description": "Button to delete a tag."
     },
     "optionsTabFirefoxSettings": {
         "message": "Configurações do Firefox",

@@ -620,14 +620,6 @@
         "message": "(Root-groupe)",
         "description": "Root group name."
     },
-    "newTagDialogTitle": {
-        "message": "Créer une nouvelle étiquette",
-        "description": "Title of the dialog to create a new tag."
-    },
-    "editTagDialogTitle": {
-        "message": "Modifier une étiquette",
-        "description": "Title of the dialog to edit a tag."
-    },
     "optionsTabGeneral": {
         "message": "Général",
         "description": "Label text for general tab."
@@ -635,22 +627,6 @@
     "optionsTabSortContainers": {
         "message": "Trier les conteneurs",
         "description": "Label text for sort containers tab."
-    },
-    "buttonNewTag": {
-        "message": "Nouvelle étiquette",
-        "description": "Button to create a new tag."
-    },
-    "noTag": {
-        "message": "(Sans étiquette)",
-        "description": "No tag name."
-    },
-    "setTag": {
-        "message": "Réglager de l'étiquette",
-        "description": "Set a tag to a tab."
-    },
-    "buttonEditTag": {
-        "message": "Modifier l'étiquette",
-        "description": "Button to edit a tag."
     },
     "optionsTabContainerOverrides": {
         "message": "Langues et agents utilisateurs",
@@ -669,10 +645,6 @@
                 "example": "Group 3"
             }
         }
-    },
-    "buttonDeleteTag": {
-        "message": "Supprimer l'étiquette",
-        "description": "Button to delete a tag."
     },
     "debuggingInformation": {
         "message": "Informations de débogage",

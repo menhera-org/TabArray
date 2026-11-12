@@ -35,7 +35,6 @@ export type TabActions = {
   activate: (tabId: number) => void;
   close: (tabId: number) => void;
   setPinned: (tabId: number, pinned: boolean) => void;
-  setTag: (tabId: number) => void;
   showContextMenu: (tabId: number) => void;
   /** Moves a tab to a position in its window. */
   move: (tabId: number, index: number) => void;
@@ -143,11 +142,6 @@ export const TabRow = ({ tab, container, actions, draggable = false }: TabRowPro
           <TabFavicon url={tab.favIconUrl} />
           <span className={styles.title}>{tab.title}</span>
         </button>
-        <button
-          className={styles.setTagButton}
-          title={browser.i18n.getMessage('setTag')}
-          onClick={() => actions.setTag(tab.id)}
-        />
         <button
           className={styles.closeButton}
           title={browser.i18n.getMessage('buttonTabClose')}

@@ -59,8 +59,6 @@ const state = browserState({
     },
     'tabarray-supergroup-1': { supergroupId: 1, name: 'Jobs', members: [work, 'firefox-container-2'] },
   },
-  tags: { 7: { tagId: 7, name: 'Urgent' } },
-  tagIdsForTabs: { 3: 7 },
   windows: {
     1: {
       id: 1,
@@ -86,12 +84,7 @@ const state = browserState({
 const outline = (nodes: WindowContainerNode[]): unknown[] =>
   nodes.map((node) =>
     node.type == 'container'
-      ? [
-          node.container.name,
-          node.tabCount,
-          { hidden: node.hidden, open: node.open },
-          node.items.map((item) => (item.type == 'tag' ? `#${item.tag.name}` : item.tab.id)),
-        ]
+      ? [node.container.name, node.tabCount, { hidden: node.hidden, open: node.open }, node.tabs.map((tab) => tab.id)]
       : [node.supergroup.name, node.tabCount, outline(node.members)]
   );
 
@@ -110,8 +103,8 @@ describe('getWindowSummary', () => {
         // A group counts the index tab too, as before.
         3,
         [
-          // Tabs are sorted by tag, with a heading where the tag changes; the index tab is left out.
-          ['Work', 2, { hidden: false, open: true }, [4, '#Urgent', 3]],
+          // The index tab is left out.
+          ['Work', 2, { hidden: false, open: true }, [3, 4]],
           ['Shopping', 0, { hidden: false, open: false }, []],
         ],
       ],
@@ -133,8 +126,8 @@ describe('getSearchResults', () => {
     return [results.containers.map((c) => [c.container.name, c.tabCount]), results.tabs.map((t) => t.tab.id)];
   };
 
-  test('matches every word in titles, URLs and tag names, ignoring case', () => {
-    expect(ids('URGENT')).toEqual([[], [3]]);
+  test('matches every word in titles and URLs, ignoring case', () => {
+    expect(ids('EXAMPLE.COM/3')).toEqual([[], [3]]);
     expect(ids('tab 4')).toEqual([[], [4]]);
     expect(ids('example.com/1')).toEqual([[], [1]]);
   });
@@ -161,14 +154,12 @@ const handlers = (): WindowsHandlers => ({
     activate: vi.fn(),
     close: vi.fn(),
     setPinned: vi.fn(),
-    setTag: vi.fn(),
     showContextMenu: vi.fn(),
     move: vi.fn(),
   },
   collapseAll: vi.fn(),
   expandAll: vi.fn(),
   closeWindow: vi.fn(),
-  createTag: vi.fn(),
   createGroup: vi.fn(),
   createContainer: vi.fn(),
   createTemporaryContainer: vi.fn(),
@@ -179,8 +170,6 @@ const handlers = (): WindowsHandlers => ({
   showContainer: vi.fn(),
   focusContainer: vi.fn(),
   reopenTabInContainer: vi.fn(),
-  editTag: vi.fn(),
-  deleteTag: vi.fn(),
   hideSupergroup: vi.fn(),
   showSupergroup: vi.fn(),
   closeSupergroup: vi.fn(),
@@ -237,16 +226,6 @@ describe('WindowsView', () => {
     expect(h.hideSupergroup).toHaveBeenCalledWith('tabarray-supergroup-1', 1);
   });
 
-  test('opens a tab with a tag from its heading', () => {
-    const h = handlers();
-    const { container: root, click } = render(<WindowsView browserState={state} handlers={h} active={false} />);
-    const tagButton = [...root.querySelectorAll('button')].find((b) => b.textContent == 'Urgent') ?? null;
-    click(tagButton);
-    expect(named(vi.mocked(h.openTabInContainer).mock.calls)).toEqual([['Work', 1, 7]]);
-    click(root.querySelector('[title="buttonEditTag"]'));
-    expect(h.editTag).toHaveBeenCalledWith({ tagId: 7, name: 'Urgent' });
-  });
-
   test('moves a tab to another container by dropping it on the container', () => {
     const h = handlers();
     const { container: root } = render(<WindowsView browserState={state} handlers={h} active={false} />);
@@ -263,7 +242,7 @@ describe('WindowsView', () => {
     const [main, results] = [...root.children].slice(1) as HTMLElement[];
     expect([main?.hidden, results?.hidden]).toEqual([false, true]);
     act(() => {
-      search.value = '  urgent ';
+      search.value = '  example.com/3 ';
       search.dispatchEvent(new Event('input', { bubbles: true }));
     });
     expect([main?.hidden, results?.hidden]).toEqual([true, false]);

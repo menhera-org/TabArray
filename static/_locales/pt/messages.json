@@ -155,17 +155,9 @@
         "message": "Apagar contentor…",
         "description": "Button to delete a container."
     },
-    "noTag": {
-        "message": "(sem etiqueta)",
-        "description": "No tag name."
-    },
     "tooltipContainerClearCookie": {
         "message": "Limpar todos os cookies neste contentor",
         "description": "Tooltip for a button to clear all cookies in a container."
-    },
-    "buttonEditTag": {
-        "message": "Editar etiqueta",
-        "description": "Button to edit a tag."
     },
     "contextMenuPinTab": {
         "message": "Fixar guia",
@@ -319,10 +311,6 @@
         "message": "Criar um novo contentor…",
         "description": "Button label to create a new container."
     },
-    "setTag": {
-        "message": "Definir etiqueta",
-        "description": "Set a tag to a tab."
-    },
     "panoramaGrid": {
         "message": "Grade Panorâmica",
         "description": "Panorama Grid page (grid view of container and tabs)"
@@ -346,10 +334,6 @@
     "focusToThisContainer": {
         "message": "Focar neste contentor",
         "description": "Button to focus to this container."
-    },
-    "editTagDialogTitle": {
-        "message": "Editar uma etiqueta",
-        "description": "Title of the dialog to edit a tag."
     },
     "tooltipCollapseContainers": {
         "message": "Recolher contentores",
@@ -481,10 +465,6 @@
         "message": "1 dia",
         "description": "Label text for autodiscard in 86400 seconds."
     },
-    "buttonNewTag": {
-        "message": "Nova etiqueta",
-        "description": "Button to create a new tag."
-    },
     "defaultContainerName": {
         "message": "Contentor #$ID$",
         "description": "Descriptive default name of a container.",
@@ -567,10 +547,6 @@
     "proxyProtocol": {
         "message": "Protocolo",
         "description": "Proxy protocol option."
-    },
-    "newTagDialogTitle": {
-        "message": "Criar uma nova etiqueta",
-        "description": "Title of the dialog to create a new tag."
     },
     "labelAutoDiscard43200": {
         "message": "12 horas",
@@ -677,10 +653,6 @@
     "extensionBuildUnknown": {
         "message": "(desconhecida)",
         "description": "Label text indicating an unknown extension build."
-    },
-    "buttonDeleteTag": {
-        "message": "Apagar etiqueta",
-        "description": "Button to delete a tag."
     },
     "tooltipEditContainerButton": {
         "message": "Editar este contentor",

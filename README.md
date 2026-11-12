@@ -42,10 +42,10 @@ _Better than Chrome!_
 - Allows the user to enable fingerprinting resistance (privacy.resistFingerprinting).
 - Per-container overrides of the language and the user agent settings.
 
-### Groups and tags
+### Groups
 
 - You can group containers.
-- You can use tags to organize tabs inside a single container or no container.
+- Each container appears as a Firefox tab group in the tab bar, with the container's name and color. This can be turned off in the settings.
 
 ## Usage
 

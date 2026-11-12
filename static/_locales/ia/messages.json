@@ -622,34 +622,6 @@
         "message": "(Radical Gruppo)",
         "description": "Root group name."
     },
-    "newTagDialogTitle": {
-        "message": "Crear un nove etiquetta",
-        "description": "Title of the dialog to create a new tag."
-    },
-    "editTagDialogTitle": {
-        "message": "Modificar un etiquetta",
-        "description": "Title of the dialog to edit a tag."
-    },
-    "buttonNewTag": {
-        "message": "Nove etiquetta",
-        "description": "Button to create a new tag."
-    },
-    "noTag": {
-        "message": "(nulle etiquetta)",
-        "description": "No tag name."
-    },
-    "setTag": {
-        "message": "Adder un etiquetta",
-        "description": "Set a tag to a tab."
-    },
-    "buttonEditTag": {
-        "message": "Modificar un etiquetta",
-        "description": "Button to edit a tag."
-    },
-    "buttonDeleteTag": {
-        "message": "Deler le etiquetta",
-        "description": "Button to delete a tag."
-    },
     "optionsTabGeneral": {
         "message": "General",
         "description": "Label text for general tab."

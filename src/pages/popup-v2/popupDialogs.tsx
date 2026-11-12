@@ -28,7 +28,6 @@ import { CompatConsole } from '../../lib/console/CompatConsole';
 import { SupergroupType, TabGroupDirectory } from '../../lib/tabGroups/TabGroupDirectory';
 import { TabGroupAttributes } from '../../lib/tabGroups/TabGroupAttributes';
 import { SupergroupService } from '../../lib/tabGroups/SupergroupService';
-import { TagType } from '../../lib/tabGroups/tags/TagType';
 
 import { showDialog } from '../../frontend/dialogs/showDialog';
 import {
@@ -36,9 +35,7 @@ import {
   MenuAction,
   MenuDialog,
   MoveGroupDialog,
-  SetTagDialog,
   SupergroupEditorDialog,
-  TagEditorDialog,
 } from '../../frontend/dialogs/dialogs';
 import { ContainerEditorDialog } from '../../frontend/dialogs/ContainerEditorDialog';
 
@@ -106,16 +103,8 @@ export const showSupergroupEditor = (supergroup?: SupergroupType) => {
   showDialog((close) => <SupergroupEditorDialog supergroup={supergroup} onClose={close} />);
 };
 
-export const showTagEditor = (tag?: TagType) => {
-  showDialog((close) => <TagEditorDialog tag={tag} onClose={close} />);
-};
-
 export const showMoveGroup = (tabGroupId: string) => {
   showDialog((close) => <MoveGroupDialog tabGroupId={tabGroupId} onClose={close} />);
-};
-
-export const showSetTag = (tabId: number) => {
-  showDialog((close) => <SetTagDialog tabId={tabId} onClose={close} />);
 };
 
 const showContainerClearCookieModal = (displayedContainer: DisplayedContainer, isPrivate: boolean) => {

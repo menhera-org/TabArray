@@ -21,13 +21,10 @@
 
 import browser from 'webextension-polyfill';
 import { type ReactNode, useEffect, useState } from 'react';
-import { CompatTab } from 'weeg-tabs';
 
 import { TabGroupDirectory, SupergroupType } from '../../lib/tabGroups/TabGroupDirectory';
 import { TabGroupDirectorySnapshot } from '../../lib/tabGroups/TabGroupDirectorySnapshot';
 import { TabGroupAttributes } from '../../lib/tabGroups/TabGroupAttributes';
-import { TagService } from '../../lib/tabGroups/tags/TagService';
-import { TagType } from '../../lib/tabGroups/tags/TagType';
 import { CompatConsole } from '../../lib/console/CompatConsole';
 
 import { ModalFrame } from './ModalFrame';
@@ -75,7 +72,7 @@ type NameDialogProps = {
   onClose: () => void;
 };
 
-/** Asks for a name, as the group and tag editors did. An empty name does nothing. */
+/** Asks for a name, as the group editor did. An empty name does nothing. */
 export const NameDialog = ({ title, initialName = '', onSave, onClose }: NameDialogProps) => {
   const [name, setName] = useState(initialName);
   return (
@@ -125,25 +122,6 @@ export const SupergroupEditorDialog = ({
   />
 );
 
-/** Creates a tag, or renames one. */
-export const TagEditorDialog = ({ tag, onClose }: { tag?: TagType; onClose: () => void }) => {
-  const tagDirectory = TagService.getInstance().tagDirectory;
-  return (
-    <NameDialog
-      title={message(tag ? 'editTagDialogTitle' : 'newTagDialogTitle')}
-      initialName={tag?.name}
-      onSave={async (name) => {
-        if (tag) {
-          await tagDirectory.renameTag(tag.tagId, name);
-        } else {
-          await tagDirectory.createTag(name);
-        }
-      }}
-      onClose={onClose}
-    />
-  );
-};
-
 /** The groups a container or group can move into: not itself, nor any group inside it. */
 export const getMoveTargets = (snapshot: TabGroupDirectorySnapshot, tabGroupId: string): [string, string][] => {
   const value = snapshot.value;
@@ -183,52 +161,6 @@ export const MoveGroupDialog = ({ tabGroupId, onClose }: { tabGroupId: string; o
         {targets.map(([id, name]) => (
           <option key={id} value={id}>
             {name}
-          </option>
-        ))}
-      </select>
-    </ModalFrame>
-  );
-};
-
-/** Sets the tag of a tab, or removes it. */
-export const SetTagDialog = ({ tabId, onClose }: { tabId: number; onClose: () => void }) => {
-  const tagService = TagService.getInstance();
-  const [tags, setTags] = useState<TagType[]>([]);
-  const [tagId, setTagId] = useState('0');
-  useEffect(() => {
-    tagService.tagDirectory
-      .getSnapshot()
-      .then(async (snapshot) => {
-        setTags(snapshot.getTagIds().map((id) => snapshot.getTag(id) as TagType));
-        const tab = new CompatTab(await browser.tabs.get(tabId));
-        setTagId(String((await tagService.getTagForTab(tab))?.tagId ?? 0));
-      })
-      .catch((e) => console.error(e));
-  }, [tabId, tagService]);
-  return (
-    <ModalFrame
-      title={message('setTag')}
-      actions={[
-        { label: message('buttonCancel'), onClick: onClose },
-        {
-          label: message('buttonMove'),
-          onClick: () => {
-            browser.tabs
-              .get(tabId)
-              .then((browserTab) => {
-                const target = parseInt(tagId, 10);
-                return tagService.setTagIdForTab(new CompatTab(browserTab), target == 0 ? null : target);
-              })
-              .then(onClose, (e) => console.error(e));
-          },
-        },
-      ]}
-    >
-      <select value={tagId} onChange={(ev) => setTagId(ev.currentTarget.value)}>
-        <option value="0">{message('noTag')}</option>
-        {tags.map((tag) => (
-          <option key={tag.tagId} value={String(tag.tagId)}>
-            {tag.name}
           </option>
         ))}
       </select>

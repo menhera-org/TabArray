@@ -23,8 +23,6 @@ import browser from 'webextension-polyfill';
 
 import { CompatConsole } from '../../../lib/console/CompatConsole';
 
-import { showSetTag } from '../popupDialogs';
-
 import type { TabActions } from './TabRow';
 
 const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
@@ -45,9 +43,6 @@ export const browserTabActions: TabActions = {
     browser.tabs.update(tabId, { pinned }).catch((e) => {
       console.error('Failed to pin/unpin tab:', e);
     });
-  },
-  setTag: (tabId) => {
-    showSetTag(tabId);
   },
   showContextMenu: (tabId) => {
     browser.menus.overrideContext({ context: 'tab', tabId });

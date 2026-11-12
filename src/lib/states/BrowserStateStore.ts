@@ -29,7 +29,6 @@ import { BrowserStateDao } from './BrowserStateDao';
 import { BrowserStateService, BrowserStateConstructParams } from './BrowserStateService';
 import { TabGroupDirectory } from '../tabGroups/TabGroupDirectory';
 import { ContextualIdentityService } from '../tabGroups/ContextualIdentityService';
-import { TagService } from '../tabGroups/tags/TagService';
 import { TabGroupAttributes } from '../tabGroups/TabGroupAttributes';
 import { TabGroupDirectorySnapshot } from '../tabGroups/TabGroupDirectorySnapshot';
 import { CompatConsole } from '../console/CompatConsole';
@@ -40,8 +39,6 @@ const browserStateService = BrowserStateService.getInstance();
 const tabGroupDirectory = TabGroupDirectory.getInstance();
 const contextualIdentityService = ContextualIdentityService.getInstance();
 const contextualIdentityFactory = contextualIdentityService.getFactory();
-const tagService = TagService.getInstance();
-const tagDirectory = tagService.tagDirectory;
 const registrableDomainService = RegistrableDomainService.getInstance<RegistrableDomainService>();
 
 export class BrowserStateStore {
@@ -58,8 +55,6 @@ export class BrowserStateStore {
       enabledInPrivateBrowsing: false,
       windowIds: [],
       displayedContainers: [],
-      tags: {},
-      tagIdsForTabs: {},
       supergroups: {},
       tabIdsByContainer: {},
       tabIdsBySite: {},
@@ -93,7 +88,6 @@ export class BrowserStateStore {
     contextualIdentityFactory.onCreated.addListener(this.createContextualIdentity.bind(this));
     contextualIdentityFactory.onUpdated.addListener(this.updateContextualIdentity.bind(this));
     contextualIdentityFactory.onRemoved.addListener(this.removeContextualIdentity.bind(this));
-    tagDirectory.onChanged.addListener(this.updateTagDirectorySnapshot.bind(this));
     // Collapsing a native group fires no tab events, but changes which containers count as hidden.
     if (browser.tabGroups) {
       const forceUpdate = () => this.forceUpdate();
@@ -102,17 +96,6 @@ export class BrowserStateStore {
       browser.tabGroups.onRemoved.addListener(forceUpdate);
     }
     config['tab.groups.nativeSync'].onChanged.addListener(() => this.forceUpdate());
-    tagService.onChanged.addListener(() => {
-      if (null == this._params) return;
-      this._params.tabAttributeMap
-        .update()
-        .then(() => {
-          this.update();
-        })
-        .catch((e) => {
-          console.error(e);
-        });
-    });
   }
 
   private update(): void {
@@ -133,7 +116,6 @@ export class BrowserStateStore {
         }
       }
     }
-    this._params.tabAttributeMap.removeTabId(tabId);
     this.update();
   }
 
@@ -163,14 +145,7 @@ export class BrowserStateStore {
       };
       this._params.browserWindows.push(browserWindow);
     }
-    this._params.tabAttributeMap
-      .addTabId(browserTab.id)
-      .then(() => {
-        this.update();
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+    this.update();
   }
 
   public async updateBrowserTab(
@@ -310,14 +285,6 @@ export class BrowserStateStore {
     tabGroupDirectory.getSnapshot().then((snapshot) => {
       if (null == this._params) return;
       this._params.tabGroupDirectorySnapshot = snapshot;
-      this.update();
-    });
-  }
-
-  public updateTagDirectorySnapshot(): void {
-    tagDirectory.getSnapshot().then((snapshot) => {
-      if (null == this._params) return;
-      this._params.tabAttributeMap.setTagDirectorySnapshot(snapshot);
       this.update();
     });
   }
