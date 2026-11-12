@@ -24,6 +24,11 @@
   controls. Both are in cascade layers, so any page or component style overrides them.
 */
 
+/*
+  acorn-tokens.css is under the MPL 2.0 (see vendor/README.md). Minifying drops its license comment,
+  so the package states it in static/NOTICE.
+*/
+
 @layer acorn.tokens, ctg.base;
 
 @import url(./vendor/acorn-tokens.css);

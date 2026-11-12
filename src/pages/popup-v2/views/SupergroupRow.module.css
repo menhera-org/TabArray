@@ -92,11 +92,11 @@
 }
 
 .hideButton {
-  --icon: url(/img/material-icons/unfold_less.svg);
+  --icon: url(/img/firefox-icons/arrow-up.svg);
 }
 
 .unhideButton {
-  --icon: url(/img/material-icons/unfold_more.svg);
+  --icon: url(/img/firefox-icons/arrow-down.svg);
 }
 
 .closeButton {

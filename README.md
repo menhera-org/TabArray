@@ -162,6 +162,15 @@ The two digits after 1 or 2 indicate patch level.
 
 `npm run build-for-amo` is the same build. AMO's automated source rebuild uses this script name.
 
+### Build environment (for AMO reviewers)
+
+- **Operating system:** Linux, x86-64 or ARM64. `package-lock.json` includes the native packages of the build tools (rolldown, Lightning CSS, oxlint, oxfmt, TypeScript) for both.
+- **Node.js:** any version that `package.json` accepts (`^20.19.0 || >=22.12.0`), with the npm that comes with it. Node 24.14.0 with npm 11.9.0, AMO's default, and Node 26.13.0 with npm 11.20.0 produce byte-identical output on Linux x86-64.
+- **Commands:** in the extracted source, run `npm ci`, then `npm run build-for-amo`. The build itself needs no network access and no Git.
+- **Output:** the files of the extension in `dist/`, and the package in `builds/<version>/ctg-<version>-<commit time>-<commit>.xpi`.
+- **npm warnings:** npm before 11.20 warns about the unknown `min-release-age` settings in `.npmrc`. They only delay new dependency releases when someone runs `npm install`, and do not affect `npm ci` or the build.
+- The path of the source directory may contain spaces.
+
 
 ### Reproducible builds
 
@@ -202,6 +211,6 @@ Licensed under GNU GPL version 3 **or later**.
 
 ### Used assets
 
-- Material Icons (Apache-2.0)
-- Icons from mozilla-central (MPL-2.0)
-- SVG Spinners (MIT)
+- Icons and design tokens from Firefox (MPL-2.0): see `src/css/vendor/README.md`
+
+`static/NOTICE`, which ships in the extension, lists these files and their license.

@@ -50,7 +50,7 @@
   background-color: currentColor;
   inline-size: var(--icon-size);
   block-size: var(--icon-size);
-  mask: url(/img/ring-resize.svg) center / contain no-repeat;
+  mask: url(/img/firefox-icons/loading.svg) center / contain no-repeat;
   opacity: 1;
 }
 

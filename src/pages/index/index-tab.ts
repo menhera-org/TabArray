@@ -19,7 +19,7 @@
   @license
 **/
 
-const defaultIconUrl = '/img/material-icons/category.svg';
+const defaultIconUrl = '/img/firefox-icons/tab.svg';
 const params = new URLSearchParams(window.location.hash.slice(1));
 const title = params.get('t') ?? '';
 const iconUrl = params.get('iu') ?? defaultIconUrl;
@@ -40,6 +40,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (group.id != color) {
       group.remove();
     }
+  }
+  // Firefox's own icons (the default one) draw in context-fill, which a favicon has no value for.
+  const root = svgDocument.documentElement;
+  if (root.getAttribute('fill') == 'context-fill') {
+    root.setAttribute('fill', '#000000');
+    root.removeAttribute('fill-opacity');
   }
   const source = new XMLSerializer().serializeToString(svgDocument);
   iconElement.href = `data:image/svg+xml,${encodeURIComponent(source)}`;

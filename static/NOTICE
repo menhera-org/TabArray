@@ -1,0 +1,23 @@
+Container Tab Groups
+Copyright (C) 2026 Menhera.org
+
+Container Tab Groups is licensed under the GNU General Public License,
+version 3 or later; see LICENSE. It includes the following files from
+Firefox, under their own license.
+
+
+Firefox icons and design tokens
+
+  Files:   img/firefox-icons/, img/contextual-identities/, img/filters.svg,
+           img/usercontext.svg, and Firefox's design tokens
+           (acorn-tokens.css), which are bundled into the stylesheets in
+           assets/
+  License: Mozilla Public License, v. 2.0. If a copy of the MPL was not
+           distributed with these files, you can obtain one at
+           https://mozilla.org/MPL/2.0/.
+  Source:  https://github.com/mozilla-firefox/firefox
+           The design tokens are
+           toolkit/themes/shared/design-system/dist/web/acorn-tokens.css
+           at commit 0aa10c6a675f7595961d30d2ad81c240f8ddec43.
+           The source of this extension, including these files as used
+           here, is at https://github.com/menhera-org/TabArray.

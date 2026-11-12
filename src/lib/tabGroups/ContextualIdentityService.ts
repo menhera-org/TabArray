@@ -31,7 +31,7 @@ import {
 import { ServiceRegistry } from '../ServiceRegistry';
 
 export class ContextualIdentityService {
-  private static readonly DEFAULT_ICON_URL = browser.runtime.getURL('/img/material-icons/category.svg');
+  private static readonly DEFAULT_ICON_URL = browser.runtime.getURL('/img/firefox-icons/tab.svg');
   private static readonly PRIVATE_ICON_URL = browser.runtime.getURL('/img/firefox-icons/private-browsing-icon.svg');
   private static readonly DEFAULT_COLOR_CODE = '#7c7c7d';
 

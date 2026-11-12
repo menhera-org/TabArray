@@ -61,7 +61,7 @@ export const ContainerButton = ({
     'defaultContainerName',
     String(displayedContainer.cookieStore.userContextId)
   );
-  const iconUrl = displayedContainer.iconUrl || '/img/material-icons/category.svg';
+  const iconUrl = displayedContainer.iconUrl || '/img/firefox-icons/tab.svg';
   return (
     <Button
       onClick={onClick}
@@ -104,7 +104,7 @@ export const CreateContainerButton = ({ onClick }: { onClick?: () => void }) => 
 
 export const TemporatyContainerButton = ({ onClick }: { onClick?: () => void }) => {
   const tooltipText = browser.i18n.getMessage('buttonNewTemporaryContainer');
-  const iconUrl = '/img/material-icons/timelapse.svg';
+  const iconUrl = '/img/firefox-icons/history.svg';
   return (
     <Button
       onClick={onClick}

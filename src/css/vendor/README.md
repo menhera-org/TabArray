@@ -7,7 +7,8 @@ that Firefox 160 shows by default). It is under the Mozilla Public License 2.0, 
 
 The icons in `static/img/firefox-icons/` come from the same commit, under the same license. Where an icon
 held both the older Proton drawing and the Nova one, switched by a `-moz-pref("browser.nova.enabled")`
-media query that only Firefox's own UI can use, only the Nova drawing is kept.
+media query that only Firefox's own UI can use, only the Nova drawing is kept. One icon is older:
+`folder-add.svg` was added in 2023 as a Firefox icon and has no counterpart at this commit.
 
 To update, copy the file from a newer Firefox commit and check the extension's pages in light and dark
 mode.

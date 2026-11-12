@@ -24,7 +24,7 @@ import browser from 'webextension-polyfill';
 import { INDEX_TAB_PAGE } from '../../defs';
 
 const indexPageUrl = browser.runtime.getURL(INDEX_TAB_PAGE);
-const defaultIconUrl = browser.runtime.getURL('/img/material-icons/category.svg');
+const defaultIconUrl = browser.runtime.getURL('/img/firefox-icons/tab.svg');
 
 export class IndexTab {
   public readonly url: string;

@@ -38,6 +38,22 @@ To open bookmarks in a container, right-click a bookmark or a bookmark folder an
 
 Firefox restores container tabs with **Open previous windows and tabs**, and a bookmark folder is a copy kept apart from that.
 
+## Temporary containers
+
+**New Temporary Container** makes a container for one-off browsing and opens a tab in it. The container is named `tmp-` followed by the number Firefox gave it, such as `tmp-12`, and gets a random color. A temporary container made inside a container group also carries the group's name, such as `tmp-12 (Work)`.
+
+When you close the last tab of a temporary container, the extension deletes the container together with its cookies, local storage and IndexedDB data.
+
+The extension also cleans up when Firefox starts and when the extension is installed or updated. At that point it deletes every container that has no open tabs and is named exactly `tmp-` plus its own number, together with its data. This catches temporary containers left over from an earlier session, for example when Firefox was closed with their tabs still open and did not restore them.
+
+Some details follow from how that cleanup works:
+
+- It goes by the name only. A container that you named `tmp-12` yourself is deleted at startup if it has that number and no open tabs. Rename it to keep it.
+- A container with open tabs is never deleted at startup, whatever its name.
+- A temporary container made inside a group (`tmp-12 (Work)`) does not match the name. It is still deleted when you close its last tab, but if it is left without tabs across a restart, delete it yourself.
+- Renaming a temporary container, or its tab group in the tab bar, keeps it temporary: closing its last tab still deletes it. But the startup cleanup no longer recognizes it.
+- With **Sync Containers** on, containers whose names contain `tmp` are not synced to your other devices. A renamed temporary container without `tmp` in its name is synced like any other.
+
 ## What moves with a tab to another container
 
 Reopening a tab in another container opens the same address there. Each container has its own cookies and site data, so you are not signed in to the site in the new container.

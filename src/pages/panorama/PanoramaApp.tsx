@@ -168,7 +168,7 @@ const ContainerSection = ({
         <div
           className="container-icon"
           style={{
-            mask: `${cssUrl(container.iconUrl || '/img/material-icons/category.svg')} center center/75% no-repeat`,
+            mask: `${cssUrl(container.iconUrl || '/img/firefox-icons/tab.svg')} center center/75% no-repeat`,
             backgroundColor: container.colorCode || '#000000',
           }}
         />

@@ -73,7 +73,7 @@ export const ContainersScreen = ({
       <MenuItem icon="/img/firefox-icons/plus.svg" label="buttonNewContainer" iconOnly>
         <MenuItem icon="/img/firefox-icons/plus.svg" label="buttonNewContainer" onClick={createContainer} />
         <MenuItem
-          icon="/img/material-icons/timelapse.svg"
+          icon="/img/firefox-icons/history.svg"
           label="buttonNewTemporaryContainer"
           onClick={createTemporaryContainer}
         />

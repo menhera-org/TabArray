@@ -422,13 +422,13 @@ export const WindowsView = ({
           <span className={styles.tabCount}>{`(${summary.tabCount})`}</span>
           <MenuItem
             iconOnly
-            icon="/img/material-icons/unfold_less.svg"
+            icon="/img/firefox-icons/arrow-up.svg"
             label="tooltipCollapseContainers"
             onClick={() => h.collapseAll(windowId)}
           />
           <MenuItem
             iconOnly
-            icon="/img/material-icons/unfold_more.svg"
+            icon="/img/firefox-icons/arrow-down.svg"
             label="tooltipExpandContainers"
             onClick={() => h.expandAll(windowId)}
           />
@@ -466,7 +466,7 @@ export const WindowsView = ({
           />
           <MenuItem
             iconOnly
-            icon="/img/material-icons/timelapse.svg"
+            icon="/img/firefox-icons/history.svg"
             label="buttonNewTemporaryContainer"
             onClick={h.createTemporaryContainer}
           />
@@ -487,7 +487,7 @@ export const WindowsView = ({
         <div className={styles.actions}>
           <MenuItem icon="/img/firefox-icons/plus.svg" label="buttonNewContainer" onClick={h.createContainer} />
           <MenuItem
-            icon="/img/material-icons/timelapse.svg"
+            icon="/img/firefox-icons/history.svg"
             label="buttonNewTemporaryContainer"
             onClick={h.createTemporaryContainer}
           />
