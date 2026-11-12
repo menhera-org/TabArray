@@ -8,8 +8,8 @@ Firefox, under their own license.
 
 Firefox icons and design tokens
 
-  Files:   img/firefox-icons/, img/contextual-identities/, img/filters.svg,
-           img/usercontext.svg, and Firefox's design tokens
+  Files:   img/firefox-icons/, img/contextual-identities/, img/toolbar/,
+           img/filters.svg, img/usercontext.svg, and Firefox's design tokens
            (acorn-tokens.css), which are bundled into the stylesheets in
            assets/
   License: Mozilla Public License, v. 2.0. If a copy of the MPL was not

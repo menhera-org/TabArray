@@ -10,5 +10,8 @@ held both the older Proton drawing and the Nova one, switched by a `-moz-pref("b
 media query that only Firefox's own UI can use, only the Nova drawing is kept. One icon is older:
 `folder-add.svg` was added in 2023 as a Firefox icon and has no counterpart at this commit.
 
+The toolbar button's icons in `static/img/toolbar/` are `more.svg` from the same commit, filled with the
+icon colors of Firefox's light and dark toolbars, because extension toolbar icons cannot use `context-fill`.
+
 To update, copy the file from a newer Firefox commit and check the extension's pages in light and dark
 mode.

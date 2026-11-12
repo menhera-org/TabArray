@@ -38,7 +38,7 @@ _Better than Chrome!_
     - Show/hide tabs of a container.
     - Create and delete containers as you like.
     - Switch windows.
-- Enables First-Party Isolate (privacy.firstparty.isolate; FPI) by default. (Configurable.) **This means that cookies for different sites, even for a same container, are separated by registrable domain.** It also enables natural and flicker-free openings of new windows by websites, unlike simulated FPI by manipulating containers. This is the way Tor Browser is using.
+- Turns on First-Party Isolate (privacy.firstparty.isolate; FPI) with one click, from the help shown at installation or from the settings. It is off until you turn it on. **FPI separates the cookies of different sites, even within the same container, by registrable domain.** It also lets websites open new windows naturally and without flicker, unlike FPI simulated by switching containers. Tor Browser works the same way.
 - Allows the user to enable fingerprinting resistance (privacy.resistFingerprinting).
 - Per-container overrides of the language and the user agent settings.
 
@@ -79,13 +79,13 @@ This extension is intended to replace the following features/extensions:
 - Facebook Container
 - Temporary Containers
 - Tab Session Manager
+- Tree Style Tab (tested with 4.4.9 and containers shown as tab groups)
 - Most extensions that changes the New Tab page.
 
 Probably more compatible extensions...
 
 ### Incompatible
 
-- Tree Style Tab
 - Simple Tab Groups (?)
 - Many other tab management extensions? (#32)
 
@@ -98,8 +98,7 @@ enough to unnecessitate Simple Tab Groups.
 
 ## What's next
 
-- **NEW**: Firefox's native tab groups will be integrated.
-- Keyboard shortcuts will be implemented. → The first implementation is available.
+See [ROADMAP.md](ROADMAP.md) for what 12.0.0 brings and what is left for later.
 
 ## Available languages
 

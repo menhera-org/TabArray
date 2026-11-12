@@ -30,7 +30,7 @@ The button to show controls for containers is by default on the corner of the ta
 - Create and delete containers as you like
 - Switch windows
 - Change the order of containers
-- Enables First-Party Isolate (FPI) by default (configurable)
+- Turn on First-Party Isolate (FPI) with one click, from the help shown when you install the extension
 - Panorama Grid - View all the tabs in a nice grid sorted by Containers.
 - Choose a container for each new Tab opened by external applications.
 - List tabs by websites in a window.
