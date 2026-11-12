@@ -32,9 +32,15 @@ const console = new CompatConsole(CompatConsole.tagFromFilename(__filename));
 
 const temporaryContainerName = (userContextId: number) => `tmp-${userContextId.toFixed(0)}`;
 
+/** tmp-<userContextId>, or tmp-<userContextId> (<group name>) for one made inside a group. */
+const isTemporaryContainerName = (name: string, userContextId: number) => {
+  const base = temporaryContainerName(userContextId);
+  return name == base || (name.startsWith(base + ' (') && name.endsWith(')'));
+};
+
 /**
- * Temporary containers left over from earlier sessions: named tmp-<userContextId>, with no tabs
- * at all. `tabs` must be every tab in every window, pinned and hidden ones included.
+ * Temporary containers left over from earlier sessions: named as temporary containers are, with
+ * no tabs at all. `tabs` must be every tab in every window, pinned and hidden ones included.
  */
 export const findLeftoverTemporaryContainers = <T extends { name: string; cookieStore: CookieStore }>(
   containers: readonly T[],
@@ -43,7 +49,7 @@ export const findLeftoverTemporaryContainers = <T extends { name: string; cookie
   const cookieStoreIdsWithTabs = new Set(tabs.map((tab) => tab.cookieStoreId));
   return containers.filter(
     ({ name, cookieStore }) =>
-      name == temporaryContainerName(cookieStore.userContextId) && !cookieStoreIdsWithTabs.has(cookieStore.id)
+      isTemporaryContainerName(name, cookieStore.userContextId) && !cookieStoreIdsWithTabs.has(cookieStore.id)
   );
 };
 

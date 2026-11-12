@@ -44,14 +44,13 @@ Firefox restores container tabs with **Open previous windows and tabs**, and a b
 
 When you close the last tab of a temporary container, the extension deletes the container together with its cookies, local storage and IndexedDB data.
 
-The extension also cleans up when Firefox starts and when the extension is installed or updated. At that point it deletes every container that has no open tabs and is named exactly `tmp-` plus its own number, together with its data. This catches temporary containers left over from an earlier session, for example when Firefox was closed with their tabs still open and did not restore them.
+The extension also cleans up when Firefox starts and when the extension is installed or updated. At that point it deletes every container that has no open tabs and is named like a temporary container, together with its data: `tmp-` plus the container's own number, optionally followed by a space and a name in parentheses, as in `tmp-12` or `tmp-12 (Work)`. This catches temporary containers left over from an earlier session, for example when Firefox was closed with their tabs still open and did not restore them.
 
 Some details follow from how that cleanup works:
 
-- It goes by the name only. A container that you named `tmp-12` yourself is deleted at startup if it has that number and no open tabs. Rename it to keep it.
+- It goes by the name only. A container that you named `tmp-12` or `tmp-12 (Notes)` yourself is deleted at startup if 12 is its number and it has no open tabs. Rename it to keep it.
 - A container with open tabs is never deleted at startup, whatever its name.
-- A temporary container made inside a group (`tmp-12 (Work)`) does not match the name. It is still deleted when you close its last tab, but if it is left without tabs across a restart, delete it yourself.
-- Renaming a temporary container, or its tab group in the tab bar, keeps it temporary: closing its last tab still deletes it. But the startup cleanup no longer recognizes it.
+- Renaming a temporary container, or its tab group in the tab bar, keeps it temporary: closing its last tab still deletes it. But if the new name no longer looks like a temporary container's, the startup cleanup does not recognize it.
 - With **Sync Containers** on, containers whose names contain `tmp` are not synced to your other devices. A renamed temporary container without `tmp` in its name is synced like any other.
 
 ## What moves with a tab to another container

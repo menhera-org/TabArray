@@ -24,14 +24,25 @@ import { expect, test } from 'vitest';
 import { container } from '../../test/fixtures';
 import { findLeftoverTemporaryContainers } from './TemporaryContainerService';
 
-test('leftover temporary containers are tmp-<userContextId> containers with no tab in any window', () => {
+test('leftover temporary containers are tmp-<userContextId> [(group)] containers with no tab in any window', () => {
   const containers = [
     container('firefox-container-5', 'tmp-5'), // no tabs: leftover
     container('firefox-container-6', 'tmp-6'), // only a pinned tab in another window
     container('firefox-container-7', 'tmp-9'), // number does not match its userContextId
     container('firefox-container-8', 'tmp-8 work'),
     container('firefox-container-10', 'Work'),
+    container('firefox-container-11', 'tmp-11 (Work (old))'), // made inside a group: leftover
+    container('firefox-container-12', 'tmp-12 (Work)'), // has a tab
+    container('firefox-container-13', 'tmp-1 (Work)'), // number does not match
+    container('firefox-container-14', 'tmp-14 (Work'),
   ];
-  const tabs = [{ cookieStoreId: 'firefox-default' }, { cookieStoreId: 'firefox-container-6' }];
-  expect(findLeftoverTemporaryContainers(containers, tabs).map((c) => c.name)).toEqual(['tmp-5']);
+  const tabs = [
+    { cookieStoreId: 'firefox-default' },
+    { cookieStoreId: 'firefox-container-6' },
+    { cookieStoreId: 'firefox-container-12' },
+  ];
+  expect(findLeftoverTemporaryContainers(containers, tabs).map((c) => c.name)).toEqual([
+    'tmp-5',
+    'tmp-11 (Work (old))',
+  ]);
 });
