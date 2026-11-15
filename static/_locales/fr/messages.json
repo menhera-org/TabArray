@@ -367,7 +367,7 @@
         "description": "Unmute Tab menu (same as browser's tab menu)"
     },
     "contextMenuPinTab": {
-        "message": "Épingler cet onglet",
+        "message": "Épingler onglet",
         "description": "Pin Tab menu (same as browser's tab menu)"
     },
     "contextMenuUnpinTab": {
@@ -689,5 +689,65 @@
     "copyCookiesFrom": {
         "message": "Copier les cookies de :",
         "description": "Label text for copy cookies from option."
+    },
+    "buttonBack": {
+        "message": "Retour"
+    },
+    "buttonClose": {
+        "message": "Fermer"
+    },
+    "tooltipSiteCloseAll": {
+        "message": "Fermer tous les onglets de ce site"
+    },
+    "confirmWindowClose": {
+        "message": "Voulez-vous fermer cette fenêtre et tous ses onglets ?"
+    },
+    "fpiDescriptionOptIn": {
+        "message": "La fonctionnalité « First-Party Isolate » (FPI) de Firefox sépare les cookies des différents sites, y compris au sein d'un même conteneur : ils sont isolés par domaine enregistrable. Nous vous recommandons de l'activer."
+    },
+    "buttonApplyRecommendedSettings": {
+        "message": "Appliquer les paramètres recommandés pour Firefox"
+    },
+    "optionsLabelExternalSites": {
+        "message": "Sites d’autres applications"
+    },
+    "contextMenuOpenInContainer": {
+        "message": "Ouvrir dans un conteneur"
+    },
+    "buttonSaveTabsAsBookmarks": {
+        "message": "Enregistrer les onglets comme marque-pages"
+    },
+    "contextMenuKeepTabLoaded": {
+        "message": "Garder cet onglet chargé"
+    },
+    "commandCollapseActiveContainer": {
+        "message": "Réduire le conteneur actuel"
+    },
+    "commandExpandActiveContainer": {
+        "message": "Développer le conteneur actuel"
+    },
+    "optionSortContainersByName": {
+        "message": "Trier les conteneurs par nom"
+    },
+    "optionListCollapsedTabs": {
+        "message": "Dans la barre latérale, afficher les onglets des groupes d’onglets réduits"
+    },
+    "optionHideTabCount": {
+        "message": "Masquer le nombre d’onglets sur le bouton de la barre d’outils"
+    },
+    "optionNativeTabGroupSync": {
+        "message": "Afficher les conteneurs sous forme de groupes d'onglets Firefox"
+    },
+    "optionAutoCenterInSidebar": {
+        "message": "Centrer automatiquement l’onglet actif dans la barre latérale"
+    },
+    "buttonVerifyBuild": {
+        "message": "Vérifier si cette version est officielle"
+    },
+    "extensionOfficial": {
+        "message": "(version officielle)"
+    },
+    "extensionNotOfficial": {
+        "message": "(non confirmée comme version officielle)"
     }
 }
