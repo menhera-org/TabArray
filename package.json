@@ -31,7 +31,7 @@
     "@types/webextension-polyfill": "^0.12.6",
     "addons-linter": "^10.14.0",
     "deterministic-zip-ng": "^2.1.2",
-    "glob": "^13.0.6",
+    "glob": "^14.0.3",
     "happy-dom": "^21.0.4",
     "markdown-it": "^15.0.3",
     "oxfmt": "^0.74.0",
